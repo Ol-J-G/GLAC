@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">GLAC</string>
+    <string name="alarms">Alarms</string>
+    <string name="clock">Clock</string>
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
 </resources>
