@@ -178,7 +178,7 @@ object SevenSegmentDefaults {
         Pair(Segment.BOTTOM_LEFT,   listOf('0',      '2',                '6',      '8',      'A', 'P')),
         Pair(Segment.BOTTOM_RIGHT,  listOf('0', '1',      '3', '4', '5', '6', '7', '8', '9', 'A'     )),
     )
-    val DEFAULT_SEVEN_SEGMENT_CHAR_PADDING = 4.dp
+    val DEFAULT_SEVEN_SEGMENT_CHAR_PADDING = 8.dp
 
     const val DEFAULT_ASPECT_RATIO = 1f / 2
 

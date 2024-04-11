@@ -1,7 +1,6 @@
 package de.oljg.glac.clock.digital.ui.utils
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,7 +39,7 @@ fun MeasureFontSize(
     dividerPaddingToTakeIntoAccount: Dp = 0.dp
 ) {
 
-    var shrinkMultiplier by remember { mutableFloatStateOf(1f) }
+    var measureMultiplier by remember { mutableFloatStateOf(1f) }
     var fits by remember { mutableStateOf(false) }
     var fixedMultiplier by remember { mutableFloatStateOf(1f) }
 
@@ -55,45 +54,40 @@ fun MeasureFontSize(
         fontWeight = fontWeight,
         fontStyle = fontStyle,
         style = LocalTextStyle.current.copy(
-            fontSize = if (fits) fontSize * fixedMultiplier else fontSize * shrinkMultiplier,
+            fontSize = if (fits) fontSize * fixedMultiplier else fontSize * measureMultiplier,
+            lineHeight = if (fits) fontSize * fixedMultiplier else fontSize * measureMultiplier,
             color = Color.Transparent
         ),
         modifier = Modifier.drawWithContent {
-            if (fits) {
+            if (fits)
                 drawContent()
-            }
         },
         onTextLayout = { textLayoutResult ->
             /**
              * Since textLayoutResult.hasVisualOverflow is not delivering result needed to fulfill
              * requirements (different/special layouts) => calculate it manually as follows
              */
-            // Substract the space needed for all dividers from available height
+            // Substract the space needed for all dividers from available size
             val availableHeight = clockBoxSize.height -
                     ((dividerStrokeWidthInt + (2 * dividerPaddingInt)) * dividerCount)
-
-            val doesNotFitHeight =
-                textLayoutResult.size.height > availableHeight / (dividerCount + 1)
-
             val availableWidth = clockBoxSize.width -
                     ((dividerStrokeWidthInt + (2 * dividerPaddingInt)) * dividerCount)
 
-            val doesNotFitWidth =
+            val doesNotFitInPortraitOrientation =
+                textLayoutResult.size.height >= availableHeight / (dividerCount + 1)
+
+            val doesNotFitInLandscapeOrientation =
                 textLayoutResult.size.width >= availableWidth
 
             val doesNotFit =
-                if (isOrientationPortrait) doesNotFitHeight
-                else doesNotFitWidth
+                if (isOrientationPortrait) doesNotFitInPortraitOrientation
+                else doesNotFitInLandscapeOrientation
 
             if (doesNotFit) {
-                Log.d("TAG", "startFontSize: $fontSize | shrinked: ${fontSize * shrinkMultiplier} shrinkMultiplier: $shrinkMultiplier")
-                Log.d("TAG", "${textLayoutResult.size.height} >= ${availableHeight / (dividerCount + 1)}")
-                shrinkMultiplier *= .97f
-
+                measureMultiplier *= .97f
             } else {
-                Log.d("TAG", "FITS => fontSize: $fontSize | fixed: ${fontSize*fixedMultiplier}")
                 fits = true
-                fixedMultiplier = shrinkMultiplier
+                fixedMultiplier = measureMultiplier
                 onFontSizeMeasured(
                     fontSize * fixedMultiplier,
                     textLayoutResult.size

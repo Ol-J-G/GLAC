@@ -2,7 +2,6 @@ package de.oljg.glac.clock.digital.ui
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,7 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontFamily
@@ -22,6 +20,8 @@ import androidx.compose.ui.unit.DpSize
 import de.oljg.glac.clock.digital.ui.components.SevenSegmentChar
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_CHAR_SIZE_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockPartColors
 import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
@@ -45,8 +45,8 @@ fun DigitalClockScreen(
     showDaytimeMarker: Boolean = false,
 
     clockCharType: ClockCharType = ClockCharType.FONT,
-    clockCharSizeFactor: Float = 1f,//DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
-    daytimeMarkerSizeFactor: Float = 1f,//DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
+    clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
+    daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
 
     charColor: Color = MaterialTheme.colorScheme.onSurface,
     charColors: Map<Char, Color> = emptyMap(),
@@ -218,7 +218,6 @@ fun DigitalClockScreen(
                 fontWeight = fontWeight,
                 fontStyle = fontStyle,
                 color = clockCharColor,
-                modifier = Modifier.background(Color.DarkGray) //TODO: remove
             )
         else
             SevenSegmentChar(

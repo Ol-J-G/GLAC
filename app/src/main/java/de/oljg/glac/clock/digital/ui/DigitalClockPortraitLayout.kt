@@ -1,7 +1,6 @@
 package de.oljg.glac.clock.digital.ui
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,9 +37,7 @@ import de.oljg.glac.clock.digital.ui.utils.MeasureFontSize
 import de.oljg.glac.clock.digital.ui.utils.isDaytimeMarkerChar
 import de.oljg.glac.clock.digital.ui.utils.pxToDp
 
-//import de.n3bu.playground.composables.DividerDefaults.DEFAULT_FIRST_CIRCLE_POSITION_PORTRAIT_SPECIAL
-//import de.n3bu.playground.composables.DividerDefaults.DEFAULT_SECOND_CIRCLE_POSITION_PORTRAIT_SPECIAL
-//import de.n3bu.playground.composables.ClockDefaults.WIDEST_CHAR
+
 
 @Composable
 fun DigitalClockPortraitLayout(
@@ -111,8 +108,11 @@ fun DigitalClockPortraitLayout(
     val availableHeightForSevenSegmentClockChar = if (clockCharType == ClockCharType.FONT) 0.dp else
         clockBoxSize.height.pxToDp() - spaceNeededForDividers
 
+    /**
+     * Shrink 7-seg chars a bit to let space for padding because requiredSize() in columns below is
+     * needed (=> strange behaviour noticed with size(), when Jetpack Compose decides...)
+     */
     val sevenSegmentShrinkFactor = if (dividerCount == 1) .9f else .95f
-
 
     val maxCharWidth = when (clockCharType) {
 
@@ -120,30 +120,26 @@ fun DigitalClockPortraitLayout(
         ClockCharType.FONT -> finalFontBoundsSize.width.pxToDp() / 2
 
         // Width of 7-segment must be height / 2 to keep aspect ratio of 1:2 (w:h)
-        else -> ((availableHeightForSevenSegmentClockChar / (dividerCount + 1)) / 2) * sevenSegmentShrinkFactor
+        else -> ((availableHeightForSevenSegmentClockChar /
+                (dividerCount + 1)) / 2) * sevenSegmentShrinkFactor
     }
     val maxCharHeight = when (clockCharType) {
 
         ClockCharType.FONT -> finalFontBoundsSize.height.pxToDp()
 
         // Height of 7-segment clockChar depends on number of dividers
-        else -> (availableHeightForSevenSegmentClockChar / (dividerCount + 1)) * sevenSegmentShrinkFactor // shrink a bit to let space for padding because requiredSize in column below is needed(? strange result with size(), when compose decides)
+        else -> (availableHeightForSevenSegmentClockChar /
+                (dividerCount + 1)) * sevenSegmentShrinkFactor
     }
 
     val finalCharWidth = maxCharWidth * clockCharSizeFactor
     val finalCharHeight = maxCharHeight * clockCharSizeFactor
 
-    // TODO: just needed surprisingly after component relocation => investigate why maxFontSize is too big and must be corrected ...oO (are other fonts also affected??)
-    val fontSizeCorrectionFactor = when(dividerCount) {
-        1, 2 -> .8f
-        else -> 1f
-    }
-    val finalFontSize = maxFontSize * fontSizeCorrectionFactor * clockCharSizeFactor
-    val daytimeMarkerFontSize = maxFontSize * fontSizeCorrectionFactor * daytimeMarkerSizeFactor
-
     val daytimeMarkerCharWidth = maxCharWidth * daytimeMarkerSizeFactor
     val daytimeMarkerCharHeight = maxCharHeight * daytimeMarkerSizeFactor
 
+    val finalFontSize = maxFontSize * clockCharSizeFactor
+    val daytimeMarkerFontSize = maxFontSize * daytimeMarkerSizeFactor
 
     Column(
         modifier = Modifier
@@ -210,7 +206,6 @@ fun DigitalClockPortraitLayout(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
                         modifier = Modifier
-                            .background(Color.Yellow)
                             .requiredSize(
                                 if (currentTimeWithoutSeparators[index].isDaytimeMarkerChar()) daytimeMarkerCharWidth else finalCharWidth,
                                 if (currentTimeWithoutSeparators[index].isDaytimeMarkerChar()) daytimeMarkerCharHeight else finalCharHeight
@@ -230,7 +225,6 @@ fun DigitalClockPortraitLayout(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
                         modifier = Modifier
-                            .background(Color.Red)
                             .requiredSize(
                                 if (currentTimeWithoutSeparators[index + 1].isDaytimeMarkerChar()) daytimeMarkerCharWidth else finalCharWidth,
                                 if (currentTimeWithoutSeparators[index + 1].isDaytimeMarkerChar()) daytimeMarkerCharHeight else finalCharHeight
