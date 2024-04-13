@@ -30,14 +30,14 @@ enum class DividerStyle {
 
 
 data class DividerAttributes(
-    val dividerStyle: DividerStyle,
-    val dividerThickness: Dp,
-    val dividerPadding: Dp,
+    val dividerStyle: DividerStyle = DividerStyle.COLON,
+    val dividerThickness: Dp = Dp.Unspecified,
+    val dividerPadding: Dp = Dp.Unspecified,
     val dividerColor: Color,
-    val dividerLineCap: StrokeCap,
-    val dividerLengthPercent: Float?,
-    val dividerDashCount: Int?,
-    val dividerDashDottedPartCount: Int?
+    val dividerLineCap: StrokeCap = StrokeCap.Butt,
+    val dividerLengthPercent: Float? = null,
+    val dividerDashCount: Int? = null,
+    val dividerDashDottedPartCount: Int? = null
 )
 
 fun evaluateDividerThickness(

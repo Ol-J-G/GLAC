@@ -133,7 +133,7 @@ fun LineDivider(
             val dashAndGapCount =
                 (dividerDashCount * 2) - 1
             val averageDashWidth = dividerLenght / dashAndGapCount
-            val phase = 0f //TODO: make configurable, maybe anim
+            val phase = 0f
 
             /**
              * Calculate an equally distributed amount of DOTs

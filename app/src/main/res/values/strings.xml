@@ -4,4 +4,7 @@
     <string name="clock">Clock</string>
     <string name="settings">Settings</string>
     <string name="about">About</string>
+
+    <string name="digital_clock_in_landscape_layout">Digital clock in landscape layout</string>
+    <string name="digital_clock_in_portrait_layout">Digital clock in portrait layout</string>
 </resources>

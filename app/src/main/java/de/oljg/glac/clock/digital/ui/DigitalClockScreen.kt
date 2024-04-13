@@ -11,11 +11,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import de.oljg.glac.clock.digital.ui.components.SevenSegmentChar
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
@@ -41,8 +39,8 @@ fun DigitalClockScreen(
     fullScreen: Boolean,
     onClick: () -> Unit = {},
 
-    showSeconds: Boolean = false,
-    showDaytimeMarker: Boolean = false,
+    showSeconds: Boolean = true,
+    showDaytimeMarker: Boolean = true,
 
     clockCharType: ClockCharType = ClockCharType.FONT,
     clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
@@ -79,13 +77,13 @@ fun DigitalClockScreen(
     daytimeMarkerDividerChar: Char = '_',
     dividerAttributes: DividerAttributes = DividerAttributes(
         dividerStyle = DividerStyle.COLON,
-        dividerDashCount = null,
-        dividerLineCap = StrokeCap.Butt,
-        dividerThickness = Dp.Unspecified,
-        dividerPadding = Dp.Unspecified,
+//        dividerDashCount = null,
+//        dividerLineCap = StrokeCap.Butt,
+//        dividerThickness = Dp.Unspecified,
+//        dividerPadding = Dp.Unspecified,
         dividerColor = charColor,
-        dividerLengthPercent = null,
-        dividerDashDottedPartCount = null
+//        dividerLengthPercent = null,
+//        dividerDashDottedPartCount = null
     ),
 
     fontFamily: FontFamily = FontFamily.SansSerif,
@@ -198,13 +196,6 @@ fun DigitalClockScreen(
         clockPartColors = clockPartColors,
         dividerAttributes = dividerAttributes,
         currentTimeFormatted = currentTimeFormatted,
-        dividerCount = currentTimeFormatted.filter { char ->
-            char in listOf(
-                minuteSecondDividerChar,
-                hourMinuteDividerChar,
-                daytimeMarkerDividerChar
-            )
-        }.length,
         clockCharType = clockCharType,
         sevenSegmentStyle = sevenSegmentStyle,
         clockCharSizeFactor = clockCharSizeFactor,

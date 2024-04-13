@@ -33,32 +33,41 @@ import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_DOTTED_PART_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_LENGTH_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
+import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
 import de.oljg.glac.clock.digital.ui.utils.evaluateDividerPadding
 import de.oljg.glac.clock.digital.ui.utils.evaluateDividerThickness
 import de.oljg.glac.clock.digital.ui.utils.evaluateStartFontSize
 
 @Composable
 fun DigitalClock(
-    onClick: () -> Unit,
-    hourMinuteDividerChar: Char,
-    minuteSecondDividerChar: Char,
-    daytimeMarkerDividerChar: Char,
-    fontFamily: FontFamily,
-    fontWeight: FontWeight,
-    fontStyle: FontStyle,
-    dividerAttributes: DividerAttributes,
+    onClick: () -> Unit = {},
+    hourMinuteDividerChar: Char = ':', //TODO add default const vals
+    minuteSecondDividerChar: Char = ':',
+    daytimeMarkerDividerChar: Char = ' ',
+    fontFamily: FontFamily = FontFamily.SansSerif,
+    fontWeight: FontWeight = FontWeight.Normal,
+    fontStyle: FontStyle = FontStyle.Normal,
+    dividerAttributes: DividerAttributes = DividerAttributes(dividerColor = MaterialTheme.colorScheme.onSurface),
     currentTimeFormatted: String,
-    dividerCount: Int,
-    clockCharType: ClockCharType,
-    sevenSegmentStyle: SevenSegmentStyle,
-    charColors: Map<Char, Color>,
+    clockCharType: ClockCharType = ClockCharType.FONT,
+    sevenSegmentStyle: SevenSegmentStyle = SevenSegmentStyle.REGULAR,
+    charColors: Map<Char, Color> = defaultClockCharColors(MaterialTheme.colorScheme.onSurface),
     clockPartColors: ClockPartColors? = null,
-    clockCharSizeFactor: Float,
-    daytimeMarkerSizeFactor: Float,
+    clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
+    daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
     clockChar: @Composable (Char, TextUnit, Color, DpSize, Int) -> Unit
 ) {
     var clockBoxSize by remember { mutableStateOf(IntSize.Zero) }
     val currentDisplayOrientation = LocalConfiguration.current.orientation
+
+    // Evaluate how many dividers must be displayed
+    val dividerCount = currentTimeFormatted.filter { char ->
+        char in listOf(
+            minuteSecondDividerChar,
+            hourMinuteDividerChar,
+            daytimeMarkerDividerChar
+        )
+    }.length
 
     // Use specified or default divider thickness
     val finalDividerThickness = evaluateDividerThickness(
@@ -107,7 +116,7 @@ fun DigitalClock(
             dividerAttributes.dividerLengthPercent > 1f)
             DEFAULT_DIVIDER_LENGTH_FACTOR
         else dividerAttributes.dividerLengthPercent
-    val finalClockCharSizeFactor = //TODO: maybe allow > 1f in case font measurement went unlucky on some device!? but what should be max instead?
+    val finalClockCharSizeFactor =
         if (clockCharSizeFactor <= 0f || clockCharSizeFactor > 1f)
             DEFAULT_CLOCK_CHAR_SIZE_FACTOR
         else clockCharSizeFactor
@@ -162,13 +171,6 @@ fun DigitalClock(
                 fontFamily = fontFamily,
                 fontWeight = fontWeight,
                 fontStyle = fontStyle,
-                /**
-                 * Remove dividers, e.g. 'hh:mm' => 'hhmm'..., because in portrait orientation
-                 * it's not useful to show DividerStyle.CHAR dividers (they would have to be rotated,
-                 * and this would look kinda terrible imho, and it's not necessary at all.
-                 * Instead, a drawn colon will be used by default, or DividerStyle.LINE... are
-                 * possible as well).
-                 */
                 /**
                  * Remove dividers, e.g. 'hh:mm' => 'hhmm'..., because in portrait orientation
                  * it's not useful to show DividerStyle.CHAR dividers (they would have to be rotated,

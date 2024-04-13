@@ -16,6 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -72,7 +75,7 @@ fun DigitalClockPortraitLayout(
         /**
          * Calculate biggest font size that fits into clockBox container in portrait layout.
          */
-        MeasureFontSize(
+        MeasureFontSize( //TODO: make it invisible after measurement => try if maxFontSize == startFontSize .. else Box{}
             textToMeasure = buildString {
                 (1..2).forEach { _ -> append(WIDEST_CHAR) } // e.g. 'MM' => 2
             },
@@ -141,9 +144,14 @@ fun DigitalClockPortraitLayout(
     val finalFontSize = maxFontSize * clockCharSizeFactor
     val daytimeMarkerFontSize = maxFontSize * daytimeMarkerSizeFactor
 
+    val context = LocalContext.current
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .semantics {
+                contentDescription =
+                    context.getString(de.oljg.glac.R.string.digital_clock_in_portrait_layout)
+            },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly //TODO: let user decide (same in landscape) SpaceEvenly should be default
     ) {

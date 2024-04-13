@@ -16,6 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -24,6 +27,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.components.ColonDivider
 import de.oljg.glac.clock.digital.ui.components.LineDivider
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
@@ -161,9 +165,13 @@ fun DigitalClockLandscapeLayout(
     val daytimeMarkerCharHeight = maxCharHeight * daytimeMarkerSizeFactor
     val daytimeMarkerFontSize = maxFontSize * daytimeMarkerSizeFactor
 
+    val context = LocalContext.current
     Row(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .semantics {
+                contentDescription = context.getString(R.string.digital_clock_in_landscape_layout)
+            },
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -264,7 +272,7 @@ fun DigitalClockLandscapeLayout(
                  * Note:
                  * When DividerStyle.CHAR is used, finalCurrentTimeFormatted will contain
                  * divider chars, which will be drawn as every other String via Text composable
-                 * in case of FONT
+                 * in case of FONT.
                  * In case of SevenSegmentChar just digits and two letters will be drawn
                  * (DividerStyle.CHAR not possible together with SevenSegmentChar) ...
                  */

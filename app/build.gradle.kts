@@ -49,6 +49,11 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -99,7 +104,7 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("com.google.truth:truth:1.1.5")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.2")
+
 
     // Instrumentation tests
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.50")
@@ -111,6 +116,8 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test:core-ktx:1.5.0")
     androidTestImplementation("androidx.test:runner:1.5.2")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.2")
+    testImplementation("org.robolectric:robolectric:4.12")
 }
 
 /**
