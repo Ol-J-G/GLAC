@@ -20,8 +20,10 @@ import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_CHAR_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
-import de.oljg.glac.clock.digital.ui.utils.ClockPartColors
+import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.HideSystemBars
 import de.oljg.glac.clock.digital.ui.utils.Segment
@@ -40,7 +42,7 @@ fun DigitalClockScreen(
     onClick: () -> Unit = {},
 
     showSeconds: Boolean = true,
-    showDaytimeMarker: Boolean = true,
+    showDaytimeMarker: Boolean = false,
 
     clockCharType: ClockCharType = ClockCharType.FONT,
     clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
@@ -63,20 +65,20 @@ fun DigitalClockScreen(
 //            Pair('P', Color.Magenta.copy(alpha = .5f)),
 //            Pair('M', Color.Yellow.copy(alpha = .3f)),
 //        ),
-    clockPartColors: ClockPartColors? = null,
-//        ClockPartColors(
-//            hours = ClockPartColors.DigitColor(tens = Color.Green, ones = Color.Green.copy(alpha = .5f)),
-//            minutes = ClockPartColors.DigitColor(tens = Color.Yellow, ones = Color.Yellow.copy(alpha = .5f)),
-//            seconds = ClockPartColors.DigitColor(tens = Color.Red, ones = Color.Red.copy(alpha = .5f)),
-//            daytimeMarker = ClockPartColors.DaytimeMarkerColor(anteOrPost = Color.White, meridiem = Color.Gray),
-//            dividers = ClockPartColors.DividerColor(hoursMinutes = Color.Red, minutesSeconds = Color.Yellow, daytimeMarker = Color.Green)
-//        ),
+    clockPartsColors: ClockPartsColors? = //null,
+        ClockPartsColors(
+            hours = ClockPartsColors.DigitColor(tens = Color.Green, ones = Color.Green.copy(alpha = .5f)),
+            minutes = ClockPartsColors.DigitColor(tens = Color.Yellow, ones = Color.Yellow.copy(alpha = .5f)),
+            seconds = ClockPartsColors.DigitColor(tens = Color.Red, ones = Color.Red.copy(alpha = .5f)),
+            daytimeMarker = ClockPartsColors.DaytimeMarkerColor(anteOrPost = Color.White, meridiem = Color.Gray),
+            dividers = ClockPartsColors.DividerColor(hoursMinutes = Color.Red, minutesSeconds = Color.Yellow, daytimeMarker = Color.Green)
+        ),
 
-    hourMinuteDividerChar: Char = ':',
-    minuteSecondDividerChar: Char = ':',
+    hoursMinutesDividerChar: Char = DEFAULT_HOURS_MINUTES_DIVIDER_CHAR,
+    minutesSecondsDividerChar: Char = DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR,
     daytimeMarkerDividerChar: Char = '_',
     dividerAttributes: DividerAttributes = DividerAttributes(
-        dividerStyle = DividerStyle.COLON,
+        dividerStyle = DividerStyle.CHAR,
 //        dividerDashCount = null,
 //        dividerLineCap = StrokeCap.Butt,
 //        dividerThickness = Dp.Unspecified,
@@ -109,10 +111,10 @@ fun DigitalClockScreen(
 
     val timePattern = buildString {
         if (showDaytimeMarker) append("hh") else append("HH")
-        append(hourMinuteDividerChar)
+        append(hoursMinutesDividerChar)
         append("mm")
         if (showSeconds) {
-            append(minuteSecondDividerChar)
+            append(minutesSecondsDividerChar)
             append("ss")
         }
         if (showDaytimeMarker) {
@@ -186,14 +188,14 @@ fun DigitalClockScreen(
 
     DigitalClock(
         onClick = onClick,
-        minuteSecondDividerChar = minuteSecondDividerChar,
-        hourMinuteDividerChar = hourMinuteDividerChar,
+        minutesSecondsDividerChar = minutesSecondsDividerChar,
+        hoursMinutesDividerChar = hoursMinutesDividerChar,
         daytimeMarkerDividerChar = daytimeMarkerDividerChar,
         fontFamily = fontFamily,
         fontWeight = fontWeight,
         fontStyle = fontStyle,
         charColors = finalCharColors,
-        clockPartColors = clockPartColors,
+        clockPartsColors = clockPartsColors,
         dividerAttributes = dividerAttributes,
         currentTimeFormatted = currentTimeFormatted,
         clockCharType = clockCharType,

@@ -15,6 +15,24 @@ fun Char.isDaytimeMarkerChar(): Boolean {
 }
 
 
+interface ClockParts {
+    val hours: DigitClockPart
+    val minutes: DigitClockPart
+    val seconds: DigitClockPart
+    val daytimeMarker: DaytimeMarker
+}
+interface DigitClockPart {
+    val ones: Any
+    val tens: Any
+}
+interface DaytimeMarker {
+    val anteOrPost: Any
+    val meridiem: Any
+}
+
+
+
+
 object ClockDefaults {
 
     /**

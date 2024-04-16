@@ -10,8 +10,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import de.oljg.glac.core.util.TestTags
 import kotlin.math.roundToInt
 
 @Composable
@@ -46,55 +47,55 @@ fun MeasureFontSize(
     val dividerStrokeWidthInt = dividerStrokeWithToTakeIntoAccount.dpToPx().roundToInt()
     val dividerPaddingInt = dividerPaddingToTakeIntoAccount.dpToPx().roundToInt()
 
-    Text(
-        text = textToMeasure,
-        maxLines = maxLines,
-        overflow = TextOverflow.Visible,
-        fontFamily = fontFamily,
-        fontWeight = fontWeight,
-        fontStyle = fontStyle,
-        style = LocalTextStyle.current.copy(
-            fontSize = if (fits) fontSize * fixedMultiplier else fontSize * measureMultiplier,
-            lineHeight = if (fits) fontSize * fixedMultiplier else fontSize * measureMultiplier,
-            color = Color.Transparent
-        ),
-        modifier = Modifier.drawWithContent {
-            if (fits)
-                drawContent()
-        },
-        onTextLayout = { textLayoutResult ->
-            /**
-             * Since textLayoutResult.hasVisualOverflow is not delivering result needed to fulfill
-             * requirements (different/special layouts) => calculate it manually as follows
-             */
-            // Substract the space needed for all dividers from available size
-            val availableHeight = clockBoxSize.height -
-                    ((dividerStrokeWidthInt + (2 * dividerPaddingInt)) * dividerCount)
-            val availableWidth = clockBoxSize.width -
-                    ((dividerStrokeWidthInt + (2 * dividerPaddingInt)) * dividerCount)
+    if (!fits) {
+        Text(
+            modifier = Modifier.testTag(TestTags.FONT_MEASUREMENT),
+            text = textToMeasure,
+            maxLines = maxLines,
+            overflow = TextOverflow.Visible,
+            fontFamily = fontFamily,
+            fontWeight = fontWeight,
+            fontStyle = fontStyle,
+            style = LocalTextStyle.current.copy(
+                fontSize = if (fits) fontSize * fixedMultiplier else fontSize * measureMultiplier,
+                lineHeight = if (fits) fontSize * fixedMultiplier else fontSize * measureMultiplier,
+                color = Color.Transparent
+            ),
+            onTextLayout = { textLayoutResult ->
+                /**
+                 * Since textLayoutResult.hasVisualOverflow is not delivering result needed to
+                 * fulfill requirements (different/special layouts) => calculate it manually as
+                 * follows ...
+                 */
+                // Substract the space needed for all dividers from available size
+                val availableHeight = clockBoxSize.height -
+                        ((dividerStrokeWidthInt + (2 * dividerPaddingInt)) * dividerCount)
+                val availableWidth = clockBoxSize.width -
+                        ((dividerStrokeWidthInt + (2 * dividerPaddingInt)) * dividerCount)
 
-            val doesNotFitInPortraitOrientation =
-                textLayoutResult.size.height >= availableHeight / (dividerCount + 1)
+                val doesNotFitInPortraitOrientation =
+                    textLayoutResult.size.height >= availableHeight / (dividerCount + 1)
 
-            val doesNotFitInLandscapeOrientation =
-                textLayoutResult.size.width >= availableWidth
+                val doesNotFitInLandscapeOrientation =
+                    textLayoutResult.size.width >= availableWidth
 
-            val doesNotFit =
-                if (isOrientationPortrait) doesNotFitInPortraitOrientation
-                else doesNotFitInLandscapeOrientation
+                val doesNotFit =
+                    if (isOrientationPortrait) doesNotFitInPortraitOrientation
+                    else doesNotFitInLandscapeOrientation
 
-            if (doesNotFit) {
-                measureMultiplier *= .97f
-            } else {
-                fits = true
-                fixedMultiplier = measureMultiplier
-                onFontSizeMeasured(
-                    fontSize * fixedMultiplier,
-                    textLayoutResult.size
-                )
+                if (doesNotFit) {
+                    measureMultiplier *= .97f
+                } else {
+                    fits = true
+                    fixedMultiplier = measureMultiplier
+                    onFontSizeMeasured(
+                        fontSize * fixedMultiplier,
+                        textLayoutResult.size
+                    )
+                }
             }
-        }
-    )
+        )
+    }
 }
 
 

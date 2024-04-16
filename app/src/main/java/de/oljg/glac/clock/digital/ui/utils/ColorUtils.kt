@@ -4,22 +4,52 @@ import androidx.compose.ui.graphics.Color
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.CLOCK_CHARS
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.SEVEN_SEGMENT_CHARS
 
-data class ClockPartColors(
-    val hours: DigitColor,
-    val minutes: DigitColor,
-    val seconds: DigitColor,
-    val daytimeMarker: DaytimeMarkerColor,
+//data class ClockPartColors(
+//    val hours: DigitColor,
+//    val minutes: DigitColor,
+//    val seconds: DigitColor,
+//    val daytimeMarker: DaytimeMarkerColor,
+//    val dividers: DividerColor
+//) {
+//    data class DigitColor(
+//        val ones: Color,
+//        val tens: Color
+//    )
+//
+//    data class DaytimeMarkerColor( // AM/PM
+//        val anteOrPost: Color, // 'A' or 'P'
+//        val meridiem: Color // 'M'
+//    )
+//
+//    data class DividerColor(
+//
+//        // Color for divider between hours and minutes
+//        val hoursMinutes: Color,
+//
+//        // Color for divider between minutes and seconds/daytime marker
+//        val minutesSeconds: Color,
+//
+//        // Color for divider between minutes/secondes and daytime marker
+//        val daytimeMarker: Color
+//    )
+//}
+
+data class ClockPartsColors(
+    override val hours: DigitColor,
+    override val minutes: DigitColor,
+    override val seconds: DigitColor,
+    override val daytimeMarker: DaytimeMarkerColor,
     val dividers: DividerColor
-) {
+): ClockParts {
     data class DigitColor(
-        val ones: Color,
-        val tens: Color
-    )
+        override val ones: Color,
+        override val tens: Color
+    ): DigitClockPart
 
     data class DaytimeMarkerColor( // AM/PM
-        val anteOrPost: Color, // 'A' or 'P'
-        val meridiem: Color // 'M'
-    )
+        override val anteOrPost: Color, // 'A' or 'P'
+        override val meridiem: Color // 'M'
+    ): DaytimeMarker
 
     data class DividerColor(
 

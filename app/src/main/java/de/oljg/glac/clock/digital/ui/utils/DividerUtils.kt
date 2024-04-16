@@ -8,6 +8,9 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
 
 
 /**
@@ -130,9 +133,24 @@ fun evaluateDividerPadding(
     return if (specifiedDividerPadding == Dp.Unspecified) defaultDividerPadding else specifiedDividerPadding
 }
 
-
+fun String.dividerCount(minutesSecondsDividerChar: Char = DEFAULT_HOURS_MINUTES_DIVIDER_CHAR,
+                        hoursMinutesDividerChar: Char = DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR,
+                        daytimeMarkerDividerChar: Char = DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR): Int {
+    return this.filter { char ->
+        char in listOf(
+            minutesSecondsDividerChar,
+            hoursMinutesDividerChar,
+            daytimeMarkerDividerChar
+        )
+    }.length
+}
 
 object DividerDefaults {
+    const val DEFAULT_HOURS_MINUTES_DIVIDER_CHAR = ':'
+    const val DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR = ':'
+    const val DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR = ' '
+
+
     val DEFAULT_DIVIDER_THICKNESS_LINE = 1.dp
     val DEFAULT_DIVIDER_THICKNESS_DASHED = 1.dp
     val DEFAULT_DIVIDER_THICKNESS_DOTTED = 4.dp

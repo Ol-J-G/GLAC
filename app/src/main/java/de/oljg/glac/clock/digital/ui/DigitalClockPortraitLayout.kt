@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
@@ -32,14 +33,14 @@ import de.oljg.glac.clock.digital.ui.components.ColonDivider
 import de.oljg.glac.clock.digital.ui.components.LineDivider
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.WIDEST_CHAR
-import de.oljg.glac.clock.digital.ui.utils.ClockPartColors
+import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_FIRST_CIRCLE_POSITION_PORTRAIT_SPECIAL
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_SECOND_CIRCLE_POSITION_PORTRAIT_SPECIAL
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.MeasureFontSize
 import de.oljg.glac.clock.digital.ui.utils.isDaytimeMarkerChar
 import de.oljg.glac.clock.digital.ui.utils.pxToDp
-
+import de.oljg.glac.core.util.TestTags
 
 
 @Composable
@@ -62,7 +63,7 @@ fun DigitalClockPortraitLayout(
     startFontSize: TextUnit,
     clockChar: @Composable (Char, TextUnit, Color, DpSize, Int) -> Unit,
     clockCharType: ClockCharType,
-    clockPartColors: ClockPartColors?,
+    clockPartsColors: ClockPartsColors?,
     clockCharSizeFactor: Float,
     daytimeMarkerSizeFactor: Float
 ) {
@@ -75,7 +76,7 @@ fun DigitalClockPortraitLayout(
         /**
          * Calculate biggest font size that fits into clockBox container in portrait layout.
          */
-        MeasureFontSize( //TODO: make it invisible after measurement => try if maxFontSize == startFontSize .. else Box{}
+        MeasureFontSize(
             textToMeasure = buildString {
                 (1..2).forEach { _ -> append(WIDEST_CHAR) } // e.g. 'MM' => 2
             },
@@ -150,8 +151,9 @@ fun DigitalClockPortraitLayout(
             .fillMaxSize()
             .semantics {
                 contentDescription =
-                    context.getString(de.oljg.glac.R.string.digital_clock_in_portrait_layout)
-            },
+                    context.getString(de.oljg.glac.R.string.digital_clock)
+            }
+            .testTag(TestTags.DIGITAL_CLOCK_PORTRAIT_LAYOUT),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly //TODO: let user decide (same in landscape) SpaceEvenly should be default
     ) {
@@ -159,18 +161,18 @@ fun DigitalClockPortraitLayout(
 
             // In case [clockPartColors] are specified, use them instead of [charColors].
             val clockPartColor =
-                if (clockPartColors != null) evaluateClockCharColor(
+                if (clockPartsColors != null) evaluateClockPart(
                     formattedTime = currentTimeWithoutSeparators,
                     index = index,
-                    clockPartColors = clockPartColors
+                    clockPartsColors = clockPartsColors
                 )
                 else null
 
             val finalDividerColor =
-                if (clockPartColors != null) evaluateDividerColor(
+                if (clockPartsColors != null) evaluateDividerColor(
                     formattedTime = currentTimeWithoutSeparators,
                     index = index,
-                    clockPartColors = clockPartColors,
+                    clockPartsColors = clockPartsColors,
                 )
                 else dividerColor
 
@@ -315,30 +317,30 @@ fun DigitalClockPortraitLayout(
  *
  * @param formattedTime Current time formatted
  * @param index Position of a clockChar within [formattedTime]
- * @param clockPartColors Contains colors for all "parts" of a clock (except dividers
+ * @param clockPartsColors Contains colors for all "parts" of a clock (except dividers
  * => these colors will be evaluated with evaluateDividerColor())
  * @return A pair of colors for one clock part, depending on the [index] of a clockChar
  * in [formattedTime] (a Pair because of the design of the for loop it is used in - Pair.first,
  * Pair.second comes in handy ...)
- * @see ClockPartColors
+ * @see ClockPartsColors
  */
-private fun evaluateClockCharColor(
+private fun evaluateClockPart(
     formattedTime: String,
     index: Int,
-    clockPartColors: ClockPartColors
+    clockPartsColors: ClockPartsColors
 ): Pair<Color, Color>? {
     return when (index) {
-        0 -> Pair(clockPartColors.hours.tens, clockPartColors.hours.ones)
-        2 -> Pair(clockPartColors.minutes.tens, clockPartColors.minutes.ones)
+        0 -> Pair(clockPartsColors.hours.tens, clockPartsColors.hours.ones)
+        2 -> Pair(clockPartsColors.minutes.tens, clockPartsColors.minutes.ones)
         4 ->
             if (formattedTime.length in (5..6) && formattedTime.toCharArray().last().isLetter())
                 Pair(
-                    clockPartColors.daytimeMarker.anteOrPost,
-                    clockPartColors.daytimeMarker.meridiem
+                    clockPartsColors.daytimeMarker.anteOrPost,
+                    clockPartsColors.daytimeMarker.meridiem
                 )
-            else Pair(clockPartColors.seconds.tens, clockPartColors.seconds.ones)
+            else Pair(clockPartsColors.seconds.tens, clockPartsColors.seconds.ones)
 
-        6 -> Pair(clockPartColors.daytimeMarker.anteOrPost, clockPartColors.daytimeMarker.meridiem)
+        6 -> Pair(clockPartsColors.daytimeMarker.anteOrPost, clockPartsColors.daytimeMarker.meridiem)
         else -> null
     }
 }
@@ -350,7 +352,7 @@ private fun evaluateClockCharColor(
 private fun evaluateDividerColor(
     formattedTime: String,
     index: Int,
-    clockPartColors: ClockPartColors
+    clockPartsColors: ClockPartsColors
 ): Color? {
     /**
      * 'No seconds' special cases
@@ -362,13 +364,13 @@ private fun evaluateDividerColor(
      * => 7-seg, with daytime marker, e.g. formattedTime: '1234A'
      */
     return when (index) {
-        0 -> clockPartColors.dividers.hoursMinutes
+        0 -> clockPartsColors.dividers.hoursMinutes
         2 ->
             if (formattedTime.length in (5..6) && formattedTime.toCharArray().last().isLetter())
-                clockPartColors.dividers.daytimeMarker
-            else clockPartColors.dividers.minutesSeconds
+                clockPartsColors.dividers.daytimeMarker
+            else clockPartsColors.dividers.minutesSeconds
 
-        4 -> clockPartColors.dividers.daytimeMarker
+        4 -> clockPartsColors.dividers.daytimeMarker
         else -> null
     }
 }

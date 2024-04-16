@@ -27,13 +27,17 @@ import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_CHAR_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_PADDING
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
-import de.oljg.glac.clock.digital.ui.utils.ClockPartColors
+import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_DOTTED_PART_COUNT
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_LENGTH_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
+import de.oljg.glac.clock.digital.ui.utils.dividerCount
 import de.oljg.glac.clock.digital.ui.utils.evaluateDividerPadding
 import de.oljg.glac.clock.digital.ui.utils.evaluateDividerThickness
 import de.oljg.glac.clock.digital.ui.utils.evaluateStartFontSize
@@ -41,18 +45,19 @@ import de.oljg.glac.clock.digital.ui.utils.evaluateStartFontSize
 @Composable
 fun DigitalClock(
     onClick: () -> Unit = {},
-    hourMinuteDividerChar: Char = ':', //TODO add default const vals
-    minuteSecondDividerChar: Char = ':',
-    daytimeMarkerDividerChar: Char = ' ',
+    hoursMinutesDividerChar: Char = DEFAULT_HOURS_MINUTES_DIVIDER_CHAR,
+    minutesSecondsDividerChar: Char = DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR,
+    daytimeMarkerDividerChar: Char = DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR,
     fontFamily: FontFamily = FontFamily.SansSerif,
     fontWeight: FontWeight = FontWeight.Normal,
     fontStyle: FontStyle = FontStyle.Normal,
-    dividerAttributes: DividerAttributes = DividerAttributes(dividerColor = MaterialTheme.colorScheme.onSurface),
+    dividerAttributes: DividerAttributes =
+        DividerAttributes(dividerColor = MaterialTheme.colorScheme.onSurface),
     currentTimeFormatted: String,
     clockCharType: ClockCharType = ClockCharType.FONT,
     sevenSegmentStyle: SevenSegmentStyle = SevenSegmentStyle.REGULAR,
     charColors: Map<Char, Color> = defaultClockCharColors(MaterialTheme.colorScheme.onSurface),
-    clockPartColors: ClockPartColors? = null,
+    clockPartsColors: ClockPartsColors? = null,
     clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
     daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
     clockChar: @Composable (Char, TextUnit, Color, DpSize, Int) -> Unit
@@ -61,13 +66,11 @@ fun DigitalClock(
     val currentDisplayOrientation = LocalConfiguration.current.orientation
 
     // Evaluate how many dividers must be displayed
-    val dividerCount = currentTimeFormatted.filter { char ->
-        char in listOf(
-            minuteSecondDividerChar,
-            hourMinuteDividerChar,
-            daytimeMarkerDividerChar
-        )
-    }.length
+    val dividerCount = currentTimeFormatted.dividerCount(
+        minutesSecondsDividerChar,
+        hoursMinutesDividerChar,
+        daytimeMarkerDividerChar
+    )
 
     // Use specified or default divider thickness
     val finalDividerThickness = evaluateDividerThickness(
@@ -133,15 +136,14 @@ fun DigitalClock(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
             .onGloballyPositioned { layoutCoordinates ->
-                clockBoxSize =
-                    layoutCoordinates.size
+                clockBoxSize = layoutCoordinates.size
             }.clickable(enabled = true, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         if (currentDisplayOrientation == Configuration.ORIENTATION_LANDSCAPE) {
             DigitalClockLandscapeLayout(
-                hourMinuteDividerChar = hourMinuteDividerChar,
-                minuteSecondDividerChar = minuteSecondDividerChar,
+                hoursMinutesDividerChar = hoursMinutesDividerChar,
+                minutesSecondsDividerChar = minutesSecondsDividerChar,
                 daytimeMarkerDividerChar = daytimeMarkerDividerChar,
                 fontFamily = fontFamily,
                 fontWeight = fontWeight,
@@ -154,12 +156,12 @@ fun DigitalClock(
                 dividerThickness = finalDividerThickness,
                 dividerPadding = finalDividerPadding,
                 charColors = charColors,
-                clockPartColors = clockPartColors,
+                clockPartsColors = clockPartsColors,
                 dividerColor = dividerAttributes.dividerColor,
                 dividerCount = dividerCount,
                 dividerLengthPercent = finalDividerLengthPercent,
                 dividerDashDottedPartCount = finalDashDottedPartCount,
-                startFontSize = startFontSize,
+//                startFontSize = startFontSize,
                 clockChar = clockChar,
                 clockCharType = clockCharType,
                 sevenSegmentStyle = sevenSegmentStyle,
@@ -180,8 +182,8 @@ fun DigitalClock(
                  */
                 currentTimeWithoutSeparators = buildString {
                     currentTimeFormatted.split(
-                        minuteSecondDividerChar,
-                        hourMinuteDividerChar,
+                        minutesSecondsDividerChar,
+                        hoursMinutesDividerChar,
                         daytimeMarkerDividerChar
                     ).forEach { notASeparatorChar -> append(notASeparatorChar) }
                 },
@@ -192,12 +194,12 @@ fun DigitalClock(
                 dividerThickness = finalDividerThickness,
                 dividerPadding = finalDividerPadding,
                 charColors = charColors,
-                clockPartColors = clockPartColors,
+                clockPartsColors = clockPartsColors,
                 dividerColor = dividerAttributes.dividerColor,
                 dividerCount = dividerCount,
                 dividerLengthPercent = finalDividerLengthPercent,
                 dividerDashDottedPartCount = finalDashDottedPartCount,
-                startFontSize = startFontSize,
+                startFontSize = startFontSize, //TODO: remove, call eval fun inside as in landscape layout
                 clockChar = clockChar,
                 clockCharType = clockCharType,
                 clockCharSizeFactor = finalClockCharSizeFactor,

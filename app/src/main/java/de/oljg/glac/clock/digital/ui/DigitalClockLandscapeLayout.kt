@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
@@ -31,6 +33,8 @@ import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.components.ColonDivider
 import de.oljg.glac.clock.digital.ui.components.LineDivider
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_CHAR_SIZE_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_FIRST_CIRCLE_POSITION_AT_ONE_DIVIDER
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_FIRST_CIRCLE_POSITION_AT_THREE_DIVIDERS
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_FIRST_CIRCLE_POSITION_AT_TWO_DIVIDERS
@@ -38,41 +42,59 @@ import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_SECOND_CIRCLE
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_SECOND_CIRCLE_POSITION_AT_THREE_DIVIDERS
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_SECOND_CIRCLE_POSITION_AT_TWO_DIVIDERS
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.WIDEST_CHAR
-import de.oljg.glac.clock.digital.ui.utils.ClockPartColors
+import de.oljg.glac.clock.digital.ui.utils.ClockParts
+import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_DOTTED_PART_COUNT
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_LENGTH_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_PADDING_LINE
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_THICKNESS_LINE
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.MeasureFontSize
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.calculateMaxCharSizeFont
 import de.oljg.glac.clock.digital.ui.utils.calculateMaxCharSizeSevenSegment
+import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
+import de.oljg.glac.clock.digital.ui.utils.dividerCount
+import de.oljg.glac.clock.digital.ui.utils.evaluateStartFontSize
 import de.oljg.glac.clock.digital.ui.utils.isDaytimeMarkerChar
+import de.oljg.glac.core.util.ClockPartsTestTags
+import de.oljg.glac.core.util.TestTags
 
 @Composable
 fun DigitalClockLandscapeLayout(
-    hourMinuteDividerChar: Char,
-    minuteSecondDividerChar: Char,
-    daytimeMarkerDividerChar: Char,
-    fontFamily: FontFamily,
-    fontWeight: FontWeight,
-    fontStyle: FontStyle,
-    charColors: Map<Char, Color>,
-    clockPartColors: ClockPartColors? = null,
     currentTimeFormatted: String,
     clockBoxSize: IntSize,
-    dividerStyle: DividerStyle,
-    dividerDashCount: Int,
-    dividerLineCap: StrokeCap,
-    dividerThickness: Dp,
-    dividerPadding: Dp,
-    dividerColor: Color,
-    dividerCount: Int,
-    dividerLengthPercent: Float,
-    dividerDashDottedPartCount: Int,
-    startFontSize: TextUnit,
-    clockChar: @Composable (Char, TextUnit, Color, DpSize, Int) -> Unit,
-    clockCharType: ClockCharType,
-    sevenSegmentStyle: SevenSegmentStyle,
-    clockCharSizeFactor: Float,
-    daytimeMarkerSizeFactor: Float
+    hoursMinutesDividerChar: Char = DEFAULT_HOURS_MINUTES_DIVIDER_CHAR,
+    minutesSecondsDividerChar: Char = DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR,
+    daytimeMarkerDividerChar: Char = DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR,
+    fontFamily: FontFamily = FontFamily.SansSerif,
+    fontWeight: FontWeight = FontWeight.Normal,
+    fontStyle: FontStyle = FontStyle.Normal,
+    charColors: Map<Char, Color> = defaultClockCharColors(MaterialTheme.colorScheme.onSurface),
+    clockPartsColors: ClockPartsColors? = null,
+    dividerStyle: DividerStyle = DividerStyle.LINE,
+    dividerDashCount: Int = DividerDefaults.DEFAULT_DASH_COUNT,
+    dividerLineCap: StrokeCap = StrokeCap.Butt,
+    dividerThickness: Dp = DEFAULT_DIVIDER_THICKNESS_LINE,
+    dividerPadding: Dp = DEFAULT_DIVIDER_PADDING_LINE,
+    dividerColor: Color = MaterialTheme.colorScheme.onSurface,
+    dividerCount: Int = currentTimeFormatted.dividerCount(
+        hoursMinutesDividerChar,
+        minutesSecondsDividerChar,
+        daytimeMarkerDividerChar
+    ),
+    dividerLengthPercent: Float = DEFAULT_DIVIDER_LENGTH_FACTOR,
+    dividerDashDottedPartCount: Int = DEFAULT_DASH_DOTTED_PART_COUNT,
+    startFontSize: TextUnit = evaluateStartFontSize(Configuration.ORIENTATION_LANDSCAPE),
+    clockCharType: ClockCharType = ClockCharType.FONT,
+    sevenSegmentStyle: SevenSegmentStyle = SevenSegmentStyle.REGULAR,
+    clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
+    daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
+    clockChar: @Composable (Char, TextUnit, Color, DpSize, Int) -> Unit
 ) {
 
     /**
@@ -133,8 +155,8 @@ fun DigitalClockLandscapeLayout(
         else
             currentTimeFormatted.filterNot { char ->
                 char in listOf(
-                    minuteSecondDividerChar,
-                    hourMinuteDividerChar,
+                    minutesSecondsDividerChar,
+                    hoursMinutesDividerChar,
                     daytimeMarkerDividerChar
                 )
             }
@@ -170,29 +192,39 @@ fun DigitalClockLandscapeLayout(
         modifier = Modifier
             .fillMaxSize()
             .semantics {
-                contentDescription = context.getString(R.string.digital_clock_in_landscape_layout)
-            },
+                contentDescription = context.getString(R.string.digital_clock)
+            }
+            .testTag(TestTags.DIGITAL_CLOCK_LANDSCAPE_LAYOUT),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
         finalCurrentTimeFormatted.forEachIndexed { index, char ->
 
+            val testTag = evaluateClockPart(formattedTime = finalCurrentTimeFormatted,
+                index = index,
+                clockParts = ClockPartsTestTags(),
+                dividerStyle = dividerStyle,
+                clockCharType = clockCharType) as String
+
             val finalCharColor =
-                if (clockPartColors != null) evaluateClockCharColor(
+                if (clockPartsColors != null) evaluateClockPart(
                     formattedTime = finalCurrentTimeFormatted,
                     index = index,
-                    clockPartColors = clockPartColors,
+                    clockParts = clockPartsColors,
                     dividerStyle = dividerStyle,
                     clockCharType = clockCharType
-                )
-                else charColors.getValue(char)
+                ) as Color
+                else {
+                    // dividerColor in case of DividerStyle.CHAR => divider is a Char //TODO: then don't allow digits or letters as divider char, otherwise this woll not work! (or change it to allow any char als divider char)
+                    if(char.isDigit() || char.isLetter()) charColors.getValue(char) else dividerColor
+                }
 
             if (dividerStyle != DividerStyle.NONE) {
                 val finalDividerColor =
-                    if (clockPartColors != null) evaluateDividerColor(
+                    if (clockPartsColors != null) evaluateDividerColor(
                         formattedTime = finalCurrentTimeFormatted,
                         index = index,
-                        clockPartColors = clockPartColors,
+                        clockParts = clockPartsColors,
                         dividerStyle = dividerStyle,
                         clockCharType = clockCharType
                     )
@@ -276,7 +308,7 @@ fun DigitalClockLandscapeLayout(
                  * In case of SevenSegmentChar just digits and two letters will be drawn
                  * (DividerStyle.CHAR not possible together with SevenSegmentChar) ...
                  */
-                Column( //TODO: extract composable, maybe "CharColumn", with clockChar as trailing lambda!??
+                Column( //TODO: extract composable, maybe "ClockCharColumn(char, w, h, ori)", with clockChar as trailing lambda!?? and use it in both layouts...
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier
@@ -284,6 +316,7 @@ fun DigitalClockLandscapeLayout(
                             if (char.isDaytimeMarkerChar()) daytimeMarkerCharWidth else finalCharWidth,
                             if (char.isDaytimeMarkerChar()) daytimeMarkerCharHeight else finalCharHeight
                         )
+                        .testTag(testTag)
                 ) {
                     clockChar(
                         char,
@@ -303,6 +336,7 @@ fun DigitalClockLandscapeLayout(
                             if (char.isDaytimeMarkerChar()) daytimeMarkerCharWidth else finalCharWidth,
                             if (char.isDaytimeMarkerChar()) daytimeMarkerCharHeight else finalCharHeight
                         )
+                        .testTag(testTag)
                 ) {
                     clockChar(
                         char,
@@ -358,7 +392,7 @@ private fun evaluateTextToMeasure(dividerCount: Int, isCharDivider: Boolean): St
 }
 
 /**
- * Used to override default/specified clock char colors for portrait layout clock.
+ * Used set test tags and to override default/specified clock char colors for landscape layout clock.
  * This way, a user can set different colors for different "parts" of the clock, where "parts"
  * means 'hours' (tens and ones), 'minutes' (tens and ones), 'seconds' (tens and ones) or
  * 'daytime marker' ((A or P) and M).
@@ -406,18 +440,18 @@ private fun evaluateTextToMeasure(dividerCount: Int, isCharDivider: Boolean): St
  *
  * @param formattedTime Current time formatted
  * @param index Position of a clockChar within [formattedTime]
- * @param clockPartColors Contains colors for all "parts" of a clock
+ * @param clockParts Contains colors for all "parts" of a clock
  * (except dividers => these colors will be evaluated with evaluateDividerColor())
  * @return A color for one clock parts part, depending on the [index] of a clockChar in [formattedTime]
- * @see ClockPartColors
+ * @see ClockPartsColors, [ClockParts], [ClockPartsTestTags]
  */
-private fun evaluateClockCharColor(
+private fun evaluateClockPart(
     formattedTime: String,
     index: Int,
-    clockPartColors: ClockPartColors,
+    clockParts: ClockParts,
     dividerStyle: DividerStyle,
     clockCharType: ClockCharType
-): Color {
+): Any {
     val (formattedTimeContainsNoSecondsButDaytimeMarkerAndDividers,
         formattedTimeContainsNoSecondsButDaytimeMarker) =
         evaluateNoSecondsConditions(formattedTime)
@@ -426,46 +460,47 @@ private fun evaluateClockCharColor(
         clockCharType == ClockCharType.FONT &&
         dividerStyle == DividerStyle.CHAR)
         when (index) {
-            0 -> clockPartColors.hours.tens
-            1 -> clockPartColors.hours.ones
+            0 -> clockParts.hours.tens
+            1 -> clockParts.hours.ones
             // 2 -> divider
-            3 -> clockPartColors.minutes.tens
-            4 -> clockPartColors.minutes.ones
+            3 -> clockParts.minutes.tens
+            4 -> clockParts.minutes.ones
             // 5 -> divider
             6 ->
                 if (formattedTimeContainsNoSecondsButDaytimeMarkerAndDividers)
-                    clockPartColors.daytimeMarker.anteOrPost
-                else clockPartColors.seconds.tens
+                    clockParts.daytimeMarker.anteOrPost
+                else clockParts.seconds.tens
 
             7 ->
                 if (formattedTimeContainsNoSecondsButDaytimeMarkerAndDividers)
-                    clockPartColors.daytimeMarker.meridiem
-                else clockPartColors.seconds.ones
+                    clockParts.daytimeMarker.meridiem
+                else clockParts.seconds.ones
 
             // 8 -> divider
-            9 -> clockPartColors.daytimeMarker.anteOrPost
-            else -> clockPartColors.daytimeMarker.meridiem // last possible incoming index: 10
+            9 -> clockParts.daytimeMarker.anteOrPost
+            else -> clockParts.daytimeMarker.meridiem // last possible incoming index: 10
         }
     else
         when (index) {
-            0 -> clockPartColors.hours.tens
-            1 -> clockPartColors.hours.ones
-            2 -> clockPartColors.minutes.tens
-            3 -> clockPartColors.minutes.ones
+            0 -> clockParts.hours.tens
+            1 -> clockParts.hours.ones
+            2 -> clockParts.minutes.tens
+            3 -> clockParts.minutes.ones
             4 ->
                 if (formattedTimeContainsNoSecondsButDaytimeMarker)
-                    clockPartColors.daytimeMarker.anteOrPost
-                else clockPartColors.seconds.tens
+                    clockParts.daytimeMarker.anteOrPost
+                else clockParts.seconds.tens
 
             5 ->
                 if (formattedTimeContainsNoSecondsButDaytimeMarker)
-                    clockPartColors.daytimeMarker.meridiem
-                else clockPartColors.seconds.ones
+                    clockParts.daytimeMarker.meridiem
+                else clockParts.seconds.ones
 
-            6 -> clockPartColors.daytimeMarker.anteOrPost
-            else -> clockPartColors.daytimeMarker.meridiem // last possible incoming index: 7
+            6 -> clockParts.daytimeMarker.anteOrPost
+            else -> clockParts.daytimeMarker.meridiem // last possible incoming index: 7
         }
 }
+
 
 /**
  * Works similar as landscape variant of evaluateClockCharColor() ...
@@ -473,7 +508,7 @@ private fun evaluateClockCharColor(
 private fun evaluateDividerColor(
     formattedTime: String,
     index: Int,
-    clockPartColors: ClockPartColors,
+    clockParts: ClockPartsColors,
     dividerStyle: DividerStyle,
     clockCharType: ClockCharType
 ): Color {
@@ -498,23 +533,23 @@ private fun evaluateDividerColor(
 
     return if (clockCharType == ClockCharType.FONT && dividerStyle == DividerStyle.CHAR)
         when (index) {
-            2 -> clockPartColors.dividers.hoursMinutes
+            2 -> clockParts.dividers.hoursMinutes
             5 ->
                 if (formattedTimeContainsNoSecondsButDaytimeMarkerAndDividers)
-                    clockPartColors.dividers.daytimeMarker
-                else clockPartColors.dividers.minutesSeconds
+                    clockParts.dividers.daytimeMarker
+                else clockParts.dividers.minutesSeconds
 
-            else -> clockPartColors.dividers.daytimeMarker // // last possible incoming index: 8
+            else -> clockParts.dividers.daytimeMarker // // last possible incoming index: 8
         }
     else
         when (index) {
-            2 -> clockPartColors.dividers.hoursMinutes
+            2 -> clockParts.dividers.hoursMinutes
             4 ->
                 if (formattedTimeContainsNoSecondsButDaytimeMarker)
-                    clockPartColors.dividers.daytimeMarker
-                else clockPartColors.dividers.minutesSeconds
+                    clockParts.dividers.daytimeMarker
+                else clockParts.dividers.minutesSeconds
 
-            else -> clockPartColors.dividers.daytimeMarker // // last possible incoming index: 6
+            else -> clockParts.dividers.daytimeMarker // // last possible incoming index: 6
         }
 }
 
