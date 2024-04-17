@@ -2,7 +2,7 @@ package de.oljg.glac.core.util
 
 import de.oljg.glac.clock.digital.ui.utils.ClockParts
 import de.oljg.glac.clock.digital.ui.utils.DaytimeMarker
-import de.oljg.glac.clock.digital.ui.utils.DigitClockPart
+import de.oljg.glac.clock.digital.ui.utils.DigitPair
 import de.oljg.glac.core.util.TestTags.DAYTIME_MARKER_ANTE_OR_POST
 import de.oljg.glac.core.util.TestTags.DAYTIME_MARKER_MERIDIEM
 import de.oljg.glac.core.util.TestTags.HOURS_ONES
@@ -32,23 +32,24 @@ object TestTags {
 
 }
 
+
 data class ClockPartsTestTags(
-    override val hours: DigitTestTag = DigitTestTag(tens = HOURS_TENS, ones = HOURS_ONES),
-    override val minutes: DigitTestTag = DigitTestTag(tens = MINUTES_TENS, ones = MINUTES_ONES),
-    override val seconds: DigitTestTag = DigitTestTag(tens = SECONDS_TENS, ones = SECONDS_ONES),
-    override val daytimeMarker: DaytimeMarkerTestTag =
+    override val hours: DigitPair<String> = DigitPairTestTag(tens = HOURS_TENS, ones = HOURS_ONES),
+    override val minutes: DigitPair<String> = DigitPairTestTag(tens = MINUTES_TENS, ones = MINUTES_ONES),
+    override val seconds: DigitPair<String> = DigitPairTestTag(tens = SECONDS_TENS, ones = SECONDS_ONES),
+    override val daytimeMarker: DaytimeMarker<String> =
         DaytimeMarkerTestTag(
             anteOrPost = DAYTIME_MARKER_ANTE_OR_POST,
             meridiem = DAYTIME_MARKER_MERIDIEM
-        ),
-): ClockParts {
-    data class DigitTestTag(
+        )
+) : ClockParts<String> {
+    data class DigitPairTestTag(
         override val ones: String,
         override val tens: String
-    ) : DigitClockPart
+    ) : DigitPair<String>
 
     data class DaytimeMarkerTestTag( // AM/PM
         override val anteOrPost: String, // 'A' or 'P'
         override val meridiem: String // 'M'
-    ) : DaytimeMarker
+    ) : DaytimeMarker<String>
 }

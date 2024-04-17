@@ -82,23 +82,18 @@ fun DigitalClockLandscapeLayout(
     dividerThickness: Dp = DEFAULT_DIVIDER_THICKNESS_LINE,
     dividerPadding: Dp = DEFAULT_DIVIDER_PADDING_LINE,
     dividerColor: Color = MaterialTheme.colorScheme.onSurface,
-    dividerCount: Int = currentTimeFormatted.dividerCount(
-        hoursMinutesDividerChar,
-        minutesSecondsDividerChar,
-        daytimeMarkerDividerChar
-    ),
     dividerLengthPercent: Float = DEFAULT_DIVIDER_LENGTH_FACTOR,
     dividerDashDottedPartCount: Int = DEFAULT_DASH_DOTTED_PART_COUNT,
     startFontSize: TextUnit = evaluateStartFontSize(Configuration.ORIENTATION_LANDSCAPE),
     clockCharType: ClockCharType = ClockCharType.FONT,
-    sevenSegmentStyle: SevenSegmentStyle = SevenSegmentStyle.REGULAR,
+    sevenSegmentStyle: SevenSegmentStyle = SevenSegmentStyle.REGULAR, // needed because of divider rotation
     clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
     daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
     clockChar: @Composable (Char, TextUnit, Color, DpSize, Int) -> Unit
 ) {
 
     /**
-     * Set COLON as default divider style for 7-segment clock in case someone would try to do the
+     * Set LINE as default divider style for 7-segment clock in case someone would try to do the
      * impossible :> (7-segment can/should actually just be 0-9 (ok, or some letters as well
      * (P, A, I, l(same as 1), O(same as 0,D), S(same as 5), E, B(same as 8), d))
      * (What a nice coincidence that P and A are easily possible
@@ -109,14 +104,20 @@ fun DigitalClockLandscapeLayout(
      */
     val finalDividerStyle =
         if (dividerStyle == DividerStyle.CHAR && clockCharType == ClockCharType.SEVEN_SEGMENT)
-            DividerStyle.COLON
+            DividerStyle.LINE
         else dividerStyle
+
+    // How many dividers are included in time string
+    val dividerCount = currentTimeFormatted.dividerCount(
+        hoursMinutesDividerChar,
+        minutesSecondsDividerChar,
+        daytimeMarkerDividerChar
+    )
 
     var maxFontSize by remember { mutableStateOf(startFontSize) }
     var finalFontBoundsSize by remember {
         mutableStateOf(IntSize(0, 0))
     }
-
 
     if (clockCharType == ClockCharType.FONT) {
         /**
@@ -205,7 +206,7 @@ fun DigitalClockLandscapeLayout(
                 index = index,
                 clockParts = ClockPartsTestTags(),
                 dividerStyle = dividerStyle,
-                clockCharType = clockCharType) as String
+                clockCharType = clockCharType)
 
             val finalCharColor =
                 if (clockPartsColors != null) evaluateClockPart(
@@ -214,9 +215,9 @@ fun DigitalClockLandscapeLayout(
                     clockParts = clockPartsColors,
                     dividerStyle = dividerStyle,
                     clockCharType = clockCharType
-                ) as Color
+                )
                 else {
-                    // dividerColor in case of DividerStyle.CHAR => divider is a Char //TODO: then don't allow digits or letters as divider char, otherwise this woll not work! (or change it to allow any char als divider char)
+                    // dividerColor in case of DividerStyle.CHAR => divider is a Char //TODO: then don't allow digits or letters as divider char, otherwise this will not work! (or change it to allow any char als divider char, but ... who would want such stuff^^?? (what time it is(if you wouldn't know the divider is '2'): 122342AM => 12:34:AM => lul, strange, but useless(? .. but maybe "funny"?) :>)
                     if(char.isDigit() || char.isLetter()) charColors.getValue(char) else dividerColor
                 }
 
@@ -393,7 +394,10 @@ private fun evaluateTextToMeasure(dividerCount: Int, isCharDivider: Boolean): St
 }
 
 /**
- * Used set test tags and to override default/specified clock char colors for landscape layout clock.
+ * Used set test tags and to override default/specified clock char colors for landscape layout
+ * clock.
+ *
+ * Example use case
  * This way, a user can set different colors for different "parts" of the clock, where "parts"
  * means 'hours' (tens and ones), 'minutes' (tens and ones), 'seconds' (tens and ones) or
  * 'daytime marker' ((A or P) and M).
@@ -441,23 +445,23 @@ private fun evaluateTextToMeasure(dividerCount: Int, isCharDivider: Boolean): St
  *
  * @param formattedTime Current time formatted
  * @param index Position of a clockChar within [formattedTime]
- * @param clockParts Contains colors for all "parts" of a clock
+ * @param clockParts Contains [T] for all "parts" of a clock
  * (except dividers => these colors will be evaluated with evaluateDividerColor())
- * @return A color for one clock parts part, depending on the [index] of a clockChar in [formattedTime]
+ * @return A [T] for one clock parts part, depending on the [index] of a clockChar in [formattedTime]
  * @see ClockPartsColors, [ClockParts], [ClockPartsTestTags]
  */
-private fun evaluateClockPart(
+private fun <T> evaluateClockPart(
     formattedTime: String,
     index: Int,
-    clockParts: ClockParts,
+    clockParts: ClockParts<T>,
     dividerStyle: DividerStyle,
     clockCharType: ClockCharType
-): Any {
+): T {
     val (formattedTimeContainsNoSecondsButDaytimeMarkerAndDividers,
         formattedTimeContainsNoSecondsButDaytimeMarker) =
         evaluateNoSecondsConditions(formattedTime)
 
-    return if (dividerStyle != DividerStyle.NONE &&
+    return if (dividerStyle != DividerStyle.NONE && //TODO: extract expression as param, and save one param
         clockCharType == ClockCharType.FONT &&
         dividerStyle == DividerStyle.CHAR)
         when (index) {
@@ -504,7 +508,7 @@ private fun evaluateClockPart(
 
 
 /**
- * Works similar as landscape variant of evaluateClockCharColor() ...
+ * Works similar as landscape variant of evaluateClockPart() ...
  */
 private fun evaluateDividerColor(
     formattedTime: String,

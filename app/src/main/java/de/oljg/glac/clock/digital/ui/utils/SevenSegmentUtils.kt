@@ -30,6 +30,15 @@ enum class SevenSegmentStyle {
     OUTLINE_REVERSE_ITALIC
 }
 
+fun SevenSegmentStyle.isItalic(): Boolean {
+    return this.name == SevenSegmentStyle.ITALIC.name ||
+            this.name == SevenSegmentStyle.OUTLINE_ITALIC.name
+}
+
+fun SevenSegmentStyle.isReverseItalic(): Boolean {
+    return this.name.contains(SevenSegmentStyle.REVERSE_ITALIC.name)
+}
+
 enum class SevenSegmentWeight {
     THIN,
     LIGHT,

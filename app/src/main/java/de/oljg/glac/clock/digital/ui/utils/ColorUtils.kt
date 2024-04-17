@@ -35,21 +35,21 @@ import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.SEVEN_SEGMENT_CH
 //}
 
 data class ClockPartsColors(
-    override val hours: DigitColor,
-    override val minutes: DigitColor,
-    override val seconds: DigitColor,
+    override val hours: DigitPairColor,
+    override val minutes: DigitPairColor,
+    override val seconds: DigitPairColor,
     override val daytimeMarker: DaytimeMarkerColor,
     val dividers: DividerColor
-): ClockParts {
-    data class DigitColor(
+): ClockParts<Color> {
+    data class DigitPairColor(
         override val ones: Color,
         override val tens: Color
-    ): DigitClockPart
+    ): DigitPair<Color>
 
     data class DaytimeMarkerColor( // AM/PM
         override val anteOrPost: Color, // 'A' or 'P'
         override val meridiem: Color // 'M'
-    ): DaytimeMarker
+    ): DaytimeMarker<Color>
 
     data class DividerColor(
 

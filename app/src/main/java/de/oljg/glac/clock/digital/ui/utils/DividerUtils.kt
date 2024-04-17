@@ -54,20 +54,24 @@ fun evaluateDividerThickness(
         currentDisplayOrientation == Configuration.ORIENTATION_PORTRAIT
 
     val defaultDividerThickness = when (specifiedDividerStyle) {
-        /**
-         * Let default colon divider thickness depend on available size.
-         *
-         * Note:
-         * DividerStyle.CHAR, because in portrait orientation DividerStyle.CHAR
-         * will fall back to DividerStyle.COLON
-         * (char divider isn't useful in portrait => use colon)
-         */
-        DividerStyle.COLON, DividerStyle.CHAR ->
-            ((clockBoxSize.width + clockBoxSize.height) * DividerDefaults.COLON_BASE_RESIZE_FACTOR).dp
 
+        // Let default colon divider thickness depend on available size.
+        DividerStyle.COLON -> (
+            (clockBoxSize.width + clockBoxSize.height) * DividerDefaults.COLON_BASE_RESIZE_FACTOR
+        ).dp
+
+        DividerStyle.LINE -> DividerDefaults.DEFAULT_DIVIDER_THICKNESS_LINE
         DividerStyle.DOTTED_LINE -> DividerDefaults.DEFAULT_DIVIDER_THICKNESS_DOTTED
         DividerStyle.DASHED_LINE -> DividerDefaults.DEFAULT_DIVIDER_THICKNESS_DASHED
         DividerStyle.DASHDOTTED_LINE -> DividerDefaults.DEFAULT_DIVIDER_THICKNESS_DASHDOTTED
+
+        /**
+         * No need for any thickness in case of DividerStyle.CHAR.
+         * Note:
+         * In portrait orientation DividerStyle.CHAR
+         * will fall back to DividerStyle.LINE
+         * (char divider isn't useful in portrait => use line)
+         */
         else -> DividerDefaults.DEFAULT_DIVIDER_THICKNESS_LINE
     }
 
@@ -144,6 +148,15 @@ fun String.dividerCount(minutesSecondsDividerChar: Char = DEFAULT_HOURS_MINUTES_
         )
     }.length
 }
+
+fun evalutateDividerCount(timeFormattetWithoutSeparators: String): Int {
+    return when (timeFormattetWithoutSeparators.length) {
+        4 -> 1 // 'HHMM'
+        5, 6 -> 2 // 'HHMMSS' or 'HHMMAM'/'HHMMPM', 7-seg: 'HHMMA'/'HHMMP'
+        else -> 3 // (7, 8) e.g.: 'HHMMSSAM'/'HHMMSSPM'
+    }
+}
+
 
 object DividerDefaults {
     const val DEFAULT_HOURS_MINUTES_DIVIDER_CHAR = ':'

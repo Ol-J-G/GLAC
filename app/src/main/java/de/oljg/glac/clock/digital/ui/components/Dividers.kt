@@ -27,6 +27,8 @@ import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DISTANCE_DASH
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_ITALIC_ANGLE
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
+import de.oljg.glac.clock.digital.ui.utils.isItalic
+import de.oljg.glac.clock.digital.ui.utils.isReverseItalic
 import de.oljg.glac.clock.digital.ui.utils.pxToDp
 import de.oljg.glac.core.util.TestTags
 
@@ -50,7 +52,7 @@ fun LineDivider(
     dividerLengthPercent: Float,
     dividerDashDottedPartCount: Int,
     clockCharType: ClockCharType? = null,
-    sevenSegmentStyle: SevenSegmentStyle? = null
+    sevenSegmentStyle: SevenSegmentStyle = SevenSegmentStyle.REGULAR
 ) {
     Canvas(
         modifier = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -288,7 +290,7 @@ fun ColonDivider(
     secondCirclePositionPercent: Float = .66f,
     orientation: Int,
     clockCharType: ClockCharType? = null,
-    sevenSegmentStyle: SevenSegmentStyle? = null
+    sevenSegmentStyle: SevenSegmentStyle = SevenSegmentStyle.REGULAR
 ) {
     if (orientation == Configuration.ORIENTATION_PORTRAIT) {
         Canvas(
@@ -375,14 +377,10 @@ private fun DrawScope.drawColon(
  * - DEFAULT_ITALIC_ANGLE when sevenSegmentStyle is an italic style (rotate clockwise)
  * - -DEFAULT_ITALIC_ANGLE when sevenSegmentStyle is a reverse italic style (rotate counter-clockwise)
  */
-private fun evaluateDividerRotateAngle(sevenSegmentStyle: SevenSegmentStyle?): Float {
-    return if (sevenSegmentStyle != null &&
-            sevenSegmentStyle.name.contains(SevenSegmentStyle.ITALIC.name))
-        when (sevenSegmentStyle) {
-            SevenSegmentStyle.REVERSE_ITALIC,
-            SevenSegmentStyle.OUTLINE_REVERSE_ITALIC -> -DEFAULT_ITALIC_ANGLE
-
-            else -> DEFAULT_ITALIC_ANGLE
-        }
-    else 0f
+private fun evaluateDividerRotateAngle(sevenSegmentStyle: SevenSegmentStyle): Float {
+    return when {
+        sevenSegmentStyle.isItalic() -> DEFAULT_ITALIC_ANGLE
+        sevenSegmentStyle.isReverseItalic() -> -DEFAULT_ITALIC_ANGLE
+        else -> 0f
+    }
 }

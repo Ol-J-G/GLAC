@@ -40,7 +40,6 @@ import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
 import de.oljg.glac.clock.digital.ui.utils.dividerCount
 import de.oljg.glac.clock.digital.ui.utils.evaluateDividerPadding
 import de.oljg.glac.clock.digital.ui.utils.evaluateDividerThickness
-import de.oljg.glac.clock.digital.ui.utils.evaluateStartFontSize
 
 @Composable
 fun DigitalClock(
@@ -65,18 +64,15 @@ fun DigitalClock(
     var clockBoxSize by remember { mutableStateOf(IntSize.Zero) }
     val currentDisplayOrientation = LocalConfiguration.current.orientation
 
-    // Evaluate how many dividers must be displayed
-    val dividerCount = currentTimeFormatted.dividerCount(
-        minutesSecondsDividerChar,
-        hoursMinutesDividerChar,
-        daytimeMarkerDividerChar
-    )
-
     // Use specified or default divider thickness
     val finalDividerThickness = evaluateDividerThickness(
         specifiedDividerStyle = dividerAttributes.dividerStyle,
         specifiedDividerThickness = dividerAttributes.dividerThickness,
-        dividerCount = dividerCount,
+        dividerCount = currentTimeFormatted.dividerCount(
+            minutesSecondsDividerChar,
+            hoursMinutesDividerChar,
+            daytimeMarkerDividerChar
+        ),
         clockBoxSize = clockBoxSize,
         currentDisplayOrientation = currentDisplayOrientation
     )
@@ -128,8 +124,6 @@ fun DigitalClock(
             DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
         else daytimeMarkerSizeFactor
 
-    val startFontSize = evaluateStartFontSize(currentDisplayOrientation)
-
     Box(
         modifier = Modifier
             .padding(DEFAULT_CLOCK_PADDING) // TODO: make it configurable => otherwise LINE... divider cannot be from edge to edge without space
@@ -158,10 +152,8 @@ fun DigitalClock(
                 charColors = charColors,
                 clockPartsColors = clockPartsColors,
                 dividerColor = dividerAttributes.dividerColor,
-                dividerCount = dividerCount,
                 dividerLengthPercent = finalDividerLengthPercent,
                 dividerDashDottedPartCount = finalDashDottedPartCount,
-//                startFontSize = startFontSize,
                 clockChar = clockChar,
                 clockCharType = clockCharType,
                 sevenSegmentStyle = sevenSegmentStyle,
@@ -196,10 +188,8 @@ fun DigitalClock(
                 charColors = charColors,
                 clockPartsColors = clockPartsColors,
                 dividerColor = dividerAttributes.dividerColor,
-                dividerCount = dividerCount,
                 dividerLengthPercent = finalDividerLengthPercent,
                 dividerDashDottedPartCount = finalDashDottedPartCount,
-                startFontSize = startFontSize, //TODO: remove, call eval fun inside as in landscape layout
                 clockChar = clockChar,
                 clockCharType = clockCharType,
                 clockCharSizeFactor = finalClockCharSizeFactor,

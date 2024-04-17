@@ -42,9 +42,9 @@ fun DigitalClockScreen(
     onClick: () -> Unit = {},
 
     showSeconds: Boolean = false,
-    showDaytimeMarker: Boolean = true,
+    showDaytimeMarker: Boolean = false,
 
-    clockCharType: ClockCharType = ClockCharType.FONT,
+
     clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
     daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
 
@@ -67,9 +67,9 @@ fun DigitalClockScreen(
 //        ),
     clockPartsColors: ClockPartsColors? = //null,
         ClockPartsColors(
-            hours = ClockPartsColors.DigitColor(tens = Color.Green, ones = Color.Green.copy(alpha = .5f)),
-            minutes = ClockPartsColors.DigitColor(tens = Color.Yellow, ones = Color.Yellow.copy(alpha = .5f)),
-            seconds = ClockPartsColors.DigitColor(tens = Color.Red, ones = Color.Red.copy(alpha = .5f)),
+            hours = ClockPartsColors.DigitPairColor(tens = Color.Green, ones = Color.Green.copy(alpha = .5f)),
+            minutes = ClockPartsColors.DigitPairColor(tens = Color.Yellow, ones = Color.Yellow.copy(alpha = .5f)),
+            seconds = ClockPartsColors.DigitPairColor(tens = Color.Red, ones = Color.Red.copy(alpha = .5f)),
             daytimeMarker = ClockPartsColors.DaytimeMarkerColor(anteOrPost = Color.White, meridiem = Color.Gray),
             dividers = ClockPartsColors.DividerColor(hoursMinutes = Color.Red, minutesSeconds = Color.Yellow, daytimeMarker = Color.Green)
         ),
@@ -88,6 +88,7 @@ fun DigitalClockScreen(
 //        dividerDashDottedPartCount = null
     ),
 
+    clockCharType: ClockCharType = ClockCharType.FONT,
     fontFamily: FontFamily = FontFamily.SansSerif,
     fontWeight: FontWeight = FontWeight.Normal,
     fontStyle: FontStyle = FontStyle.Normal,
