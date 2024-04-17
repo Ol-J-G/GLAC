@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.StampedPathEffectStyle
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
@@ -27,6 +28,7 @@ import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_ITALIC_ANGLE
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.pxToDp
+import de.oljg.glac.core.util.TestTags
 
 /**
  * As follows a description of the non-obvious params...
@@ -53,6 +55,7 @@ fun LineDivider(
     Canvas(
         modifier = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             Modifier
+                .testTag(TestTags.LINE_DIVIDER)
                 .padding(dividerPadding)
                 .requiredSize(
                     width = clockBoxSize.width.pxToDp(),
@@ -60,6 +63,7 @@ fun LineDivider(
                 )
         } else {
             Modifier
+                .testTag(TestTags.LINE_DIVIDER)
                 .padding(dividerPadding)
                 .requiredSize(
                     width = dividerThickness,
@@ -289,6 +293,7 @@ fun ColonDivider(
     if (orientation == Configuration.ORIENTATION_PORTRAIT) {
         Canvas(
             modifier = Modifier
+                .testTag(TestTags.COLON_DIVIDER)
                 .padding(top = dividerPadding, bottom = dividerPadding)
                 .size(width = clockBoxSize.width.pxToDp(), height = dividerThickness)
         ) {
@@ -308,6 +313,7 @@ fun ColonDivider(
     } else { // ORIENTATION_LANDSCAPE
         Canvas(
             Modifier
+                .testTag(TestTags.COLON_DIVIDER)
                 .padding(start = dividerPadding, end = dividerPadding)
                 .size(width = dividerThickness, height = clockBoxSize.height.pxToDp()),
         ) {

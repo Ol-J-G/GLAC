@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -56,7 +57,8 @@ fun evaluateScreenDetails(): ScreenDetails {
             else -> ScreenDetails.DisplayType.Expanded
         },
         screenWidth = configuration.screenWidthDp.dp,
-        screenHeight = configuration.screenHeightDp.dp
+        screenHeight = configuration.screenHeightDp.dp,
+        screenSize = IntSize(configuration.screenWidthDp, configuration.screenHeightDp)
     )
 }
 
@@ -64,7 +66,8 @@ data class ScreenDetails(
     val screenWidthType: DisplayType,
     val screenHeightType: DisplayType,
     val screenWidth: Dp,
-    val screenHeight: Dp
+    val screenHeight: Dp,
+    val screenSize: IntSize
 ) {
     sealed class DisplayType {
         data object Compact : DisplayType()

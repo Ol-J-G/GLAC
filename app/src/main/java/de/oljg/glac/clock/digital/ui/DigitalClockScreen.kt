@@ -41,8 +41,8 @@ fun DigitalClockScreen(
     fullScreen: Boolean,
     onClick: () -> Unit = {},
 
-    showSeconds: Boolean = true,
-    showDaytimeMarker: Boolean = false,
+    showSeconds: Boolean = false,
+    showDaytimeMarker: Boolean = true,
 
     clockCharType: ClockCharType = ClockCharType.FONT,
     clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,

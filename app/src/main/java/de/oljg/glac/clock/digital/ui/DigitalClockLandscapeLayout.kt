@@ -200,7 +200,8 @@ fun DigitalClockLandscapeLayout(
     ) {
         finalCurrentTimeFormatted.forEachIndexed { index, char ->
 
-            val testTag = evaluateClockPart(formattedTime = finalCurrentTimeFormatted,
+            val testTag = evaluateClockPart(
+                formattedTime = finalCurrentTimeFormatted,
                 index = index,
                 clockParts = ClockPartsTestTags(),
                 dividerStyle = dividerStyle,
@@ -316,7 +317,7 @@ fun DigitalClockLandscapeLayout(
                             if (char.isDaytimeMarkerChar()) daytimeMarkerCharWidth else finalCharWidth,
                             if (char.isDaytimeMarkerChar()) daytimeMarkerCharHeight else finalCharHeight
                         )
-                        .testTag(testTag)
+                        .testTag(if (char.isDigit() || char.isLetter()) testTag else TestTags.CHAR_DIVIDER)
                 ) {
                     clockChar(
                         char,
@@ -462,10 +463,10 @@ private fun evaluateClockPart(
         when (index) {
             0 -> clockParts.hours.tens
             1 -> clockParts.hours.ones
-            // 2 -> divider
+            // 2 -> char divider
             3 -> clockParts.minutes.tens
             4 -> clockParts.minutes.ones
-            // 5 -> divider
+            // 5 -> char divider
             6 ->
                 if (formattedTimeContainsNoSecondsButDaytimeMarkerAndDividers)
                     clockParts.daytimeMarker.anteOrPost
@@ -476,7 +477,7 @@ private fun evaluateClockPart(
                     clockParts.daytimeMarker.meridiem
                 else clockParts.seconds.ones
 
-            // 8 -> divider
+            // 8 -> char divider
             9 -> clockParts.daytimeMarker.anteOrPost
             else -> clockParts.daytimeMarker.meridiem // last possible incoming index: 10
         }

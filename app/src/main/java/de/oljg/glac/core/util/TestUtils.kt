@@ -25,6 +25,11 @@ object TestTags {
     const val SECONDS_ONES = "SECONDS_ONES"
     const val DAYTIME_MARKER_ANTE_OR_POST = "DAYTIME_MARKER_ANTE_OR_POST"
     const val DAYTIME_MARKER_MERIDIEM = "DAYTIME_MARKER_MERIDIEM"
+
+    const val CHAR_DIVIDER = "CHAR_DIVIDER"
+    const val LINE_DIVIDER = "LINE_DIVIDER"
+    const val COLON_DIVIDER = "COLON_DIVIDER"
+
 }
 
 data class ClockPartsTestTags(
