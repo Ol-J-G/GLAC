@@ -14,7 +14,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.DpSize
 import de.oljg.glac.clock.digital.ui.components.SevenSegmentChar
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults
@@ -41,8 +40,8 @@ fun DigitalClockScreen(
     fullScreen: Boolean,
     onClick: () -> Unit = {},
 
-    showSeconds: Boolean = false,
-    showDaytimeMarker: Boolean = false,
+    showSeconds: Boolean = true,
+    showDaytimeMarker: Boolean = true,
 
 
     clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
@@ -77,8 +76,11 @@ fun DigitalClockScreen(
     hoursMinutesDividerChar: Char = DEFAULT_HOURS_MINUTES_DIVIDER_CHAR,
     minutesSecondsDividerChar: Char = DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR,
     daytimeMarkerDividerChar: Char = '_',
+
+
+
     dividerAttributes: DividerAttributes = DividerAttributes(
-        dividerStyle = DividerStyle.CHAR,
+        dividerStyle = DividerStyle.LINE,
 //        dividerDashCount = null,
 //        dividerLineCap = StrokeCap.Butt,
 //        dividerThickness = Dp.Unspecified,
@@ -203,11 +205,11 @@ fun DigitalClockScreen(
         sevenSegmentStyle = sevenSegmentStyle,
         clockCharSizeFactor = clockCharSizeFactor,
         daytimeMarkerSizeFactor = daytimeMarkerSizeFactor
-    ) { char, finalFontSize, clockCharColor, clockCharSize, screenOrientation ->
+    ) { clockChar, clockCharFontSize, clockCharColor, clockCharSize ->
         if (clockCharType == ClockCharType.FONT)
             Text(
-                text = char.toString(),
-                fontSize = finalFontSize,
+                text = clockChar.toString(),
+                fontSize = clockCharFontSize,
                 fontFamily = fontFamily,
                 fontWeight = fontWeight,
                 fontStyle = fontStyle,
@@ -215,14 +217,13 @@ fun DigitalClockScreen(
             )
         else
             SevenSegmentChar(
-                char = char,
-                charSize = DpSize(clockCharSize.width, clockCharSize.height),
+                char = clockChar,
+                charSize = clockCharSize,
                 charColor = clockCharColor,
                 segmentColors = segmentColors,
                 style = sevenSegmentStyle,
                 weight = sevenSegmentWeight,
                 strokeWidth = sevenSegmentOutlineStrokeWidth,
-                screenOrientation = screenOrientation
             )
     }
 }

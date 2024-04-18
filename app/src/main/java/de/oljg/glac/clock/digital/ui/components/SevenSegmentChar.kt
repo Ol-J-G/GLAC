@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
@@ -68,7 +69,6 @@ fun PreviewDigit() {
                     char = '8',
                     charColor = Color.Yellow,
                     style = SevenSegmentStyle.REGULAR,
-                    screenOrientation = Configuration.ORIENTATION_LANDSCAPE,
                 )
             }
         }
@@ -96,7 +96,6 @@ fun PreviewDigits() {
                     char = char,
                     charColor = Color.Yellow,
                     style = SevenSegmentStyle.ITALIC,
-                    screenOrientation = Configuration.ORIENTATION_PORTRAIT
                 )
             }
         }
@@ -114,8 +113,9 @@ fun SevenSegmentChar(
     weight: SevenSegmentWeight = SevenSegmentWeight.REGULAR,
     strokeWidth: Float? = null,
     charSize: DpSize? = null,
-    screenOrientation: Int,
 ) {
+    val screenOrientation = LocalConfiguration.current.orientation
+
     // Allow charToDisplay to be 'a' or 'p' and turn it into 'A' or 'P'
     val finalChar = if (char.isLetter()) char.uppercaseChar() else char
     if (!finalChar.isSevenSegmentChar()) // Just contains (uppercase) 'A' and 'P'
@@ -226,6 +226,8 @@ private fun DrawScope.draw(
     drawPath(
         path = segment,
         color = color,
-        style = if (style.name.startsWith(SevenSegmentStyle.OUTLINE.name)) Stroke(width = strokeWidth) else Fill
+        style =
+            if (style.name.startsWith(SevenSegmentStyle.OUTLINE.name)) Stroke(width = strokeWidth)
+            else Fill
     )
 }

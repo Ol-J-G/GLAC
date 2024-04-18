@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,8 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
@@ -30,6 +29,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
+import de.oljg.glac.clock.digital.ui.components.ClockCharColumn
 import de.oljg.glac.clock.digital.ui.components.ColonDivider
 import de.oljg.glac.clock.digital.ui.components.LineDivider
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
@@ -54,7 +54,6 @@ import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.MeasureFontSize
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.calculateMaxCharSizeFont
 import de.oljg.glac.clock.digital.ui.utils.calculateMaxCharSizeSevenSegment
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
@@ -86,10 +85,10 @@ fun DigitalClockLandscapeLayout(
     dividerDashDottedPartCount: Int = DEFAULT_DASH_DOTTED_PART_COUNT,
     startFontSize: TextUnit = evaluateStartFontSize(Configuration.ORIENTATION_LANDSCAPE),
     clockCharType: ClockCharType = ClockCharType.FONT,
-    sevenSegmentStyle: SevenSegmentStyle = SevenSegmentStyle.REGULAR, // needed because of divider rotation
+    dividerRotateAngle: Float = 0f,
     clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
     daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
-    clockChar: @Composable (Char, TextUnit, Color, DpSize, Int) -> Unit
+    clockChar: @Composable (Char, TextUnit, Color, DpSize) -> Unit
 ) {
 
     val isFontCharDivider =
@@ -136,9 +135,9 @@ fun DigitalClockLandscapeLayout(
             fontWeight = fontWeight,
             fontStyle = fontStyle,
             dividerStrokeWithToTakeIntoAccount =
-                if (finalDividerStyle != DividerStyle.CHAR) dividerThickness else 0.dp,
+            if (finalDividerStyle != DividerStyle.CHAR) dividerThickness else 0.dp,
             dividerPaddingToTakeIntoAccount =
-                if (finalDividerStyle != DividerStyle.CHAR) dividerPadding else 0.dp,
+            if (finalDividerStyle != DividerStyle.CHAR) dividerPadding else 0.dp,
             onFontSizeMeasured = { measuredFontSize, measuredSize ->
                 maxFontSize = measuredFontSize
                 finalFontBoundsSize = measuredSize
@@ -183,28 +182,34 @@ fun DigitalClockLandscapeLayout(
             )
         }
 
-    val finalCharWidth = maxCharWidth * clockCharSizeFactor
-    val finalCharHeight = maxCharHeight * clockCharSizeFactor
-    val finalFontSize = maxFontSize * clockCharSizeFactor
+    val charWidth = maxCharWidth * clockCharSizeFactor
+    val charHeight = maxCharHeight * clockCharSizeFactor
+    val charFontSize = maxFontSize * clockCharSizeFactor
 
     val daytimeMarkerCharWidth = maxCharWidth * daytimeMarkerSizeFactor
     val daytimeMarkerCharHeight = maxCharHeight * daytimeMarkerSizeFactor
     val daytimeMarkerFontSize = maxFontSize * daytimeMarkerSizeFactor
 
-    val context = LocalContext.current
+    val digitalClock = stringResource(id = R.string.digital_clock)
+
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .semantics {
-                contentDescription = context.getString(R.string.digital_clock)
-            }
+            .semantics { contentDescription = digitalClock }
             .testTag(TestTags.DIGITAL_CLOCK_LANDSCAPE_LAYOUT),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
         finalCurrentTimeFormatted.forEachIndexed { index, char ->
 
-            val testTag = evaluateClockPart(
+            val finalFontSize =
+                if (char.isDaytimeMarkerChar()) daytimeMarkerFontSize else charFontSize
+            val finalCharWidth =
+                if (char.isDaytimeMarkerChar()) daytimeMarkerCharWidth else charWidth
+            val finalCharHeight =
+                if (char.isDaytimeMarkerChar()) daytimeMarkerCharHeight else charHeight
+
+            val testTag = evaluateClockPartUsingIndex(
                 formattedTime = finalCurrentTimeFormatted,
                 index = index,
                 clockParts = ClockPartsTestTags(),
@@ -212,7 +217,7 @@ fun DigitalClockLandscapeLayout(
             )
 
             val finalCharColor =
-                if (clockPartsColors != null) evaluateClockPart(
+                if (clockPartsColors != null) evaluateClockPartUsingIndex(
                     formattedTime = finalCurrentTimeFormatted,
                     index = index,
                     clockParts = clockPartsColors,
@@ -220,12 +225,12 @@ fun DigitalClockLandscapeLayout(
                 )
                 else {
                     // dividerColor in case of DividerStyle.CHAR => divider is a Char //TODO: then don't allow digits or letters as divider char, otherwise this will not work! (or change it to allow any char als divider char, but ... who would want such stuff^^?? (what time it is(if you wouldn't know the divider is '2'): 122342AM => 12:34:AM => lul, strange, but useless(? .. but maybe "funny"?) :>)
-                    if(char.isDigit() || char.isLetter()) charColors.getValue(char) else dividerColor
+                    if (char.isLetterOrDigit()) charColors.getValue(char) else dividerColor
                 }
 
             if (dividerStyle != DividerStyle.NONE) {
                 val finalDividerColor =
-                    if (clockPartsColors != null) evaluateDividerColor(
+                    if (clockPartsColors != null) evaluateDividerColorUsingIndex(
                         formattedTime = finalCurrentTimeFormatted,
                         index = index,
                         clockParts = clockPartsColors,
@@ -234,9 +239,8 @@ fun DigitalClockLandscapeLayout(
                     else dividerColor
 
                 /**
-                 * When not DividerStyle.CHAR is used, finalCurrentTimeFormatted will NOT
-                 * contain divider chars, and then, one of the remaining divider styles will come
-                 * in place (LINE, DASHED, DOTTED and COLON)
+                 * When not DividerStyle.CHAR is used, draw one of the remaining divider
+                 * styles (LINE, DASHED, DOTTED, DASHDOTTED, COLON)
                  */
                 if (finalDividerStyle != DividerStyle.CHAR) {
 
@@ -259,43 +263,41 @@ fun DigitalClockLandscapeLayout(
                                     bottom = dividerPadding
                                 )
                         ) {
-                            if (finalDividerStyle != DividerStyle.COLON) {
-                                LineDivider(
-                                    dividerPadding = dividerPadding,
-                                    dividerThickness = dividerThickness,
-                                    clockBoxSize = clockBoxSize,
-                                    dividerDashCount = dividerDashCount,
-                                    dividerColor = finalDividerColor,
-                                    dividerStyle = finalDividerStyle,
-                                    dividerLineCap = dividerLineCap,
-                                    orientation = Configuration.ORIENTATION_LANDSCAPE,
-                                    dividerLengthPercent = dividerLengthPercent,
-                                    dividerDashDottedPartCount = dividerDashDottedPartCount,
-                                    clockCharType = clockCharType,
-                                    sevenSegmentStyle = sevenSegmentStyle
-                                )
-                            } else {
-                                ColonDivider(
-                                    dividerPadding = dividerPadding,
-                                    clockBoxSize = clockBoxSize,
-                                    dividerThickness = dividerThickness,
-                                    dividerColor = finalDividerColor,
-                                    orientation = Configuration.ORIENTATION_LANDSCAPE,
-                                    clockCharType = clockCharType,
-                                    sevenSegmentStyle = sevenSegmentStyle,
+                            when (finalDividerStyle) {
+                                DividerStyle.COLON ->
+                                    ColonDivider(
+                                        dividerPadding = dividerPadding,
+                                        clockBoxSize = clockBoxSize,
+                                        dividerThickness = dividerThickness,
+                                        dividerColor = finalDividerColor,
+                                        dividerRotateAngle = dividerRotateAngle,
 
-                                    //TODO: maybe create params => configurable, to let user adjust it
-                                    firstCirclePositionPercent = when (dividerCount) {
-                                        1 -> DEFAULT_FIRST_CIRCLE_POSITION_AT_ONE_DIVIDER
-                                        2 -> DEFAULT_FIRST_CIRCLE_POSITION_AT_TWO_DIVIDERS
-                                        else -> DEFAULT_FIRST_CIRCLE_POSITION_AT_THREE_DIVIDERS
-                                    },
-                                    secondCirclePositionPercent = when (dividerCount) {
-                                        1 -> DEFAULT_SECOND_CIRCLE_POSITION_AT_ONE_DIVIDER
-                                        2 -> DEFAULT_SECOND_CIRCLE_POSITION_AT_TWO_DIVIDERS
-                                        else -> DEFAULT_SECOND_CIRCLE_POSITION_AT_THREE_DIVIDERS
-                                    }
-                                )
+                                        //TODO: maybe create params => configurable, to let user adjust it
+                                        firstCirclePositionPercent = when (dividerCount) {
+                                            1 -> DEFAULT_FIRST_CIRCLE_POSITION_AT_ONE_DIVIDER
+                                            2 -> DEFAULT_FIRST_CIRCLE_POSITION_AT_TWO_DIVIDERS
+                                            else -> DEFAULT_FIRST_CIRCLE_POSITION_AT_THREE_DIVIDERS
+                                        },
+                                        secondCirclePositionPercent = when (dividerCount) {
+                                            1 -> DEFAULT_SECOND_CIRCLE_POSITION_AT_ONE_DIVIDER
+                                            2 -> DEFAULT_SECOND_CIRCLE_POSITION_AT_TWO_DIVIDERS
+                                            else -> DEFAULT_SECOND_CIRCLE_POSITION_AT_THREE_DIVIDERS
+                                        }
+                                    )
+
+                                else ->
+                                    LineDivider(
+                                        dividerPadding = dividerPadding,
+                                        dividerThickness = dividerThickness,
+                                        clockBoxSize = clockBoxSize,
+                                        dividerDashCount = dividerDashCount,
+                                        dividerColor = finalDividerColor,
+                                        dividerStyle = finalDividerStyle,
+                                        dividerLineCap = dividerLineCap,
+                                        dividerLengthPercent = dividerLengthPercent,
+                                        dividerDashDottedPartCount = dividerDashDottedPartCount,
+                                        dividerRotateAngle = dividerRotateAngle
+                                    )
                             }
                         }
                     }
@@ -311,42 +313,37 @@ fun DigitalClockLandscapeLayout(
                  * In case of SevenSegmentChar just digits and two letters will be drawn
                  * (DividerStyle.CHAR not possible together with SevenSegmentChar) ...
                  */
-                Column( //TODO: extract composable, maybe "ClockCharColumn(char, w, h, ori)", with clockChar as trailing lambda!?? and use it in both layouts...
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .requiredSize( // important to enforce monospace!
-                            if (char.isDaytimeMarkerChar()) daytimeMarkerCharWidth else finalCharWidth,
-                            if (char.isDaytimeMarkerChar()) daytimeMarkerCharHeight else finalCharHeight
-                        )
-                        .testTag(if (char.isDigit() || char.isLetter()) testTag else TestTags.CHAR_DIVIDER)
-                ) {
+                ClockCharColumn(
+                    char = char,
+                    columnWidth = finalCharWidth,
+                    columnHeight = finalCharHeight,
+                    charSize = DpSize(charWidth, charHeight),
+                    fontSize = finalFontSize,
+                    charColor = if (char.isLetterOrDigit()) finalCharColor else finalDividerColor,
+                    testTag = if (char.isLetterOrDigit()) testTag else TestTags.CHAR_DIVIDER
+                ) { clockChar, clockCharFontSize, clockCharColor, clockCharSize ->
                     clockChar(
-                        char,
-                        if (char.isDaytimeMarkerChar()) daytimeMarkerFontSize else finalFontSize,
-                        if (char.isDigit() || char.isLetter()) finalCharColor else finalDividerColor,
-                        DpSize(finalCharWidth, finalCharHeight),
-                        Configuration.ORIENTATION_LANDSCAPE
+                        clockChar,
+                        clockCharFontSize,
+                        clockCharColor,
+                        clockCharSize,
                     )
                 }
-
             } else { // dividerStyle == DividerStyle.NONE
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .requiredSize( // important to enforce monospace!
-                            if (char.isDaytimeMarkerChar()) daytimeMarkerCharWidth else finalCharWidth,
-                            if (char.isDaytimeMarkerChar()) daytimeMarkerCharHeight else finalCharHeight
-                        )
-                        .testTag(testTag)
-                ) {
+                ClockCharColumn(
+                    char = char,
+                    columnWidth = finalCharWidth,
+                    columnHeight = finalCharHeight,
+                    charSize = DpSize(charWidth, charHeight),
+                    fontSize = finalFontSize,
+                    charColor = finalCharColor,
+                    testTag = testTag
+                ) { clockChar, clockCharFontSize, clockCharColor, clockCharSize ->
                     clockChar(
-                        char,
-                        if (char.isDaytimeMarkerChar()) daytimeMarkerFontSize else finalFontSize,
-                        finalCharColor,
-                        DpSize(finalCharWidth, finalCharHeight),
-                        Configuration.ORIENTATION_LANDSCAPE
+                        clockChar,
+                        clockCharFontSize,
+                        clockCharColor,
+                        clockCharSize,
                     )
                 }
             }
@@ -451,7 +448,7 @@ private fun evaluateTextToMeasure(dividerCount: Int, isCharDivider: Boolean): St
  * @return A [T] for one clock parts part, depending on the [index] of a clockChar in [formattedTime]
  * @see ClockPartsColors, [ClockParts], [ClockPartsTestTags]
  */
-private fun <T> evaluateClockPart(
+private fun <T> evaluateClockPartUsingIndex(
     formattedTime: String,
     index: Int,
     clockParts: ClockParts<T>,
@@ -505,10 +502,7 @@ private fun <T> evaluateClockPart(
 }
 
 
-/**
- * Works similar as landscape variant of evaluateClockPart() ...
- */
-private fun evaluateDividerColor(
+private fun evaluateDividerColorUsingIndex(
     formattedTime: String,
     index: Int,
     clockParts: ClockPartsColors,

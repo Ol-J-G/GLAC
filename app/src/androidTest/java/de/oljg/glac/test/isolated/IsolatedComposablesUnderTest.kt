@@ -1,3 +1,5 @@
+@file:Suppress("TestFunctionName")
+
 package de.oljg.glac.test.isolated
 
 import androidx.compose.material3.Text
@@ -29,7 +31,7 @@ fun DigitalClockLandscapeLayoutIsolatedFont(
         currentTimeFormatted = currentTimeFormatted,
         clockBoxSize = evaluateScreenDetails().screenSize,
         dividerStyle = dividerStyle
-    ) { char, finalFontSize, clockCharColor, _, _ ->
+    ) { char, finalFontSize, clockCharColor, _ ->
         Text(
             text = char.toString(),
             fontSize = finalFontSize,
@@ -50,7 +52,7 @@ fun DigitalClockPortraitLayoutIsolatedFont(
         currentTimeWithoutSeparators = currentTimeWithoutSeparators,
         clockBoxSize = evaluateScreenDetails().screenSize,
         dividerStyle = dividerStyle
-    ) { char, finalFontSize, clockCharColor, _, _ ->
+    ) { char, finalFontSize, clockCharColor, _ ->
         Text(
             text = char.toString(),
             fontSize = finalFontSize,
@@ -73,7 +75,7 @@ fun DigitalClockLandscapeLayoutIsolatedSevenSegment(
         clockBoxSize = evaluateScreenDetails().screenSize,
         dividerStyle = dividerStyle,
         clockCharType = ClockCharType.SEVEN_SEGMENT
-    ) { char, _, clockCharColor, clockCharSize, screenOrientation ->
+    ) { char, _, clockCharColor, clockCharSize ->
         SevenSegmentChar(
             char = char,
             charSize = DpSize(clockCharSize.width, clockCharSize.height),
@@ -81,8 +83,7 @@ fun DigitalClockLandscapeLayoutIsolatedSevenSegment(
             segmentColors = emptyMap(),
             style = SevenSegmentStyle.REGULAR,
             weight = SevenSegmentWeight.REGULAR,
-            strokeWidth = SevenSegmentDefaults.DEFAULT_STROKE_WIDTH_REGULAR,
-            screenOrientation = screenOrientation
+            strokeWidth = SevenSegmentDefaults.DEFAULT_STROKE_WIDTH_REGULAR
         )
     }
 }
@@ -99,7 +100,7 @@ fun DigitalClockPortraitLayoutIsolatedSevenSegment(
         clockBoxSize = evaluateScreenDetails().screenSize,
         dividerStyle = dividerStyle,
         clockCharType = ClockCharType.SEVEN_SEGMENT
-    ) { char, _, clockCharColor, clockCharSize, screenOrientation ->
+    ) { char, _, clockCharColor, clockCharSize ->
         SevenSegmentChar(
             char = char,
             charSize = DpSize(clockCharSize.width, clockCharSize.height),
@@ -107,8 +108,7 @@ fun DigitalClockPortraitLayoutIsolatedSevenSegment(
             segmentColors = emptyMap(),
             style = SevenSegmentStyle.REGULAR,
             weight = SevenSegmentWeight.REGULAR,
-            strokeWidth = SevenSegmentDefaults.DEFAULT_STROKE_WIDTH_REGULAR,
-            screenOrientation = screenOrientation
+            strokeWidth = SevenSegmentDefaults.DEFAULT_STROKE_WIDTH_REGULAR
         )
     }
 }

@@ -18,17 +18,13 @@ import androidx.compose.ui.graphics.StampedPathEffectStyle
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
-import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DISTANCE_CIRCLE_TO_CIRCLE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DISTANCE_DASH_TO_DASH_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_ITALIC_ANGLE
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
-import de.oljg.glac.clock.digital.ui.utils.isItalic
-import de.oljg.glac.clock.digital.ui.utils.isReverseItalic
 import de.oljg.glac.clock.digital.ui.utils.pxToDp
 import de.oljg.glac.core.util.TestTags
 
@@ -48,12 +44,11 @@ fun LineDivider(
     dividerColor: Color,
     dividerStyle: DividerStyle,
     dividerLineCap: StrokeCap,
-    orientation: Int,
     dividerLengthPercent: Float,
     dividerDashDottedPartCount: Int,
-    clockCharType: ClockCharType? = null,
-    sevenSegmentStyle: SevenSegmentStyle = SevenSegmentStyle.REGULAR
+    dividerRotateAngle: Float = 0f
 ) {
+    val orientation = LocalConfiguration.current.orientation
     Canvas(
         modifier = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             Modifier
@@ -83,17 +78,6 @@ fun LineDivider(
             if (orientation == Configuration.ORIENTATION_PORTRAIT)
                 (size.width - dividerLenght) / 2
             else (size.height - dividerLenght) / 2
-
-        // In case of 7-seg italic style and only in landscape o. => rotate divider appropriately
-        val dividerRotateAngle =
-            if (clockCharType == ClockCharType.SEVEN_SEGMENT &&
-                orientation == Configuration.ORIENTATION_LANDSCAPE)
-                evaluateDividerRotateAngle(sevenSegmentStyle)
-            /**
-             * No need to rotate dividers in portrait orientation ((reverse-)italic 7-seg
-             * clockChars have straight top/bottom edges; or in case of font)
-             */
-            else 0f
 
         if (dividerStyle == DividerStyle.DASHDOTTED_LINE) {
             /**
@@ -226,6 +210,7 @@ private fun createDotPath(
 }
 
 
+
 private fun DrawScope.drawDashDottedLine(
     dashDottedPatternParts: Int,
     dividerColor: Color,
@@ -288,11 +273,9 @@ fun ColonDivider(
     dividerColor: Color,
     firstCirclePositionPercent: Float = .33f,
     secondCirclePositionPercent: Float = .66f,
-    orientation: Int,
-    clockCharType: ClockCharType? = null,
-    sevenSegmentStyle: SevenSegmentStyle = SevenSegmentStyle.REGULAR
+    dividerRotateAngle: Float = 0f
 ) {
-    if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
         Canvas(
             modifier = Modifier
                 .testTag(TestTags.COLON_DIVIDER)
@@ -319,20 +302,6 @@ fun ColonDivider(
                 .padding(start = dividerPadding, end = dividerPadding)
                 .size(width = dividerThickness, height = clockBoxSize.height.pxToDp()),
         ) {
-
-            /**
-             * In case of 7-seg italic style and only in landscape orientation
-             * => rotate divider appropriately
-             */
-            val dividerRotateAngle =
-                if (clockCharType == ClockCharType.SEVEN_SEGMENT)
-                    evaluateDividerRotateAngle(sevenSegmentStyle)
-                /**
-                 * No need to rotate dividers in portrait orientation ((reverse-)italic 7-seg
-                 * clockChars have straight top/bottom edges; or in case of font)
-                 */
-                else 0f
-
             rotate(degrees = dividerRotateAngle, pivot = size.center) {
                 drawColon(
                     firstCircleCenter = Offset(
@@ -371,16 +340,4 @@ private fun DrawScope.drawColon(
 }
 
 
-/**
- * @return
- * - 0f when sevenSegmentStyle is a non-italic style
- * - DEFAULT_ITALIC_ANGLE when sevenSegmentStyle is an italic style (rotate clockwise)
- * - -DEFAULT_ITALIC_ANGLE when sevenSegmentStyle is a reverse italic style (rotate counter-clockwise)
- */
-private fun evaluateDividerRotateAngle(sevenSegmentStyle: SevenSegmentStyle): Float {
-    return when {
-        sevenSegmentStyle.isItalic() -> DEFAULT_ITALIC_ANGLE
-        sevenSegmentStyle.isReverseItalic() -> -DEFAULT_ITALIC_ANGLE
-        else -> 0f
-    }
-}
+

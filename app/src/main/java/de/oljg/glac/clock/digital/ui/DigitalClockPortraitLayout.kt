@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,8 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
@@ -30,6 +29,8 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import de.oljg.glac.R
+import de.oljg.glac.clock.digital.ui.components.ClockCharColumn
 import de.oljg.glac.clock.digital.ui.components.ColonDivider
 import de.oljg.glac.clock.digital.ui.components.LineDivider
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
@@ -72,7 +73,7 @@ fun DigitalClockPortraitLayout(
     clockCharType: ClockCharType = ClockCharType.FONT,
     clockCharSizeFactor: Float = ClockDefaults.DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
     daytimeMarkerSizeFactor: Float = ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
-    clockChar: @Composable (Char, TextUnit, Color, DpSize, Int) -> Unit
+    clockChar: @Composable (Char, TextUnit, Color, DpSize) -> Unit
 ) {
 
     // How many dividers are included in time string
@@ -147,30 +148,33 @@ fun DigitalClockPortraitLayout(
                 (dividerCount + 1)) * sevenSegmentShrinkFactor
     }
 
-    val finalCharWidth = maxCharWidth * clockCharSizeFactor
-    val finalCharHeight = maxCharHeight * clockCharSizeFactor
+    val charWidth = maxCharWidth * clockCharSizeFactor
+    val charHeight = maxCharHeight * clockCharSizeFactor
+    val charFontSize = maxFontSize * clockCharSizeFactor
 
     val daytimeMarkerCharWidth = maxCharWidth * daytimeMarkerSizeFactor
     val daytimeMarkerCharHeight = maxCharHeight * daytimeMarkerSizeFactor
-
-    val finalFontSize = maxFontSize * clockCharSizeFactor
     val daytimeMarkerFontSize = maxFontSize * daytimeMarkerSizeFactor
 
-    val context = LocalContext.current
+    val digitalClock = stringResource(id = R.string.digital_clock)
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .semantics {
-                contentDescription =
-                    context.getString(de.oljg.glac.R.string.digital_clock)
-            }
+            .semantics { contentDescription = digitalClock }
             .testTag(TestTags.DIGITAL_CLOCK_PORTRAIT_LAYOUT),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly //TODO: let user decide (same in landscape) SpaceEvenly should be default
     ) {
         currentTimeWithoutSeparators.forEachIndexed { index, char ->
 
-            val testTag = evaluateClockPart(
+            val finalFontSize =
+                if (char.isDaytimeMarkerChar()) daytimeMarkerFontSize else charFontSize
+            val finalCharWidth =
+                if (char.isDaytimeMarkerChar()) daytimeMarkerCharWidth else charWidth
+            val finalCharHeight =
+                if (char.isDaytimeMarkerChar()) daytimeMarkerCharHeight else charHeight
+
+            val testTag = evaluateClockPartUsingIndex(
                 formattedTime = currentTimeWithoutSeparators,
                 index = index,
                 clockParts = ClockPartsTestTags()
@@ -178,7 +182,7 @@ fun DigitalClockPortraitLayout(
 
             // In case [clockPartColors] are specified, use them instead of [charColors].
             val clockPartColorPair: Pair<Color, Color>? =
-                if (clockPartsColors != null) evaluateClockPart(
+                if (clockPartsColors != null) evaluateClockPartUsingIndex(
                     formattedTime = currentTimeWithoutSeparators,
                     index = index,
                     clockParts = clockPartsColors
@@ -186,37 +190,41 @@ fun DigitalClockPortraitLayout(
                 else null
 
             val finalDividerColor =
-                if (clockPartsColors != null) evaluateDividerColor(
+                if (clockPartsColors != null) evaluateDividerColorUsingIndex(
                     formattedTime = currentTimeWithoutSeparators,
                     index = index,
                     clockPartsColors = clockPartsColors,
                 )
                 else dividerColor
 
-            // Draw 'A' or 'P' ONLY in case of ClockCharType.SEVEN_SEGMENT in last row as single column
-            if (index == currentTimeWithoutSeparators.length - 1 && clockCharType == ClockCharType.SEVEN_SEGMENT && char.isLetter()) {
+            /**
+             * Draw 'A' or 'P' ONLY in case of ClockCharType.SEVEN_SEGMENT in last row as single
+             * column (last char in currentTimeWithoutSeparators must be a letter).
+             */
+            if (index == currentTimeWithoutSeparators.length - 1 &&
+                char.isLetter() &&
+                clockCharType == ClockCharType.SEVEN_SEGMENT) {
+
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column( // Single char: ante or post
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .requiredSize(
-                                if (currentTimeWithoutSeparators[index].isDaytimeMarkerChar()) daytimeMarkerCharWidth else finalCharWidth,
-                                if (currentTimeWithoutSeparators[index].isDaytimeMarkerChar()) daytimeMarkerCharHeight else finalCharHeight
-                            )
-                            .testTag(testTag.first)
-                    ) {
+                    ClockCharColumn( // Single char: ante or post
+                        char = currentTimeWithoutSeparators[index],
+                        columnWidth = finalCharWidth,
+                        columnHeight = finalCharHeight,
+                        charSize = DpSize(charWidth, charHeight),
+                        fontSize = finalFontSize,
+                        charColor = clockPartColorPair?.first ?: charColors.getValue(
+                            currentTimeWithoutSeparators[index]
+                        ),
+                        testTag = testTag.first
+                    ) { clockChar, clockCharFontSize, clockCharColor, clockCharSize ->
                         clockChar(
-                            currentTimeWithoutSeparators[index],
-                            if (currentTimeWithoutSeparators[index].isDaytimeMarkerChar()) daytimeMarkerFontSize else finalFontSize,
-                            clockPartColorPair?.first ?: charColors.getValue(
-                                currentTimeWithoutSeparators[index]
-                            ),
-                            DpSize(finalCharWidth, finalCharHeight),
-                            Configuration.ORIENTATION_PORTRAIT
+                            clockChar,
+                            clockCharFontSize,
+                            clockCharColor,
+                            clockCharSize,
                         )
                     }
                 }
@@ -229,44 +237,40 @@ fun DigitalClockPortraitLayout(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column( // 1st char (left): tens, ante or post
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .requiredSize(
-                                if (currentTimeWithoutSeparators[index].isDaytimeMarkerChar()) daytimeMarkerCharWidth else finalCharWidth,
-                                if (currentTimeWithoutSeparators[index].isDaytimeMarkerChar()) daytimeMarkerCharHeight else finalCharHeight
-                            )
-                            .testTag(testTag.first)
-                    ) {
+                    ClockCharColumn( // 1st char (left): tens, ante or post
+                        char = currentTimeWithoutSeparators[index],
+                        columnWidth = finalCharWidth,
+                        columnHeight = finalCharHeight,
+                        charSize = DpSize(charWidth, charHeight),
+                        fontSize = finalFontSize,
+                        charColor = clockPartColorPair?.first ?: charColors.getValue(
+                            currentTimeWithoutSeparators[index]
+                        ),
+                        testTag = testTag.first
+                    ) { clockChar, clockCharFontSize, clockCharColor, clockCharSize ->
                         clockChar(
-                            currentTimeWithoutSeparators[index],
-                            if (currentTimeWithoutSeparators[index].isDaytimeMarkerChar()) daytimeMarkerFontSize else finalFontSize,
-                            clockPartColorPair?.first ?: charColors.getValue(
-                                currentTimeWithoutSeparators[index]
-                            ),
-                            DpSize(finalCharWidth, finalCharHeight),
-                            Configuration.ORIENTATION_PORTRAIT
+                            clockChar,
+                            clockCharFontSize,
+                            clockCharColor,
+                            clockCharSize,
                         )
                     }
-                    Column( // 2nd char (right): ones or meridiem
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .requiredSize(
-                                if (currentTimeWithoutSeparators[index + 1].isDaytimeMarkerChar()) daytimeMarkerCharWidth else finalCharWidth,
-                                if (currentTimeWithoutSeparators[index + 1].isDaytimeMarkerChar()) daytimeMarkerCharHeight else finalCharHeight
-                            )
-                            .testTag(testTag.second)
-                    ) {
+                    ClockCharColumn( // 2nd char (right): ones or meridiem
+                        char = currentTimeWithoutSeparators[index + 1],
+                        columnWidth = finalCharWidth,
+                        columnHeight = finalCharHeight,
+                        charSize = DpSize(charWidth, charHeight),
+                        fontSize = finalFontSize,
+                        charColor = clockPartColorPair?.second ?: charColors.getValue(
+                            currentTimeWithoutSeparators[index + 1]
+                        ),
+                        testTag = testTag.second
+                    ) { clockChar, clockCharFontSize, clockCharColor, clockCharSize ->
                         clockChar(
-                            currentTimeWithoutSeparators[index + 1],
-                            if (currentTimeWithoutSeparators[index + 1].isDaytimeMarkerChar()) daytimeMarkerFontSize else finalFontSize,
-                            clockPartColorPair?.second ?: charColors.getValue(
-                                currentTimeWithoutSeparators[index + 1]
-                            ),
-                            DpSize(finalCharWidth, finalCharHeight),
-                            Configuration.ORIENTATION_PORTRAIT
+                            clockChar,
+                            clockCharFontSize,
+                            clockCharColor,
+                            clockCharSize,
                         )
                     }
                 }
@@ -274,21 +278,7 @@ fun DigitalClockPortraitLayout(
                 if (index + 1 < currentTimeWithoutSeparators.length - 1) { // don't draw a divider at bottom of screen
                     if (dividerStyle != DividerStyle.NONE) {
                         when (dividerStyle) {
-                            DividerStyle.LINE, DividerStyle.CHAR ->
-                                LineDivider(
-                                    dividerPadding = dividerPadding,
-                                    dividerThickness = dividerThickness,
-                                    clockBoxSize = clockBoxSize,
-                                    dividerDashCount = dividerDashCount,
-                                    dividerColor = finalDividerColor,
-                                    dividerStyle = dividerStyle,
-                                    dividerLineCap = dividerLineCap,
-                                    orientation = Configuration.ORIENTATION_PORTRAIT,
-                                    dividerLengthPercent = dividerLengthPercent,
-                                    dividerDashDottedPartCount = dividerDashDottedPartCount
-                                )
-
-                            else ->
+                            DividerStyle.COLON ->
                                 /**
                                  * Draw a colon-like divider (also as replacement for
                                  * DividerStyle.CHAR! => otherwise FONT chars would have
@@ -299,7 +289,6 @@ fun DigitalClockPortraitLayout(
                                     clockBoxSize = clockBoxSize,
                                     dividerThickness = dividerThickness,
                                     dividerColor = finalDividerColor,
-                                    orientation = Configuration.ORIENTATION_PORTRAIT,
 
                                     /**
                                      * Special kind of 'colon-circle' placement
@@ -310,6 +299,18 @@ fun DigitalClockPortraitLayout(
                                     DEFAULT_FIRST_CIRCLE_POSITION_PORTRAIT_SPECIAL,
                                     secondCirclePositionPercent =
                                     DEFAULT_SECOND_CIRCLE_POSITION_PORTRAIT_SPECIAL
+                                )
+                            else ->
+                                LineDivider(
+                                    dividerPadding = dividerPadding,
+                                    dividerThickness = dividerThickness,
+                                    clockBoxSize = clockBoxSize,
+                                    dividerDashCount = dividerDashCount,
+                                    dividerColor = finalDividerColor,
+                                    dividerStyle = dividerStyle,
+                                    dividerLineCap = dividerLineCap,
+                                    dividerLengthPercent = dividerLengthPercent,
+                                    dividerDashDottedPartCount = dividerDashDottedPartCount
                                 )
                         }
                     } else Box {} // don't draw any divider, draw "nothing" ...
@@ -348,7 +349,7 @@ fun DigitalClockPortraitLayout(
  * Pair.second comes in handy ...)
  * @see ClockPartsColors, [ClockParts], [ClockPartsTestTags]
  */
-private fun <T> evaluateClockPart(
+private fun <T> evaluateClockPartUsingIndex(
     formattedTime: String,
     index: Int,
     clockParts: ClockParts<T>
@@ -369,10 +370,7 @@ private fun <T> evaluateClockPart(
 }
 
 
-/**
- * Works similar as portrait variant of evaluateClockPart() ...
- */
-private fun evaluateDividerColor(
+private fun evaluateDividerColorUsingIndex(
     formattedTime: String,
     index: Int,
     clockPartsColors: ClockPartsColors

@@ -39,6 +39,7 @@ import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
 import de.oljg.glac.clock.digital.ui.utils.dividerCount
 import de.oljg.glac.clock.digital.ui.utils.evaluateDividerPadding
+import de.oljg.glac.clock.digital.ui.utils.evaluateDividerRotateAngle
 import de.oljg.glac.clock.digital.ui.utils.evaluateDividerThickness
 
 @Composable
@@ -59,10 +60,10 @@ fun DigitalClock(
     clockPartsColors: ClockPartsColors? = null,
     clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
     daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
-    clockChar: @Composable (Char, TextUnit, Color, DpSize, Int) -> Unit
+    clockChar: @Composable (Char, TextUnit, Color, DpSize) -> Unit
 ) {
-    var clockBoxSize by remember { mutableStateOf(IntSize.Zero) }
     val currentDisplayOrientation = LocalConfiguration.current.orientation
+    var clockBoxSize by remember { mutableStateOf(IntSize.Zero) }
 
     // Use specified or default divider thickness
     val finalDividerThickness = evaluateDividerThickness(
@@ -124,6 +125,17 @@ fun DigitalClock(
             DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
         else daytimeMarkerSizeFactor
 
+    // In case of 7-seg italic style and only in landscape o. => rotate divider appropriately
+    val dividerRotateAngle =
+        if (clockCharType == ClockCharType.SEVEN_SEGMENT)
+            evaluateDividerRotateAngle(sevenSegmentStyle)
+        /**
+         * No need to rotate dividers with ClockCharType.FONT (fonts have unknown/different italic
+         * angles).
+         * //TODO: allow anyways, but let user rotate manually
+         */
+        else 0f
+
     Box(
         modifier = Modifier
             .padding(DEFAULT_CLOCK_PADDING) // TODO: make it configurable => otherwise LINE... divider cannot be from edge to edge without space
@@ -144,7 +156,7 @@ fun DigitalClock(
                 fontStyle = fontStyle,
                 currentTimeFormatted = currentTimeFormatted,
                 clockBoxSize = clockBoxSize,
-                dividerStyle = dividerAttributes.dividerStyle,
+                dividerStyle = dividerAttributes.dividerStyle, //TODO: shrink many params to one with one DividerAttributes object, just copy dividerAttributes and update final... vals
                 dividerDashCount = finalDashCount,
                 dividerLineCap = dividerAttributes.dividerLineCap,
                 dividerThickness = finalDividerThickness,
@@ -156,7 +168,7 @@ fun DigitalClock(
                 dividerDashDottedPartCount = finalDashDottedPartCount,
                 clockChar = clockChar,
                 clockCharType = clockCharType,
-                sevenSegmentStyle = sevenSegmentStyle,
+                dividerRotateAngle = dividerRotateAngle,
                 clockCharSizeFactor = finalClockCharSizeFactor,
                 daytimeMarkerSizeFactor = finalDaytimeMarkerSizeFactor
             )

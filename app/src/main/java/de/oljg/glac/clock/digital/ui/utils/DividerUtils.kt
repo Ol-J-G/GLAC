@@ -40,7 +40,8 @@ data class DividerAttributes(
     val dividerLineCap: StrokeCap = StrokeCap.Butt,
     val dividerLengthPercent: Float? = null,
     val dividerDashCount: Int? = null,
-    val dividerDashDottedPartCount: Int? = null
+    val dividerDashDottedPartCount: Int? = null,
+    val rotateAngleLandscape: Float = 0f
 )
 
 fun evaluateDividerThickness(
@@ -157,6 +158,20 @@ fun evalutateDividerCount(timeFormattetWithoutSeparators: String): Int {
     }
 }
 
+
+/**
+ * @return
+ * - 0f when sevenSegmentStyle is a non-italic style
+ * - DEFAULT_ITALIC_ANGLE when sevenSegmentStyle is an italic style (rotate clockwise)
+ * - -DEFAULT_ITALIC_ANGLE when sevenSegmentStyle is a reverse italic style (rotate counter-clockwise)
+ */
+fun evaluateDividerRotateAngle(sevenSegmentStyle: SevenSegmentStyle): Float {
+    return when {
+        sevenSegmentStyle.isItalic() -> SevenSegmentDefaults.DEFAULT_ITALIC_ANGLE
+        sevenSegmentStyle.isReverseItalic() -> -SevenSegmentDefaults.DEFAULT_ITALIC_ANGLE
+        else -> 0f
+    }
+}
 
 object DividerDefaults {
     const val DEFAULT_HOURS_MINUTES_DIVIDER_CHAR = ':'
