@@ -1,28 +1,31 @@
-package de.oljg.glac.clock.digital.ui
+package de.oljg.glac.clock.digital.ui.landscape
 
-import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.assertAll
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasAnyChild
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.hasTextExactly
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.printToLog
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.core.util.TestTags
-import de.oljg.glac.test.isolated.DigitalClockLandscapeLayoutIsolated
+import de.oljg.glac.test.isolated.DigitalClockLandscapeLayoutIsolatedFont
 import org.junit.Rule
 import org.junit.Test
 
+
 /**
- * Test digital clock landscape layout with COLON dividers.
+ * Test digital clock landscape layout with default CHAR divider.
  *
  * Note: Test tags (e.g. 'HOURS_TENS') are placed in a Column with a clockChar child each
  * (clockChar is a Text-composable in case of ClockCharType.FONT; and used in this test class)
  *
  * Debug: composeTestRule.onRoot(useUnmergedTree = false).printToLog("SEMANTICS_TREE")
  */
-class DigitalClockLandscapeFormattedTimeTestColonDivider {
+class DigitalClockLandscapeFormattedTimeTestCharDivider {
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -32,22 +35,26 @@ class DigitalClockLandscapeFormattedTimeTestColonDivider {
 
         // Given, we have the following formatted time: HH:MM
         composeTestRule.setContent {
-            DigitalClockLandscapeLayoutIsolated(
+            DigitalClockLandscapeLayoutIsolatedFont(
                 currentTimeFormatted = "12:34",
-                dividerStyle = DividerStyle.COLON
+                dividerStyle = DividerStyle.CHAR
             )
         }
 
 
         /**
          * (When we do nothing (this is just a layout test...))
-         * Then, hours and minutes must be displayed
+         * Then, hours, minutes and 1 char divider must be displayed
          */
         composeTestRule.onNode(
             hasTestTag(TestTags.HOURS_TENS) and hasAnyChild(hasText("1"))
         ).assertIsDisplayed()
         composeTestRule.onNode(
             hasTestTag(TestTags.HOURS_ONES) and hasAnyChild(hasText("2"))
+        ).assertIsDisplayed()
+        composeTestRule.onNode(
+            hasTestTag(TestTags.CHAR_DIVIDER) and
+                    hasAnyChild(hasText(DEFAULT_HOURS_MINUTES_DIVIDER_CHAR.toString()))
         ).assertIsDisplayed()
         composeTestRule.onNode(
             hasTestTag(TestTags.MINUTES_TENS) and hasAnyChild(hasText("3"))
@@ -64,9 +71,6 @@ class DigitalClockLandscapeFormattedTimeTestColonDivider {
         composeTestRule.onNode(hasTestTag(TestTags.DAYTIME_MARKER_ANTE_OR_POST))
             .assertDoesNotExist()
         composeTestRule.onNode(hasTestTag(TestTags.DAYTIME_MARKER_MERIDIEM)).assertDoesNotExist()
-
-        // And 1 colon divider
-        composeTestRule.onAllNodes(hasTestTag(TestTags.COLON_DIVIDER)).assertCountEquals(1)
     }
 
 
@@ -75,9 +79,9 @@ class DigitalClockLandscapeFormattedTimeTestColonDivider {
 
         // Given, we have the following formatted time: HH:MM:SS
         composeTestRule.setContent {
-            DigitalClockLandscapeLayoutIsolated(
+            DigitalClockLandscapeLayoutIsolatedFont(
                 currentTimeFormatted = "12:34:56",
-                dividerStyle = DividerStyle.COLON
+                dividerStyle = DividerStyle.CHAR
             )
         }
 
@@ -109,8 +113,9 @@ class DigitalClockLandscapeFormattedTimeTestColonDivider {
             .assertDoesNotExist()
         composeTestRule.onNode(hasTestTag(TestTags.DAYTIME_MARKER_MERIDIEM)).assertDoesNotExist()
 
-        // And 2 colon dividers
-        composeTestRule.onAllNodes(hasTestTag(TestTags.COLON_DIVIDER)).assertCountEquals(2)
+        // And, 2 char dividers
+        composeTestRule.onAllNodes(hasTestTag(TestTags.CHAR_DIVIDER)
+        ).assertAll(hasAnyChild(hasTextExactly(":", ":")))
     }
 
 
@@ -119,9 +124,9 @@ class DigitalClockLandscapeFormattedTimeTestColonDivider {
 
         // Given, we have the following formatted time: HH:MM:DAYTIME_MARKER
         composeTestRule.setContent {
-            DigitalClockLandscapeLayoutIsolated(
+            DigitalClockLandscapeLayoutIsolatedFont(
                 currentTimeFormatted = "12:34:AM",
-                dividerStyle = DividerStyle.COLON
+                dividerStyle = DividerStyle.CHAR
             )
         }
 
@@ -154,8 +159,9 @@ class DigitalClockLandscapeFormattedTimeTestColonDivider {
         composeTestRule.onNode(hasTestTag(TestTags.SECONDS_TENS)).assertDoesNotExist()
         composeTestRule.onNode(hasTestTag(TestTags.SECONDS_ONES)).assertDoesNotExist()
 
-        // And 2 colon dividers
-        composeTestRule.onAllNodes(hasTestTag(TestTags.COLON_DIVIDER)).assertCountEquals(2)
+        // And, 2 char dividers
+        composeTestRule.onAllNodes(hasTestTag(TestTags.CHAR_DIVIDER)
+        ).assertAll(hasAnyChild(hasTextExactly(":", ":")))
     }
 
 
@@ -164,9 +170,9 @@ class DigitalClockLandscapeFormattedTimeTestColonDivider {
 
         // Given, we have the following formatted time: HH:MM:SS:DAYTIME_MARKER
         composeTestRule.setContent {
-            DigitalClockLandscapeLayoutIsolated(
+            DigitalClockLandscapeLayoutIsolatedFont(
                 currentTimeFormatted = "12:34:56:AM",
-                dividerStyle = DividerStyle.COLON
+                dividerStyle = DividerStyle.CHAR
             )
         }
 
@@ -199,8 +205,10 @@ class DigitalClockLandscapeFormattedTimeTestColonDivider {
             hasTestTag(TestTags.DAYTIME_MARKER_MERIDIEM) and hasAnyChild(hasText("M"))
         ).assertIsDisplayed()
 
-        // And 3 colon dividers
-        composeTestRule.onAllNodes(hasTestTag(TestTags.COLON_DIVIDER)).assertCountEquals(3)
+        // And, 3 char dividers
+        composeTestRule.onAllNodes(
+            hasTestTag(TestTags.CHAR_DIVIDER)
+        ).assertAll(hasAnyChild(hasTextExactly(":", ":", ":")))
     }
 }
 

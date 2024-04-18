@@ -92,6 +92,11 @@ fun DigitalClockLandscapeLayout(
     clockChar: @Composable (Char, TextUnit, Color, DpSize, Int) -> Unit
 ) {
 
+    val isFontCharDivider =
+        clockCharType == ClockCharType.FONT && dividerStyle == DividerStyle.CHAR
+    val isSevenSegmentCharDivider =
+        clockCharType == ClockCharType.SEVEN_SEGMENT && dividerStyle == DividerStyle.CHAR
+
     /**
      * Set LINE as default divider style for 7-segment clock in case someone would try to do the
      * impossible :> (7-segment can/should actually just be 0-9 (ok, or some letters as well
@@ -103,9 +108,7 @@ fun DigitalClockLandscapeLayout(
      * to understand as well!)
      */
     val finalDividerStyle =
-        if (dividerStyle == DividerStyle.CHAR && clockCharType == ClockCharType.SEVEN_SEGMENT)
-            DividerStyle.LINE
-        else dividerStyle
+        if (isSevenSegmentCharDivider) DividerStyle.LINE else dividerStyle
 
     // How many dividers are included in time string
     val dividerCount = currentTimeFormatted.dividerCount(
@@ -205,16 +208,15 @@ fun DigitalClockLandscapeLayout(
                 formattedTime = finalCurrentTimeFormatted,
                 index = index,
                 clockParts = ClockPartsTestTags(),
-                dividerStyle = dividerStyle,
-                clockCharType = clockCharType)
+                isFontCharDivider = isFontCharDivider
+            )
 
             val finalCharColor =
                 if (clockPartsColors != null) evaluateClockPart(
                     formattedTime = finalCurrentTimeFormatted,
                     index = index,
                     clockParts = clockPartsColors,
-                    dividerStyle = dividerStyle,
-                    clockCharType = clockCharType
+                    isFontCharDivider = isFontCharDivider
                 )
                 else {
                     // dividerColor in case of DividerStyle.CHAR => divider is a Char //TODO: then don't allow digits or letters as divider char, otherwise this will not work! (or change it to allow any char als divider char, but ... who would want such stuff^^?? (what time it is(if you wouldn't know the divider is '2'): 122342AM => 12:34:AM => lul, strange, but useless(? .. but maybe "funny"?) :>)
@@ -227,8 +229,7 @@ fun DigitalClockLandscapeLayout(
                         formattedTime = finalCurrentTimeFormatted,
                         index = index,
                         clockParts = clockPartsColors,
-                        dividerStyle = dividerStyle,
-                        clockCharType = clockCharType
+                        isFontCharDivider = isFontCharDivider
                     )
                     else dividerColor
 
@@ -454,16 +455,13 @@ private fun <T> evaluateClockPart(
     formattedTime: String,
     index: Int,
     clockParts: ClockParts<T>,
-    dividerStyle: DividerStyle,
-    clockCharType: ClockCharType
+    isFontCharDivider: Boolean
 ): T {
     val (formattedTimeContainsNoSecondsButDaytimeMarkerAndDividers,
         formattedTimeContainsNoSecondsButDaytimeMarker) =
         evaluateNoSecondsConditions(formattedTime)
 
-    return if (dividerStyle != DividerStyle.NONE && //TODO: extract expression as param, and save one param
-        clockCharType == ClockCharType.FONT &&
-        dividerStyle == DividerStyle.CHAR)
+    return if (isFontCharDivider)
         when (index) {
             0 -> clockParts.hours.tens
             1 -> clockParts.hours.ones
@@ -514,8 +512,7 @@ private fun evaluateDividerColor(
     formattedTime: String,
     index: Int,
     clockParts: ClockPartsColors,
-    dividerStyle: DividerStyle,
-    clockCharType: ClockCharType
+    isFontCharDivider: Boolean
 ): Color {
     /**
      * 'No seconds' special cases
@@ -536,7 +533,7 @@ private fun evaluateDividerColor(
         formattedTimeContainsNoSecondsButDaytimeMarker) =
         evaluateNoSecondsConditions(formattedTime)
 
-    return if (clockCharType == ClockCharType.FONT && dividerStyle == DividerStyle.CHAR)
+    return if (isFontCharDivider)
         when (index) {
             2 -> clockParts.dividers.hoursMinutes
             5 ->
@@ -575,5 +572,6 @@ private fun evaluateNoSecondsConditions(formattedTime: String): Pair<Boolean, Bo
      */
     val containsNoSecondsButDaytimeMarker =
         formattedTime.length in (5..6) && formattedTimeLastCharIsLetter
+
     return Pair(containsNoSecondsButDaytimeMarkerAndDividers, containsNoSecondsButDaytimeMarker)
 }

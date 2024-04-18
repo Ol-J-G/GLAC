@@ -24,6 +24,8 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import de.oljg.glac.clock.digital.ui.utils.Segment
@@ -154,12 +156,14 @@ fun SevenSegmentChar(
                 .size(charSize.width, charSize.height)
                 .aspectRatio(aspectRatio)
                 .background(Color.Transparent)
+                .semantics { contentDescription = char.toString() }
         else
             modifier
                 .padding(DEFAULT_SEVEN_SEGMENT_CHAR_PADDING)
                 .fillMaxSize()
                 .aspectRatio(aspectRatio)
                 .background(Color.Transparent)
+                .semantics { contentDescription = char.toString() }
     ) {
 
         val (canvasWidth, canvasHeight) = Pair(size.width, size.height)

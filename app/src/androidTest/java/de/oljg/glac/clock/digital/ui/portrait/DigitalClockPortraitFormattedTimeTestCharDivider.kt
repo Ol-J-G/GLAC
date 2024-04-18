@@ -1,4 +1,4 @@
-package de.oljg.glac.clock.digital.ui
+package de.oljg.glac.clock.digital.ui.portrait
 
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
@@ -6,38 +6,36 @@ import androidx.compose.ui.test.hasAnyChild
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.test.printToLog
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.core.util.TestTags
-import de.oljg.glac.test.isolated.DigitalClockLandscapeLayoutIsolated
+import de.oljg.glac.test.isolated.DigitalClockPortraitLayoutIsolatedFont
 import org.junit.Rule
 import org.junit.Test
 
 /**
- * Test digital clock landscape layout with LINE dividers.
+ * Test, that digital clock portrait layout with CHAR dividers will fall back to LINE dividers,
+ * since CHAR dividers are useless in portrait orientation.
  *
  * Note: Test tags (e.g. 'HOURS_TENS') are placed in a Column with a clockChar child each
  * (clockChar is a Text-composable in case of ClockCharType.FONT; and used in this test class)
  *
  * Debug: composeTestRule.onRoot(useUnmergedTree = false).printToLog("SEMANTICS_TREE")
  */
-class DigitalClockLandscapeFormattedTimeTestLineDivider {
+class DigitalClockPortraitFormattedTimeTestCharDivider {
 
     @get:Rule
     val composeTestRule = createComposeRule()
 
     @Test
-    fun time_format_HH_MM() {
+    fun time_format_HHMM() {
 
-        // Given, we have the following formatted time: HH:MM
+        // Given, we have the following formatted time: HHMM
         composeTestRule.setContent {
-            DigitalClockLandscapeLayoutIsolated(
-                currentTimeFormatted = "12:34",
-                dividerStyle = DividerStyle.LINE
+            DigitalClockPortraitLayoutIsolatedFont(
+                currentTimeWithoutSeparators = "1234",
+                dividerStyle = DividerStyle.CHAR
             )
         }
-
 
         /**
          * (When we do nothing (this is just a layout test...))
@@ -71,13 +69,13 @@ class DigitalClockLandscapeFormattedTimeTestLineDivider {
 
 
     @Test
-    fun time_format_HH_MM_SS() {
+    fun time_format_HHMMSS() {
 
-        // Given, we have the following formatted time: HH:MM:SS
+        // Given, we have the following formatted time: HHMMSS
         composeTestRule.setContent {
-            DigitalClockLandscapeLayoutIsolated(
-                currentTimeFormatted = "12:34:56",
-                dividerStyle = DividerStyle.LINE
+            DigitalClockPortraitLayoutIsolatedFont(
+                currentTimeWithoutSeparators = "123456",
+                dividerStyle = DividerStyle.CHAR
             )
         }
 
@@ -115,17 +113,15 @@ class DigitalClockLandscapeFormattedTimeTestLineDivider {
 
 
     @Test
-    fun time_format_HH_MM_DAYTIME_MARKER() {
+    fun time_format_HHMM_DAYTIME_MARKER() {
 
-        // Given, we have the following formatted time: HH:MM:DAYTIME_MARKER
+        // Given, we have the following formatted time: HH MM DAYTIME_MARKER
         composeTestRule.setContent {
-            DigitalClockLandscapeLayoutIsolated(
-                currentTimeFormatted = "12:34:AM",
-                dividerStyle = DividerStyle.LINE
+            DigitalClockPortraitLayoutIsolatedFont(
+                currentTimeWithoutSeparators = "1234AM",
+                dividerStyle = DividerStyle.CHAR
             )
         }
-
-        composeTestRule.onRoot(useUnmergedTree = false).printToLog("SEMANTICS_TREE")
 
         /**
          * (When we do nothing (this is just a layout test...))
@@ -160,13 +156,13 @@ class DigitalClockLandscapeFormattedTimeTestLineDivider {
 
 
     @Test
-    fun time_format_HH_MM_SS_DAYTIME_MARKER() {
+    fun time_format_HHMMSS_DAYTIME_MARKER() {
 
-        // Given, we have the following formatted time: HH:MM:SS:DAYTIME_MARKER
+        // Given, we have the following formatted time: HH MM SS DAYTIME_MARKER
         composeTestRule.setContent {
-            DigitalClockLandscapeLayoutIsolated(
-                currentTimeFormatted = "12:34:56:AM",
-                dividerStyle = DividerStyle.LINE
+            DigitalClockPortraitLayoutIsolatedFont(
+                currentTimeWithoutSeparators = "123456AM",
+                dividerStyle = DividerStyle.CHAR
             )
         }
 
