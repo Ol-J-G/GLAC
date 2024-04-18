@@ -31,8 +31,6 @@ interface DaytimeMarker<T> {
 }
 
 
-
-
 object ClockDefaults {
 
     /**

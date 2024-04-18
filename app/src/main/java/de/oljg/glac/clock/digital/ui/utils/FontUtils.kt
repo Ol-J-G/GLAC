@@ -99,7 +99,6 @@ fun MeasureFontSize(
 }
 
 
-
 /**
  * startFontSize will be used to measure max possible font size that fits on screen width.
  * Must be bigger than possible, becasue it will be shrinked down until it fits, see

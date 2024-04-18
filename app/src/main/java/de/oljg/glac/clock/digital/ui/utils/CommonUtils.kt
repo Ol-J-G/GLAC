@@ -92,7 +92,7 @@ object ScreenSizeDefaults {
 
 
 /**
- * https://stackoverflow.com/questions/69688138/how-to-hide-navigationbar-and-statusbar-in-jetpack-compose
+ * @see (https://stackoverflow.com/questions/69688138/how-to-hide-navigationbar-and-statusbar-in-jetpack-compose)
  */
 @Composable
 fun HideSystemBars() {
@@ -118,8 +118,7 @@ fun HideSystemBars() {
         }
     }
 }
-
-fun Context.findActivity(): Activity? {
+private fun Context.findActivity(): Activity? {
     var context = this
     while (context is ContextWrapper) {
         if (context is Activity) return context
