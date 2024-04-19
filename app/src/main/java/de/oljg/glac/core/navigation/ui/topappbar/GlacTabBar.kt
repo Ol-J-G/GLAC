@@ -18,7 +18,7 @@ import de.oljg.glac.core.navigation.ui.topappbar.components.GlacTab
 import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TOP_APP_BAR_HEIGHT
 
 @Composable
-fun GlacTopAppBar(
+fun GlacTabBar(
     allScreensToDisplay: List<GlacScreen>,
     onTabSelected: (GlacScreen) -> Unit,
     currentScreen: GlacScreen
@@ -41,8 +41,8 @@ fun GlacTopAppBar(
                         GlacRoute.ABOUT.name -> stringResource(R.string.about)
                         else -> ""
                     },
-                    tabIconFilled = screen.tabIconFilled,
-                    tabIconOutlined = screen.tabIconOutlined,
+                    tabIconFilled = screen.tabIconSelected,
+                    tabIconOutlined = screen.tabIconUnselected,
                     onSelected = { onTabSelected(screen) },
                     tabIsSelected = currentScreen == screen
                 )

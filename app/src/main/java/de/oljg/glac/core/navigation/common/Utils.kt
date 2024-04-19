@@ -8,6 +8,9 @@ enum class GlacRoute {
     FULLSCREEN_CLOCK,
     ALARMS,
     SETTINGS,
+    CLOCK_SETTINGS,
+    ALARM_SETTINGS,
+    COMMON_SETTINGS,
     ABOUT
 }
 object GlacDefault {
