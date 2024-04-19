@@ -2,16 +2,19 @@
 
 package de.oljg.glac.test.isolated
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import de.oljg.glac.clock.digital.ui.DigitalClockLandscapeLayout
 import de.oljg.glac.clock.digital.ui.DigitalClockPortraitLayout
 import de.oljg.glac.clock.digital.ui.components.SevenSegmentChar
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
+import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
@@ -30,7 +33,12 @@ fun DigitalClockLandscapeLayoutIsolatedFont(
     DigitalClockLandscapeLayout(
         currentTimeFormatted = currentTimeFormatted,
         clockBoxSize = evaluateScreenDetails().screenSize,
-        dividerStyle = dividerStyle
+        dividerAttributes = DividerAttributes(
+            dividerStyle = dividerStyle,
+            dividerColor = MaterialTheme.colorScheme.onSurface,
+            dividerThickness = 2.dp,
+            dividerPadding = 2.dp
+        )
     ) { char, finalFontSize, clockCharColor, _ ->
         Text(
             text = char.toString(),
@@ -51,7 +59,12 @@ fun DigitalClockPortraitLayoutIsolatedFont(
     DigitalClockPortraitLayout(
         currentTimeWithoutSeparators = currentTimeWithoutSeparators,
         clockBoxSize = evaluateScreenDetails().screenSize,
-        dividerStyle = dividerStyle
+        dividerAttributes = DividerAttributes(
+            dividerStyle = dividerStyle,
+            dividerColor = MaterialTheme.colorScheme.onSurface,
+            dividerThickness = 2.dp,
+            dividerPadding = 2.dp
+        )
     ) { char, finalFontSize, clockCharColor, _ ->
         Text(
             text = char.toString(),
@@ -73,7 +86,12 @@ fun DigitalClockLandscapeLayoutIsolatedSevenSegment(
     DigitalClockLandscapeLayout(
         currentTimeFormatted = currentTimeFormatted,
         clockBoxSize = evaluateScreenDetails().screenSize,
-        dividerStyle = dividerStyle,
+        dividerAttributes = DividerAttributes(
+            dividerStyle = dividerStyle,
+            dividerColor = MaterialTheme.colorScheme.onSurface,
+            dividerThickness = 2.dp,
+            dividerPadding = 2.dp
+        ),
         clockCharType = ClockCharType.SEVEN_SEGMENT
     ) { char, _, clockCharColor, clockCharSize ->
         SevenSegmentChar(
@@ -98,7 +116,12 @@ fun DigitalClockPortraitLayoutIsolatedSevenSegment(
     DigitalClockPortraitLayout(
         currentTimeWithoutSeparators = currentTimeWithoutSeparators,
         clockBoxSize = evaluateScreenDetails().screenSize,
-        dividerStyle = dividerStyle,
+        dividerAttributes = DividerAttributes(
+            dividerStyle = dividerStyle,
+            dividerColor = MaterialTheme.colorScheme.onSurface,
+            dividerThickness = 2.dp,
+            dividerPadding = 2.dp
+        ),
         clockCharType = ClockCharType.SEVEN_SEGMENT
     ) { char, _, clockCharColor, clockCharSize ->
         SevenSegmentChar(

@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.StampedPathEffectStyle
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
@@ -46,9 +45,9 @@ fun LineDivider(
     dividerLineCap: StrokeCap,
     dividerLengthPercent: Float,
     dividerDashDottedPartCount: Int,
-    dividerRotateAngle: Float = 0f
+    dividerRotateAngle: Float = 0f,
+    orientation: Int
 ) {
-    val orientation = LocalConfiguration.current.orientation
     Canvas(
         modifier = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             Modifier
@@ -273,9 +272,10 @@ fun ColonDivider(
     dividerColor: Color,
     firstCirclePositionPercent: Float = .33f,
     secondCirclePositionPercent: Float = .66f,
-    dividerRotateAngle: Float = 0f
+    dividerRotateAngle: Float = 0f,
+    orientation: Int
 ) {
-    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
+    if (orientation == Configuration.ORIENTATION_PORTRAIT) {
         Canvas(
             modifier = Modifier
                 .testTag(TestTags.COLON_DIVIDER)

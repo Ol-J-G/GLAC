@@ -8,9 +8,18 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_COUNT
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_DOTTED_PART_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_LENGTH_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_PADDING_DASHDOTTED
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_PADDING_DASHED
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_PADDING_DOTTED
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_PADDING_LINE
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_THICKNESS_LINE
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_PADDING_FACTOR
 
 
 /**
@@ -33,18 +42,91 @@ enum class DividerStyle {
 
 
 data class DividerAttributes(
-    val dividerStyle: DividerStyle = DividerStyle.COLON,
+    val dividerStyle: DividerStyle = DividerStyle.LINE,
     val dividerThickness: Dp = Dp.Unspecified,
     val dividerPadding: Dp = Dp.Unspecified,
-    val dividerColor: Color,
+    val dividerColor: Color, // must be set in a composable (no access here to MaterialTheme...)
     val dividerLineCap: StrokeCap = StrokeCap.Butt,
-    val dividerLengthPercent: Float? = null,
-    val dividerDashCount: Int? = null,
-    val dividerDashDottedPartCount: Int? = null,
-    val rotateAngleLandscape: Float = 0f
+    val dividerLengthPercent: Float = DEFAULT_DIVIDER_LENGTH_FACTOR,
+    val dividerDashCount: Int = DEFAULT_DASH_COUNT,
+    val dividerDashDottedPartCount: Int = DEFAULT_DASH_DOTTED_PART_COUNT,
+    val dividerRotateAngle: Float = 0f
 )
 
-fun evaluateDividerThickness(
+
+fun evaluateDividerAttributes(
+    dividerAttributes: DividerAttributes,
+    dividerCount: Int,
+    clockBoxSize: IntSize,
+    currentDisplayOrientation: Int,
+    isClockCharTypeSevenSegment: Boolean,
+    sevenSegmentStyle: SevenSegmentStyle
+): DividerAttributes {
+
+    // Use specified or default divider thickness
+    val finalDividerThickness = evaluateDividerThickness(
+        specifiedDividerStyle = dividerAttributes.dividerStyle,
+        specifiedDividerThickness = dividerAttributes.dividerThickness,
+        dividerCount = dividerCount,
+        clockBoxSize = clockBoxSize,
+        currentDisplayOrientation = currentDisplayOrientation
+    )
+
+    // Use specified or default divider padding
+    val finalDividerPadding = evaluateDividerPadding(
+        specifiedDividerStyle = dividerAttributes.dividerStyle,
+        specifiedDividerPadding = dividerAttributes.dividerPadding,
+        finalDividerThickness = finalDividerThickness,
+        specifiedDividerThickness = dividerAttributes.dividerThickness
+    )
+
+    /**
+     * Use specified or default number of dashes in case of DividerStyle.DASHED
+     * (Zero or negative value would make no sense!)
+     */
+    val finalDashCount =
+        if (dividerAttributes.dividerDashCount <= 0) DEFAULT_DASH_COUNT
+        else dividerAttributes.dividerDashCount
+
+    /**
+     * Use specified or default dash-dotted parts in case of DividerStyle.DASHDOTTED
+     * (Zero or negative value would make no sense!)
+     */
+    val finalDashDottedPartCount =
+        if (dividerAttributes.dividerDashDottedPartCount <= 0) DEFAULT_DASH_DOTTED_PART_COUNT
+        else dividerAttributes.dividerDashDottedPartCount
+
+    /**
+     * Use specified param or default value, in case specified param is not
+     * in range 0.0f .. 1.0f => %
+     */
+    val finalDividerLengthPercent =
+        if (dividerAttributes.dividerLengthPercent <= 0f ||
+            dividerAttributes.dividerLengthPercent > 1f) DEFAULT_DIVIDER_LENGTH_FACTOR
+        else dividerAttributes.dividerLengthPercent
+
+    // In case of 7-seg italic style and only in landscape o. => rotate divider appropriately
+    val dividerRotateAngle =
+        if (isClockCharTypeSevenSegment) evaluateDividerRotateAngle(sevenSegmentStyle)
+
+        /**
+         * No need to rotate dividers with ClockCharType.FONT (fonts have unknown/different italic
+         * angles).
+         * //TODO: allow anyways, but let user rotate manually
+         */
+        else 0f
+
+    return dividerAttributes.copy(
+        dividerThickness = finalDividerThickness,
+        dividerPadding = finalDividerPadding,
+        dividerLengthPercent = finalDividerLengthPercent,
+        dividerDashCount = finalDashCount,
+        dividerDashDottedPartCount = finalDashDottedPartCount,
+        dividerRotateAngle = dividerRotateAngle,
+    )
+}
+
+private fun evaluateDividerThickness(
     specifiedDividerStyle: DividerStyle,
     specifiedDividerThickness: Dp,
     dividerCount: Int,
@@ -61,7 +143,7 @@ fun evaluateDividerThickness(
             (clockBoxSize.width + clockBoxSize.height) * DividerDefaults.COLON_BASE_RESIZE_FACTOR
         ).dp
 
-        DividerStyle.LINE -> DividerDefaults.DEFAULT_DIVIDER_THICKNESS_LINE
+        DividerStyle.LINE -> DEFAULT_DIVIDER_THICKNESS_LINE
         DividerStyle.DOTTED_LINE -> DividerDefaults.DEFAULT_DIVIDER_THICKNESS_DOTTED
         DividerStyle.DASHED_LINE -> DividerDefaults.DEFAULT_DIVIDER_THICKNESS_DASHED
         DividerStyle.DASHDOTTED_LINE -> DividerDefaults.DEFAULT_DIVIDER_THICKNESS_DASHDOTTED
@@ -73,7 +155,7 @@ fun evaluateDividerThickness(
          * will fall back to DividerStyle.LINE
          * (char divider isn't useful in portrait => use line)
          */
-        else -> DividerDefaults.DEFAULT_DIVIDER_THICKNESS_LINE
+        else -> DEFAULT_DIVIDER_THICKNESS_LINE
     }
 
     /**
@@ -98,15 +180,17 @@ fun evaluateDividerThickness(
     // Finally, use default/resized divider thickness, or the specified divider thickness
     return when (specifiedDividerStyle) {
         DividerStyle.COLON, DividerStyle.CHAR ->
-            if (specifiedDividerThickness == Dp.Unspecified) resizedDefaultDividerThickness else specifiedDividerThickness
+            if (specifiedDividerThickness == Dp.Unspecified) resizedDefaultDividerThickness
+            else specifiedDividerThickness
 
         else ->
-            if (specifiedDividerThickness == Dp.Unspecified) defaultDividerThickness else specifiedDividerThickness
+            if (specifiedDividerThickness == Dp.Unspecified) defaultDividerThickness
+            else specifiedDividerThickness
     }
 }
 
 
-fun evaluateDividerPadding(
+private fun evaluateDividerPadding(
     specifiedDividerStyle: DividerStyle,
     specifiedDividerPadding: Dp,
     finalDividerThickness: Dp,
@@ -118,24 +202,25 @@ fun evaluateDividerPadding(
     val defaultDividerPadding = when (specifiedDividerStyle) {
         DividerStyle.COLON, DividerStyle.CHAR -> finalDividerThickness
         DividerStyle.LINE -> if (specifiedDividerThickness == Dp.Unspecified)
-            DividerDefaults.DEFAULT_DIVIDER_PADDING_LINE
-        else specifiedDividerThickness * DividerDefaults.DEFAULT_PADDING_FACTOR
+            DEFAULT_DIVIDER_PADDING_LINE
+        else specifiedDividerThickness * DEFAULT_PADDING_FACTOR
 
         DividerStyle.DASHED_LINE -> if (specifiedDividerThickness == Dp.Unspecified)
-            DividerDefaults.DEFAULT_DIVIDER_PADDING_DASHED
-        else specifiedDividerThickness * DividerDefaults.DEFAULT_PADDING_FACTOR
+            DEFAULT_DIVIDER_PADDING_DASHED
+        else specifiedDividerThickness * DEFAULT_PADDING_FACTOR
 
         DividerStyle.DASHDOTTED_LINE -> if (specifiedDividerThickness == Dp.Unspecified)
-            DividerDefaults.DEFAULT_DIVIDER_PADDING_DASHDOTTED
-        else specifiedDividerThickness * DividerDefaults.DEFAULT_PADDING_FACTOR
+            DEFAULT_DIVIDER_PADDING_DASHDOTTED
+        else specifiedDividerThickness * DEFAULT_PADDING_FACTOR
 
         else -> if (specifiedDividerThickness == Dp.Unspecified)
-            DividerDefaults.DEFAULT_DIVIDER_PADDING_DOTTED
-        else specifiedDividerThickness * DividerDefaults.DEFAULT_PADDING_FACTOR
+            DEFAULT_DIVIDER_PADDING_DOTTED
+        else specifiedDividerThickness * DEFAULT_PADDING_FACTOR
     }
 
     // Finally, use default/resized divider padding, or the specified divider padding
-    return if (specifiedDividerPadding == Dp.Unspecified) defaultDividerPadding else specifiedDividerPadding
+    return if (specifiedDividerPadding == Dp.Unspecified) defaultDividerPadding
+    else specifiedDividerPadding
 }
 
 fun String.dividerCount(minutesSecondsDividerChar: Char = DEFAULT_HOURS_MINUTES_DIVIDER_CHAR,

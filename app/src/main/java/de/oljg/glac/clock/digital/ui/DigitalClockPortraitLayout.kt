@@ -15,7 +15,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -23,7 +22,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
@@ -38,7 +36,7 @@ import de.oljg.glac.clock.digital.ui.utils.ClockDefaults
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.WIDEST_CHAR
 import de.oljg.glac.clock.digital.ui.utils.ClockParts
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults
+import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_FIRST_CIRCLE_POSITION_PORTRAIT_SPECIAL
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_SECOND_CIRCLE_POSITION_PORTRAIT_SPECIAL
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
@@ -61,14 +59,7 @@ fun DigitalClockPortraitLayout(
     fontStyle: FontStyle = FontStyle.Normal,
     charColors: Map<Char, Color> = defaultClockCharColors(MaterialTheme.colorScheme.onSurface),
     clockPartsColors: ClockPartsColors? = null,
-    dividerStyle: DividerStyle = DividerStyle.LINE,
-    dividerDashCount: Int = DividerDefaults.DEFAULT_DASH_COUNT,
-    dividerLineCap: StrokeCap = StrokeCap.Butt,
-    dividerThickness: Dp = DividerDefaults.DEFAULT_DIVIDER_THICKNESS_LINE,
-    dividerPadding: Dp = DividerDefaults.DEFAULT_DIVIDER_PADDING_LINE,
-    dividerColor: Color = MaterialTheme.colorScheme.onSurface,
-    dividerLengthPercent: Float = DividerDefaults.DEFAULT_DIVIDER_LENGTH_FACTOR,
-    dividerDashDottedPartCount: Int = DividerDefaults.DEFAULT_DASH_DOTTED_PART_COUNT,
+    dividerAttributes: DividerAttributes,
     startFontSize: TextUnit = evaluateStartFontSize(Configuration.ORIENTATION_PORTRAIT),
     clockCharType: ClockCharType = ClockCharType.FONT,
     clockCharSizeFactor: Float = ClockDefaults.DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
@@ -100,10 +91,14 @@ fun DigitalClockPortraitLayout(
             dividerCount = dividerCount,
             isOrientationPortrait = true,
             dividerStrokeWithToTakeIntoAccount =
-            if (dividerStyle != DividerStyle.NONE) dividerThickness else 0.dp,
+            if (dividerAttributes.dividerStyle != DividerStyle.NONE)
+                dividerAttributes.dividerThickness
+            else 0.dp,
 
             dividerPaddingToTakeIntoAccount =
-            if (dividerStyle != DividerStyle.NONE) dividerPadding else 0.dp,
+            if (dividerAttributes.dividerStyle != DividerStyle.NONE)
+                dividerAttributes.dividerPadding
+            else 0.dp,
 
             onFontSizeMeasured = { measuredFontSize, measuredSize ->
                 maxFontSize = measuredFontSize
@@ -113,8 +108,8 @@ fun DigitalClockPortraitLayout(
     }
 
     val spaceNeededForDividers =
-        if (dividerStyle != DividerStyle.NONE)
-            ((2 * dividerPadding + dividerThickness) * dividerCount)
+        if (dividerAttributes.dividerStyle != DividerStyle.NONE)
+            ((2 * dividerAttributes.dividerPadding + dividerAttributes.dividerThickness) * dividerCount)
         else 0.dp
 
     /**
@@ -195,7 +190,7 @@ fun DigitalClockPortraitLayout(
                     index = index,
                     clockPartsColors = clockPartsColors,
                 )
-                else dividerColor
+                else dividerAttributes.dividerColor
 
             /**
              * Draw 'A' or 'P' ONLY in case of ClockCharType.SEVEN_SEGMENT in last row as single
@@ -276,8 +271,8 @@ fun DigitalClockPortraitLayout(
                 }
 
                 if (index + 1 < currentTimeWithoutSeparators.length - 1) { // don't draw a divider at bottom of screen
-                    if (dividerStyle != DividerStyle.NONE) {
-                        when (dividerStyle) {
+                    if (dividerAttributes.dividerStyle != DividerStyle.NONE) {
+                        when (dividerAttributes.dividerStyle) {
                             DividerStyle.COLON ->
                                 /**
                                  * Draw a colon-like divider (also as replacement for
@@ -285,9 +280,9 @@ fun DigitalClockPortraitLayout(
                                  * to be rotated => kinda ugly/weird imho)
                                  */
                                 ColonDivider(
-                                    dividerPadding = dividerPadding,
+                                    dividerPadding = dividerAttributes.dividerPadding,
                                     clockBoxSize = clockBoxSize,
-                                    dividerThickness = dividerThickness,
+                                    dividerThickness = dividerAttributes.dividerThickness,
                                     dividerColor = finalDividerColor,
 
                                     /**
@@ -298,19 +293,21 @@ fun DigitalClockPortraitLayout(
                                     firstCirclePositionPercent =
                                     DEFAULT_FIRST_CIRCLE_POSITION_PORTRAIT_SPECIAL,
                                     secondCirclePositionPercent =
-                                    DEFAULT_SECOND_CIRCLE_POSITION_PORTRAIT_SPECIAL
+                                    DEFAULT_SECOND_CIRCLE_POSITION_PORTRAIT_SPECIAL,
+                                    orientation = Configuration.ORIENTATION_PORTRAIT
                                 )
                             else ->
                                 LineDivider(
-                                    dividerPadding = dividerPadding,
-                                    dividerThickness = dividerThickness,
+                                    dividerPadding = dividerAttributes.dividerPadding,
+                                    dividerThickness = dividerAttributes.dividerThickness,
                                     clockBoxSize = clockBoxSize,
-                                    dividerDashCount = dividerDashCount,
+                                    dividerDashCount = dividerAttributes.dividerDashCount,
                                     dividerColor = finalDividerColor,
-                                    dividerStyle = dividerStyle,
-                                    dividerLineCap = dividerLineCap,
-                                    dividerLengthPercent = dividerLengthPercent,
-                                    dividerDashDottedPartCount = dividerDashDottedPartCount
+                                    dividerStyle = dividerAttributes.dividerStyle,
+                                    dividerLineCap = dividerAttributes.dividerLineCap,
+                                    dividerLengthPercent = dividerAttributes.dividerLengthPercent,
+                                    dividerDashDottedPartCount = dividerAttributes.dividerDashDottedPartCount,
+                                    orientation = Configuration.ORIENTATION_PORTRAIT
                                 )
                         }
                     } else Box {} // don't draw any divider, draw "nothing" ...

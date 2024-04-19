@@ -29,18 +29,13 @@ import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_PADDING
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_COUNT
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_DOTTED_PART_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_LENGTH_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
 import de.oljg.glac.clock.digital.ui.utils.dividerCount
-import de.oljg.glac.clock.digital.ui.utils.evaluateDividerPadding
-import de.oljg.glac.clock.digital.ui.utils.evaluateDividerRotateAngle
-import de.oljg.glac.clock.digital.ui.utils.evaluateDividerThickness
+import de.oljg.glac.clock.digital.ui.utils.evaluateDividerAttributes
 
 @Composable
 fun DigitalClock(
@@ -65,76 +60,28 @@ fun DigitalClock(
     val currentDisplayOrientation = LocalConfiguration.current.orientation
     var clockBoxSize by remember { mutableStateOf(IntSize.Zero) }
 
-    // Use specified or default divider thickness
-    val finalDividerThickness = evaluateDividerThickness(
-        specifiedDividerStyle = dividerAttributes.dividerStyle,
-        specifiedDividerThickness = dividerAttributes.dividerThickness,
+    val finalClockCharSizeFactor =
+        if (clockCharSizeFactor <= 0f || clockCharSizeFactor > 1f)
+            DEFAULT_CLOCK_CHAR_SIZE_FACTOR
+        else clockCharSizeFactor
+
+    val finalDaytimeMarkerSizeFactor =
+        if (daytimeMarkerSizeFactor <= 0f || daytimeMarkerSizeFactor > 1f)
+            DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
+        else daytimeMarkerSizeFactor
+
+    val finalDividerAttributes = evaluateDividerAttributes(
+        dividerAttributes = dividerAttributes,
         dividerCount = currentTimeFormatted.dividerCount(
             minutesSecondsDividerChar,
             hoursMinutesDividerChar,
             daytimeMarkerDividerChar
         ),
         clockBoxSize = clockBoxSize,
-        currentDisplayOrientation = currentDisplayOrientation
+        currentDisplayOrientation = currentDisplayOrientation,
+        isClockCharTypeSevenSegment = clockCharType == ClockCharType.SEVEN_SEGMENT,
+        sevenSegmentStyle = sevenSegmentStyle
     )
-
-    // Use specified or default divider padding
-    val finalDividerPadding = evaluateDividerPadding(
-        specifiedDividerStyle = dividerAttributes.dividerStyle,
-        specifiedDividerPadding = dividerAttributes.dividerPadding,
-        finalDividerThickness = finalDividerThickness,
-        specifiedDividerThickness = dividerAttributes.dividerThickness
-    )
-
-    /**
-     * Use specified or default number of dashes in case of DividerStyle.DASHED
-     * (Zero or negative value would make no sense!)
-     */
-    val finalDashCount =
-        if (dividerAttributes.dividerDashCount == null ||
-            dividerAttributes.dividerDashCount <= 0)
-            DEFAULT_DASH_COUNT
-        else dividerAttributes.dividerDashCount
-
-    /**
-     * Use specified or default dash-dotted parts in case of DividerStyle.DASHDOTTED
-     * (Zero or negative value would make no sense!)
-     */
-    val finalDashDottedPartCount =
-        if (dividerAttributes.dividerDashDottedPartCount == null ||
-            dividerAttributes.dividerDashDottedPartCount <= 0)
-            DEFAULT_DASH_DOTTED_PART_COUNT
-        else dividerAttributes.dividerDashDottedPartCount
-
-    /**
-     * Use specified param or default value, in case specified param is not
-     * in range 0.0f .. 1.0f => %
-     */
-    val finalDividerLengthPercent =
-        if (dividerAttributes.dividerLengthPercent == null ||
-            dividerAttributes.dividerLengthPercent <= 0f ||
-            dividerAttributes.dividerLengthPercent > 1f)
-            DEFAULT_DIVIDER_LENGTH_FACTOR
-        else dividerAttributes.dividerLengthPercent
-    val finalClockCharSizeFactor =
-        if (clockCharSizeFactor <= 0f || clockCharSizeFactor > 1f)
-            DEFAULT_CLOCK_CHAR_SIZE_FACTOR
-        else clockCharSizeFactor
-    val finalDaytimeMarkerSizeFactor =
-        if (daytimeMarkerSizeFactor <= 0f || daytimeMarkerSizeFactor > 1f)
-            DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
-        else daytimeMarkerSizeFactor
-
-    // In case of 7-seg italic style and only in landscape o. => rotate divider appropriately
-    val dividerRotateAngle =
-        if (clockCharType == ClockCharType.SEVEN_SEGMENT)
-            evaluateDividerRotateAngle(sevenSegmentStyle)
-        /**
-         * No need to rotate dividers with ClockCharType.FONT (fonts have unknown/different italic
-         * angles).
-         * //TODO: allow anyways, but let user rotate manually
-         */
-        else 0f
 
     Box(
         modifier = Modifier
@@ -148,6 +95,7 @@ fun DigitalClock(
     ) {
         if (currentDisplayOrientation == Configuration.ORIENTATION_LANDSCAPE) {
             DigitalClockLandscapeLayout(
+                clockBoxSize = clockBoxSize,
                 hoursMinutesDividerChar = hoursMinutesDividerChar,
                 minutesSecondsDividerChar = minutesSecondsDividerChar,
                 daytimeMarkerDividerChar = daytimeMarkerDividerChar,
@@ -155,25 +103,17 @@ fun DigitalClock(
                 fontWeight = fontWeight,
                 fontStyle = fontStyle,
                 currentTimeFormatted = currentTimeFormatted,
-                clockBoxSize = clockBoxSize,
-                dividerStyle = dividerAttributes.dividerStyle, //TODO: shrink many params to one with one DividerAttributes object, just copy dividerAttributes and update final... vals
-                dividerDashCount = finalDashCount,
-                dividerLineCap = dividerAttributes.dividerLineCap,
-                dividerThickness = finalDividerThickness,
-                dividerPadding = finalDividerPadding,
+                dividerAttributes = finalDividerAttributes,
                 charColors = charColors,
                 clockPartsColors = clockPartsColors,
-                dividerColor = dividerAttributes.dividerColor,
-                dividerLengthPercent = finalDividerLengthPercent,
-                dividerDashDottedPartCount = finalDashDottedPartCount,
-                clockChar = clockChar,
-                clockCharType = clockCharType,
-                dividerRotateAngle = dividerRotateAngle,
                 clockCharSizeFactor = finalClockCharSizeFactor,
-                daytimeMarkerSizeFactor = finalDaytimeMarkerSizeFactor
+                daytimeMarkerSizeFactor = finalDaytimeMarkerSizeFactor,
+                clockCharType = clockCharType,
+                clockChar = clockChar
             )
         } else { //TODO: maybe introduce a landscapeInPortraitMode (maybe it's big/readable enough with just 'hh:mm'?(or whatever a user might want to have here :>)
             DigitalClockPortraitLayout(
+                clockBoxSize = clockBoxSize,
                 fontFamily = fontFamily,
                 fontWeight = fontWeight,
                 fontStyle = fontStyle,
@@ -191,21 +131,13 @@ fun DigitalClock(
                         daytimeMarkerDividerChar
                     ).forEach { notASeparatorChar -> append(notASeparatorChar) }
                 },
-                clockBoxSize = clockBoxSize,
-                dividerStyle = dividerAttributes.dividerStyle,
-                dividerDashCount = finalDashCount,
-                dividerLineCap = dividerAttributes.dividerLineCap,
-                dividerThickness = finalDividerThickness,
-                dividerPadding = finalDividerPadding,
+                dividerAttributes = finalDividerAttributes,
                 charColors = charColors,
                 clockPartsColors = clockPartsColors,
-                dividerColor = dividerAttributes.dividerColor,
-                dividerLengthPercent = finalDividerLengthPercent,
-                dividerDashDottedPartCount = finalDashDottedPartCount,
-                clockChar = clockChar,
-                clockCharType = clockCharType,
                 clockCharSizeFactor = finalClockCharSizeFactor,
-                daytimeMarkerSizeFactor = finalDaytimeMarkerSizeFactor
+                daytimeMarkerSizeFactor = finalDaytimeMarkerSizeFactor,
+                clockCharType = clockCharType,
+                clockChar = clockChar
             )
         }
     }

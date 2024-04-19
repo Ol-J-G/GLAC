@@ -15,7 +15,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -23,7 +22,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
@@ -44,12 +42,8 @@ import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_SECOND_CIRCLE
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.WIDEST_CHAR
 import de.oljg.glac.clock.digital.ui.utils.ClockParts
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_DOTTED_PART_COUNT
+import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_LENGTH_FACTOR
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_PADDING_LINE
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_THICKNESS_LINE
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
@@ -75,26 +69,29 @@ fun DigitalClockLandscapeLayout(
     fontStyle: FontStyle = FontStyle.Normal,
     charColors: Map<Char, Color> = defaultClockCharColors(MaterialTheme.colorScheme.onSurface),
     clockPartsColors: ClockPartsColors? = null,
-    dividerStyle: DividerStyle = DividerStyle.LINE,
-    dividerDashCount: Int = DividerDefaults.DEFAULT_DASH_COUNT,
-    dividerLineCap: StrokeCap = StrokeCap.Butt,
-    dividerThickness: Dp = DEFAULT_DIVIDER_THICKNESS_LINE,
-    dividerPadding: Dp = DEFAULT_DIVIDER_PADDING_LINE,
-    dividerColor: Color = MaterialTheme.colorScheme.onSurface,
-    dividerLengthPercent: Float = DEFAULT_DIVIDER_LENGTH_FACTOR,
-    dividerDashDottedPartCount: Int = DEFAULT_DASH_DOTTED_PART_COUNT,
+
+    dividerAttributes: DividerAttributes,
+//    dividerStyle: DividerStyle = DividerStyle.LINE,
+//    dividerDashCount: Int = DividerDefaults.DEFAULT_DASH_COUNT,
+//    dividerLineCap: StrokeCap = StrokeCap.Butt,
+//    dividerThickness: Dp = DEFAULT_DIVIDER_THICKNESS_LINE,
+//    dividerPadding: Dp = DEFAULT_DIVIDER_PADDING_LINE,
+//    dividerColor: Color = MaterialTheme.colorScheme.onSurface,
+//    dividerLengthPercent: Float = DEFAULT_DIVIDER_LENGTH_FACTOR,
+//    dividerDashDottedPartCount: Int = DEFAULT_DASH_DOTTED_PART_COUNT,
+//    dividerRotateAngle: Float = 0f,
+
     startFontSize: TextUnit = evaluateStartFontSize(Configuration.ORIENTATION_LANDSCAPE),
     clockCharType: ClockCharType = ClockCharType.FONT,
-    dividerRotateAngle: Float = 0f,
     clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
     daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
     clockChar: @Composable (Char, TextUnit, Color, DpSize) -> Unit
 ) {
 
     val isFontCharDivider =
-        clockCharType == ClockCharType.FONT && dividerStyle == DividerStyle.CHAR
+        clockCharType == ClockCharType.FONT && dividerAttributes.dividerStyle == DividerStyle.CHAR
     val isSevenSegmentCharDivider =
-        clockCharType == ClockCharType.SEVEN_SEGMENT && dividerStyle == DividerStyle.CHAR
+        clockCharType == ClockCharType.SEVEN_SEGMENT && dividerAttributes.dividerStyle == DividerStyle.CHAR
 
     /**
      * Set LINE as default divider style for 7-segment clock in case someone would try to do the
@@ -107,7 +104,7 @@ fun DigitalClockLandscapeLayout(
      * to understand as well!)
      */
     val finalDividerStyle =
-        if (isSevenSegmentCharDivider) DividerStyle.LINE else dividerStyle
+        if (isSevenSegmentCharDivider) DividerStyle.LINE else dividerAttributes.dividerStyle
 
     // How many dividers are included in time string
     val dividerCount = currentTimeFormatted.dividerCount(
@@ -135,9 +132,9 @@ fun DigitalClockLandscapeLayout(
             fontWeight = fontWeight,
             fontStyle = fontStyle,
             dividerStrokeWithToTakeIntoAccount =
-            if (finalDividerStyle != DividerStyle.CHAR) dividerThickness else 0.dp,
+            if (finalDividerStyle != DividerStyle.CHAR) dividerAttributes.dividerThickness else 0.dp,
             dividerPaddingToTakeIntoAccount =
-            if (finalDividerStyle != DividerStyle.CHAR) dividerPadding else 0.dp,
+            if (finalDividerStyle != DividerStyle.CHAR) dividerAttributes.dividerPadding else 0.dp,
             onFontSizeMeasured = { measuredFontSize, measuredSize ->
                 maxFontSize = measuredFontSize
                 finalFontBoundsSize = measuredSize
@@ -173,9 +170,9 @@ fun DigitalClockLandscapeLayout(
             )
 
             else -> calculateMaxCharSizeSevenSegment(
-                dividerStyle = dividerStyle,
-                dividerPadding = dividerPadding,
-                dividerThickness = dividerThickness,
+                dividerStyle = dividerAttributes.dividerStyle,
+                dividerPadding = dividerAttributes.dividerPadding,
+                dividerThickness = dividerAttributes.dividerThickness,
                 dividerCount = dividerCount,
                 clockBoxSize = clockBoxSize,
                 currentTimeFormatted = finalCurrentTimeFormatted
@@ -225,10 +222,10 @@ fun DigitalClockLandscapeLayout(
                 )
                 else {
                     // dividerColor in case of DividerStyle.CHAR => divider is a Char //TODO: then don't allow digits or letters as divider char, otherwise this will not work! (or change it to allow any char als divider char, but ... who would want such stuff^^?? (what time it is(if you wouldn't know the divider is '2'): 122342AM => 12:34:AM => lul, strange, but useless(? .. but maybe "funny"?) :>)
-                    if (char.isLetterOrDigit()) charColors.getValue(char) else dividerColor
+                    if (char.isLetterOrDigit()) charColors.getValue(char) else dividerAttributes.dividerColor
                 }
 
-            if (dividerStyle != DividerStyle.NONE) {
+            if (dividerAttributes.dividerStyle != DividerStyle.NONE) {
                 val finalDividerColor =
                     if (clockPartsColors != null) evaluateDividerColorUsingIndex(
                         formattedTime = finalCurrentTimeFormatted,
@@ -236,7 +233,7 @@ fun DigitalClockLandscapeLayout(
                         clockParts = clockPartsColors,
                         isFontCharDivider = isFontCharDivider
                     )
-                    else dividerColor
+                    else dividerAttributes.dividerColor
 
                 /**
                  * When not DividerStyle.CHAR is used, draw one of the remaining divider
@@ -259,18 +256,18 @@ fun DigitalClockLandscapeLayout(
                             verticalArrangement = Arrangement.Center,
                             modifier = Modifier
                                 .padding(
-                                    top = dividerPadding,
-                                    bottom = dividerPadding
+                                    top = dividerAttributes.dividerPadding,
+                                    bottom = dividerAttributes.dividerPadding
                                 )
                         ) {
                             when (finalDividerStyle) {
                                 DividerStyle.COLON ->
                                     ColonDivider(
-                                        dividerPadding = dividerPadding,
+                                        dividerPadding = dividerAttributes.dividerPadding,
                                         clockBoxSize = clockBoxSize,
-                                        dividerThickness = dividerThickness,
+                                        dividerThickness = dividerAttributes.dividerThickness,
                                         dividerColor = finalDividerColor,
-                                        dividerRotateAngle = dividerRotateAngle,
+                                        dividerRotateAngle = dividerAttributes.dividerRotateAngle,
 
                                         //TODO: maybe create params => configurable, to let user adjust it
                                         firstCirclePositionPercent = when (dividerCount) {
@@ -282,21 +279,23 @@ fun DigitalClockLandscapeLayout(
                                             1 -> DEFAULT_SECOND_CIRCLE_POSITION_AT_ONE_DIVIDER
                                             2 -> DEFAULT_SECOND_CIRCLE_POSITION_AT_TWO_DIVIDERS
                                             else -> DEFAULT_SECOND_CIRCLE_POSITION_AT_THREE_DIVIDERS
-                                        }
+                                        },
+                                        orientation = Configuration.ORIENTATION_LANDSCAPE
                                     )
 
                                 else ->
                                     LineDivider(
-                                        dividerPadding = dividerPadding,
-                                        dividerThickness = dividerThickness,
+                                        dividerPadding = dividerAttributes.dividerPadding,
+                                        dividerThickness = dividerAttributes.dividerThickness,
                                         clockBoxSize = clockBoxSize,
-                                        dividerDashCount = dividerDashCount,
+                                        dividerDashCount = dividerAttributes.dividerDashCount,
                                         dividerColor = finalDividerColor,
                                         dividerStyle = finalDividerStyle,
-                                        dividerLineCap = dividerLineCap,
-                                        dividerLengthPercent = dividerLengthPercent,
-                                        dividerDashDottedPartCount = dividerDashDottedPartCount,
-                                        dividerRotateAngle = dividerRotateAngle
+                                        dividerLineCap = dividerAttributes.dividerLineCap,
+                                        dividerLengthPercent = dividerAttributes.dividerLengthPercent,
+                                        dividerDashDottedPartCount = dividerAttributes.dividerDashDottedPartCount,
+                                        dividerRotateAngle = dividerAttributes.dividerRotateAngle,
+                                        orientation = Configuration.ORIENTATION_LANDSCAPE
                                     )
                             }
                         }

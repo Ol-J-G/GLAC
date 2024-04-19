@@ -76,6 +76,9 @@ class DigitalClockTest: UITestBase() {
         androidComposeTestRule
             .onNodeWithTag(TestTags.FONT_MEASUREMENT, useUnmergedTree = true)
             .assertDoesNotExist()
+
+        // Reset rotation
+        InstrumentationRegistry.getInstrumentation().uiAutomation.setRotation(ROTATION_0)
     }
 }
 

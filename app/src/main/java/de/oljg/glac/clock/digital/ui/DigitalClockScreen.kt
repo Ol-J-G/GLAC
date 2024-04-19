@@ -81,13 +81,13 @@ fun DigitalClockScreen(
 
     dividerAttributes: DividerAttributes = DividerAttributes(
         dividerStyle = DividerStyle.LINE,
-//        dividerDashCount = null,
+//        dividerDashCount = 5,
 //        dividerLineCap = StrokeCap.Butt,
 //        dividerThickness = Dp.Unspecified,
 //        dividerPadding = Dp.Unspecified,
         dividerColor = charColor,
-//        dividerLengthPercent = null,
-//        dividerDashDottedPartCount = null
+//        dividerLengthPercent = .5f,
+//        dividerDashDottedPartCount = 3
     ),
 
     clockCharType: ClockCharType = ClockCharType.FONT,
