@@ -19,7 +19,7 @@ import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TOP_APP_BAR_HEIG
 
 @Composable
 fun GlacTabBar(
-    allScreensToDisplay: List<GlacScreen>,
+    tabBarScreens: List<GlacScreen>,
     onTabSelected: (GlacScreen) -> Unit,
     currentScreen: GlacScreen
 ) {
@@ -32,14 +32,14 @@ fun GlacTabBar(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically) {
 
-            allScreensToDisplay.forEach { screen ->
+            tabBarScreens.forEach { screen ->
                 GlacTab(
                     tabText = when(screen.route) {
                         GlacRoute.CLOCK.name -> stringResource(R.string.clock)
                         GlacRoute.ALARMS.name -> stringResource(id = R.string.alarms)
                         GlacRoute.SETTINGS.name -> stringResource(R.string.settings)
                         GlacRoute.ABOUT.name -> stringResource(R.string.about)
-                        else -> ""
+                        else -> throw IllegalStateException()
                     },
                     tabIconFilled = screen.tabIconSelected,
                     tabIconOutlined = screen.tabIconUnselected,

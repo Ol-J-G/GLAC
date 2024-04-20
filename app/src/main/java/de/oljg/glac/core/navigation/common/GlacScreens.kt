@@ -3,12 +3,18 @@ package de.oljg.glac.core.navigation.common
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Alarm
+import androidx.compose.material.icons.filled.BuildCircle
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.MoreTime
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Snooze
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.Alarm
+import androidx.compose.material.icons.outlined.BuildCircle
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.MoreTime
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Snooze
 import androidx.compose.ui.graphics.vector.ImageVector
 
 
@@ -51,20 +57,20 @@ object SettingsScreen : GlacScreen {
 
 object ClockSettingsScreen : GlacScreen {
     override val route = GlacRoute.CLOCK_SETTINGS.name
-    override val tabIconSelected = Icons.Filled.Settings
-    override val tabIconUnselected = Icons.Outlined.Settings
+    override val tabIconSelected = Icons.Filled.MoreTime
+    override val tabIconUnselected = Icons.Outlined.MoreTime
 }
 
 object AlarmSettingsScreen : GlacScreen {
     override val route = GlacRoute.ALARM_SETTINGS.name
-    override val tabIconSelected = Icons.Filled.Settings
-    override val tabIconUnselected = Icons.Outlined.Settings
+    override val tabIconSelected = Icons.Filled.Snooze
+    override val tabIconUnselected = Icons.Outlined.Snooze
 }
 
 object CommonSettingsScreen : GlacScreen {
     override val route = GlacRoute.COMMON_SETTINGS.name
-    override val tabIconSelected = Icons.Filled.Settings
-    override val tabIconUnselected = Icons.Outlined.Settings
+    override val tabIconSelected = Icons.Filled.BuildCircle
+    override val tabIconUnselected = Icons.Outlined.BuildCircle
 }
 
 
@@ -74,15 +80,7 @@ object AboutScreen : GlacScreen {
     override val tabIconUnselected = Icons.Outlined.Info
 }
 
-val glacScreens = listOf(
-    ClockScreen,
-    AlarmsScreen,
-    SettingsScreen,
-    ClockSettingsScreen,
-    AlarmSettingsScreen,
-    CommonSettingsScreen,
-    AboutScreen
-)
 
 val glacTabScreens = listOf(ClockScreen, AlarmsScreen, SettingsScreen, AboutScreen)
-val settingsSubScreens = listOf(ClockSettingsScreen, AlarmSettingsScreen, CommonSettingsScreen)
+val glacSettingsSubScreens = listOf(ClockSettingsScreen, AlarmSettingsScreen, CommonSettingsScreen)
+val allGlacScreens = glacTabScreens + glacSettingsSubScreens

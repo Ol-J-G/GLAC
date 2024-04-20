@@ -7,16 +7,11 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -28,11 +23,12 @@ import de.oljg.glac.core.navigation.GlacNavHost
 import de.oljg.glac.core.navigation.common.ClockFullScreen
 import de.oljg.glac.core.navigation.common.ClockSettingsScreen
 import de.oljg.glac.core.navigation.common.SettingsScreen
-import de.oljg.glac.core.navigation.common.settingsSubScreens
-import de.oljg.glac.core.navigation.common.glacScreens
+import de.oljg.glac.core.navigation.common.glacSettingsSubScreens
+import de.oljg.glac.core.navigation.common.allGlacScreens
 import de.oljg.glac.core.navigation.common.glacTabScreens
 import de.oljg.glac.core.navigation.common.isSettingsSubScreen
 import de.oljg.glac.core.navigation.navigateSingleTopTo
+import de.oljg.glac.core.navigation.ui.bottombar.GlacBottomNavigationBar
 import de.oljg.glac.core.navigation.ui.topappbar.GlacTabBar
 import de.oljg.glac.ui.theme.GLACTheme
 
@@ -54,15 +50,12 @@ fun GlacApp() {
         val currentBackStack by navController.currentBackStackEntryAsState()
         val currentDestination = currentBackStack?.destination
 
-        // default / start screen is Fullscreen Clock
-        val currentScreen = glacScreens.find { clacScreen ->
-            clacScreen.route == currentDestination?.route
+        // Default / start screen is Fullscreen Clock
+        val currentScreen = allGlacScreens.find { glacScreen ->
+            glacScreen.route == currentDestination?.route
         } ?: ClockFullScreen
 
-        var selectedBottomBarItemIndex by rememberSaveable {
-            mutableIntStateOf(0)
-        }
-        var currentSelectedSubSettingsScreenRoute by rememberSaveable {
+        var currentSubSettingsScreenRoute by rememberSaveable {
             mutableStateOf(ClockSettingsScreen.route)
         }
 
@@ -74,22 +67,21 @@ fun GlacApp() {
                 topBar = {
 
                     // Don't show topBar when fullscreen clock is displayed
-                    if (currentScreen !is ClockFullScreen)
+                    if (currentScreen !is ClockFullScreen) {
                         GlacTabBar(
-                            allScreensToDisplay = glacTabScreens,
-                            onTabSelected = { screen ->
-                                when (screen) {
-
+                            tabBarScreens = glacTabScreens,
+                            onTabSelected = { tabBarScreen ->
+                                when (tabBarScreen) {
                                     /**
-                                     * Navigate to the currently selected sub settings screen,
-                                     * when selecting settings tab.
+                                     * Navigate to the currently/lastly selected sub settings
+                                     * screen, when settings tab is selected.
                                      */
                                     SettingsScreen ->
                                         navController.navigateSingleTopTo(
-                                            currentSelectedSubSettingsScreenRoute
+                                            currentSubSettingsScreenRoute
                                         )
 
-                                    else -> navController.navigateSingleTopTo(screen.route)
+                                    else -> navController.navigateSingleTopTo(tabBarScreen.route)
                                 }
                             },
 
@@ -97,43 +89,33 @@ fun GlacApp() {
                              * Let settings tab stay selected when one of the bottom bar's tabs
                              * (sub settings) are selected.
                              */
-                            currentScreen =
-                                if(currentScreen.isSettingsSubScreen()) SettingsScreen
-                                else currentScreen
+                            currentScreen = if (currentScreen.isSettingsSubScreen()) SettingsScreen
+                            else currentScreen
                         )
+                    }
                 },
                 bottomBar = {
-                    if (currentScreen is SettingsScreen ||
-                        currentScreen.isSettingsSubScreen()
-                    ) {
-                        NavigationBar {
-                            settingsSubScreens.forEachIndexed { index, item ->
-                                NavigationBarItem(
-                                    selected = selectedBottomBarItemIndex == index,
-                                    onClick = {
-                                        selectedBottomBarItemIndex = index
-                                        currentSelectedSubSettingsScreenRoute = item.route
-                                        navController.navigateSingleTopTo(item.route)
-                                    },
-                                    label = { Text(text = item.route) },
-                                    icon = {
-                                        Icon(
-                                            imageVector = if (selectedBottomBarItemIndex == index)
-                                                item.tabIconSelected else item.tabIconUnselected,
-                                            contentDescription = null //TODO: add content desc to GlacScreen
-                                        )
-                                    }
-                                )
+                    /**
+                     * Show bottom navigation bar only in case a settings screen is selected.
+                     */
+                    if (currentScreen is SettingsScreen || currentScreen.isSettingsSubScreen()) {
+                        GlacBottomNavigationBar(
+                            navigationBarItems = glacSettingsSubScreens,
+                            selected = { screen ->
+                                currentSubSettingsScreenRoute == screen.route
+                            },
+                            onNavigationBarItemIsClicked = { screen ->
+                                currentSubSettingsScreenRoute = screen.route
+                                navController.navigateSingleTopTo(screen.route)
                             }
-                        }
+                        )
                     }
                 }
             ) { scaffoldInnerPadding ->
                 GlacNavHost(
                     modifier =
                     if (currentScreen is ClockFullScreen) Modifier.padding(0.dp)
-                    else
-                        Modifier.padding(scaffoldInnerPadding),
+                    else Modifier.padding(scaffoldInnerPadding),
                     navController = navController,
                 )
             }
