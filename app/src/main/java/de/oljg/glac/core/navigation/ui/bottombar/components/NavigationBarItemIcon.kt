@@ -10,11 +10,12 @@ import de.oljg.glac.core.navigation.common.GlacScreen
 @Composable
 fun NavigationBarItemIcon(
     screen: GlacScreen,
-    labels: Map<GlacRoute, String>
+    labels: Map<GlacRoute, String>,
+    selected: Boolean,
 ) {
     val iconLabel = stringResource(id = R.string.icon)
     Icon(
-        imageVector = screen.tabIconSelected,
+        imageVector = if(selected) screen.tabIconSelected else screen.tabIconUnselected,
         contentDescription = when (screen.route) {
             GlacRoute.CLOCK_SETTINGS.name -> "${labels.getValue(GlacRoute.CLOCK_SETTINGS)} $iconLabel"
             GlacRoute.ALARM_SETTINGS.name -> "${labels.getValue(GlacRoute.ALARM_SETTINGS)} $iconLabel"

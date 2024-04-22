@@ -50,7 +50,7 @@ fun GlacApp() {
         val currentBackStack by navController.currentBackStackEntryAsState()
         val currentDestination = currentBackStack?.destination
 
-        // Default / start screen is Fullscreen Clock
+        // Default / Start screen is fullscreen clock
         val currentScreen = allGlacScreens.find { glacScreen ->
             glacScreen.route == currentDestination?.route
         } ?: ClockFullScreen
@@ -100,7 +100,7 @@ fun GlacApp() {
                      */
                     if (currentScreen is SettingsScreen || currentScreen.isSettingsSubScreen()) {
                         GlacBottomNavigationBar(
-                            navigationBarItems = glacSettingsSubScreens,
+                            bottomNavigationBarScreens = glacSettingsSubScreens,
                             selected = { screen ->
                                 currentSubSettingsScreenRoute == screen.route
                             },

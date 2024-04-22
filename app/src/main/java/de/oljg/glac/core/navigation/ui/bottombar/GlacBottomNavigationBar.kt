@@ -12,7 +12,7 @@ import de.oljg.glac.core.navigation.ui.bottombar.components.NavigationBarItemLab
 
 @Composable
 fun GlacBottomNavigationBar(
-    navigationBarItems: List<GlacScreen>,
+    bottomNavigationBarScreens: List<GlacScreen>,
     selected: (GlacScreen) -> Boolean,
     onNavigationBarItemIsClicked: (GlacScreen) -> Unit
 ) {
@@ -22,12 +22,12 @@ fun GlacBottomNavigationBar(
             Pair(GlacRoute.ALARM_SETTINGS, stringResource(id = R.string.alarm_settings)),
             Pair(GlacRoute.COMMON_SETTINGS, stringResource(id = R.string.common_settings))
         )
-        navigationBarItems.forEach { screen ->
+        bottomNavigationBarScreens.forEach { screen ->
             NavigationBarItem(
                 selected = selected(screen),
                 onClick = { onNavigationBarItemIsClicked(screen) },
                 label = { NavigationBarItemLabel(screen, navItemlabels) },
-                icon = { NavigationBarItemIcon(screen, navItemlabels) }
+                icon = { NavigationBarItemIcon(screen, navItemlabels, selected(screen)) }
             )
         }
     }
