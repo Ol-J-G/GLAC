@@ -21,16 +21,17 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import de.oljg.glac.core.navigation.GlacNavHost
 import de.oljg.glac.core.navigation.common.ClockFullScreen
-import de.oljg.glac.core.navigation.common.ClockSettingsScreen
+import de.oljg.glac.core.navigation.common.ClockSettingsSubScreen
 import de.oljg.glac.core.navigation.common.SettingsScreen
-import de.oljg.glac.core.navigation.common.glacSettingsSubScreens
 import de.oljg.glac.core.navigation.common.allGlacScreens
+import de.oljg.glac.core.navigation.common.glacSettingsSubScreens
 import de.oljg.glac.core.navigation.common.glacTabScreens
 import de.oljg.glac.core.navigation.common.isSettingsSubScreen
 import de.oljg.glac.core.navigation.navigateSingleTopTo
 import de.oljg.glac.core.navigation.ui.bottombar.GlacBottomNavigationBar
 import de.oljg.glac.core.navigation.ui.topappbar.GlacTabBar
 import de.oljg.glac.ui.theme.GLACTheme
+
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -41,6 +42,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -56,8 +59,9 @@ fun GlacApp() {
         } ?: ClockFullScreen
 
         var currentSubSettingsScreenRoute by rememberSaveable {
-            mutableStateOf(ClockSettingsScreen.route)
+            mutableStateOf(ClockSettingsSubScreen.route)
         }
+
 
         Surface(
             modifier = Modifier.fillMaxSize(),

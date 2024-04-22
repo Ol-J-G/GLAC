@@ -1,0 +1,17 @@
+package de.oljg.glac.settings.clock.ui
+
+import android.content.Context
+import androidx.lifecycle.ViewModel
+import de.oljg.glac.core.settings.data.ClockSettingsRepository
+
+class ClockSettingsViewModel(
+    context: Context
+) : ViewModel() {
+    private val clockSettingsRepository = ClockSettingsRepository(context)
+
+    val clockSettings = clockSettingsRepository.clockSettingsFlow()
+
+    suspend fun setShowSeconds(value: Boolean) {
+        clockSettingsRepository.setShowSeconds(value)
+    }
+}

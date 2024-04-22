@@ -6,6 +6,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +31,8 @@ import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
 import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
+import de.oljg.glac.core.settings.data.ClockSettings
+import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import kotlinx.coroutines.delay
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -37,10 +40,11 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DigitalClockScreen(
-    fullScreen: Boolean,
+    viewModel: ClockSettingsViewModel,
+    fullScreen: Boolean = false,
     onClick: () -> Unit = {},
 
-    showSeconds: Boolean = true,
+//    showSeconds: Boolean = true,
     showDaytimeMarker: Boolean = true,
 
 
@@ -109,6 +113,11 @@ fun DigitalClockScreen(
 //            Pair(Segment.BOTTOM_RIGHT, Color.Red.copy(alpha = 0.3f))
 //        ),
 ) {
+    val clockSettings = viewModel.clockSettings.collectAsState(
+        initial = ClockSettings()
+    ).value
+
+
     if (fullScreen)
         HideSystemBars()
 
@@ -116,7 +125,7 @@ fun DigitalClockScreen(
         if (showDaytimeMarker) append("hh") else append("HH")
         append(hoursMinutesDividerChar)
         append("mm")
-        if (showSeconds) {
+        if (clockSettings.showSeconds) {
             append(minutesSecondsDividerChar)
             append("ss")
         }
@@ -167,7 +176,7 @@ fun DigitalClockScreen(
          * second/minute starts
          */
         val delayMillis =
-            if (showSeconds) 1000L - (currentTime.nano / 1000000).toLong()
+            if (clockSettings.showSeconds) 1000L - (currentTime.nano / 1000000).toLong()
             else 1000L * 60 - (currentTime.second * 1000L) - (currentTime.nano / 1000000).toLong()
         delay(delayMillis)
         currentTime = LocalTime.now()

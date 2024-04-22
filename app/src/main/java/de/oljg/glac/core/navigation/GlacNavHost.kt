@@ -5,10 +5,14 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,14 +20,16 @@ import androidx.navigation.navigation
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.DigitalClockScreen
 import de.oljg.glac.core.navigation.common.AboutScreen
-import de.oljg.glac.core.navigation.common.AlarmSettingsScreen
+import de.oljg.glac.core.navigation.common.AlarmSettingsSubScreen
 import de.oljg.glac.core.navigation.common.AlarmsScreen
 import de.oljg.glac.core.navigation.common.ClockFullScreen
 import de.oljg.glac.core.navigation.common.ClockScreen
-import de.oljg.glac.core.navigation.common.ClockSettingsScreen
-import de.oljg.glac.core.navigation.common.CommonSettingsScreen
+import de.oljg.glac.core.navigation.common.ClockSettingsSubScreen
+import de.oljg.glac.core.navigation.common.CommonSettingsSubScreen
 import de.oljg.glac.core.navigation.common.SettingsScreen
 import de.oljg.glac.core.temp.DummyScreen
+import de.oljg.glac.settings.clock.ui.ClockSettingsScreen
+import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -31,6 +37,17 @@ fun GlacNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+
+    @Suppress("UNCHECKED_CAST")
+    val clockSettingsViewModel = viewModel<ClockSettingsViewModel>(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return ClockSettingsViewModel(context) as T //TODO: get rid of this => try to use DH+@HiltViewModel and inject repo to VM and use it as hiltViewModel() in screen!??
+            }
+        }
+    )
+
     NavHost(
         navController = navController,
         startDestination = ClockFullScreen.route,
@@ -49,14 +66,15 @@ fun GlacNavHost(
 
         composable(route = ClockFullScreen.route) {
             DigitalClockScreen(
-                fullScreen = true,
+                viewModel = clockSettingsViewModel,
                 onClick = { navController.navigateSingleTopTo(ClockScreen.route) },
-                fontFamily = dDinfontfamily
+                fontFamily = dDinfontfamily,
+                fullScreen = true,
             )
         }
         composable(route = ClockScreen.route) {
             DigitalClockScreen(
-                fullScreen = false,
+                viewModel = clockSettingsViewModel,
                 onClick = { navController.navigateSingleTopTo(ClockFullScreen.route) },
                 fontFamily = dDinfontfamily
             )
@@ -69,23 +87,22 @@ fun GlacNavHost(
         }
         navigation(
             route = SettingsScreen.route,
-            startDestination = ClockSettingsScreen.route
+            startDestination = ClockSettingsSubScreen.route
         ) {
-            composable(route = ClockSettingsScreen.route) {
-                DummyScreen(
-                    text = ClockSettingsScreen.route,
-                    color = Color.Green
+            composable(route = ClockSettingsSubScreen.route) {
+                ClockSettingsScreen(
+                    viewModel = clockSettingsViewModel
                 )
             }
-            composable(route = AlarmSettingsScreen.route) {
+            composable(route = AlarmSettingsSubScreen.route) {
                 DummyScreen(
-                    text = AlarmSettingsScreen.route,
+                    text = AlarmSettingsSubScreen.route,
                     color = Color.Green.copy(alpha = .7f)
                 )
             }
-            composable(route = CommonSettingsScreen.route) {
+            composable(route = CommonSettingsSubScreen.route) {
                 DummyScreen(
-                    text = CommonSettingsScreen.route,
+                    text = CommonSettingsSubScreen.route,
                     color = Color.Green.copy(alpha = .3f)
                 )
             }
@@ -101,3 +118,4 @@ fun GlacNavHost(
 
 fun NavHostController.navigateSingleTopTo(route: String) =
     this.navigate(route) { launchSingleTop = true }
+
