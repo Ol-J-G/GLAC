@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.clock.digital.ui.components.SevenSegmentChar
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults
@@ -40,7 +41,7 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DigitalClockScreen(
-    viewModel: ClockSettingsViewModel,
+    viewModel: ClockSettingsViewModel = hiltViewModel(),
     fullScreen: Boolean = false,
     onClick: () -> Unit = {},
 
@@ -113,7 +114,7 @@ fun DigitalClockScreen(
 //            Pair(Segment.BOTTOM_RIGHT, Color.Red.copy(alpha = 0.3f))
 //        ),
 ) {
-    val clockSettings = viewModel.clockSettings.collectAsState(
+    val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
     ).value
 

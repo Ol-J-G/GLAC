@@ -1,16 +1,16 @@
 package de.oljg.glac.settings.clock.ui
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.core.settings.data.ClockSettingsRepository
+import javax.inject.Inject
 
-class ClockSettingsViewModel(
-    context: Context
+@HiltViewModel
+class ClockSettingsViewModel @Inject constructor (
+   private val clockSettingsRepository: ClockSettingsRepository
 ) : ViewModel() {
-    private val clockSettingsRepository = ClockSettingsRepository(context)
-
-    val clockSettings = clockSettingsRepository.getClockSettingsFlow()
+    val clockSettingsFlow = clockSettingsRepository.getClockSettingsFlow()
 
     suspend fun updateClockSettings(updatedClockSettings: ClockSettings) {
         clockSettingsRepository.updateClockSettings(updatedClockSettings)

@@ -10,9 +10,6 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,7 +26,6 @@ import de.oljg.glac.core.navigation.common.CommonSettingsSubScreen
 import de.oljg.glac.core.navigation.common.SettingsScreen
 import de.oljg.glac.core.temp.DummyScreen
 import de.oljg.glac.settings.clock.ui.ClockSettingsScreen
-import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -38,15 +34,11 @@ fun GlacNavHost(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-
-    @Suppress("UNCHECKED_CAST")
-    val clockSettingsViewModel = viewModel<ClockSettingsViewModel>(
-        factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return ClockSettingsViewModel(context) as T //TODO: get rid of this => try to use DH+@HiltViewModel and inject repo to VM and use it as hiltViewModel() in screen!??
-            }
-        }
-    )
+    //TODO: use this and https://stackoverflow.com/questions/49419971/kotlin-get-list-of-all-files-in-resource-folder
+    //to read all available fonts from res/font and create appropriate FontFamily objects as list to let users select clockFont
+    //or: maintain a list manually? (since getIdentifier is discuraged)???
+    val dDinregularResId = context.resources
+        .getIdentifier("d_din_regular", "font", context.packageName)
 
     NavHost(
         navController = navController,
@@ -55,7 +47,7 @@ fun GlacNavHost(
     ) {
 
         val dDinfontfamily = FontFamily(
-            Font(R.font.d_din_regular, weight = FontWeight.Normal),
+            Font(dDinregularResId, weight = FontWeight.Normal),
             Font(
                 R.font.d_din_italic,
                 weight = FontWeight.Normal,
@@ -66,7 +58,6 @@ fun GlacNavHost(
 
         composable(route = ClockFullScreen.route) {
             DigitalClockScreen(
-                viewModel = clockSettingsViewModel,
                 onClick = { navController.navigateSingleTopTo(ClockScreen.route) },
                 fontFamily = dDinfontfamily,
                 fullScreen = true,
@@ -74,7 +65,6 @@ fun GlacNavHost(
         }
         composable(route = ClockScreen.route) {
             DigitalClockScreen(
-                viewModel = clockSettingsViewModel,
                 onClick = { navController.navigateSingleTopTo(ClockFullScreen.route) },
                 fontFamily = dDinfontfamily
             )
@@ -90,9 +80,7 @@ fun GlacNavHost(
             startDestination = ClockSettingsSubScreen.route
         ) {
             composable(route = ClockSettingsSubScreen.route) {
-                ClockSettingsScreen(
-                    viewModel = clockSettingsViewModel
-                )
+                ClockSettingsScreen()
             }
             composable(route = AlarmSettingsSubScreen.route) {
                 DummyScreen(

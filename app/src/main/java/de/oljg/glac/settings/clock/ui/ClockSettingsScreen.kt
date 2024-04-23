@@ -16,6 +16,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.components.SettingsSwitch
@@ -23,11 +24,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ClockSettingsScreen(
-    viewModel: ClockSettingsViewModel
+    viewModel: ClockSettingsViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
-    val clockSettings = viewModel.clockSettings.collectAsState(
+
+    val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
     ).value
 
