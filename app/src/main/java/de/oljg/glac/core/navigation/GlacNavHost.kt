@@ -5,16 +5,10 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.DigitalClockScreen
 import de.oljg.glac.core.navigation.common.AboutScreen
 import de.oljg.glac.core.navigation.common.AlarmSettingsSubScreen
@@ -33,40 +27,20 @@ fun GlacNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
-    //TODO: use this and https://stackoverflow.com/questions/49419971/kotlin-get-list-of-all-files-in-resource-folder
-    //to read all available fonts from res/font and create appropriate FontFamily objects as list to let users select clockFont
-    //or: maintain a list manually? (since getIdentifier is discuraged)???
-    val dDinregularResId = context.resources
-        .getIdentifier("d_din_regular", "font", context.packageName)
-
     NavHost(
         navController = navController,
         startDestination = ClockFullScreen.route,
         modifier = modifier
     ) {
-
-        val dDinfontfamily = FontFamily(
-            Font(dDinregularResId, weight = FontWeight.Normal),
-            Font(
-                R.font.d_din_italic,
-                weight = FontWeight.Normal,
-                style = FontStyle.Italic
-            ),
-            Font(R.font.d_din_bold, weight = FontWeight.Bold)
-        )
-
         composable(route = ClockFullScreen.route) {
             DigitalClockScreen(
                 onClick = { navController.navigateSingleTopTo(ClockScreen.route) },
-                fontFamily = dDinfontfamily,
                 fullScreen = true,
             )
         }
         composable(route = ClockScreen.route) {
             DigitalClockScreen(
                 onClick = { navController.navigateSingleTopTo(ClockFullScreen.route) },
-                fontFamily = dDinfontfamily
             )
         }
         composable(route = AlarmsScreen.route) {

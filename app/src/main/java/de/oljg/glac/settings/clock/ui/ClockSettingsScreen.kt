@@ -6,6 +6,7 @@ import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
@@ -13,12 +14,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.settings.data.ClockSettings
+import de.oljg.glac.settings.clock.ui.components.FontDropDown
 import de.oljg.glac.settings.clock.ui.components.SettingsSwitch
 import kotlinx.coroutines.launch
 
@@ -35,13 +38,16 @@ fun ClockSettingsScreen(
 
     Surface(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(20.dp)
             .fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
         Column(
-            modifier = Modifier.scrollable(state = scrollState, orientation = Orientation.Vertical),
+            modifier = Modifier
+                .fillMaxWidth()
+                .scrollable(state = scrollState, orientation = Orientation.Vertical),
             verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             SettingsSwitch(
                 label = stringResource(R.string.show_seconds),
@@ -58,6 +64,15 @@ fun ClockSettingsScreen(
                 onCheckedChange = { newValue ->
                     coroutineScope.launch {
                         viewModel.updateClockSettings(clockSettings.copy(showDaytimeMarker = newValue))
+                    }
+                }
+            )
+            FontDropDown(
+                label = "${stringResource(R.string.clock_font)}:",
+                selectedFont = clockSettings.fontName,
+                onNewFontSelected = { newFontName ->
+                    coroutineScope.launch {
+                        viewModel.updateClockSettings((clockSettings.copy(fontName = newFontName)))
                     }
                 }
             )

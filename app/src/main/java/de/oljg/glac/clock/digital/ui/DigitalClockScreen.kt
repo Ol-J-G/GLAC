@@ -12,6 +12,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -96,7 +98,7 @@ fun DigitalClockScreen(
     ),
 
     clockCharType: ClockCharType = ClockCharType.FONT,
-    fontFamily: FontFamily = FontFamily.SansSerif,
+//    fontFamily: FontFamily = FontFamily.SansSerif,
     fontWeight: FontWeight = FontWeight.Normal,
     fontStyle: FontStyle = FontStyle.Normal,
 
@@ -117,6 +119,29 @@ fun DigitalClockScreen(
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
     ).value
+
+    //TODO: introduce evaluateFontFamily(fontName: String):FontFamily add weight + style from clockSettings.fontName (name contains("bold") -> FontWeight.Bold ...) (but this way fontfamily advantage is lost..)
+    val fontFamily = FontFamily(
+        Font(
+            path = "fonts/${clockSettings.fontName}",
+            assetManager = LocalContext.current.assets,
+            weight = FontWeight.Normal,
+            style = FontStyle.Normal
+        )
+    )
+
+//    val dDinfontfamily = FontFamily(
+//        Font(R.font.d_din_regular, weight = FontWeight.Normal),
+//        Font(
+//            R.font.d_din_italic,
+//            weight = FontWeight.Normal,
+//            style = FontStyle.Italic
+//        ),
+//        Font(R.font.d_din_bold, weight = FontWeight.Bold)
+//    )
+//    val minisystemFontFamily = FontFamily(
+//        Font(R.font.minisystem_regular, weight = FontWeight.Normal)
+//    )
 
     if (fullScreen)
         HideSystemBars()
