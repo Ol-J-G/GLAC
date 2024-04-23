@@ -45,7 +45,7 @@ fun DigitalClockScreen(
     onClick: () -> Unit = {},
 
 //    showSeconds: Boolean = true,
-    showDaytimeMarker: Boolean = true,
+//    showDaytimeMarker: Boolean = true,
 
 
     clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
@@ -117,19 +117,18 @@ fun DigitalClockScreen(
         initial = ClockSettings()
     ).value
 
-
     if (fullScreen)
         HideSystemBars()
 
     val timePattern = buildString {
-        if (showDaytimeMarker) append("hh") else append("HH")
+        if (clockSettings.showDaytimeMarker) append("hh") else append("HH")
         append(hoursMinutesDividerChar)
         append("mm")
         if (clockSettings.showSeconds) {
             append(minutesSecondsDividerChar)
             append("ss")
         }
-        if (showDaytimeMarker) {
+        if (clockSettings.showDaytimeMarker) {
             append(daytimeMarkerDividerChar)
             append("a")
         }
@@ -145,7 +144,7 @@ fun DigitalClockScreen(
          * Just show 'A' or 'P' instead of "AM"/"PM" in case of 7-segment.
          * => cut off 'M', which is always the last char...
          */
-        if (clockCharType == ClockCharType.SEVEN_SEGMENT && showDaytimeMarker)
+        if (clockCharType == ClockCharType.SEVEN_SEGMENT && clockSettings.showDaytimeMarker)
             formatter.format(currentTime).dropLast(1)
         else
             formatter.format(currentTime)

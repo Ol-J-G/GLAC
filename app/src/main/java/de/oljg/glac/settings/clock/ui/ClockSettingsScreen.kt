@@ -5,22 +5,20 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import de.oljg.glac.R
 import de.oljg.glac.core.settings.data.ClockSettings
+import de.oljg.glac.settings.clock.ui.components.SettingsSwitch
 import kotlinx.coroutines.launch
 
 @Composable
@@ -28,12 +26,10 @@ fun ClockSettingsScreen(
     viewModel: ClockSettingsViewModel
 ) {
     val scrollState = rememberScrollState()
-
+    val coroutineScope = rememberCoroutineScope()
     val clockSettings = viewModel.clockSettings.collectAsState(
         initial = ClockSettings()
     ).value
-
-    val coroutineScope = rememberCoroutineScope()
 
     Surface(
         modifier = Modifier
@@ -45,21 +41,24 @@ fun ClockSettingsScreen(
             modifier = Modifier.scrollable(state = scrollState, orientation = Orientation.Vertical),
             verticalArrangement = Arrangement.Top,
         ) {
-            Row( //TODO: extract SettingsSwitch() composable
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Show Seconds")
-                Switch(
-                    checked = clockSettings.showSeconds,
-                    onCheckedChange = { newValue ->
-                        coroutineScope.launch {
-                            viewModel.setShowSeconds(newValue)
-                        }
+            SettingsSwitch(
+                label = stringResource(R.string.show_seconds),
+                checked = clockSettings.showSeconds,
+                onCheckedChange = { newValue ->
+                    coroutineScope.launch {
+                        viewModel.updateClockSettings(clockSettings.copy(showSeconds = newValue))
                     }
-                )
-            }
+                }
+            )
+            SettingsSwitch(
+                label = stringResource(R.string.show_daytime_marker),
+                checked = clockSettings.showDaytimeMarker,
+                onCheckedChange = { newValue ->
+                    coroutineScope.launch {
+                        viewModel.updateClockSettings(clockSettings.copy(showDaytimeMarker = newValue))
+                    }
+                }
+            )
         }
     }
 }

@@ -11,4 +11,6 @@
     <string name="icon">Icon</string>
 
     <string name="digital_clock">Digital clock</string>
+    <string name="show_seconds">Show Seconds</string>
+    <string name="show_daytime_marker">Show Daytime Marker</string>
 </resources>
