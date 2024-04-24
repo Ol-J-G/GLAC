@@ -37,6 +37,8 @@ import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import kotlinx.coroutines.delay
+import java.io.File
+import java.net.URI
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -120,28 +122,16 @@ fun DigitalClockScreen(
         initial = ClockSettings()
     ).value
 
-    //TODO: introduce evaluateFontFamily(fontName: String):FontFamily add weight + style from clockSettings.fontName (name contains("bold") -> FontWeight.Bold ...) (but this way fontfamily advantage is lost..)
+    //TODO: introduce suspend fun and do this async
     val fontFamily = FontFamily(
-        Font(
-            path = "fonts/${clockSettings.fontName}",
-            assetManager = LocalContext.current.assets,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
-        )
+        if(clockSettings.fontName.startsWith("file://")) //TODO: add const val
+            Font(File(URI.create(clockSettings.fontName)))
+        else
+            Font(
+                path = "fonts/${clockSettings.fontName}",
+                assetManager = LocalContext.current.assets,
+            )
     )
-
-//    val dDinfontfamily = FontFamily(
-//        Font(R.font.d_din_regular, weight = FontWeight.Normal),
-//        Font(
-//            R.font.d_din_italic,
-//            weight = FontWeight.Normal,
-//            style = FontStyle.Italic
-//        ),
-//        Font(R.font.d_din_bold, weight = FontWeight.Bold)
-//    )
-//    val minisystemFontFamily = FontFamily(
-//        Font(R.font.minisystem_regular, weight = FontWeight.Normal)
-//    )
 
     if (fullScreen)
         HideSystemBars()

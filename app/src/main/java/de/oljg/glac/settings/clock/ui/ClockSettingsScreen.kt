@@ -72,10 +72,18 @@ fun ClockSettingsScreen(
                 selectedFont = clockSettings.fontName,
                 onNewFontSelected = { newFontName ->
                     coroutineScope.launch {
-                        viewModel.updateClockSettings((clockSettings.copy(fontName = newFontName)))
+                        viewModel.updateClockSettings(clockSettings.copy(fontName = newFontName))
+                    }
+                },
+                onNewFontImported = { newFontUri ->
+                    coroutineScope.launch {
+                        viewModel.updateClockSettings(clockSettings.copy(fontName = newFontUri))
                     }
                 }
             )
+
+
+
         }
     }
 }
