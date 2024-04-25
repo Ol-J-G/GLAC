@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class ClockSettings(
     val showSeconds: Boolean = true,
     val showDaytimeMarker: Boolean = false,
-    val fontName: String = "d_din_regular.ttf"
+    val fontName: String = "D_Din_Regular.ttf"
 )

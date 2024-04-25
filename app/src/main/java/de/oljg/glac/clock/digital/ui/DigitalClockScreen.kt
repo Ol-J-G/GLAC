@@ -13,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -36,9 +35,8 @@ import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
 import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
+import de.oljg.glac.settings.clock.ui.utils.evaluateFontDependingOnFileNameOrUri
 import kotlinx.coroutines.delay
-import java.io.File
-import java.net.URI
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -122,15 +120,8 @@ fun DigitalClockScreen(
         initial = ClockSettings()
     ).value
 
-    //TODO: introduce suspend fun and do this async
     val fontFamily = FontFamily(
-        if(clockSettings.fontName.startsWith("file://")) //TODO: add const val
-            Font(File(URI.create(clockSettings.fontName)))
-        else
-            Font(
-                path = "fonts/${clockSettings.fontName}",
-                assetManager = LocalContext.current.assets,
-            )
+        evaluateFontDependingOnFileNameOrUri(LocalContext.current, clockSettings.fontName)
     )
 
     if (fullScreen)
@@ -218,7 +209,7 @@ fun DigitalClockScreen(
         minutesSecondsDividerChar = minutesSecondsDividerChar,
         hoursMinutesDividerChar = hoursMinutesDividerChar,
         daytimeMarkerDividerChar = daytimeMarkerDividerChar,
-        fontFamily = fontFamily,
+        fontFamily = fontFamily, // for measurement
         fontWeight = fontWeight,
         fontStyle = fontStyle,
         charColors = finalCharColors,

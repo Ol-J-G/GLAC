@@ -14,4 +14,5 @@
     <string name="show_seconds">Show Seconds</string>
     <string name="show_daytime_marker">Show Daytime Marker</string>
     <string name="clock_font">Clock Font</string>
+    <string name="import_font">Import Font</string>
 </resources>
