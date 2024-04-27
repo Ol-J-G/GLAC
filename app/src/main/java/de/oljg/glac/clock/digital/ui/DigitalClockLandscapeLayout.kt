@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -59,6 +60,7 @@ import de.oljg.glac.core.util.TestTags
 
 @Composable
 fun DigitalClockLandscapeLayout(
+    previewMode: Boolean = false,
     currentTimeFormatted: String,
     clockBoxSize: IntSize,
     hoursMinutesDividerChar: Char = DEFAULT_HOURS_MINUTES_DIVIDER_CHAR,
@@ -81,7 +83,7 @@ fun DigitalClockLandscapeLayout(
 //    dividerDashDottedPartCount: Int = DEFAULT_DASH_DOTTED_PART_COUNT,
 //    dividerRotateAngle: Float = 0f,
 
-    startFontSize: TextUnit = evaluateStartFontSize(Configuration.ORIENTATION_LANDSCAPE),
+    startFontSize: TextUnit = evaluateStartFontSize(Configuration.ORIENTATION_LANDSCAPE, previewMode),
     clockCharType: ClockCharType = ClockCharType.FONT,
     clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
     daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
@@ -117,8 +119,11 @@ fun DigitalClockLandscapeLayout(
     var finalFontBoundsSize by remember {
         mutableStateOf(IntSize(0, 0))
     }
+    var currentTimeFormattedLengthOld by remember {
+        mutableIntStateOf(0)
+    }
 
-    if (clockCharType == ClockCharType.FONT) {
+    if (clockCharType == ClockCharType.FONT && currentTimeFormattedLengthOld != currentTimeFormatted.length) {
         /**
          * Calculate biggest font size that fits into clockBox container in landscape layout.
          */
@@ -138,6 +143,7 @@ fun DigitalClockLandscapeLayout(
             onFontSizeMeasured = { measuredFontSize, measuredSize ->
                 maxFontSize = measuredFontSize
                 finalFontBoundsSize = measuredSize
+                currentTimeFormattedLengthOld = currentTimeFormatted.length
             },
             clockBoxSize = clockBoxSize,
             dividerCount = dividerCount,

@@ -39,6 +39,7 @@ import de.oljg.glac.clock.digital.ui.utils.evaluateDividerAttributes
 
 @Composable
 fun DigitalClock(
+    previewMode: Boolean = false,
     onClick: () -> Unit = {},
     hoursMinutesDividerChar: Char = DEFAULT_HOURS_MINUTES_DIVIDER_CHAR,
     minutesSecondsDividerChar: Char = DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR,
@@ -90,11 +91,13 @@ fun DigitalClock(
             .background(MaterialTheme.colorScheme.surface)
             .onGloballyPositioned { layoutCoordinates ->
                 clockBoxSize = layoutCoordinates.size
-            }.clickable(enabled = true, onClick = onClick),
+            }
+            .clickable(enabled = true, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         if (currentDisplayOrientation == Configuration.ORIENTATION_LANDSCAPE) {
             DigitalClockLandscapeLayout(
+                previewMode = previewMode,
                 clockBoxSize = clockBoxSize,
                 hoursMinutesDividerChar = hoursMinutesDividerChar,
                 minutesSecondsDividerChar = minutesSecondsDividerChar,
@@ -113,6 +116,7 @@ fun DigitalClock(
             )
         } else { //TODO: maybe introduce a landscapeInPortraitMode (maybe it's big/readable enough with just 'hh:mm'?(or whatever a user might want to have here :>)
             DigitalClockPortraitLayout(
+                previewMode = previewMode,
                 clockBoxSize = clockBoxSize,
                 fontFamily = fontFamily,
                 fontWeight = fontWeight,

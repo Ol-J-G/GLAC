@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,7 +33,8 @@ import de.oljg.glac.clock.digital.ui.components.ClockCharColumn
 import de.oljg.glac.clock.digital.ui.components.ColonDivider
 import de.oljg.glac.clock.digital.ui.components.LineDivider
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
-import de.oljg.glac.clock.digital.ui.utils.ClockDefaults
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_CHAR_SIZE_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.WIDEST_CHAR
 import de.oljg.glac.clock.digital.ui.utils.ClockParts
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
@@ -52,6 +54,7 @@ import de.oljg.glac.core.util.TestTags
 
 @Composable
 fun DigitalClockPortraitLayout(
+    previewMode: Boolean = false,
     currentTimeWithoutSeparators: String,
     clockBoxSize: IntSize,
     fontFamily: FontFamily = FontFamily.SansSerif,
@@ -60,10 +63,13 @@ fun DigitalClockPortraitLayout(
     charColors: Map<Char, Color> = defaultClockCharColors(MaterialTheme.colorScheme.onSurface),
     clockPartsColors: ClockPartsColors? = null,
     dividerAttributes: DividerAttributes,
-    startFontSize: TextUnit = evaluateStartFontSize(Configuration.ORIENTATION_PORTRAIT),
+    startFontSize: TextUnit = evaluateStartFontSize(
+        Configuration.ORIENTATION_PORTRAIT,
+        previewMode
+    ),
     clockCharType: ClockCharType = ClockCharType.FONT,
-    clockCharSizeFactor: Float = ClockDefaults.DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
-    daytimeMarkerSizeFactor: Float = ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
+    clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
+    daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
     clockChar: @Composable (Char, TextUnit, Color, DpSize) -> Unit
 ) {
 
@@ -75,7 +81,11 @@ fun DigitalClockPortraitLayout(
         mutableStateOf(IntSize(0, 0))
     }
 
-    if (clockCharType == ClockCharType.FONT) {
+    var currentTimeWithoutSeparatorsLengthOld by remember {
+        mutableIntStateOf(0)
+    }
+
+    if (clockCharType == ClockCharType.FONT && currentTimeWithoutSeparatorsLengthOld != currentTimeWithoutSeparators.length) {
         /**
          * Calculate biggest font size that fits into clockBox container in portrait layout.
          */
@@ -103,6 +113,7 @@ fun DigitalClockPortraitLayout(
             onFontSizeMeasured = { measuredFontSize, measuredSize ->
                 maxFontSize = measuredFontSize
                 finalFontBoundsSize = measuredSize
+                currentTimeWithoutSeparatorsLengthOld = currentTimeWithoutSeparators.length
             }
         )
     }
@@ -119,11 +130,28 @@ fun DigitalClockPortraitLayout(
     val availableHeightForSevenSegmentClockChar = if (clockCharType == ClockCharType.FONT) 0.dp else
         clockBoxSize.height.pxToDp() - spaceNeededForDividers
 
+
     /**
      * Shrink 7-seg chars a bit to let space for padding because requiredSize() in columns below is
      * needed (=> strange behaviour noticed with size(), when Jetpack Compose decides...)
      */
-    val sevenSegmentShrinkFactor = if (dividerCount == 1) .9f else .95f
+    val sevenSegmentShrinkFactor =
+        if (dividerCount == 1) .9f else .95f
+
+    //TODO: extract fun, test and maybe adjust values further, maybe take other font than Exo2.0 into account as well
+    val baseFontSizeShrinkFactor = if(dividerCount == 1) .9f else 1f
+    val fontWeightShrinkFactor = when (fontWeight) {
+        FontWeight.Black -> baseFontSizeShrinkFactor * .7f
+        FontWeight.ExtraBold -> baseFontSizeShrinkFactor * .8f
+        FontWeight.Bold -> baseFontSizeShrinkFactor * .85f
+        FontWeight.SemiBold -> baseFontSizeShrinkFactor * .9f
+        else -> baseFontSizeShrinkFactor
+    }
+
+    val fontSizeShrinkFactor = when(fontStyle) {
+        FontStyle.Italic -> fontWeightShrinkFactor * .95f
+        else -> fontWeightShrinkFactor
+    }
 
     val maxCharWidth = when (clockCharType) {
 
@@ -145,13 +173,20 @@ fun DigitalClockPortraitLayout(
 
     val charWidth = maxCharWidth * clockCharSizeFactor
     val charHeight = maxCharHeight * clockCharSizeFactor
-    val charFontSize = maxFontSize * clockCharSizeFactor
+    val charFontSize =
+        if (clockCharSizeFactor == DEFAULT_CLOCK_CHAR_SIZE_FACTOR)
+            maxFontSize * fontSizeShrinkFactor
+        else maxFontSize * clockCharSizeFactor
 
     val daytimeMarkerCharWidth = maxCharWidth * daytimeMarkerSizeFactor
     val daytimeMarkerCharHeight = maxCharHeight * daytimeMarkerSizeFactor
-    val daytimeMarkerFontSize = maxFontSize * daytimeMarkerSizeFactor
+    val daytimeMarkerFontSize =
+        if (clockCharSizeFactor == DEFAULT_DAYTIME_MARKER_SIZE_FACTOR)
+        maxFontSize * fontSizeShrinkFactor
+    else maxFontSize * daytimeMarkerSizeFactor
 
     val digitalClock = stringResource(id = R.string.digital_clock)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -198,7 +233,8 @@ fun DigitalClockPortraitLayout(
              */
             if (index == currentTimeWithoutSeparators.length - 1 &&
                 char.isLetter() &&
-                clockCharType == ClockCharType.SEVEN_SEGMENT) {
+                clockCharType == ClockCharType.SEVEN_SEGMENT
+            ) {
 
                 Row(
                     horizontalArrangement = Arrangement.Center,
@@ -296,6 +332,7 @@ fun DigitalClockPortraitLayout(
                                     DEFAULT_SECOND_CIRCLE_POSITION_PORTRAIT_SPECIAL,
                                     orientation = Configuration.ORIENTATION_PORTRAIT
                                 )
+
                             else ->
                                 LineDivider(
                                     dividerPadding = dividerAttributes.dividerPadding,

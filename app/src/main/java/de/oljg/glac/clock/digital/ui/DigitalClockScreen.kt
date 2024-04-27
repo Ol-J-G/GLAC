@@ -13,9 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.clock.digital.ui.components.SevenSegmentChar
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
@@ -32,10 +29,10 @@ import de.oljg.glac.clock.digital.ui.utils.Segment
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
+import de.oljg.glac.clock.digital.ui.utils.evaluateFontDependingOnFileNameOrUri
 import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
-import de.oljg.glac.settings.clock.ui.utils.evaluateFontDependingOnFileNameOrUri
 import kotlinx.coroutines.delay
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -45,6 +42,7 @@ import java.time.format.DateTimeFormatter
 fun DigitalClockScreen(
     viewModel: ClockSettingsViewModel = hiltViewModel(),
     fullScreen: Boolean = false,
+    previewMode: Boolean = false,
     onClick: () -> Unit = {},
 
 //    showSeconds: Boolean = true,
@@ -99,8 +97,8 @@ fun DigitalClockScreen(
 
     clockCharType: ClockCharType = ClockCharType.FONT,
 //    fontFamily: FontFamily = FontFamily.SansSerif,
-    fontWeight: FontWeight = FontWeight.Normal,
-    fontStyle: FontStyle = FontStyle.Normal,
+//    fontWeight: FontWeight = FontWeight.Normal,
+//    fontStyle: FontStyle = FontStyle.Normal,
 
     sevenSegmentStyle: SevenSegmentStyle = SevenSegmentStyle.REGULAR,
     sevenSegmentWeight: SevenSegmentWeight = SevenSegmentWeight.REGULAR,
@@ -116,16 +114,16 @@ fun DigitalClockScreen(
 //            Pair(Segment.BOTTOM_RIGHT, Color.Red.copy(alpha = 0.3f))
 //        ),
 ) {
+    if (fullScreen)
+        HideSystemBars()
+
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
     ).value
 
-    val fontFamily = FontFamily(
+    val (fontFamily, fontWeight, fontStyle) =
         evaluateFontDependingOnFileNameOrUri(LocalContext.current, clockSettings.fontName)
-    )
 
-    if (fullScreen)
-        HideSystemBars()
 
     val timePattern = buildString {
         if (clockSettings.showDaytimeMarker) append("hh") else append("HH")
@@ -145,6 +143,7 @@ fun DigitalClockScreen(
     var currentTime by remember {
         mutableStateOf(LocalTime.now())
     }
+
     val currentTimeFormatted =
 
         /**
@@ -182,7 +181,7 @@ fun DigitalClockScreen(
          * second/minute starts
          */
         val delayMillis =
-            if (clockSettings.showSeconds) 1000L - (currentTime.nano / 1000000).toLong()
+            if (clockSettings.showSeconds || previewMode) 1000L - (currentTime.nano / 1000000).toLong()
             else 1000L * 60 - (currentTime.second * 1000L) - (currentTime.nano / 1000000).toLong()
         delay(delayMillis)
         currentTime = LocalTime.now()
@@ -205,6 +204,7 @@ fun DigitalClockScreen(
         setSpecifiedColors(charColors, defaultClockCharColors(charColor))
 
     DigitalClock(
+        previewMode = previewMode,
         onClick = onClick,
         minutesSecondsDividerChar = minutesSecondsDividerChar,
         hoursMinutesDividerChar = hoursMinutesDividerChar,
@@ -226,8 +226,13 @@ fun DigitalClockScreen(
                 text = clockChar.toString(),
                 fontSize = clockCharFontSize,
                 fontFamily = fontFamily,
-                fontWeight = fontWeight,
-                fontStyle = fontStyle,
+                //TODO: only in case of default fonts, allow to set weight and style
+                // (all other fonts have weight and style "included" in font file, adn this would add e.g.
+                // extra/more italic for an italic font which looks too weirdo much :D), or construct at least
+                // asset fonts as font family with all weights and style and just add basic font name to font
+                // dropdown and then select weight and style from other drop downs...
+//                fontWeight = FontWeight.Black,
+//                fontStyle = FontStyle.Italic,
                 color = clockCharColor,
             )
         else

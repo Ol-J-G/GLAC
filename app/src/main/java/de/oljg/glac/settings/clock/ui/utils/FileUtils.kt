@@ -3,7 +3,6 @@ package de.oljg.glac.settings.clock.ui.utils
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import androidx.compose.ui.text.font.Font
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import de.oljg.glac.settings.clock.ui.utils.FileUtilDefaults.FILE_EXTENSION_DELIMITER
@@ -18,8 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
-import java.net.URI
-import kotlin.jvm.Throws
 
 
 /**
@@ -58,7 +55,7 @@ suspend fun openDocumentAndSaveLocalCopy(context: Context, uri: Uri): File? {
 suspend fun getFontFileNamesFromAssets(context: Context): List<String> {
     return withContext(Dispatchers.IO) {
         context.assets.list(FONT_ASSETS_DIRECTORY)?.toList()?.filterNotNull()
-        ?: emptyList()
+            ?: emptyList()
     }
 }
 
@@ -72,17 +69,6 @@ suspend fun getFontFileUrisFromFilesDir(context: Context): List<String> {
 }
 
 
-fun evaluateFontDependingOnFileNameOrUri(context: Context, fontNameOrUri: String): Font {
-    return if(fontNameOrUri.isFileUri())
-        Font(file = File(URI.create(fontNameOrUri)))
-    else
-        Font(
-            path = "$FONT_ASSETS_DIRECTORY$PATH_SEPARATOR${fontNameOrUri}",
-            assetManager = context.assets,
-        )
-}
-
-
 fun String.cutOffFileNameExtension(): String = this.substringBeforeLast(FILE_EXTENSION_DELIMITER)
 
 fun String.cutOffPathfromFontUri(): String = this.substringAfterLast(PATH_SEPARATOR)
@@ -91,7 +77,7 @@ fun String.replaceLast(char: Char, replacement: Char): String =
     this.substringBeforeLast(char) + replacement + this.substringAfterLast(char)
 
 fun String.replaceLastWithBlank(char: Char): String =
-    if(this.contains(char)) this.replaceLast(char, ' ') else this
+    if (this.contains(char)) this.replaceLast(char, ' ') else this
 
 fun String.prettyPrintFontName(): String {
     return this

@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import de.oljg.glac.clock.digital.ui.utils.FontDefaults
 import de.oljg.glac.settings.clock.ui.utils.cutOffPathfromFontUri
 import de.oljg.glac.settings.clock.ui.utils.getFontFileNamesFromAssets
 import de.oljg.glac.settings.clock.ui.utils.getFontFileUrisFromFilesDir
@@ -46,8 +47,8 @@ fun FontDropDown(
         mutableStateOf(emptyList<String>())
     }
 
-    // Only asynchronously (re-)populate lists initially or when they change ...
-    LaunchedEffect(Unit) {
+    // Only asynchronously (re-)populate lists initially or when a new font has been imported ...
+    LaunchedEffect(key1 = onNewFontImported) {
         fontFileNamesFromAssets = getFontFileNamesFromAssets(context)
         fontFileUrisFromFilesDir = getFontFileUrisFromFilesDir(context)
 
@@ -55,7 +56,10 @@ fun FontDropDown(
          * Merge font file names from assets (builtin fonts) and import font file URIs from local
          * storage's files directory, and finally sort it alphabetically.
          */
-        allFontFileNamesAndUris = (fontFileNamesFromAssets + fontFileUrisFromFilesDir).sortedWith(
+        allFontFileNamesAndUris = (
+                FontDefaults.DEFAULT_FONT_NAMES +
+                fontFileNamesFromAssets +
+                fontFileUrisFromFilesDir).sortedWith(
             compareBy(String.CASE_INSENSITIVE_ORDER) { it.cutOffPathfromFontUri() }
         )
     }
