@@ -29,7 +29,7 @@ import de.oljg.glac.clock.digital.ui.utils.Segment
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
-import de.oljg.glac.clock.digital.ui.utils.evaluateFontDependingOnFileNameOrUri
+import de.oljg.glac.clock.digital.ui.utils.evaluateFont
 import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
@@ -71,17 +71,32 @@ fun DigitalClockScreen(
 //        ),
     clockPartsColors: ClockPartsColors? = //null,
         ClockPartsColors(
-            hours = ClockPartsColors.DigitPairColor(tens = Color.Green, ones = Color.Green.copy(alpha = .5f)),
-            minutes = ClockPartsColors.DigitPairColor(tens = Color.Yellow, ones = Color.Yellow.copy(alpha = .5f)),
-            seconds = ClockPartsColors.DigitPairColor(tens = Color.Red, ones = Color.Red.copy(alpha = .5f)),
-            daytimeMarker = ClockPartsColors.DaytimeMarkerColor(anteOrPost = Color.White, meridiem = Color.Gray),
-            dividers = ClockPartsColors.DividerColor(hoursMinutes = Color.Red, minutesSeconds = Color.Yellow, daytimeMarker = Color.Green)
+            hours = ClockPartsColors.DigitPairColor(
+                tens = Color.Green,
+                ones = Color.Green.copy(alpha = .5f)
+            ),
+            minutes = ClockPartsColors.DigitPairColor(
+                tens = Color.Yellow,
+                ones = Color.Yellow.copy(alpha = .5f)
+            ),
+            seconds = ClockPartsColors.DigitPairColor(
+                tens = Color.Red,
+                ones = Color.Red.copy(alpha = .5f)
+            ),
+            daytimeMarker = ClockPartsColors.DaytimeMarkerColor(
+                anteOrPost = Color.White,
+                meridiem = Color.Gray
+            ),
+            dividers = ClockPartsColors.DividerColor(
+                hoursMinutes = Color.Red,
+                minutesSeconds = Color.Yellow,
+                daytimeMarker = Color.Green
+            )
         ),
 
     hoursMinutesDividerChar: Char = DEFAULT_HOURS_MINUTES_DIVIDER_CHAR,
     minutesSecondsDividerChar: Char = DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR,
     daytimeMarkerDividerChar: Char = '_',
-
 
 
     dividerAttributes: DividerAttributes = DividerAttributes(
@@ -121,9 +136,13 @@ fun DigitalClockScreen(
         initial = ClockSettings()
     ).value
 
-    val (fontFamily, fontWeight, fontStyle) =
-        evaluateFontDependingOnFileNameOrUri(LocalContext.current, clockSettings.fontName)
-
+    val context = LocalContext.current
+    val (finalFontFamily, finalFontWeight, finalFontStyle) = evaluateFont(
+        context,
+        clockSettings.fontName,
+        clockSettings.fontWeight,
+        clockSettings.fontStyle
+    )
 
     val timePattern = buildString {
         if (clockSettings.showDaytimeMarker) append("hh") else append("HH")
@@ -196,9 +215,10 @@ fun DigitalClockScreen(
      * since they're not in use..)
      */
     charColors.keys.forEach { char ->
-        if(char !in ClockDefaults.CLOCK_CHARS)
-            throw IllegalArgumentException("'$char' is not a valid clock " +
-                    "character! Valid: ${ClockDefaults.CLOCK_CHARS}")
+        if (char !in ClockDefaults.CLOCK_CHARS)
+            throw IllegalArgumentException(
+                "'$char' is not a valid clock character! Valid: ${ClockDefaults.CLOCK_CHARS}"
+            )
     }
     val finalCharColors =
         setSpecifiedColors(charColors, defaultClockCharColors(charColor))
@@ -209,9 +229,9 @@ fun DigitalClockScreen(
         minutesSecondsDividerChar = minutesSecondsDividerChar,
         hoursMinutesDividerChar = hoursMinutesDividerChar,
         daytimeMarkerDividerChar = daytimeMarkerDividerChar,
-        fontFamily = fontFamily, // for measurement
-        fontWeight = fontWeight,
-        fontStyle = fontStyle,
+        fontFamily = finalFontFamily, // for measurement
+        fontWeight = finalFontWeight,
+        fontStyle = finalFontStyle,
         charColors = finalCharColors,
         clockPartsColors = clockPartsColors,
         dividerAttributes = dividerAttributes,
@@ -225,14 +245,9 @@ fun DigitalClockScreen(
             Text(
                 text = clockChar.toString(),
                 fontSize = clockCharFontSize,
-                fontFamily = fontFamily,
-                //TODO: only in case of default fonts, allow to set weight and style
-                // (all other fonts have weight and style "included" in font file, adn this would add e.g.
-                // extra/more italic for an italic font which looks too weirdo much :D), or construct at least
-                // asset fonts as font family with all weights and style and just add basic font name to font
-                // dropdown and then select weight and style from other drop downs...
-//                fontWeight = FontWeight.Black,
-//                fontStyle = FontStyle.Italic,
+                fontFamily = finalFontFamily,
+                fontWeight = finalFontWeight,
+                fontStyle = finalFontStyle,
                 color = clockCharColor,
             )
         else

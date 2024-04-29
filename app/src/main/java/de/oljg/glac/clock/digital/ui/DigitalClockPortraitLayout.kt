@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.components.ClockCharColumn
 import de.oljg.glac.clock.digital.ui.components.ColonDivider
@@ -43,17 +44,21 @@ import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_FIRST_CIRCLE_
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_SECOND_CIRCLE_POSITION_PORTRAIT_SPECIAL
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.MeasureFontSize
+import de.oljg.glac.clock.digital.ui.utils.PreviewState
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
 import de.oljg.glac.clock.digital.ui.utils.evaluateStartFontSize
 import de.oljg.glac.clock.digital.ui.utils.evalutateDividerCount
 import de.oljg.glac.clock.digital.ui.utils.isDaytimeMarkerChar
 import de.oljg.glac.clock.digital.ui.utils.pxToDp
+import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.core.util.ClockPartsTestTags
 import de.oljg.glac.core.util.TestTags
+import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 
 
 @Composable
 fun DigitalClockPortraitLayout(
+    viewModel: ClockSettingsViewModel = hiltViewModel(),
     previewMode: Boolean = false,
     currentTimeWithoutSeparators: String,
     clockBoxSize: IntSize,
@@ -81,11 +86,22 @@ fun DigitalClockPortraitLayout(
         mutableStateOf(IntSize(0, 0))
     }
 
-    var currentTimeWithoutSeparatorsLengthOld by remember {
-        mutableIntStateOf(0)
+    val clockSettings = viewModel.clockSettingsFlow.collectAsState(
+        initial = ClockSettings()
+    ).value
+
+    var previewState by remember {
+        mutableStateOf(PreviewState())
     }
 
-    if (clockCharType == ClockCharType.FONT && currentTimeWithoutSeparatorsLengthOld != currentTimeWithoutSeparators.length) {
+    if (clockCharType == ClockCharType.FONT &&
+        // Re-measure when one of the following changes (needed for settings preview)
+        (previewState.currentTimeStringLength != currentTimeWithoutSeparators.length ||
+                previewState.currentFont != clockSettings.fontName ||
+                previewState.currentFontWeight != clockSettings.fontWeight ||
+                previewState.currentFontStyle != clockSettings.fontStyle
+        )
+    ) {
         /**
          * Calculate biggest font size that fits into clockBox container in portrait layout.
          */
@@ -113,7 +129,12 @@ fun DigitalClockPortraitLayout(
             onFontSizeMeasured = { measuredFontSize, measuredSize ->
                 maxFontSize = measuredFontSize
                 finalFontBoundsSize = measuredSize
-                currentTimeWithoutSeparatorsLengthOld = currentTimeWithoutSeparators.length
+                previewState = previewState.copy(
+                    currentTimeStringLength = currentTimeWithoutSeparators.length,
+                    currentFont = clockSettings.fontName,
+                    currentFontWeight = clockSettings.fontWeight,
+                    currentFontStyle = clockSettings.fontStyle
+                )
             }
         )
     }
@@ -139,7 +160,7 @@ fun DigitalClockPortraitLayout(
         if (dividerCount == 1) .9f else .95f
 
     //TODO: extract fun, test and maybe adjust values further, maybe take other font than Exo2.0 into account as well
-    val baseFontSizeShrinkFactor = if(dividerCount == 1) .9f else 1f
+    val baseFontSizeShrinkFactor = if (dividerCount == 1) .9f else 1f
     val fontWeightShrinkFactor = when (fontWeight) {
         FontWeight.Black -> baseFontSizeShrinkFactor * .7f
         FontWeight.ExtraBold -> baseFontSizeShrinkFactor * .8f
@@ -148,7 +169,7 @@ fun DigitalClockPortraitLayout(
         else -> baseFontSizeShrinkFactor
     }
 
-    val fontSizeShrinkFactor = when(fontStyle) {
+    val fontSizeShrinkFactor = when (fontStyle) {
         FontStyle.Italic -> fontWeightShrinkFactor * .95f
         else -> fontWeightShrinkFactor
     }
@@ -182,8 +203,8 @@ fun DigitalClockPortraitLayout(
     val daytimeMarkerCharHeight = maxCharHeight * daytimeMarkerSizeFactor
     val daytimeMarkerFontSize =
         if (clockCharSizeFactor == DEFAULT_DAYTIME_MARKER_SIZE_FACTOR)
-        maxFontSize * fontSizeShrinkFactor
-    else maxFontSize * daytimeMarkerSizeFactor
+            maxFontSize * fontSizeShrinkFactor
+        else maxFontSize * daytimeMarkerSizeFactor
 
     val digitalClock = stringResource(id = R.string.digital_clock)
 

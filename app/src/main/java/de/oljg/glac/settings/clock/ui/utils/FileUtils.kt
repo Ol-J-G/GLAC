@@ -5,6 +5,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
+import de.oljg.glac.clock.digital.ui.utils.FontDefaults
 import de.oljg.glac.settings.clock.ui.utils.FileUtilDefaults.FILE_EXTENSION_DELIMITER
 import de.oljg.glac.settings.clock.ui.utils.FileUtilDefaults.FILE_PROTOCOL
 import de.oljg.glac.settings.clock.ui.utils.FileUtilDefaults.FONT_ASSETS_DIRECTORY
@@ -118,4 +119,13 @@ object FileUtilDefaults {
     val FONT_MIMETYPES = arrayOf(MIMETYPE_TTF, MIMETYPE_OTF)
 
     const val FONT_ASSETS_DIRECTORY = "fonts"
+
+    val DEFAULT_FONT_NAMES: List<String>
+        get() = listOf(
+            FontDefaults.DEFAULT_MONOSPACE,
+            FontDefaults.DEFAULT_SANS_SERIF,
+            FontDefaults.DEFAULT_SERIF,
+            FontDefaults.DEFAULT_CURSIVE
+        )
 }
+

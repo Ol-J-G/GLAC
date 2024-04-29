@@ -27,6 +27,15 @@ fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
 
 
+data class PreviewState(
+    var currentTimeStringLength: Int = 0,
+    var currentFont: String = "",
+    var currentFontWeight: String = "",
+    var currentFontStyle: String = ""
+)
+
+
+
 /**
  * Inspired by PLs code (but changed it just a bit):
  * https://github.com/philipplackner/SupportAllScreenSizesCompose/

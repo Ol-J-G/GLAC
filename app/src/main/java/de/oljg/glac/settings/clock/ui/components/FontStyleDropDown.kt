@@ -8,71 +8,35 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import de.oljg.glac.clock.digital.ui.utils.FontNameParts
-import de.oljg.glac.clock.digital.ui.utils.contains
-import de.oljg.glac.settings.clock.ui.utils.FileUtilDefaults.DEFAULT_FONT_NAMES
-import de.oljg.glac.settings.clock.ui.utils.cutOffPathfromFontUri
-import de.oljg.glac.settings.clock.ui.utils.getFontFileNamesFromAssets
-import de.oljg.glac.settings.clock.ui.utils.getFontFileUrisFromFilesDir
-import de.oljg.glac.settings.clock.ui.utils.prettyPrintFontName
+import de.oljg.glac.core.util.FontStyle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FontDropDown(
+fun FontStyleDropDown(
     label: String,
-    selectedFont: String,
-    onNewFontSelected: (String) -> Unit,
-    onNewFontImported: (String) -> Unit
+    selectedFontStyle: String,
+    onNewFontStyleSelected: (String) -> Unit
 ) {
-    val context = LocalContext.current
-    var allFontFileNamesAndUris by remember {
-        mutableStateOf(emptyList<String>())
-    }
-    var fontFileNamesFromAssets by remember {
-        mutableStateOf(emptyList<String>())
-    }
-    var fontFileUrisFromFilesDir by remember {
-        mutableStateOf(emptyList<String>())
-    }
-
-    // Only asynchronously (re-)populate lists initially or when a new font has been imported ...
-    LaunchedEffect(key1 = onNewFontImported) {
-        fontFileNamesFromAssets = getFontFileNamesFromAssets(context).filter { fileName ->
-            fileName.contains(FontNameParts.REGULAR.name)
-
-        }
-        fontFileUrisFromFilesDir = getFontFileUrisFromFilesDir(context)
-
-        /**
-         * Merge font file names from assets (builtin fonts) and import font file URIs from local
-         * storage's files directory, and finally sort it alphabetically.
-         */
-        allFontFileNamesAndUris = (
-                DEFAULT_FONT_NAMES +
-                fontFileNamesFromAssets +
-                fontFileUrisFromFilesDir)
-            .sortedWith(
-                compareBy(String.CASE_INSENSITIVE_ORDER) { it.cutOffPathfromFontUri() }
-            )
-    }
-
     var dropDownIsExpanded by remember {
         mutableStateOf(false)
     }
+
+    val allFontStyleNames = listOf(
+        FontStyle.NORMAL,
+        FontStyle.ITALIC
+    )
 
     Row(
         modifier = Modifier
@@ -93,7 +57,6 @@ fun FontDropDown(
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            ImportFontButton(onNewFontImported = onNewFontImported)
             ExposedDropdownMenuBox(
                 modifier = Modifier
                     .padding(end = 4.dp),
@@ -103,24 +66,24 @@ fun FontDropDown(
                 TextField(
                     modifier = Modifier
                         .menuAnchor()
-                        .fillMaxWidth(.85f)
+                        .fillMaxWidth(.5f)
                         .clickable(onClick = { dropDownIsExpanded = true }),
-                    value = selectedFont.prettyPrintFontName(),
+                    value = selectedFontStyle,
                     onValueChange = {},
                     readOnly = true,
                     singleLine = true,
-                    trailingIcon = { TrailingIcon(expanded = dropDownIsExpanded) }
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = dropDownIsExpanded) }
                 )
 
                 ExposedDropdownMenu(
                     expanded = dropDownIsExpanded,
                     onDismissRequest = { dropDownIsExpanded = false }
                 ) {
-                    allFontFileNamesAndUris.forEach { fontFileNameOrUri ->
+                    allFontStyleNames.forEach { fontStyle ->
                         DropdownMenuItem(
-                            text = { Text(fontFileNameOrUri.prettyPrintFontName()) },
+                            text = { Text(fontStyle.name) },
                             onClick = {
-                                onNewFontSelected(fontFileNameOrUri)
+                                onNewFontStyleSelected(fontStyle.name)
                                 dropDownIsExpanded = false
                             }
                         )
@@ -130,3 +93,4 @@ fun FontDropDown(
         }
     }
 }
+

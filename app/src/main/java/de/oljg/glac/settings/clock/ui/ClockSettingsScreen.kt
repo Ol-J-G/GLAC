@@ -23,6 +23,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.components.FontDropDown
+import de.oljg.glac.settings.clock.ui.components.FontStyleDropDown
+import de.oljg.glac.settings.clock.ui.components.FontWeightDropDown
 import de.oljg.glac.settings.clock.ui.components.SettingsSection
 import de.oljg.glac.settings.clock.ui.components.SettingsSwitch
 import kotlinx.coroutines.launch
@@ -92,6 +94,26 @@ fun ClockSettingsScreen(
                 onNewFontImported = { newFontUri ->
                     coroutineScope.launch {
                         viewModel.updateClockSettings(clockSettings.copy(fontName = newFontUri))
+                    }
+                }
+            )
+
+            FontWeightDropDown(
+                label = "Font Weight:", //TODO: add res
+                selectedFontWeight = clockSettings.fontWeight,
+                onNewFontWeightSelected = { newFontWeight ->
+                    coroutineScope.launch {
+                        viewModel.updateClockSettings(clockSettings.copy(fontWeight = newFontWeight))
+                    }
+                }
+            )
+
+            FontStyleDropDown(
+                label = "Font Style:",
+                selectedFontStyle = clockSettings.fontStyle,
+                onNewFontStyleSelected = { newFontStyle ->
+                    coroutineScope.launch {
+                        viewModel.updateClockSettings((clockSettings.copy(fontStyle = newFontStyle)))
                     }
                 }
             )

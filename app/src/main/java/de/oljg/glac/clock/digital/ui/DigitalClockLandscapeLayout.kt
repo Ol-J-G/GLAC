@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.components.ClockCharColumn
 import de.oljg.glac.clock.digital.ui.components.ColonDivider
@@ -34,32 +35,36 @@ import de.oljg.glac.clock.digital.ui.components.LineDivider
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_CHAR_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_FIRST_CIRCLE_POSITION_AT_ONE_DIVIDER
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_FIRST_CIRCLE_POSITION_AT_THREE_DIVIDERS
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_FIRST_CIRCLE_POSITION_AT_TWO_DIVIDERS
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_SECOND_CIRCLE_POSITION_AT_ONE_DIVIDER
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_SECOND_CIRCLE_POSITION_AT_THREE_DIVIDERS
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_SECOND_CIRCLE_POSITION_AT_TWO_DIVIDERS
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.WIDEST_CHAR
 import de.oljg.glac.clock.digital.ui.utils.ClockParts
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_FIRST_CIRCLE_POSITION_AT_ONE_DIVIDER
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_FIRST_CIRCLE_POSITION_AT_THREE_DIVIDERS
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_FIRST_CIRCLE_POSITION_AT_TWO_DIVIDERS
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_SECOND_CIRCLE_POSITION_AT_ONE_DIVIDER
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_SECOND_CIRCLE_POSITION_AT_THREE_DIVIDERS
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_SECOND_CIRCLE_POSITION_AT_TWO_DIVIDERS
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.MeasureFontSize
+import de.oljg.glac.clock.digital.ui.utils.PreviewState
 import de.oljg.glac.clock.digital.ui.utils.calculateMaxCharSizeFont
 import de.oljg.glac.clock.digital.ui.utils.calculateMaxCharSizeSevenSegment
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
 import de.oljg.glac.clock.digital.ui.utils.dividerCount
 import de.oljg.glac.clock.digital.ui.utils.evaluateStartFontSize
 import de.oljg.glac.clock.digital.ui.utils.isDaytimeMarkerChar
+import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.core.util.ClockPartsTestTags
 import de.oljg.glac.core.util.TestTags
+import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 
 @Composable
 fun DigitalClockLandscapeLayout(
+    viewModel: ClockSettingsViewModel = hiltViewModel(),
     previewMode: Boolean = false,
     currentTimeFormatted: String,
     clockBoxSize: IntSize,
@@ -119,11 +124,23 @@ fun DigitalClockLandscapeLayout(
     var finalFontBoundsSize by remember {
         mutableStateOf(IntSize(0, 0))
     }
-    var currentTimeFormattedLengthOld by remember {
-        mutableIntStateOf(0)
+
+    val clockSettings = viewModel.clockSettingsFlow.collectAsState(
+        initial = ClockSettings()
+    ).value
+
+    var previewState by remember {
+        mutableStateOf(PreviewState())
     }
 
-    if (clockCharType == ClockCharType.FONT && currentTimeFormattedLengthOld != currentTimeFormatted.length) {
+    if (clockCharType == ClockCharType.FONT &&
+        // Re-measure when one of the following changes (needed for settings preview)
+        (previewState.currentTimeStringLength != currentTimeFormatted.length ||
+                previewState.currentFont != clockSettings.fontName ||
+                previewState.currentFontWeight != clockSettings.fontWeight ||
+                previewState.currentFontStyle != clockSettings.fontStyle
+        )
+    ) {
         /**
          * Calculate biggest font size that fits into clockBox container in landscape layout.
          */
@@ -143,7 +160,12 @@ fun DigitalClockLandscapeLayout(
             onFontSizeMeasured = { measuredFontSize, measuredSize ->
                 maxFontSize = measuredFontSize
                 finalFontBoundsSize = measuredSize
-                currentTimeFormattedLengthOld = currentTimeFormatted.length
+                previewState = previewState.copy(
+                    currentTimeStringLength = currentTimeFormatted.length,
+                    currentFont = clockSettings.fontName,
+                    currentFontWeight = clockSettings.fontWeight,
+                    currentFontStyle = clockSettings.fontStyle
+                )
             },
             clockBoxSize = clockBoxSize,
             dividerCount = dividerCount,
