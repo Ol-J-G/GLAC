@@ -19,8 +19,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import de.oljg.glac.core.util.FontWeight
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.ALL_FONT_WEIGHTS
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DROPDOWN_END_PADDING
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DROPDOWN_ROW_VERTICAL_PADDING
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,28 +34,16 @@ fun FontWeightDropDown(
         mutableStateOf(false)
     }
 
-    val allFontWeightNames = listOf( //TODO: extract to utils object
-        FontWeight.THIN,
-        FontWeight.EXTRA_LIGHT,
-        FontWeight.LIGHT,
-        FontWeight.NORMAL,
-        FontWeight.MEDIUM,
-        FontWeight.SEMI_BOLD,
-        FontWeight.BOLD,
-        FontWeight.EXTRA_BOLD,
-        FontWeight.BLACK
-    )
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = DROPDOWN_ROW_VERTICAL_PADDING),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             modifier = Modifier
-                .padding(end = 4.dp),
+                .padding(end = DROPDOWN_END_PADDING),
             text = label,
             overflow = TextOverflow.Ellipsis,
             maxLines = 2
@@ -66,7 +55,7 @@ fun FontWeightDropDown(
         ) {
             ExposedDropdownMenuBox(
                 modifier = Modifier
-                    .padding(end = 4.dp),
+                    .padding(end = DROPDOWN_END_PADDING),
                 expanded = dropDownIsExpanded,
                 onExpandedChange = { dropDownIsExpanded = !dropDownIsExpanded }
             ) {
@@ -81,12 +70,11 @@ fun FontWeightDropDown(
                     singleLine = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = dropDownIsExpanded) }
                 )
-
                 ExposedDropdownMenu(
                     expanded = dropDownIsExpanded,
                     onDismissRequest = { dropDownIsExpanded = false }
                 ) {
-                    allFontWeightNames.forEach { fontWeight ->
+                    ALL_FONT_WEIGHTS.forEach { fontWeight ->
                         DropdownMenuItem(
                             text = { Text(fontWeight.name) },
                             onClick = {

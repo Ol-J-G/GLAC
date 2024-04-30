@@ -86,7 +86,7 @@ fun DigitalClock(
 
     Box(
         modifier = Modifier
-            .padding(DEFAULT_CLOCK_PADDING) // TODO: make it configurable => otherwise LINE... divider cannot be from edge to edge without space
+            .padding(DEFAULT_CLOCK_PADDING) // TODO: (later) make it configurable => otherwise LINE... divider cannot be from edge to edge without space
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
             .onGloballyPositioned { layoutCoordinates ->
@@ -114,7 +114,7 @@ fun DigitalClock(
                 clockCharType = clockCharType,
                 clockChar = clockChar
             )
-        } else { //TODO: maybe introduce a landscapeInPortraitMode (maybe it's big/readable enough with just 'hh:mm'?(or whatever a user might want to have here :>)
+        } else { //TODO: (later) maybe introduce a landscapeInPortraitMode (maybe it's big/readable enough with just 'hh:mm'?(or whatever a user might want to have here :>)
             DigitalClockPortraitLayout(
                 previewMode = previewMode,
                 clockBoxSize = clockBoxSize,

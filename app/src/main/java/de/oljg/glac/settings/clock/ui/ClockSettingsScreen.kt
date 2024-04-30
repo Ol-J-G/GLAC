@@ -18,7 +18,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.settings.data.ClockSettings
@@ -27,6 +26,8 @@ import de.oljg.glac.settings.clock.ui.components.FontStyleDropDown
 import de.oljg.glac.settings.clock.ui.components.FontWeightDropDown
 import de.oljg.glac.settings.clock.ui.components.SettingsSection
 import de.oljg.glac.settings.clock.ui.components.SettingsSwitch
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SCREEN_HORIZONTAL_PADDING
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SCREEN_VERTICAL_PADDING
 import kotlinx.coroutines.launch
 
 
@@ -49,14 +50,14 @@ fun ClockSettingsScreen(
     ) {
         Column(
             modifier = Modifier
-                .padding(horizontal = 8.dp, vertical = 16.dp)
+                .padding(horizontal = SETTINGS_SCREEN_HORIZONTAL_PADDING, vertical = SETTINGS_SCREEN_VERTICAL_PADDING)
                 .fillMaxWidth()
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             SettingsSection(
-                sectionTitle = "Display",
+                sectionTitle = stringResource(R.string.display),
                 expanded = clockSettings.clockSettingsSectionDisplayExpanded,
                 onExpandedChange = { isExpanded ->
                     coroutineScope.launch {
@@ -99,7 +100,7 @@ fun ClockSettingsScreen(
             )
 
             FontWeightDropDown(
-                label = "Font Weight:", //TODO: add res
+                label = "${stringResource(R.string.font_weight)}:",
                 selectedFontWeight = clockSettings.fontWeight,
                 onNewFontWeightSelected = { newFontWeight ->
                     coroutineScope.launch {
@@ -109,7 +110,7 @@ fun ClockSettingsScreen(
             )
 
             FontStyleDropDown(
-                label = "Font Style:",
+                label = "${stringResource(R.string.font_style)}:",
                 selectedFontStyle = clockSettings.fontStyle,
                 onNewFontStyleSelected = { newFontStyle ->
                     coroutineScope.launch {

@@ -15,4 +15,7 @@
     <string name="show_daytime_marker">Show Daytime Marker</string>
     <string name="clock_font">Font</string>
     <string name="import_font">Import Font</string>
+    <string name="font_weight">Font Weight</string>
+    <string name="font_style">Font Style</string>
+    <string name="display">Display</string>
 </resources>

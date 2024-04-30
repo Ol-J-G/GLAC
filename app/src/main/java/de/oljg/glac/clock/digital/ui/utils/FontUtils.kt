@@ -28,6 +28,7 @@ import de.oljg.glac.clock.digital.ui.utils.FontDefaults.DEFAULT_CURSIVE
 import de.oljg.glac.clock.digital.ui.utils.FontDefaults.DEFAULT_MONOSPACE
 import de.oljg.glac.clock.digital.ui.utils.FontDefaults.DEFAULT_SANS_SERIF
 import de.oljg.glac.clock.digital.ui.utils.FontDefaults.DEFAULT_SERIF
+import de.oljg.glac.clock.digital.ui.utils.FontDefaults.FONT_BASENAME_DELIMITER
 import de.oljg.glac.core.util.TestTags
 import de.oljg.glac.settings.clock.ui.utils.FileUtilDefaults.FONT_ASSETS_DIRECTORY
 import de.oljg.glac.settings.clock.ui.utils.FileUtilDefaults.PATH_SEPARATOR
@@ -180,6 +181,42 @@ fun calculateMaxCharSizeFont(
 }
 
 
+/**
+ * Evaluate font size shrink factor depending on how many rows are displayed in portrait
+ * (divider count) and font weight.
+ * This is necessary, when trying to use non-monospace fonts as monospace fonts!
+ * (Ok, at least I didn't find a better approach yet, maybe I would able to find one when having
+ * more time available ...)
+ * Note: When font size is too big, chars cannot be centered and this looks "ugly", e.g. in case,
+ * dividers are in place, they aren't placed as expected exactly in the middle between to rows...
+ *
+ * Values are results of manual tests with 'Exo2.0' and 'D-Din' fonts, and should be a good starting
+ * point for max, but not too big font sizes.
+ *
+ * In case font size should be still to big, a user will have the possibility to scale it via
+ * settings (e.g. when user imports an unknown font...)
+ *
+ * Builtin fonts in assets folder should be ok with this shrink factor (will see... :>)
+ */
+fun evaluateFontSizeShrinkFactor(dividerCount: Int, fontWeight: FontWeight): Float {
+    val baseFontSizeShrinkFactor = when(dividerCount) {
+        1 -> .95f // shrink the most with 2 rows
+        2 -> .97f // still shrink a bit with 3 rows
+        else -> 1f // no shrink with 4 rows
+    }
+
+    // Additionally, shrink depending on font weight, otherwise one char might overlap another
+    return when (fontWeight) {
+        FontWeight.Black -> baseFontSizeShrinkFactor * .75f
+        FontWeight.ExtraBold -> baseFontSizeShrinkFactor * .8f
+        FontWeight.Bold -> baseFontSizeShrinkFactor * .85f
+        FontWeight.SemiBold -> baseFontSizeShrinkFactor * .87f
+        FontWeight.Medium -> baseFontSizeShrinkFactor * .9f
+        FontWeight.Normal -> baseFontSizeShrinkFactor * .93f
+        else -> baseFontSizeShrinkFactor * .96f
+    }
+}
+
 
 fun evaluateFont(
     context: Context,
@@ -203,14 +240,14 @@ fun evaluateFont(
              * "file:///data/user/0/de.oljg.glac/files/Dotrice-Regular.otf"
              */
             fontNameOrUri.isFileUri() ->
-                evaluateImportedFont(fontNameOrUri)
+                createFontFamilyFromImportedFontFile(fontNameOrUri)
 
             /**
              * When current clock font is a font family created from font files in assets folder
              * E.g. clockSettings.fontName = "D_Din_Regular.ttf" (filename in assets/fonts folder)
              */
             else -> Triple(
-                evaluateFontFamilyFromAssets(context, fontNameOrUri),
+                createFontFamilyFromAssets(context, fontNameOrUri),
                 FontWeight.Normal,
                 FontStyle.Normal
             )
@@ -245,7 +282,8 @@ fun evaluateDefaultFontFamily(defaultFontName: String): Triple<FontFamily, FontW
     )
 }
 
-fun evaluateImportedFont(uri: String): Triple<FontFamily, FontWeight, FontStyle> {
+
+fun createFontFamilyFromImportedFontFile(uri: String): Triple<FontFamily, FontWeight, FontStyle> {
     return Triple(
         FontFamily(Font(file = File(URI.create(uri)))),
         evaluateFontWeightDependingOnFileNameOrUri(uri),
@@ -254,12 +292,88 @@ fun evaluateImportedFont(uri: String): Triple<FontFamily, FontWeight, FontStyle>
 }
 
 
-fun evaluateFontFamilyFromAssets(context: Context, fontName: String): FontFamily {
+fun String.contains(part: String): Boolean = this.contains(part, ignoreCase = true)
+
+fun String.isThin(): Boolean = this.contains(FontNameParts.THIN.name) &&
+        !this.contains(FontNameParts.ITALIC.name)
+
+fun String.isThinItalic(): Boolean = this.contains(FontNameParts.THIN.name) &&
+        this.contains(FontNameParts.ITALIC.name)
+
+fun String.isExtraLight(): Boolean = this.contains(FontNameParts.LIGHT.name) &&
+        this.contains(FontNameParts.EXTRA.name) &&
+        !this.contains(FontNameParts.ITALIC.name)
+
+fun String.isExtraLightItalic(): Boolean = this.contains(FontNameParts.LIGHT.name) &&
+        this.contains(FontNameParts.EXTRA.name) &&
+        this.contains(FontNameParts.ITALIC.name)
+
+fun String.isLight(): Boolean = this.contains(FontNameParts.LIGHT.name) &&
+        !this.contains(FontNameParts.EXTRA.name) &&
+        !this.contains(FontNameParts.ITALIC.name)
+
+fun String.isLightItalic(): Boolean = this.contains(FontNameParts.LIGHT.name) &&
+        !this.contains(FontNameParts.EXTRA.name) &&
+        this.contains(FontNameParts.ITALIC.name)
+
+fun String.isRegular(): Boolean = this.contains(FontNameParts.REGULAR.name)
+
+fun String.isRegularItalic(): Boolean = this.contains(FontNameParts.ITALIC.name) &&
+        !this.contains(FontNameParts.THIN.name) &&
+        !this.contains(FontNameParts.LIGHT.name) &&
+        !this.contains(FontNameParts.MEDIUM.name) &&
+        !this.contains(FontNameParts.BOLD.name) &&
+        !this.contains(FontNameParts.BLACK.name)
+
+fun String.isMedium(): Boolean = this.contains(FontNameParts.MEDIUM.name) &&
+        !this.contains(FontNameParts.ITALIC.name)
+
+fun String.isMediumItalic(): Boolean = this.contains(FontNameParts.MEDIUM.name) &&
+        this.contains(FontNameParts.ITALIC.name)
+
+fun String.isSemiBold(): Boolean = this.contains(FontNameParts.BOLD.name) &&
+        this.contains(FontNameParts.SEMI.name) &&
+        !this.contains(FontNameParts.EXTRA.name) &&
+        !this.contains(FontNameParts.ITALIC.name)
+
+fun String.isSemiBoldItalic(): Boolean = this.contains(FontNameParts.BOLD.name) &&
+        this.contains(FontNameParts.SEMI.name) &&
+        !this.contains(FontNameParts.EXTRA.name) &&
+        this.contains(FontNameParts.ITALIC.name)
+
+fun String.isBold(): Boolean = this.contains(FontNameParts.BOLD.name) &&
+        !this.contains(FontNameParts.SEMI.name) &&
+        !this.contains(FontNameParts.EXTRA.name) &&
+        !this.contains(FontNameParts.ITALIC.name)
+
+fun String.isBoldItalic(): Boolean = this.contains(FontNameParts.BOLD.name) &&
+        !this.contains(FontNameParts.SEMI.name) &&
+        !this.contains(FontNameParts.EXTRA.name) &&
+        this.contains(FontNameParts.ITALIC.name)
+
+fun String.isExtraBold(): Boolean = this.contains(FontNameParts.BOLD.name) &&
+        !this.contains(FontNameParts.SEMI.name) &&
+        this.contains(FontNameParts.EXTRA.name) &&
+        !this.contains(FontNameParts.ITALIC.name)
+
+fun String.isExtraBoldItalic(): Boolean = this.contains(FontNameParts.BOLD.name) &&
+        !this.contains(FontNameParts.SEMI.name) &&
+        this.contains(FontNameParts.EXTRA.name) &&
+        this.contains(FontNameParts.ITALIC.name)
+
+fun String.isBlack(): Boolean = this.contains(FontNameParts.BLACK.name) &&
+        !this.contains(FontNameParts.ITALIC.name)
+
+fun String.isBlackItalic(): Boolean = this.contains(FontNameParts.BLACK.name) &&
+        this.contains(FontNameParts.ITALIC.name)
+
+
+fun createFontFamilyFromAssets(context: Context, fontName: String): FontFamily {
     val fontFileNamesFromAssets =
         context.assets.list(FONT_ASSETS_DIRECTORY)?.toList()?.filterNotNull()
             ?: emptyList()
 
-    val fontBaseName = fontName.substringBeforeLast('_')
+    val fontBaseName = fontName.substringBeforeLast(FONT_BASENAME_DELIMITER)
 
     val familiy = fontFileNamesFromAssets.filter { name ->
         name.startsWith(fontBaseName)
@@ -267,104 +381,50 @@ fun evaluateFontFamilyFromAssets(context: Context, fontName: String): FontFamily
 
     return FontFamily(
         buildList {
-            familiy.forEach { fontName -> //TODO: simplify
-                if (fontName.contains(FontNameParts.REGULAR.name))
-                    add(createFont(context, fontName, FontWeight.Normal))
-                if (fontName.contains(FontNameParts.ITALIC.name) &&
-                    !fontName.contains(FontNameParts.THIN.name) &&
-                    !fontName.contains(FontNameParts.LIGHT.name) &&
-                    !fontName.contains(FontNameParts.MEDIUM.name) &&
-                    !fontName.contains(FontNameParts.BOLD.name) &&
-                    !fontName.contains(FontNameParts.BLACK.name)
-                )
-                    add(createFont(context, fontName, FontWeight.Normal, FontStyle.Italic))
-
-                if (fontName.contains(FontNameParts.BOLD.name) &&
-                    !fontName.contains(FontNameParts.SEMI.name) &&
-                    !fontName.contains(FontNameParts.EXTRA.name) &&
-                    !fontName.contains(FontNameParts.ITALIC.name)
-                )
-                    add(createFont(context, fontName, FontWeight.Bold))
-                if (fontName.contains(FontNameParts.BOLD.name) &&
-                    !fontName.contains(FontNameParts.SEMI.name) &&
-                    !fontName.contains(FontNameParts.EXTRA.name) &&
-                    fontName.contains(FontNameParts.ITALIC.name)
-                )
-                    add(createFont(context, fontName, FontWeight.Bold, FontStyle.Italic))
-
-                if (fontName.contains(FontNameParts.BOLD.name) &&
-                    fontName.contains(FontNameParts.SEMI.name) &&
-                    !fontName.contains(FontNameParts.EXTRA.name) &&
-                    !fontName.contains(FontNameParts.ITALIC.name)
-                )
-                    add(createFont(context, fontName, FontWeight.SemiBold))
-                if (fontName.contains(FontNameParts.BOLD.name) &&
-                    fontName.contains(FontNameParts.SEMI.name) &&
-                    !fontName.contains(FontNameParts.EXTRA.name) &&
-                    fontName.contains(FontNameParts.ITALIC.name)
-                )
-                    add(createFont(context, fontName, FontWeight.SemiBold, FontStyle.Italic))
-
-                if (fontName.contains(FontNameParts.BOLD.name) &&
-                    !fontName.contains(FontNameParts.SEMI.name) &&
-                    fontName.contains(FontNameParts.EXTRA.name) &&
-                    !fontName.contains(FontNameParts.ITALIC.name)
-                )
-                    add(createFont(context, fontName, FontWeight.ExtraBold))
-                if (fontName.contains(FontNameParts.BOLD.name) &&
-                    !fontName.contains(FontNameParts.SEMI.name) &&
-                    fontName.contains(FontNameParts.EXTRA.name) &&
-                    fontName.contains(FontNameParts.ITALIC.name)
-                )
-                    add(createFont(context, fontName, FontWeight.ExtraBold, FontStyle.Italic))
-
-                if (fontName.contains(FontNameParts.LIGHT.name) &&
-                    !fontName.contains(FontNameParts.EXTRA.name) &&
-                    !fontName.contains(FontNameParts.ITALIC.name)
-                )
-                    add(createFont(context, fontName, FontWeight.Light))
-                if (fontName.contains(FontNameParts.BOLD.name) &&
-                    !fontName.contains(FontNameParts.EXTRA.name) &&
-                    fontName.contains(FontNameParts.ITALIC.name)
-                )
-                    add(createFont(context, fontName, FontWeight.Light, FontStyle.Italic))
-
-                if (fontName.contains(FontNameParts.LIGHT.name) &&
-                    fontName.contains(FontNameParts.EXTRA.name) &&
-                    !fontName.contains(FontNameParts.ITALIC.name)
-                )
-                    add(createFont(context, fontName, FontWeight.ExtraLight))
-                if (fontName.contains(FontNameParts.LIGHT.name) &&
-                    fontName.contains(FontNameParts.EXTRA.name) &&
-                    fontName.contains(FontNameParts.ITALIC.name)
-                )
-                    add(createFont(context, fontName, FontWeight.ExtraLight, FontStyle.Italic))
-
-                if (fontName.contains(FontNameParts.THIN.name) &&
-                    !fontName.contains(FontNameParts.ITALIC.name)
-                )
+            familiy.forEach { fontName ->
+                if (fontName.isThin())
                     add(createFont(context, fontName, FontWeight.Thin))
-                if (fontName.contains(FontNameParts.THIN.name) &&
-                    fontName.contains(FontNameParts.ITALIC.name)
-                )
+                if (fontName.isThinItalic())
                     add(createFont(context, fontName, FontWeight.Thin, FontStyle.Italic))
 
-                if (fontName.contains(FontNameParts.MEDIUM.name) &&
-                    !fontName.contains(FontNameParts.ITALIC.name)
-                )
+                if (fontName.isExtraLight())
+                    add(createFont(context, fontName, FontWeight.ExtraLight))
+                if (fontName.isExtraLightItalic())
+                    add(createFont(context, fontName, FontWeight.ExtraLight, FontStyle.Italic))
+
+                if (fontName.isLight())
+                    add(createFont(context, fontName, FontWeight.Light))
+                if (fontName.isLightItalic())
+                    add(createFont(context, fontName, FontWeight.Light, FontStyle.Italic))
+
+                if (fontName.isRegular())
+                    add(createFont(context, fontName, FontWeight.Normal))
+                if (fontName.isRegularItalic())
+                    add(createFont(context, fontName, FontWeight.Normal, FontStyle.Italic))
+
+                if (fontName.isMedium())
                     add(createFont(context, fontName, FontWeight.Medium))
-                if (fontName.contains(FontNameParts.MEDIUM.name) &&
-                    fontName.contains(FontNameParts.ITALIC.name)
-                )
+                if (fontName.isMediumItalic())
                     add(createFont(context, fontName, FontWeight.Medium, FontStyle.Italic))
 
-                if (fontName.contains(FontNameParts.BLACK.name) &&
-                    !fontName.contains(FontNameParts.ITALIC.name)
-                )
+                if (fontName.isSemiBold())
+                    add(createFont(context, fontName, FontWeight.SemiBold))
+                if (fontName.isSemiBoldItalic())
+                    add(createFont(context, fontName, FontWeight.SemiBold, FontStyle.Italic))
+
+                if (fontName.isBold())
+                    add(createFont(context, fontName, FontWeight.Bold))
+                if (fontName.isBoldItalic())
+                    add(createFont(context, fontName, FontWeight.Bold, FontStyle.Italic))
+
+                if (fontName.isExtraBold())
+                    add(createFont(context, fontName, FontWeight.ExtraBold))
+                if (fontName.isExtraBoldItalic())
+                    add(createFont(context, fontName, FontWeight.ExtraBold, FontStyle.Italic))
+
+                if (fontName.isBlack())
                     add(createFont(context, fontName, FontWeight.Black))
-                if (fontName.contains(FontNameParts.BLACK.name) &&
-                    fontName.contains(FontNameParts.ITALIC.name)
-                )
+                if (fontName.isBlackItalic())
                     add(createFont(context, fontName, FontWeight.Black, FontStyle.Italic))
             }
         }.toList()
@@ -386,6 +446,7 @@ private fun createFont(
     )
 }
 
+
 fun mapFontWeight(fontWeightString: String): FontWeight {
     return when (fontWeightString) {
         de.oljg.glac.core.util.FontWeight.THIN.name -> FontWeight.Thin
@@ -400,6 +461,7 @@ fun mapFontWeight(fontWeightString: String): FontWeight {
     }
 }
 
+
 fun mapFontStyle(fontStyleString: String): FontStyle {
     return when (fontStyleString) {
         de.oljg.glac.core.util.FontStyle.ITALIC.name -> FontStyle.Italic
@@ -407,12 +469,14 @@ fun mapFontStyle(fontStyleString: String): FontStyle {
     }
 }
 
+
 private fun evaluateFontStyleDependingOnFileNameOrUri(fontNameOrUri: String): FontStyle {
     return when {
         fontNameOrUri.contains(FontNameParts.ITALIC.name) -> FontStyle.Italic
         else -> FontStyle.Normal
     }
 }
+
 
 private fun evaluateFontWeightDependingOnFileNameOrUri(fontNameOrUri: String): FontWeight {
     return when {
@@ -437,6 +501,7 @@ private fun evaluateFontWeightDependingOnFileNameOrUri(fontNameOrUri: String): F
     }
 }
 
+
 enum class FontNameParts {
     SEMI,
     EXTRA,
@@ -450,9 +515,6 @@ enum class FontNameParts {
 }
 
 
-fun String.contains(part: String): Boolean = this.contains(part, ignoreCase = true)
-
-
 object FontDefaults {
 
     // Evaluated manuallay based on default Android Studio emulators
@@ -463,7 +525,8 @@ object FontDefaults {
     val START_FONT_SIZE_MEDIUM_DEVICE_LANDSCAPE = 340.sp
     val START_FONT_SIZE_EXPANDED_DEVICE_LANDSCAPE = 480.sp
 
-    const val DEFAULT_FONTFAMILY_NAMES_PREFIX = "Default_"
+    const val FONT_BASENAME_DELIMITER = '_'
+    const val DEFAULT_FONTFAMILY_NAMES_PREFIX = "Default$FONT_BASENAME_DELIMITER"
     const val DEFAULT_MONOSPACE = "${DEFAULT_FONTFAMILY_NAMES_PREFIX}Monospace"
     const val DEFAULT_SANS_SERIF = "${DEFAULT_FONTFAMILY_NAMES_PREFIX}SansSerif"
     const val DEFAULT_SERIF = "${DEFAULT_FONTFAMILY_NAMES_PREFIX}Serif"

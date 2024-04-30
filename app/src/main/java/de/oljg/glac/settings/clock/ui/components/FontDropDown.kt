@@ -21,10 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import de.oljg.glac.clock.digital.ui.utils.FontNameParts
 import de.oljg.glac.clock.digital.ui.utils.contains
 import de.oljg.glac.settings.clock.ui.utils.FileUtilDefaults.DEFAULT_FONT_NAMES
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DROPDOWN_END_PADDING
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DROPDOWN_ROW_VERTICAL_PADDING
 import de.oljg.glac.settings.clock.ui.utils.cutOffPathfromFontUri
 import de.oljg.glac.settings.clock.ui.utils.getFontFileNamesFromAssets
 import de.oljg.glac.settings.clock.ui.utils.getFontFileUrisFromFilesDir
@@ -77,13 +78,13 @@ fun FontDropDown(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = DROPDOWN_ROW_VERTICAL_PADDING),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             modifier = Modifier
-                .padding(end = 4.dp),
+                .padding(end = DROPDOWN_END_PADDING),
             text = label,
             overflow = TextOverflow.Ellipsis,
             maxLines = 2
@@ -96,7 +97,7 @@ fun FontDropDown(
             ImportFontButton(onNewFontImported = onNewFontImported)
             ExposedDropdownMenuBox(
                 modifier = Modifier
-                    .padding(end = 4.dp),
+                    .padding(end = DROPDOWN_END_PADDING),
                 expanded = dropDownIsExpanded,
                 onExpandedChange = { dropDownIsExpanded = !dropDownIsExpanded }
             ) {
@@ -111,7 +112,6 @@ fun FontDropDown(
                     singleLine = true,
                     trailingIcon = { TrailingIcon(expanded = dropDownIsExpanded) }
                 )
-
                 ExposedDropdownMenu(
                     expanded = dropDownIsExpanded,
                     onDismissRequest = { dropDownIsExpanded = false }

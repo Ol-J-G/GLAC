@@ -249,7 +249,7 @@ fun DigitalClockLandscapeLayout(
                     isFontCharDivider = isFontCharDivider
                 )
                 else {
-                    // dividerColor in case of DividerStyle.CHAR => divider is a Char //TODO: then don't allow digits or letters as divider char, otherwise this will not work! (or change it to allow any char als divider char, but ... who would want such stuff^^?? (what time it is(if you wouldn't know the divider is '2'): 122342AM => 12:34:AM => lul, strange, but useless(? .. but maybe "funny"?) :>)
+                    // dividerColor in case of DividerStyle.CHAR => divider is a Char //TODO: (later) then don't allow digits or letters as divider char, otherwise this will not work! (or change it to allow any char als divider char, but ... who would want such stuff^^?? (what time it is(if you wouldn't know the divider is '2'): 122342AM => 12:34:AM => lul, strange, but useless(? .. but maybe "funny"?) :>)
                     if (char.isLetterOrDigit()) charColors.getValue(char) else dividerAttributes.dividerColor
                 }
 
@@ -297,7 +297,7 @@ fun DigitalClockLandscapeLayout(
                                         dividerColor = finalDividerColor,
                                         dividerRotateAngle = dividerAttributes.dividerRotateAngle,
 
-                                        //TODO: maybe create params => configurable, to let user adjust it
+                                        //TODO: (later) maybe create params => configurable, to let user adjust it
                                         firstCirclePositionPercent = when (dividerCount) {
                                             1 -> DEFAULT_FIRST_CIRCLE_POSITION_AT_ONE_DIVIDER
                                             2 -> DEFAULT_FIRST_CIRCLE_POSITION_AT_TWO_DIVIDERS

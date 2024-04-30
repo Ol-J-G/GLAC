@@ -263,7 +263,7 @@ private fun DrawScope.drawDashDottedLine(
     }
 }
 
-//TODO: introduce outline variant => appropriate for 7-seg outline styles
+//TODO: (later) introduce outline variant => appropriate for 7-seg outline styles
 @Composable
 fun ColonDivider(
     dividerPadding: Dp,

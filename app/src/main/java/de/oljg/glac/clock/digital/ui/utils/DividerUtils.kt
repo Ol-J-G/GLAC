@@ -112,7 +112,7 @@ fun evaluateDividerAttributes(
         /**
          * No need to rotate dividers with ClockCharType.FONT (fonts have unknown/different italic
          * angles).
-         * //TODO: allow anyways, but let user rotate manually
+         * //TODO: (later) allow anyways, but let user rotate manually
          */
         else 0f
 

@@ -46,6 +46,7 @@ import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.MeasureFontSize
 import de.oljg.glac.clock.digital.ui.utils.PreviewState
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
+import de.oljg.glac.clock.digital.ui.utils.evaluateFontSizeShrinkFactor
 import de.oljg.glac.clock.digital.ui.utils.evaluateStartFontSize
 import de.oljg.glac.clock.digital.ui.utils.evalutateDividerCount
 import de.oljg.glac.clock.digital.ui.utils.isDaytimeMarkerChar
@@ -159,20 +160,14 @@ fun DigitalClockPortraitLayout(
     val sevenSegmentShrinkFactor =
         if (dividerCount == 1) .9f else .95f
 
-    //TODO: extract fun, test and maybe adjust values further, maybe take other font than Exo2.0 into account as well
-    val baseFontSizeShrinkFactor = if (dividerCount == 1) .9f else 1f
-    val fontWeightShrinkFactor = when (fontWeight) {
-        FontWeight.Black -> baseFontSizeShrinkFactor * .7f
-        FontWeight.ExtraBold -> baseFontSizeShrinkFactor * .8f
-        FontWeight.Bold -> baseFontSizeShrinkFactor * .85f
-        FontWeight.SemiBold -> baseFontSizeShrinkFactor * .9f
-        else -> baseFontSizeShrinkFactor
-    }
-
-    val fontSizeShrinkFactor = when (fontStyle) {
-        FontStyle.Italic -> fontWeightShrinkFactor * .95f
-        else -> fontWeightShrinkFactor
-    }
+    /**
+     * Shrink font chars a bit since font measurement with multiple shrinks (*= .97f) is "ok"-fast
+     * on the one hand, but on the other hand, it's not very precise.
+     * To find a compromise between these two "poles", I decided to shrink font size depending
+     * on how many rows (divider count) are used and font weight (e.g. extra bold chars are a
+     * bit bigger than regular ones, etc.) to enforce monospace.
+     */
+    val fontSizeShrinkFactor = evaluateFontSizeShrinkFactor(dividerCount, fontWeight)
 
     val maxCharWidth = when (clockCharType) {
 
@@ -214,7 +209,7 @@ fun DigitalClockPortraitLayout(
             .semantics { contentDescription = digitalClock }
             .testTag(TestTags.DIGITAL_CLOCK_PORTRAIT_LAYOUT),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceEvenly //TODO: let user decide (same in landscape) SpaceEvenly should be default
+        verticalArrangement = Arrangement.SpaceEvenly //TODO: (later) let user decide (same in landscape) SpaceEvenly should be default
     ) {
         currentTimeWithoutSeparators.forEachIndexed { index, char ->
 

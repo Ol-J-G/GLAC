@@ -216,7 +216,7 @@ fun SevenSegmentChar(
 }
 
 
-//TODO: enable both combined? (draw Filled first then Stroke upon, to have e.g a char with outline and colored BG (instead of transparent currently at OUTLINE))
+//TODO: (later) enable both combined? (draw Filled first then Stroke upon, to have e.g a char with outline and colored BG (instead of transparent currently at OUTLINE))
 private fun DrawScope.draw(
     segment: Path,
     color: Color,
