@@ -1,0 +1,21 @@
+package de.oljg.glac.settings.clock.ui.components
+
+import androidx.compose.runtime.Composable
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SEVEN_SEGMENT_WEIGHTS
+import de.oljg.glac.settings.clock.ui.utils.prettyPrintEnumName
+
+@Composable
+fun SevenSegmentWeightSelector(
+    label: String,
+    selectedSevenSegmentWeight: String,
+    onNewSevenSegmentWeightSelected: (String) -> Unit
+) {
+    DropDownSelector( //TODO: add prettyPrint
+        label = label,
+        selectedValue = selectedSevenSegmentWeight,
+        onNewValueSelected = onNewSevenSegmentWeightSelected,
+        values = SEVEN_SEGMENT_WEIGHTS,
+        prettyPrintValue = String::prettyPrintEnumName,
+        maxWidthFraction = .8f
+    )
+}

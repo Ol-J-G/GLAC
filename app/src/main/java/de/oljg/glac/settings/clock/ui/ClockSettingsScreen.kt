@@ -16,7 +16,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
@@ -32,6 +31,8 @@ import de.oljg.glac.settings.clock.ui.components.ClockPreview
 import de.oljg.glac.settings.clock.ui.components.FontSelector
 import de.oljg.glac.settings.clock.ui.components.SettingsSection
 import de.oljg.glac.settings.clock.ui.components.SettingsSwitch
+import de.oljg.glac.settings.clock.ui.components.SevenSegmentStyleSelector
+import de.oljg.glac.settings.clock.ui.components.SevenSegmentWeightSelector
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SCREEN_HORIZONTAL_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SCREEN_VERTICAL_PADDING
 import kotlinx.coroutines.launch
@@ -89,11 +90,11 @@ fun ClockSettingsScreen(
                 SettingsSection(
                     sectionTitle = stringResource(R.string.display),
                     expanded = clockSettings.clockSettingsSectionDisplayIsExpanded,
-                    onExpandedChange = { isExpanded ->
+                    onExpandedChange = { expanded ->
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
                                 clockSettings.copy(
-                                    clockSettingsSectionDisplayIsExpanded = isExpanded
+                                    clockSettingsSectionDisplayIsExpanded = expanded
                                 )
                             )
                         }
@@ -122,16 +123,17 @@ fun ClockSettingsScreen(
                 SettingsSection(
                     sectionTitle = stringResource(R.string.clock_characters),
                     expanded = clockSettings.clockSettingsSectionClockCharIsExpanded,
-                    onExpandedChange = { isExpanded ->
+                    onExpandedChange = { expanded ->
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
                                 clockSettings.copy(
-                                    clockSettingsSectionClockCharIsExpanded = isExpanded
+                                    clockSettingsSectionClockCharIsExpanded = expanded
                                 )
                             )
                         }
                     }
                 ) {
+                    //TODO: introduce ClockChararcterSettings()
                     ClockCharTypeSelector(
                         label = stringResource(R.string.type),
                         selectedClockCharType = clockSettings.selectedClockCharType,
@@ -147,39 +149,72 @@ fun ClockSettingsScreen(
                     )
                     Divider(modifier = Modifier.padding(vertical = 4.dp))
                     Crossfade(
-                        targetState = clockSettings.selectedClockCharType,
+                        targetState = ClockCharType.valueOf(clockSettings.selectedClockCharType),
                         animationSpec = TweenSpec(),
                         label = "crossfade"
                     ) { clockCharType ->
                         when(clockCharType) {
-                            ClockCharType.FONT.name -> {
+                            ClockCharType.FONT -> {
                                 FontSelector(
                                     selectedFontFamily = clockSettings.fontName,
                                     onNewFontFamilySelected = { newFontName ->
                                         coroutineScope.launch {
-                                            viewModel.updateClockSettings(clockSettings.copy(fontName = newFontName))
+                                            viewModel.updateClockSettings(
+                                                clockSettings.copy(fontName = newFontName))
                                         }
                                     },
                                     onNewFontFamilyImported = { newFontUri ->
                                         coroutineScope.launch {
-                                            viewModel.updateClockSettings(clockSettings.copy(fontName = newFontUri))
+                                            viewModel.updateClockSettings(
+                                                clockSettings.copy(fontName = newFontUri))
                                         }
                                     },
                                     selectedFontWeight = clockSettings.fontWeight,
                                     onNewFontWeightSelected = { newFontWeight ->
                                         coroutineScope.launch {
-                                            viewModel.updateClockSettings(clockSettings.copy(fontWeight = newFontWeight))
+                                            viewModel.updateClockSettings(
+                                                clockSettings.copy(fontWeight = newFontWeight))
                                         }
                                     },
                                     selectedFontStyle = clockSettings.fontStyle,
                                     onNewFontStyleSelected = { newFontStyle ->
                                         coroutineScope.launch {
-                                            viewModel.updateClockSettings((clockSettings.copy(fontStyle = newFontStyle)))
+                                            viewModel.updateClockSettings(
+                                                clockSettings.copy(fontStyle = newFontStyle))
                                         }
                                     }
                                 )
                             }
-                            ClockCharType.SEVEN_SEGMENT.name -> Text("7seg Stuff ..")
+                            ClockCharType.SEVEN_SEGMENT -> {
+                                Column {//TODO: introduce SevenSegmentSelector
+                                    SevenSegmentWeightSelector(
+                                        label = "${stringResource(id = R.string.weight)}:",
+                                        selectedSevenSegmentWeight = clockSettings.sevenSegmentWeight,
+                                        onNewSevenSegmentWeightSelected = { newSevenSegmentWeight ->
+                                            coroutineScope.launch {
+                                                viewModel.updateClockSettings(
+                                                    clockSettings.copy(
+                                                        sevenSegmentWeight = newSevenSegmentWeight
+                                                    )
+                                                )
+                                            }
+                                        }
+                                    )
+                                    SevenSegmentStyleSelector(
+                                        label = "${stringResource(id = R.string.style)}:    ",
+                                        selectedSevenSegmentStyle = clockSettings.sevenSegmentStyle,
+                                        onNewSevenSegmentStyleSelected = { newSevenSegmentStyle ->
+                                            coroutineScope.launch {
+                                                viewModel.updateClockSettings(
+                                                    clockSettings.copy(
+                                                        sevenSegmentStyle = newSevenSegmentStyle
+                                                    )
+                                                )
+                                            }
+                                        }
+                                    )
+                                }
+                            }
                         }
 
                     }

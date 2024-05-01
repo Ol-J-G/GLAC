@@ -12,9 +12,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.CLOCK_CHAR_TYPES
 
 @Composable
 fun ClockCharTypeSelector(
@@ -22,8 +26,6 @@ fun ClockCharTypeSelector(
     selectedClockCharType: String,
     onClockCharTypeSelected: (String) -> Unit
 ) {
-    val radioOptions = listOf(ClockCharType.FONT.name, ClockCharType.SEVEN_SEGMENT.name)
-
     Row(
         Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -32,15 +34,13 @@ fun ClockCharTypeSelector(
     ) {
         Text(label)
         Row(Modifier.selectableGroup()) {
-            radioOptions.forEach { text ->
+            CLOCK_CHAR_TYPES.forEach { text ->
                 Row(
                     Modifier
                         .height(56.dp)
                         .selectable(
                             selected = (text == selectedClockCharType),
-                            onClick = {
-                                onClockCharTypeSelected(text)
-                            },
+                            onClick = { onClockCharTypeSelected(text) },
                             role = Role.RadioButton
                         )
                         .padding(horizontal = 16.dp),
@@ -51,8 +51,10 @@ fun ClockCharTypeSelector(
                         onClick = null // null recommended for accessibility with screenreaders
                     )
                     Text(
-                        text = if(text == ClockCharType.FONT.name) "Font" else "7-Segment", //TODO: add res, etc
-                        modifier = Modifier.padding(start = 16.dp)
+                        modifier = Modifier.padding(start = 16.dp),
+                        text = if (text == ClockCharType.FONT.name) stringResource(R.string.font)
+                        else stringResource(R.string._7_segment),
+                        fontSize = 18.sp
                     )
                 }
             }

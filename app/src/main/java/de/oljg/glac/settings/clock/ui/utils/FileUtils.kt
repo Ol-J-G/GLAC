@@ -3,6 +3,8 @@ package de.oljg.glac.settings.clock.ui.utils
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.intl.Locale
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import de.oljg.glac.clock.digital.ui.utils.FontDefaults
@@ -87,6 +89,23 @@ fun String.prettyPrintFontName(): String {
         .replaceLastWithBlank('_')
         .replaceLastWithBlank('-')
         .replace(regex = Regex(" ?[Rr]egular"), "")
+}
+
+fun String.prettyPrintEnumName(): String {
+    val words = this.lowercase().split('_')
+    return buildString {
+        words.forEachIndexed { index, word ->
+            append(word.capitalize(Locale.current))
+
+            /**
+             * _Example_
+             * Input        : "WORD_WORD"
+             * Don't do this: "Word Word "
+             * Do this      : "Word Word" (<= blank only between words)
+             */
+            if (index + 1 != words.size) append(' ')
+        }
+    }
 }
 
 fun String.hasTrueTypeFontExtension(): Boolean =

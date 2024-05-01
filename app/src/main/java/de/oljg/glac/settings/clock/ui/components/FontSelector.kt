@@ -19,7 +19,7 @@ fun FontSelector(
 ) {
     Column {
         FontFamilySelector(
-            label = "${stringResource(R.string.clock_font)}:",
+            label = "${stringResource(R.string.family)}:  ",
             selectedFontFamily = selectedFontFamily,
             onNewFontFamilySelected = onNewFontFamilySelected,
             onNewFontFamilyImported = onNewFontFamilyImported
@@ -44,12 +44,12 @@ fun FontSelector(
         AnimatedVisibility(visible = !selectedFontFamily.isFileUri()) {
             Column {
                 FontWeightSelector(
-                    label = "${stringResource(R.string.font_weight)}:",
+                    label = "${stringResource(R.string.weight)}:",
                     selectedFontWeight = selectedFontWeight,
                     onNewFontWeightSelected = onNewFontWeightSelected
                 )
                 FontStyleSelector(
-                    label = "${stringResource(R.string.font_style)}:   ",
+                    label = "${stringResource(R.string.style)}:    ",
                     selectedFontStyle = selectedFontStyle,
                     onNewFontStyleSelected = onNewFontStyleSelected
                 )

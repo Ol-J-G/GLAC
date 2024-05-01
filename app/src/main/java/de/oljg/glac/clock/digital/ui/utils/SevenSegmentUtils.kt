@@ -21,6 +21,18 @@ enum class Segment {
     BOTTOM_RIGHT
 }
 
+enum class SevenSegmentWeight {
+    THIN,
+    EXTRA_LIGHT,
+    LIGHT,
+    REGULAR,
+    MEDIUM,
+    SEMI_BOLD,
+    BOLD,
+    EXTRA_BOLD,
+    BLACK
+}
+
 enum class SevenSegmentStyle {
     REGULAR,
     ITALIC,
@@ -39,13 +51,6 @@ fun SevenSegmentStyle.isReverseItalic(): Boolean {
     return this.name.contains(SevenSegmentStyle.REVERSE_ITALIC.name)
 }
 
-enum class SevenSegmentWeight {
-    THIN,
-    LIGHT,
-    REGULAR,
-    SEMIBOLD,
-    BOLD,
-}
 
 fun Char.contains(segment: Segment): Boolean {
     return when (segment) {
@@ -197,11 +202,15 @@ object SevenSegmentDefaults {
     // Unfortunately, I didn't find any (non-internal) Kotlin conversion function, so, Java assists
     val DEFAULT_ITALIC_ANGLE = Math.toDegrees(atan(DEFAULT_ITALIC_FACTOR).toDouble()).toFloat()
 
-    const val DEFAULT_WEIGHT_FACTOR_THIN = .03f
+    const val DEFAULT_WEIGHT_FACTOR_THIN = .02f
+    const val DEFAULT_WEIGHT_FACTOR_EXTRALIGHT = .03f
     const val DEFAULT_WEIGHT_FACTOR_LIGHT = .04f
     const val DEFAULT_WEIGHT_FACTOR_REGULAR = .05f
-    const val DEFAULT_WEIGHT_FACTOR_SEMIBOLD = .06f
-    const val DEFAULT_WEIGHT_FACTOR_BOLD = .07f
+    const val DEFAULT_WEIGHT_FACTOR_MEDIUM = .06f
+    const val DEFAULT_WEIGHT_FACTOR_SEMIBOLD = .07f
+    const val DEFAULT_WEIGHT_FACTOR_BOLD = .08f
+    const val DEFAULT_WEIGHT_FACTOR_EXTRABOLD = .09f
+    const val DEFAULT_WEIGHT_FACTOR_BLACK = .0999f
 
     const val DEFAULT_STROKE_WIDTH_THIN = 1f
     const val DEFAULT_STROKE_WIDTH_LIGHT = 2f

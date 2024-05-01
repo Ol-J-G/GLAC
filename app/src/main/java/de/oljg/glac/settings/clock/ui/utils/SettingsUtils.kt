@@ -1,6 +1,9 @@
 package de.oljg.glac.settings.clock.ui.utils
 
 import androidx.compose.ui.unit.dp
+import de.oljg.glac.clock.digital.ui.utils.ClockCharType
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.core.util.FontStyle
 import de.oljg.glac.core.util.FontWeight
 
@@ -13,19 +16,11 @@ object SettingsDefaults {
     val DROPDOWN_END_PADDING = 4.dp
     val DROPDOWN_ROW_VERTICAL_PADDING = 8.dp
 
-    val ALL_FONT_WEIGHTS = listOf(
-        FontWeight.THIN.name,
-        FontWeight.EXTRA_LIGHT.name,
-        FontWeight.LIGHT.name,
-        FontWeight.NORMAL.name,
-        FontWeight.MEDIUM.name,
-        FontWeight.SEMI_BOLD.name,
-        FontWeight.BOLD.name,
-        FontWeight.EXTRA_BOLD.name,
-        FontWeight.BLACK.name
-    )
-    val ALL_FONT_STYLES = listOf(
-        FontStyle.NORMAL.name,
-        FontStyle.ITALIC.name
-    )
+    val FONT_WEIGHTS = FontWeight.entries.map { weight -> weight.name }
+    val FONT_STYLES = FontStyle.entries.map { style -> style.name }
+
+    val SEVEN_SEGMENT_WEIGHTS = SevenSegmentWeight.entries.map { weight -> weight.name }
+    val SEVEN_SEGMENT_STYLES = SevenSegmentStyle.entries.map { style -> style.name }
+
+    val CLOCK_CHAR_TYPES = ClockCharType.entries.map { type -> type.name }
 }

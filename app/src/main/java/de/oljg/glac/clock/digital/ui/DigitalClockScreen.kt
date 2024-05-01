@@ -115,8 +115,8 @@ fun DigitalClockScreen(
 //    fontWeight: FontWeight = FontWeight.Normal,
 //    fontStyle: FontStyle = FontStyle.Normal,
 
-    sevenSegmentStyle: SevenSegmentStyle = SevenSegmentStyle.REGULAR,
-    sevenSegmentWeight: SevenSegmentWeight = SevenSegmentWeight.REGULAR,
+//    sevenSegmentStyle: SevenSegmentStyle = SevenSegmentStyle.REGULAR,
+//    sevenSegmentWeight: SevenSegmentWeight = SevenSegmentWeight.REGULAR,
     sevenSegmentOutlineStrokeWidth: Float? = null,
     segmentColors: Map<Segment, Color> = emptyMap(),
 //        mapOf(
@@ -239,7 +239,7 @@ fun DigitalClockScreen(
         dividerAttributes = dividerAttributes,
         currentTimeFormatted = currentTimeFormatted,
         clockCharType = clockCharType,
-        sevenSegmentStyle = sevenSegmentStyle,
+        sevenSegmentStyle = SevenSegmentStyle.valueOf(clockSettings.sevenSegmentStyle),
         clockCharSizeFactor = clockCharSizeFactor,
         daytimeMarkerSizeFactor = daytimeMarkerSizeFactor
     ) { clockChar, clockCharFontSize, clockCharColor, clockCharSize ->
@@ -258,8 +258,8 @@ fun DigitalClockScreen(
                 charSize = clockCharSize,
                 charColor = clockCharColor,
                 segmentColors = segmentColors,
-                style = sevenSegmentStyle,
-                weight = sevenSegmentWeight,
+                style = SevenSegmentStyle.valueOf(clockSettings.sevenSegmentStyle),
+                weight = SevenSegmentWeight.valueOf(clockSettings.sevenSegmentWeight),
                 strokeWidth = sevenSegmentOutlineStrokeWidth,
             )
     }

@@ -31,18 +31,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import de.oljg.glac.clock.digital.ui.utils.Segment
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_ASPECT_RATIO
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_STROKE_WIDTH_BOLD
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_ITALIC_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_SEVEN_SEGMENT_CHAR_PADDING
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_STROKE_WIDTH_LIGHT
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_STROKE_WIDTH_REGULAR
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_STROKE_WIDTH_SEMIBOLD
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_STROKE_WIDTH_THIN
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_BLACK
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_BOLD
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_EXTRABOLD
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_EXTRALIGHT
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_LIGHT
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_MEDIUM
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_REGULAR
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_SEMIBOLD
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_THIN
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_ITALIC_FACTOR
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_SEVEN_SEGMENT_CHAR_PADDING
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.SEVEN_SEGMENT_CHARS
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
@@ -102,7 +102,7 @@ fun PreviewDigits() {
     }
 }
 
-
+//TODO: additionally draw all segments, 8, as barely recognizable background (just outline/stroke?) to simulate/adapt the look of a real 7-seg display + defeatable setting, on/off
 @Composable
 fun SevenSegmentChar(
     modifier: Modifier = Modifier,
@@ -130,20 +130,24 @@ fun SevenSegmentChar(
 
     val weightFactor = when (weight) {
         SevenSegmentWeight.THIN -> DEFAULT_WEIGHT_FACTOR_THIN
+        SevenSegmentWeight.EXTRA_LIGHT -> DEFAULT_WEIGHT_FACTOR_EXTRALIGHT
         SevenSegmentWeight.LIGHT -> DEFAULT_WEIGHT_FACTOR_LIGHT
         SevenSegmentWeight.REGULAR -> DEFAULT_WEIGHT_FACTOR_REGULAR
-        SevenSegmentWeight.SEMIBOLD -> DEFAULT_WEIGHT_FACTOR_SEMIBOLD
+        SevenSegmentWeight.MEDIUM -> DEFAULT_WEIGHT_FACTOR_MEDIUM
+        SevenSegmentWeight.SEMI_BOLD -> DEFAULT_WEIGHT_FACTOR_SEMIBOLD
         SevenSegmentWeight.BOLD -> DEFAULT_WEIGHT_FACTOR_BOLD
+        SevenSegmentWeight.EXTRA_BOLD -> DEFAULT_WEIGHT_FACTOR_EXTRABOLD
+        SevenSegmentWeight.BLACK -> DEFAULT_WEIGHT_FACTOR_BLACK
     }
 
-    val defaultStrokeWidth = when (weight) {
-        SevenSegmentWeight.THIN -> DEFAULT_STROKE_WIDTH_THIN
-        SevenSegmentWeight.LIGHT -> DEFAULT_STROKE_WIDTH_LIGHT
-        SevenSegmentWeight.REGULAR -> DEFAULT_STROKE_WIDTH_REGULAR
-        SevenSegmentWeight.SEMIBOLD -> DEFAULT_STROKE_WIDTH_SEMIBOLD
-        SevenSegmentWeight.BOLD -> DEFAULT_STROKE_WIDTH_BOLD
-    }
-    val finalStrokeWidth = strokeWidth ?: defaultStrokeWidth
+//    val defaultStrokeWidth = when (weight) { //TODO: remove, and introduce clocksetting.sevenSegmentOutlineWidth: Float = DEFAULT_STROKE_WIDTH_LIGHT + slider
+//        SevenSegmentWeight.THIN -> DEFAULT_STROKE_WIDTH_THIN
+//        SevenSegmentWeight.LIGHT -> DEFAULT_STROKE_WIDTH_LIGHT
+//        SevenSegmentWeight.REGULAR -> DEFAULT_STROKE_WIDTH_REGULAR
+//        SevenSegmentWeight.SEMIBOLD -> DEFAULT_STROKE_WIDTH_SEMIBOLD
+//        SevenSegmentWeight.BOLD -> DEFAULT_STROKE_WIDTH_BOLD
+//    }
+    val finalStrokeWidth = strokeWidth ?: DEFAULT_STROKE_WIDTH_LIGHT//defaultStrokeWidth
 
     val finalSegmentColors =
             setSpecifiedColors(segmentColors, defaultSegmentColors(charColor))
