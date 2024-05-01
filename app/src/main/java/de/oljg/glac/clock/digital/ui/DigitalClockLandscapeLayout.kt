@@ -35,7 +35,8 @@ import de.oljg.glac.clock.digital.ui.components.LineDivider
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_CHAR_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
-import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.WIDEST_CHAR
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.WIDEST_DIGIT
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.WIDEST_LETTER
 import de.oljg.glac.clock.digital.ui.utils.ClockParts
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
@@ -88,7 +89,10 @@ fun DigitalClockLandscapeLayout(
 //    dividerDashDottedPartCount: Int = DEFAULT_DASH_DOTTED_PART_COUNT,
 //    dividerRotateAngle: Float = 0f,
 
-    startFontSize: TextUnit = evaluateStartFontSize(Configuration.ORIENTATION_LANDSCAPE, previewMode),
+    startFontSize: TextUnit = evaluateStartFontSize(
+        Configuration.ORIENTATION_LANDSCAPE,
+        previewMode
+    ),
     clockCharType: ClockCharType = ClockCharType.FONT,
     clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
     daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
@@ -139,7 +143,7 @@ fun DigitalClockLandscapeLayout(
                 previewState.currentFont != clockSettings.fontName ||
                 previewState.currentFontWeight != clockSettings.fontWeight ||
                 previewState.currentFontStyle != clockSettings.fontStyle
-        )
+                )
     ) {
         /**
          * Calculate biggest font size that fits into clockBox container in landscape layout.
@@ -147,6 +151,8 @@ fun DigitalClockLandscapeLayout(
         MeasureFontSize(
             textToMeasure = evaluateTextToMeasure(
                 dividerCount = dividerCount,
+                widestChar =
+                if (currentTimeFormatted.last().isLetter()) WIDEST_LETTER else WIDEST_DIGIT,
                 isCharDivider = finalDividerStyle == DividerStyle.CHAR
             ),
             fontSize = startFontSize,
@@ -379,18 +385,22 @@ fun DigitalClockLandscapeLayout(
 }
 
 
-private fun evaluateTextToMeasure(dividerCount: Int, isCharDivider: Boolean): String {
+private fun evaluateTextToMeasure(
+    dividerCount: Int,
+    widestChar: Char,
+    isCharDivider: Boolean
+): String {
     return if (isCharDivider) {
         buildString {
             when (dividerCount) {
                 // e.g. 'hh:mm' => 'MMMMM'
-                1 -> (1..5).forEach { _ -> append(WIDEST_CHAR) }
+                1 -> (1..5).forEach { _ -> append(widestChar) }
 
                 // e.g. 'hh:mm:ss' OR 'hh:mm_PM' => 'MMMMMMMM'
-                2 -> (1..8).forEach { _ -> append(WIDEST_CHAR) }
+                2 -> (1..8).forEach { _ -> append(widestChar) }
 
                 // e.g. 'hh:mm:ss_PM' => 'MMMMMMMMMMM'
-                3 -> (1..11).forEach { _ -> append(WIDEST_CHAR) }
+                3 -> (1..11).forEach { _ -> append(widestChar) }
             }
         }
     } else {
@@ -406,13 +416,13 @@ private fun evaluateTextToMeasure(dividerCount: Int, isCharDivider: Boolean): St
         buildString {
             when (dividerCount) {
                 // e.g. 'hh|mm' => 'MMMM'
-                1 -> (1..4).forEach { _ -> append(WIDEST_CHAR) }
+                1 -> (1..4).forEach { _ -> append(widestChar) }
 
                 // e.g. 'hh:mm:ss' OR 'hh:mm_PM' => 'MMMMMM'
-                2 -> (1..6).forEach { _ -> append(WIDEST_CHAR) }
+                2 -> (1..6).forEach { _ -> append(widestChar) }
 
                 // e.g. '00:00:00_PM' => 'MMMMMMMM'
-                3 -> (1..8).forEach { _ -> append(WIDEST_CHAR) }
+                3 -> (1..8).forEach { _ -> append(widestChar) }
             }
         }
     }

@@ -34,10 +34,14 @@ interface DaytimeMarker<T> {
 object ClockDefaults {
 
     /**
-     * Should be the widest char in most non-monospace fonts
-     * (or "W", but this char ins't used in a digital clock, but: '0-9APM')
+     * Should be the widest letter in most non-monospace fonts
+     * (or "W", but this char ins't used in a digital clock, but: 'APM')
      */
-    const val WIDEST_CHAR: Char = 'M'
+    const val WIDEST_LETTER: Char = 'M' //TODO: maybe let user enter a char (in case an imported font is "special"
+
+
+    // Should be the widest digit in most non-monospace fonts
+    const val WIDEST_DIGIT: Char = '8'
 
     /**
      * E.g. used to set colors per char.
@@ -47,7 +51,7 @@ object ClockDefaults {
     val DAYTIME_MARKER_CHARS = listOf('A', 'P', 'M')
     val CLOCK_CHARS = DIGIT_CHARS + DAYTIME_MARKER_CHARS
 
-    val DEFAULT_CLOCK_PADDING = 16.dp
+    val DEFAULT_CLOCK_PADDING = 0.dp
     const val DEFAULT_CLOCK_CHAR_SIZE_FACTOR = 1f // 100% (max size)
     const val DEFAULT_DAYTIME_MARKER_SIZE_FACTOR = 1f // 100% (max size)
 }

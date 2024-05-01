@@ -1,6 +1,7 @@
 package de.oljg.glac.settings.clock.ui.utils
 
 import androidx.compose.ui.unit.dp
+import de.oljg.glac.core.util.FontStyle
 import de.oljg.glac.core.util.FontWeight
 
 object SettingsDefaults {
@@ -13,14 +14,18 @@ object SettingsDefaults {
     val DROPDOWN_ROW_VERTICAL_PADDING = 8.dp
 
     val ALL_FONT_WEIGHTS = listOf(
-        FontWeight.THIN,
-        FontWeight.EXTRA_LIGHT,
-        FontWeight.LIGHT,
-        FontWeight.NORMAL,
-        FontWeight.MEDIUM,
-        FontWeight.SEMI_BOLD,
-        FontWeight.BOLD,
-        FontWeight.EXTRA_BOLD,
-        FontWeight.BLACK
+        FontWeight.THIN.name,
+        FontWeight.EXTRA_LIGHT.name,
+        FontWeight.LIGHT.name,
+        FontWeight.NORMAL.name,
+        FontWeight.MEDIUM.name,
+        FontWeight.SEMI_BOLD.name,
+        FontWeight.BOLD.name,
+        FontWeight.EXTRA_BOLD.name,
+        FontWeight.BLACK.name
+    )
+    val ALL_FONT_STYLES = listOf(
+        FontStyle.NORMAL.name,
+        FontStyle.ITALIC.name
     )
 }

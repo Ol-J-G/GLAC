@@ -36,7 +36,8 @@ import de.oljg.glac.clock.digital.ui.components.LineDivider
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_CHAR_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
-import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.WIDEST_CHAR
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.WIDEST_DIGIT
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.WIDEST_LETTER
 import de.oljg.glac.clock.digital.ui.utils.ClockParts
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
@@ -95,6 +96,9 @@ fun DigitalClockPortraitLayout(
         mutableStateOf(PreviewState())
     }
 
+    val widestChar =
+        if(currentTimeWithoutSeparators.last().isLetter()) WIDEST_LETTER else WIDEST_DIGIT
+
     if (clockCharType == ClockCharType.FONT &&
         // Re-measure when one of the following changes (needed for settings preview)
         (previewState.currentTimeStringLength != currentTimeWithoutSeparators.length ||
@@ -108,7 +112,7 @@ fun DigitalClockPortraitLayout(
          */
         MeasureFontSize(
             textToMeasure = buildString {
-                (1..2).forEach { _ -> append(WIDEST_CHAR) } // e.g. 'MM' => 2
+                (1..2).forEach { _ -> append(widestChar) } // e.g. 'MM' => 2
             },
             fontFamily = fontFamily,
             fontSize = startFontSize,
@@ -167,7 +171,7 @@ fun DigitalClockPortraitLayout(
      * on how many rows (divider count) are used and font weight (e.g. extra bold chars are a
      * bit bigger than regular ones, etc.) to enforce monospace.
      */
-    val fontSizeShrinkFactor = evaluateFontSizeShrinkFactor(dividerCount, fontWeight)
+    val fontSizeShrinkFactor = evaluateFontSizeShrinkFactor(dividerCount, fontWeight) //TODO: do the same in landscape, HH:MM it's kind problematic sometimes => check
 
     val maxCharWidth = when (clockCharType) {
 

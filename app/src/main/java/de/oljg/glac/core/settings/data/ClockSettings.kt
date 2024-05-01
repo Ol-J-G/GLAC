@@ -1,6 +1,7 @@
 package de.oljg.glac.core.settings.data
 
 
+import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.core.util.FontStyle
 import de.oljg.glac.core.util.FontWeight
 import kotlinx.serialization.Serializable
@@ -12,5 +13,8 @@ data class ClockSettings(
     val fontName: String = "D_Din_Regular.ttf", // TODO:  material theme fontfamily as default
     val fontWeight: String = FontWeight.NORMAL.name,
     val fontStyle: String = FontStyle.NORMAL.name,
-    val clockSettingsSectionDisplayExpanded: Boolean = false
+    val selectedClockCharType: String = ClockCharType.FONT.name,
+    val clockSettingsSectionPreviewIsExpanded: Boolean = false,
+    val clockSettingsSectionDisplayIsExpanded: Boolean = false,
+    val clockSettingsSectionClockCharIsExpanded: Boolean = false
 )

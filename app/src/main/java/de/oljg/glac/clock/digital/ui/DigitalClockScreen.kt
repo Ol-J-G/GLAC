@@ -110,7 +110,7 @@ fun DigitalClockScreen(
 //        dividerDashDottedPartCount = 3
     ),
 
-    clockCharType: ClockCharType = ClockCharType.FONT,
+//    clockCharType: ClockCharType = ClockCharType.FONT,
 //    fontFamily: FontFamily = FontFamily.SansSerif,
 //    fontWeight: FontWeight = FontWeight.Normal,
 //    fontStyle: FontStyle = FontStyle.Normal,
@@ -135,6 +135,8 @@ fun DigitalClockScreen(
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
     ).value
+
+    val clockCharType = ClockCharType.valueOf(clockSettings.selectedClockCharType)
 
     val context = LocalContext.current
     val (finalFontFamily, finalFontWeight, finalFontStyle) = evaluateFont(

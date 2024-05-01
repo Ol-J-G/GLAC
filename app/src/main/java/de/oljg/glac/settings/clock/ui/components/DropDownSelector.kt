@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -19,16 +19,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
-import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.ALL_FONT_WEIGHTS
-import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DROPDOWN_END_PADDING
-import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DROPDOWN_ROW_VERTICAL_PADDING
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FontWeightDropDown(
+fun DropDownSelector(
     label: String,
-    selectedFontWeight: String,
-    onNewFontWeightSelected: (String) -> Unit
+    selectedValue: String,
+    onNewValueSelected: (String) -> Unit,
+    values: List<String>,
+    prettyPrintValue: (String) -> String = { value -> value },
+    maxWidthFraction: Float = .7f,
+    addValueComponent: @Composable () -> Unit = {}
 ) {
     var dropDownIsExpanded by remember {
         mutableStateOf(false)
@@ -37,13 +39,13 @@ fun FontWeightDropDown(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = DROPDOWN_ROW_VERTICAL_PADDING),
+            .padding(vertical = SettingsDefaults.DROPDOWN_ROW_VERTICAL_PADDING),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             modifier = Modifier
-                .padding(end = DROPDOWN_END_PADDING),
+                .padding(end = SettingsDefaults.DROPDOWN_END_PADDING),
             text = label,
             overflow = TextOverflow.Ellipsis,
             maxLines = 2
@@ -53,32 +55,33 @@ fun FontWeightDropDown(
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            addValueComponent.invoke()
             ExposedDropdownMenuBox(
                 modifier = Modifier
-                    .padding(end = DROPDOWN_END_PADDING),
+                    .padding(end = SettingsDefaults.DROPDOWN_END_PADDING),
                 expanded = dropDownIsExpanded,
                 onExpandedChange = { dropDownIsExpanded = !dropDownIsExpanded }
             ) {
                 TextField(
                     modifier = Modifier
                         .menuAnchor()
-                        .fillMaxWidth(.5f)
+                        .fillMaxWidth(maxWidthFraction)
                         .clickable(onClick = { dropDownIsExpanded = true }),
-                    value = selectedFontWeight,
+                    value = prettyPrintValue(selectedValue),
                     onValueChange = {},
                     readOnly = true,
                     singleLine = true,
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = dropDownIsExpanded) }
+                    trailingIcon = { TrailingIcon(expanded = dropDownIsExpanded) }
                 )
                 ExposedDropdownMenu(
                     expanded = dropDownIsExpanded,
                     onDismissRequest = { dropDownIsExpanded = false }
                 ) {
-                    ALL_FONT_WEIGHTS.forEach { fontWeight ->
+                   values.forEach { value ->
                         DropdownMenuItem(
-                            text = { Text(fontWeight.name) },
+                            text = { Text(prettyPrintValue(value)) },
                             onClick = {
-                                onNewFontWeightSelected(fontWeight.name)
+                                onNewValueSelected(value)
                                 dropDownIsExpanded = false
                             }
                         )
@@ -88,4 +91,3 @@ fun FontWeightDropDown(
         }
     }
 }
-

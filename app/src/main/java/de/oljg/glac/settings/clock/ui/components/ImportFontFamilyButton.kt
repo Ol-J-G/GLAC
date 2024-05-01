@@ -20,8 +20,8 @@ import de.oljg.glac.settings.clock.ui.utils.openDocumentAndSaveLocalCopy
 import kotlinx.coroutines.launch
 
 @Composable
-fun ImportFontButton(
-    onNewFontImported: (String) -> Unit
+fun ImportFontFamilyButton(
+    onNewFontFamilyImported: (String) -> Unit
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -38,7 +38,7 @@ fun ImportFontButton(
                  * but only when picked document is valid and local copy is created.
                  */
                 val importedFontFile = openDocumentAndSaveLocalCopy(context, uri)
-                if(importedFontFile != null) onNewFontImported(importedFontFile.toUri().toString())
+                if(importedFontFile != null) onNewFontFamilyImported(importedFontFile.toUri().toString())
             }
         }
     }
