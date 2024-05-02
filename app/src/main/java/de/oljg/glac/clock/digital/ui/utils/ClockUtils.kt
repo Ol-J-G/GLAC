@@ -37,7 +37,7 @@ object ClockDefaults {
      * Should be the widest letter in most non-monospace fonts
      * (or "W", but this char ins't used in a digital clock, but: 'APM')
      */
-    const val WIDEST_LETTER: Char = 'M' //TODO: maybe let user enter a char (in case an imported font is "special"
+    const val WIDEST_LETTER: Char = 'M' //TODO_LATER: maybe let user enter a char (in case an imported font is "special"
 
 
     // Should be the widest digit in most non-monospace fonts

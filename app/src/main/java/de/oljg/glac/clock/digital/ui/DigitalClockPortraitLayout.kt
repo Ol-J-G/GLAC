@@ -169,9 +169,9 @@ fun DigitalClockPortraitLayout(
      * on the one hand, but on the other hand, it's not very precise.
      * To find a compromise between these two "poles", I decided to shrink font size depending
      * on how many rows (divider count) are used and font weight (e.g. extra bold chars are a
-     * bit bigger than regular ones, etc.) to enforce monospace.
+     * bit bigger than regular ones, etc.) to compensate the precision and not to be too slow.
      */
-    val fontSizeShrinkFactor = evaluateFontSizeShrinkFactor(dividerCount, fontWeight) //TODO: do the same in landscape, HH:MM it's kind problematic sometimes => check
+    val fontSizeShrinkFactor = evaluateFontSizeShrinkFactor(dividerCount, fontWeight)
 
     val maxCharWidth = when (clockCharType) {
 
@@ -213,7 +213,7 @@ fun DigitalClockPortraitLayout(
             .semantics { contentDescription = digitalClock }
             .testTag(TestTags.DIGITAL_CLOCK_PORTRAIT_LAYOUT),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceEvenly //TODO: (later) let user decide (same in landscape) SpaceEvenly should be default
+        verticalArrangement = Arrangement.SpaceEvenly //TODO_LATER: let user decide (same in landscape) SpaceEvenly should be default
     ) {
         currentTimeWithoutSeparators.forEachIndexed { index, char ->
 

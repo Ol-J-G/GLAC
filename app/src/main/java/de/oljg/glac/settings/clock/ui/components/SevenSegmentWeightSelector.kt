@@ -10,7 +10,7 @@ fun SevenSegmentWeightSelector(
     selectedSevenSegmentWeight: String,
     onNewSevenSegmentWeightSelected: (String) -> Unit
 ) {
-    DropDownSelector( //TODO: add prettyPrint
+    DropDownSelector(
         label = label,
         selectedValue = selectedSevenSegmentWeight,
         onNewValueSelected = onNewSevenSegmentWeightSelected,

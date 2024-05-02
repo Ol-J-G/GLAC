@@ -3,6 +3,7 @@ package de.oljg.glac.clock.digital.ui.components
 import android.content.res.Configuration
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -43,10 +44,14 @@ import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_F
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_REGULAR
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_SEMIBOLD
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_THIN
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.OFFCOLOR_LIGHTNESS_DELTA
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.OFFSEGMENT_OUTLINE_STROKE_WIDTH
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.SEVEN_SEGMENT_CHARS
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
+import de.oljg.glac.clock.digital.ui.utils.lighten
 import de.oljg.glac.clock.digital.ui.utils.contains
+import de.oljg.glac.clock.digital.ui.utils.darken
 import de.oljg.glac.clock.digital.ui.utils.defaultSegmentColors
 import de.oljg.glac.clock.digital.ui.utils.evaluateTransformationMatrix
 import de.oljg.glac.clock.digital.ui.utils.isSevenSegmentChar
@@ -102,7 +107,7 @@ fun PreviewDigits() {
     }
 }
 
-//TODO: additionally draw all segments, 8, as barely recognizable background (just outline/stroke?) to simulate/adapt the look of a real 7-seg display + defeatable setting, on/off
+
 @Composable
 fun SevenSegmentChar(
     modifier: Modifier = Modifier,
@@ -152,6 +157,15 @@ fun SevenSegmentChar(
     val finalSegmentColors =
             setSpecifiedColors(segmentColors, defaultSegmentColors(charColor))
 
+    // "Simulate" the "background" of real 7-Segments builtin to some real display
+    val offColor = //TODO: add switch to settings (show segement BG?) to be able to turn it on/off
+        if (isSystemInDarkTheme())//TODO: don't forget to replace material theme bg color here, when start thinking about clock BG color(then, consider clock BG color here..)!
+            MaterialTheme.colorScheme.background.lighten(OFFCOLOR_LIGHTNESS_DELTA)
+        else MaterialTheme.colorScheme.background.darken(OFFCOLOR_LIGHTNESS_DELTA)
+    val offOutlineColor =
+        if (isSystemInDarkTheme()) offColor.lighten(OFFCOLOR_LIGHTNESS_DELTA * 8)
+        else offColor.darken(OFFCOLOR_LIGHTNESS_DELTA * 8)
+
     Canvas(
         modifier =
         if (charSize != null)
@@ -187,6 +201,7 @@ fun SevenSegmentChar(
                 scale(1f - DEFAULT_ITALIC_FACTOR, size.center)
         }) {
             // @formatter:off
+            drawOffSegments(sizeConditions, offColor, offOutlineColor, style)
             if(finalChar.contains(Segment.TOP))
                 draw(topSegment(sizeConditions),
                     finalSegmentColors.getValue(Segment.TOP), style, finalStrokeWidth)
@@ -220,18 +235,46 @@ fun SevenSegmentChar(
 }
 
 
-//TODO: (later) enable both combined? (draw Filled first then Stroke upon, to have e.g a char with outline and colored BG (instead of transparent currently at OUTLINE))
 private fun DrawScope.draw(
     segment: Path,
     color: Color,
     style: SevenSegmentStyle,
-    strokeWidth: Float
+    strokeWidth: Float? = null,
+    drawOffSegmentOutline: Boolean = false
 ) {
     drawPath(
         path = segment,
         color = color,
         style =
-            if (style.name.startsWith(SevenSegmentStyle.OUTLINE.name)) Stroke(width = strokeWidth)
-            else Fill
+            when {
+                drawOffSegmentOutline -> Stroke(OFFSEGMENT_OUTLINE_STROKE_WIDTH)
+                strokeWidth != null && style.name.startsWith(SevenSegmentStyle.OUTLINE.name) ->
+                    Stroke(strokeWidth)
+                else -> Fill
+            }
     )
 }
+
+
+private fun DrawScope.drawOffSegments(
+    sizeConditions: Triple<Float, Float, Float>,
+    offColor: Color,
+    offOutlineColor: Color,
+    style: SevenSegmentStyle
+) {
+    draw(topSegment(sizeConditions), offColor, style)
+    draw(centerSegment(sizeConditions), offColor, style)
+    draw(bottomSegment(sizeConditions), offColor, style)
+    draw(topLeftSegment(sizeConditions), offColor, style)
+    draw(topRightSegment(sizeConditions), offColor, style)
+    draw(bottomLeftSegment(sizeConditions), offColor, style)
+    draw(bottomRightSegment(sizeConditions), offColor, style)
+    draw(topSegment(sizeConditions), offOutlineColor, style, drawOffSegmentOutline = true)
+    draw(centerSegment(sizeConditions), offOutlineColor, style, drawOffSegmentOutline = true)
+    draw(bottomSegment(sizeConditions), offOutlineColor, style, drawOffSegmentOutline = true)
+    draw(topLeftSegment(sizeConditions), offOutlineColor, style, drawOffSegmentOutline = true)
+    draw(topRightSegment(sizeConditions), offOutlineColor, style, drawOffSegmentOutline = true)
+    draw(bottomLeftSegment(sizeConditions), offOutlineColor, style, drawOffSegmentOutline = true)
+    draw(bottomRightSegment(sizeConditions), offOutlineColor, style, drawOffSegmentOutline = true)
+}
+

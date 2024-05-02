@@ -56,6 +56,7 @@ import de.oljg.glac.clock.digital.ui.utils.calculateMaxCharSizeFont
 import de.oljg.glac.clock.digital.ui.utils.calculateMaxCharSizeSevenSegment
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
 import de.oljg.glac.clock.digital.ui.utils.dividerCount
+import de.oljg.glac.clock.digital.ui.utils.evaluateFontSizeShrinkFactor
 import de.oljg.glac.clock.digital.ui.utils.evaluateStartFontSize
 import de.oljg.glac.clock.digital.ui.utils.isDaytimeMarkerChar
 import de.oljg.glac.core.settings.data.ClockSettings
@@ -195,6 +196,14 @@ fun DigitalClockLandscapeLayout(
                 )
             }
 
+    /**
+     * Shrink font chars a bit since font measurement with multiple shrinks (*= .97f) is "ok"-fast
+     * on the one hand, but on the other hand, it's not very precise.
+     * To find a compromise between these two "poles", I decided to shrink font size depending
+     * on how many rows (divider count) are used and font weight (e.g. extra bold chars are a
+     * bit bigger than regular ones, etc.) to compensate the precision and not to be too slow.
+     */
+    val fontSizeShrinkFactor = evaluateFontSizeShrinkFactor(dividerCount, fontWeight)
 
     val (maxCharWidth, maxCharHeight) =
         when (clockCharType) {
@@ -215,11 +224,17 @@ fun DigitalClockLandscapeLayout(
 
     val charWidth = maxCharWidth * clockCharSizeFactor
     val charHeight = maxCharHeight * clockCharSizeFactor
-    val charFontSize = maxFontSize * clockCharSizeFactor
+    val charFontSize =
+        if (clockCharSizeFactor == DEFAULT_CLOCK_CHAR_SIZE_FACTOR)
+            maxFontSize * fontSizeShrinkFactor
+        else maxFontSize * clockCharSizeFactor
 
     val daytimeMarkerCharWidth = maxCharWidth * daytimeMarkerSizeFactor
     val daytimeMarkerCharHeight = maxCharHeight * daytimeMarkerSizeFactor
-    val daytimeMarkerFontSize = maxFontSize * daytimeMarkerSizeFactor
+    val daytimeMarkerFontSize =
+        if (clockCharSizeFactor == DEFAULT_DAYTIME_MARKER_SIZE_FACTOR)
+            maxFontSize * fontSizeShrinkFactor
+        else maxFontSize * daytimeMarkerSizeFactor
 
     val digitalClock = stringResource(id = R.string.digital_clock)
 
@@ -255,7 +270,7 @@ fun DigitalClockLandscapeLayout(
                     isFontCharDivider = isFontCharDivider
                 )
                 else {
-                    // dividerColor in case of DividerStyle.CHAR => divider is a Char //TODO: (later) then don't allow digits or letters as divider char, otherwise this will not work! (or change it to allow any char als divider char, but ... who would want such stuff^^?? (what time it is(if you wouldn't know the divider is '2'): 122342AM => 12:34:AM => lul, strange, but useless(? .. but maybe "funny"?) :>)
+                    // dividerColor in case of DividerStyle.CHAR => divider is a Char TODO_LATER: then don't allow digits or letters as divider char, otherwise this will not work! (or change it to allow any char als divider char, but ... who would want such stuff^^?? (what time it is(if you wouldn't know the divider is '2'): 122342AM => 12:34:AM => lul, strange, but useless(? .. but maybe "funny"?) :>)
                     if (char.isLetterOrDigit()) charColors.getValue(char) else dividerAttributes.dividerColor
                 }
 
@@ -303,7 +318,7 @@ fun DigitalClockLandscapeLayout(
                                         dividerColor = finalDividerColor,
                                         dividerRotateAngle = dividerAttributes.dividerRotateAngle,
 
-                                        //TODO: (later) maybe create params => configurable, to let user adjust it
+                                        //TODO_LATER: maybe create params => configurable, to let user adjust it
                                         firstCirclePositionPercent = when (dividerCount) {
                                             1 -> DEFAULT_FIRST_CIRCLE_POSITION_AT_ONE_DIVIDER
                                             2 -> DEFAULT_FIRST_CIRCLE_POSITION_AT_TWO_DIVIDERS

@@ -1,6 +1,8 @@
 package de.oljg.glac.clock.digital.ui.utils
 
 import androidx.compose.ui.graphics.Color
+import com.smarttoolfactory.extendedcolors.model.ColorItem
+import com.smarttoolfactory.extendedcolors.util.HSLUtil
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.CLOCK_CHARS
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.SEVEN_SEGMENT_CHARS
 
@@ -10,16 +12,16 @@ data class ClockPartsColors(
     override val seconds: DigitPairColor,
     override val daytimeMarker: DaytimeMarkerColor,
     val dividers: DividerColor
-): ClockParts<Color> {
+) : ClockParts<Color> {
     data class DigitPairColor(
         override val ones: Color,
         override val tens: Color
-    ): DigitPair<Color>
+    ) : DigitPair<Color>
 
     data class DaytimeMarkerColor( // AM/PM
         override val anteOrPost: Color, // 'A' or 'P'
         override val meridiem: Color // 'M'
-    ): DaytimeMarker<Color>
+    ) : DaytimeMarker<Color>
 
     data class DividerColor(
 
@@ -66,3 +68,24 @@ fun <T> setSpecifiedColors(colors: Map<T, Color>, defaultColors: Map<T, Color>):
     }
     return mutatedColors.toMap()
 }
+
+/**
+ * Uses the superb lib Compose-Extented-Colors to add percentage (.01f == 1%) lighntess to a
+ * compose color, to make the color brighter (positive percentage) or darker (negative percentage).
+ *
+ * First, the color will be converted to HSL color format, just to add the percentage to the
+ * lightning part ('HS >L<' , which is index 2).
+ * Finally, the lightness changed HSL color will be converted back to a ColorInt, that will be
+ * used as param in compose's Color(@ColorInt..) function, that returns an
+ * androidx.compose.ui.graphics.Color to use in compose as usual.
+ */
+private fun Color.addLightness(percentage: Float) =
+    Color(HSLUtil.hslToColorInt(
+        ColorItem(this).hslArray.apply {
+            this[2] += percentage
+        })
+    )
+
+fun Color.lighten(percentage: Float) = addLightness(percentage)
+fun Color.darken(percentage: Float) = addLightness(-percentage)
+

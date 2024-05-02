@@ -25,7 +25,7 @@ fun ClockPreview() {
         Box(
             modifier = Modifier
                 .size(
-                    DpSize( //TODO maybe => let user scale preview!??
+                    DpSize(
                         evaluateScreenDetails().screenWidth * SettingsDefaults.PREVIEW_SIZE_FACTOR,
                         evaluateScreenDetails().screenHeight * SettingsDefaults.PREVIEW_SIZE_FACTOR
                     )

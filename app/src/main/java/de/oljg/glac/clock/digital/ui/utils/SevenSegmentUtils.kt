@@ -218,6 +218,15 @@ object SevenSegmentDefaults {
     const val DEFAULT_STROKE_WIDTH_SEMIBOLD = 8f
     const val DEFAULT_STROKE_WIDTH_BOLD = 16f
 
+    /**
+     * Percentage of how much brighter/darker the offcolor of a segement is, in comparison to
+     * the current background color.
+     * * Added in dark mode (brighter)
+     * * Substracted in light mode (darker)
+     */
+    const val OFFCOLOR_LIGHTNESS_DELTA = .02f
+    const val OFFSEGMENT_OUTLINE_STROKE_WIDTH = 1f
+
     const val CORNER_FACTOR = .3f
     const val VERTICAL_SEGMENT_INNER_CORNER_FACTOR = 1.4f
     const val VERTICAL_SEGMENT_INNER_INDENT_FACTOR = 1.6f

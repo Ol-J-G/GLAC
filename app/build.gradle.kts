@@ -50,11 +50,6 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-//    testOptions {
-//        unitTests {
-//            isIncludeAndroidResources = true
-//        }
-//    }
 }
 
 dependencies {
@@ -93,6 +88,9 @@ dependencies {
     implementation("androidx.datastore:datastore:1.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+
+    // Brilliant Tool! E.g. used to brighten/darken a given (compose) color ...
+    implementation ("com.github.SmartToolFactory:Compose-Extended-Colors:1.0.0-alpha07")
 
     // Compose dependencies
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")

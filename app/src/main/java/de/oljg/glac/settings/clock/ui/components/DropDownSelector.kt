@@ -80,14 +80,14 @@ fun DropDownSelector(
                     expanded = dropDownIsExpanded,
                     onDismissRequest = { dropDownIsExpanded = false }
                 ) {
-                   values.forEach { value ->
+                    values.forEach { value ->
                         DropdownMenuItem(
-                            text = { Text(
-                                text = prettyPrintValue(value),
-                                fontSize = 18.sp
-
-                            )
-                                   },
+                            text = {
+                                Text(
+                                    text = prettyPrintValue(value),
+                                    fontSize = 18.sp
+                                )
+                            },
                             onClick = {
                                 onNewValueSelected(value)
                                 dropDownIsExpanded = false
