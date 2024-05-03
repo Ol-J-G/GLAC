@@ -2,6 +2,8 @@ package de.oljg.glac.core.settings.data
 
 
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_DIGIT_SIZE_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_STROKE_WIDTH
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
@@ -21,7 +23,10 @@ data class ClockSettings(
     val sevenSegmentStyle: String = SevenSegmentStyle.REGULAR.name,
     val sevenSegmentOutlineSize: Float = DEFAULT_STROKE_WIDTH,
     val drawOffSegments: Boolean = true,
+    val digitSizeFactor: Float = DEFAULT_CLOCK_DIGIT_SIZE_FACTOR,
+    val daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
     val clockSettingsSectionPreviewIsExpanded: Boolean = false,
     val clockSettingsSectionDisplayIsExpanded: Boolean = false,
     val clockSettingsSectionClockCharIsExpanded: Boolean = false
 )
+

@@ -33,7 +33,7 @@ import de.oljg.glac.clock.digital.ui.components.ClockCharColumn
 import de.oljg.glac.clock.digital.ui.components.ColonDivider
 import de.oljg.glac.clock.digital.ui.components.LineDivider
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
-import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_CHAR_SIZE_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_DIGIT_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.WIDEST_DIGIT
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.WIDEST_LETTER
@@ -95,7 +95,7 @@ fun DigitalClockLandscapeLayout(
         previewMode
     ),
     clockCharType: ClockCharType = ClockCharType.FONT,
-    clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
+    digitSizeFactor: Float = DEFAULT_CLOCK_DIGIT_SIZE_FACTOR,
     daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
     clockChar: @Composable (Char, TextUnit, Color, DpSize) -> Unit
 ) {
@@ -222,19 +222,13 @@ fun DigitalClockLandscapeLayout(
             )
         }
 
-    val charWidth = maxCharWidth * clockCharSizeFactor
-    val charHeight = maxCharHeight * clockCharSizeFactor
-    val charFontSize =
-        if (clockCharSizeFactor == DEFAULT_CLOCK_CHAR_SIZE_FACTOR)
-            maxFontSize * fontSizeShrinkFactor
-        else maxFontSize * clockCharSizeFactor
+    val charWidth = maxCharWidth * digitSizeFactor
+    val charHeight = maxCharHeight * digitSizeFactor
+    val charFontSize = maxFontSize * fontSizeShrinkFactor * digitSizeFactor
 
     val daytimeMarkerCharWidth = maxCharWidth * daytimeMarkerSizeFactor
     val daytimeMarkerCharHeight = maxCharHeight * daytimeMarkerSizeFactor
-    val daytimeMarkerFontSize =
-        if (clockCharSizeFactor == DEFAULT_DAYTIME_MARKER_SIZE_FACTOR)
-            maxFontSize * fontSizeShrinkFactor
-        else maxFontSize * daytimeMarkerSizeFactor
+    val daytimeMarkerFontSize = maxFontSize * fontSizeShrinkFactor * daytimeMarkerSizeFactor
 
     val digitalClock = stringResource(id = R.string.digital_clock)
 

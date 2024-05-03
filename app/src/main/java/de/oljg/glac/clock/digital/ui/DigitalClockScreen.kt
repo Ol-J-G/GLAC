@@ -17,8 +17,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.clock.digital.ui.components.SevenSegmentChar
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults
-import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_CHAR_SIZE_FACTOR
-import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
@@ -49,8 +47,8 @@ fun DigitalClockScreen(
 //    showDaytimeMarker: Boolean = true,
 
 
-    clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
-    daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
+//    clockCharSizeFactor: Float = DEFAULT_CLOCK_DIGIT_SIZE_FACTOR,
+//    daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
 
     charColor: Color = MaterialTheme.colorScheme.onSurface,
     charColors: Map<Char, Color> = emptyMap(),
@@ -240,8 +238,8 @@ fun DigitalClockScreen(
         currentTimeFormatted = currentTimeFormatted,
         clockCharType = clockCharType,
         sevenSegmentStyle = SevenSegmentStyle.valueOf(clockSettings.sevenSegmentStyle),
-        clockCharSizeFactor = clockCharSizeFactor,
-        daytimeMarkerSizeFactor = daytimeMarkerSizeFactor
+        digitSizeFactor = clockSettings.digitSizeFactor,
+        daytimeMarkerSizeFactor = clockSettings.daytimeMarkerSizeFactor
     ) { clockChar, clockCharFontSize, clockCharColor, clockCharSize ->
         if (clockCharType == ClockCharType.FONT)
             Text(

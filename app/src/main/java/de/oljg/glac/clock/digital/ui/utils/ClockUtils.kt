@@ -52,7 +52,11 @@ object ClockDefaults {
     val CLOCK_CHARS = DIGIT_CHARS + DAYTIME_MARKER_CHARS
 
     val DEFAULT_CLOCK_PADDING = 0.dp
-    const val DEFAULT_CLOCK_CHAR_SIZE_FACTOR = 1f // 100% (max size)
+
+    const val MIN_CLOCK_DIGIT_SIZE_FACTOR = 0f // 0% (min size)
+    const val DEFAULT_CLOCK_DIGIT_SIZE_FACTOR = 1f // 100% (max size)
+
+    const val MIN_DAYTIME_MARKER_SIZE_FACTOR = 0f // 0% (min size)
     const val DEFAULT_DAYTIME_MARKER_SIZE_FACTOR = 1f // 100% (max size)
 }
 

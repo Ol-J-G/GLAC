@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
-import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_CHAR_SIZE_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_DIGIT_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_PADDING
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
@@ -54,22 +54,12 @@ fun DigitalClock(
     sevenSegmentStyle: SevenSegmentStyle = SevenSegmentStyle.REGULAR,
     charColors: Map<Char, Color> = defaultClockCharColors(MaterialTheme.colorScheme.onSurface),
     clockPartsColors: ClockPartsColors? = null,
-    clockCharSizeFactor: Float = DEFAULT_CLOCK_CHAR_SIZE_FACTOR,
+    digitSizeFactor: Float = DEFAULT_CLOCK_DIGIT_SIZE_FACTOR,
     daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
     clockChar: @Composable (Char, TextUnit, Color, DpSize) -> Unit
 ) {
     val currentDisplayOrientation = LocalConfiguration.current.orientation
     var clockBoxSize by remember { mutableStateOf(IntSize.Zero) }
-
-    val finalClockCharSizeFactor =
-        if (clockCharSizeFactor <= 0f || clockCharSizeFactor > 1f)
-            DEFAULT_CLOCK_CHAR_SIZE_FACTOR
-        else clockCharSizeFactor
-
-    val finalDaytimeMarkerSizeFactor =
-        if (daytimeMarkerSizeFactor <= 0f || daytimeMarkerSizeFactor > 1f)
-            DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
-        else daytimeMarkerSizeFactor
 
     val finalDividerAttributes = evaluateDividerAttributes(
         dividerAttributes = dividerAttributes,
@@ -86,7 +76,7 @@ fun DigitalClock(
 
     Box(
         modifier = Modifier
-            .padding(DEFAULT_CLOCK_PADDING) // TODO_LATER: make it configurable => otherwise LINE... divider cannot be from edge to edge without space
+            .padding(DEFAULT_CLOCK_PADDING)
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
             .onGloballyPositioned { layoutCoordinates ->
@@ -109,8 +99,8 @@ fun DigitalClock(
                 dividerAttributes = finalDividerAttributes,
                 charColors = charColors,
                 clockPartsColors = clockPartsColors,
-                clockCharSizeFactor = finalClockCharSizeFactor,
-                daytimeMarkerSizeFactor = finalDaytimeMarkerSizeFactor,
+                digitSizeFactor = digitSizeFactor,
+                daytimeMarkerSizeFactor = daytimeMarkerSizeFactor,
                 clockCharType = clockCharType,
                 clockChar = clockChar
             )
@@ -138,8 +128,8 @@ fun DigitalClock(
                 dividerAttributes = finalDividerAttributes,
                 charColors = charColors,
                 clockPartsColors = clockPartsColors,
-                clockCharSizeFactor = finalClockCharSizeFactor,
-                daytimeMarkerSizeFactor = finalDaytimeMarkerSizeFactor,
+                digitSizeFactor = digitSizeFactor,
+                daytimeMarkerSizeFactor = daytimeMarkerSizeFactor,
                 clockCharType = clockCharType,
                 clockChar = clockChar
             )

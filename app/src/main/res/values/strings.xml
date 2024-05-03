@@ -13,6 +13,7 @@
     <string name="digital_clock">Digital clock</string>
     <string name="seconds">Seconds</string>
     <string name="daytime_marker">Daytime Marker</string>
+    <string name="digit">Digit</string>
     <string name="family">Family</string>
     <string name="import_font">Import Font</string>
     <string name="weight">Weight</string>
@@ -20,7 +21,8 @@
     <string name="display">Display</string>
     <string name="clock_characters">Clock Characters</string>
     <string name="clock_preview">Clock Preview</string>
-    <string name="type">Type:</string>
+    <string name="type">Type</string>
+    <string name="size">Size</string>
     <string name="font">Font</string>
     <string name="_7_segment">7-Segment</string>
     <string name="off_segments">Off-Segments</string>

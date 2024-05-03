@@ -13,6 +13,7 @@ import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.MAX_STROKE_WIDTH
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.MIN_STROKE_WIDTH
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSlider
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSwitch
+import de.oljg.glac.settings.clock.ui.utils.prettyPrintOnePlace
 
 @Composable
 fun SevenSegmentSelector(
@@ -39,16 +40,17 @@ fun SevenSegmentSelector(
         )
         AnimatedVisibility(visible = isOutlineStyleSelected) {
             Column {
-                Divider(modifier = Modifier.padding(vertical = 8.dp))
+                Divider(modifier = Modifier.padding(top = 8.dp, bottom = 16.dp))
                 SettingsSlider(
                     label = stringResource(R.string.outline_size),
                     value = selectedOutlineSize,
+                    sliderValuePrettyPrint = Float::prettyPrintOnePlace,
                     onValueChangeFinished = onNewOutlineSizeSelected,
                     valueRange = MIN_STROKE_WIDTH..MAX_STROKE_WIDTH
                 )
             }
         }
-        Divider(modifier = Modifier.padding(vertical = 4.dp))
+        Divider(modifier = Modifier.padding(top = 8.dp, bottom = 16.dp))
         SettingsSwitch(
             label = stringResource(R.string.off_segments),
             checked = drawOffSegments,

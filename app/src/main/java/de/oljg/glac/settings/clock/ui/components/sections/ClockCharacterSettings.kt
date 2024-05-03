@@ -15,6 +15,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_DIGIT_SIZE_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.MIN_CLOCK_DIGIT_SIZE_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.MIN_DAYTIME_MARKER_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.contains
 import de.oljg.glac.core.settings.data.ClockSettings
@@ -23,6 +27,8 @@ import de.oljg.glac.settings.clock.ui.components.ClockCharTypeSelector
 import de.oljg.glac.settings.clock.ui.components.FontSelector
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
 import de.oljg.glac.settings.clock.ui.components.SevenSegmentSelector
+import de.oljg.glac.settings.clock.ui.components.common.SettingsSlider
+import de.oljg.glac.settings.clock.ui.utils.prettyPrintPercentage
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -47,7 +53,7 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
         }
     ) {
         ClockCharTypeSelector(
-            label = stringResource(R.string.type),
+            label = "${stringResource(R.string.type)}:",
             selectedClockCharType = clockSettings.selectedClockCharType,
             onClockCharTypeSelected = { newClockCharType ->
                 coroutineScope.launch {
@@ -59,44 +65,49 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
                 }
             }
         )
-        Divider(modifier = Modifier.padding(vertical = 4.dp))
+        Divider(modifier = Modifier.padding(vertical = 8.dp))
         Crossfade(
             targetState = ClockCharType.valueOf(clockSettings.selectedClockCharType),
             animationSpec = TweenSpec(),
             label = "crossfade"
         ) { clockCharType ->
-            when(clockCharType) {
+            when (clockCharType) {
                 ClockCharType.FONT -> {
                     FontSelector(
                         selectedFontFamily = clockSettings.fontName,
                         onNewFontFamilySelected = { newFontName ->
                             coroutineScope.launch {
                                 viewModel.updateClockSettings(
-                                    clockSettings.copy(fontName = newFontName))
+                                    clockSettings.copy(fontName = newFontName)
+                                )
                             }
                         },
                         onNewFontFamilyImported = { newFontUri ->
                             coroutineScope.launch {
                                 viewModel.updateClockSettings(
-                                    clockSettings.copy(fontName = newFontUri))
+                                    clockSettings.copy(fontName = newFontUri)
+                                )
                             }
                         },
                         selectedFontWeight = clockSettings.fontWeight,
                         onNewFontWeightSelected = { newFontWeight ->
                             coroutineScope.launch {
                                 viewModel.updateClockSettings(
-                                    clockSettings.copy(fontWeight = newFontWeight))
+                                    clockSettings.copy(fontWeight = newFontWeight)
+                                )
                             }
                         },
                         selectedFontStyle = clockSettings.fontStyle,
                         onNewFontStyleSelected = { newFontStyle ->
                             coroutineScope.launch {
                                 viewModel.updateClockSettings(
-                                    clockSettings.copy(fontStyle = newFontStyle))
+                                    clockSettings.copy(fontStyle = newFontStyle)
+                                )
                             }
                         }
                     )
                 }
+
                 ClockCharType.SEVEN_SEGMENT -> {
                     SevenSegmentSelector(
                         selectedSevenSegmentWeight = clockSettings.sevenSegmentWeight,
@@ -143,8 +154,35 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
                 }
             }
         }
-
-        //TODO: add DigitSizeSelector and DaytimeMarkerSizeSelector
-
+        Divider(modifier = Modifier.padding(vertical = 16.dp))
+        SettingsSlider(
+            label =  "${stringResource(id = R.string.daytime_marker)} " +
+                    stringResource(id = R.string.size),
+            value = clockSettings.daytimeMarkerSizeFactor,
+            sliderValuePrettyPrint = Float::prettyPrintPercentage,
+            valueRange = MIN_DAYTIME_MARKER_SIZE_FACTOR..DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
+            onValueChangeFinished = { newSizeFactor ->
+                coroutineScope.launch {
+                    viewModel.updateClockSettings(
+                        clockSettings.copy(daytimeMarkerSizeFactor = newSizeFactor)
+                    )
+                }
+            }
+        )
+        Divider(modifier = Modifier.padding(vertical = 16.dp))
+        SettingsSlider(
+            label =  "${stringResource(id = R.string.digit)} " +
+                    stringResource(id = R.string.size),
+            value = clockSettings.digitSizeFactor,
+            sliderValuePrettyPrint = Float::prettyPrintPercentage,
+            valueRange = MIN_CLOCK_DIGIT_SIZE_FACTOR..DEFAULT_CLOCK_DIGIT_SIZE_FACTOR,
+            onValueChangeFinished = { newSizeFactor ->
+                coroutineScope.launch {
+                    viewModel.updateClockSettings(
+                        clockSettings.copy(digitSizeFactor = newSizeFactor)
+                    )
+                }
+            }
+        )
     }
 }
