@@ -74,6 +74,7 @@ fun PreviewDigit() {
                     char = '8',
                     charColor = Color.Yellow,
                     style = SevenSegmentStyle.REGULAR,
+                    drawOffSegments = false
                 )
             }
         }
@@ -101,6 +102,7 @@ fun PreviewDigits() {
                     char = char,
                     charColor = Color.Yellow,
                     style = SevenSegmentStyle.ITALIC,
+                    drawOffSegments = false
                 )
             }
         }
@@ -118,6 +120,7 @@ fun SevenSegmentChar(
     weight: SevenSegmentWeight = SevenSegmentWeight.REGULAR,
     strokeWidth: Float? = null,
     charSize: DpSize? = null,
+    drawOffSegments: Boolean
 ) {
     val screenOrientation = LocalConfiguration.current.orientation
 
@@ -201,7 +204,9 @@ fun SevenSegmentChar(
                 scale(1f - DEFAULT_ITALIC_FACTOR, size.center)
         }) {
             // @formatter:off
-            drawOffSegments(sizeConditions, offColor, offOutlineColor, style)
+            if(drawOffSegments)
+                drawOffSegments(sizeConditions, offColor, offOutlineColor, style)
+
             if(finalChar.contains(Segment.TOP))
                 draw(topSegment(sizeConditions),
                     finalSegmentColors.getValue(Segment.TOP), style, finalStrokeWidth)

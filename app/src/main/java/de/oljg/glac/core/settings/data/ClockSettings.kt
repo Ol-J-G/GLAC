@@ -18,6 +18,7 @@ data class ClockSettings(
     val selectedClockCharType: String = ClockCharType.FONT.name,
     val sevenSegmentWeight: String = SevenSegmentWeight.REGULAR.name,
     val sevenSegmentStyle: String = SevenSegmentStyle.REGULAR.name,
+    val drawOffSegments: Boolean = true,
     val clockSettingsSectionPreviewIsExpanded: Boolean = false,
     val clockSettingsSectionDisplayIsExpanded: Boolean = false,
     val clockSettingsSectionClockCharIsExpanded: Boolean = false

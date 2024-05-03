@@ -261,6 +261,7 @@ fun DigitalClockScreen(
                 style = SevenSegmentStyle.valueOf(clockSettings.sevenSegmentStyle),
                 weight = SevenSegmentWeight.valueOf(clockSettings.sevenSegmentWeight),
                 strokeWidth = sevenSegmentOutlineStrokeWidth,
+                drawOffSegments = clockSettings.drawOffSegments
             )
     }
 }

@@ -23,4 +23,5 @@
     <string name="type">Type:</string>
     <string name="font">Font</string>
     <string name="_7_segment">7-Segment</string>
+    <string name="off_segments">Off-Segments</string>
 </resources>

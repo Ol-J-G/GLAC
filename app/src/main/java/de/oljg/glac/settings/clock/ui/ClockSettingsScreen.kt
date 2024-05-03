@@ -213,6 +213,19 @@ fun ClockSettingsScreen(
                                             }
                                         }
                                     )
+
+                                    Divider(modifier = Modifier.padding(vertical = 4.dp))
+                                    SettingsSwitch(
+                                        label = stringResource(R.string.off_segments),
+                                        checked = clockSettings.drawOffSegments,
+                                        onCheckedChange = { newValue ->
+                                            coroutineScope.launch {
+                                                viewModel.updateClockSettings(
+                                                    clockSettings.copy(drawOffSegments = newValue)
+                                                )
+                                            }
+                                        }
+                                    )
                                 }
                             }
                         }
