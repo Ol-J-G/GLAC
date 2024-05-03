@@ -34,27 +34,27 @@ import de.oljg.glac.clock.digital.ui.utils.Segment
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_ASPECT_RATIO
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_ITALIC_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_SEVEN_SEGMENT_CHAR_PADDING
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_STROKE_WIDTH_LIGHT
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_BLACK
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_BOLD
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_EXTRABOLD
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_EXTRALIGHT
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_LIGHT
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_MEDIUM
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_REGULAR
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_SEMIBOLD
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_WEIGHT_FACTOR_THIN
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_STROKE_WIDTH
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.WEIGHT_FACTOR_BLACK
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.WEIGHT_FACTOR_BOLD
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.WEIGHT_FACTOR_EXTRABOLD
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.WEIGHT_FACTOR_EXTRALIGHT
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.WEIGHT_FACTOR_LIGHT
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.WEIGHT_FACTOR_MEDIUM
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.WEIGHT_FACTOR_REGULAR
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.WEIGHT_FACTOR_SEMIBOLD
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.WEIGHT_FACTOR_THIN
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.OFFCOLOR_LIGHTNESS_DELTA
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.OFFSEGMENT_OUTLINE_STROKE_WIDTH
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.SEVEN_SEGMENT_CHARS
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
-import de.oljg.glac.clock.digital.ui.utils.lighten
 import de.oljg.glac.clock.digital.ui.utils.contains
 import de.oljg.glac.clock.digital.ui.utils.darken
 import de.oljg.glac.clock.digital.ui.utils.defaultSegmentColors
 import de.oljg.glac.clock.digital.ui.utils.evaluateTransformationMatrix
 import de.oljg.glac.clock.digital.ui.utils.isSevenSegmentChar
+import de.oljg.glac.clock.digital.ui.utils.lighten
 import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
 import de.oljg.glac.ui.theme.GLACTheme
 
@@ -137,31 +137,24 @@ fun SevenSegmentChar(
         else DEFAULT_ASPECT_RATIO
 
     val weightFactor = when (weight) {
-        SevenSegmentWeight.THIN -> DEFAULT_WEIGHT_FACTOR_THIN
-        SevenSegmentWeight.EXTRA_LIGHT -> DEFAULT_WEIGHT_FACTOR_EXTRALIGHT
-        SevenSegmentWeight.LIGHT -> DEFAULT_WEIGHT_FACTOR_LIGHT
-        SevenSegmentWeight.REGULAR -> DEFAULT_WEIGHT_FACTOR_REGULAR
-        SevenSegmentWeight.MEDIUM -> DEFAULT_WEIGHT_FACTOR_MEDIUM
-        SevenSegmentWeight.SEMI_BOLD -> DEFAULT_WEIGHT_FACTOR_SEMIBOLD
-        SevenSegmentWeight.BOLD -> DEFAULT_WEIGHT_FACTOR_BOLD
-        SevenSegmentWeight.EXTRA_BOLD -> DEFAULT_WEIGHT_FACTOR_EXTRABOLD
-        SevenSegmentWeight.BLACK -> DEFAULT_WEIGHT_FACTOR_BLACK
+        SevenSegmentWeight.THIN -> WEIGHT_FACTOR_THIN
+        SevenSegmentWeight.EXTRA_LIGHT -> WEIGHT_FACTOR_EXTRALIGHT
+        SevenSegmentWeight.LIGHT -> WEIGHT_FACTOR_LIGHT
+        SevenSegmentWeight.REGULAR -> WEIGHT_FACTOR_REGULAR
+        SevenSegmentWeight.MEDIUM -> WEIGHT_FACTOR_MEDIUM
+        SevenSegmentWeight.SEMI_BOLD -> WEIGHT_FACTOR_SEMIBOLD
+        SevenSegmentWeight.BOLD -> WEIGHT_FACTOR_BOLD
+        SevenSegmentWeight.EXTRA_BOLD -> WEIGHT_FACTOR_EXTRABOLD
+        SevenSegmentWeight.BLACK -> WEIGHT_FACTOR_BLACK
     }
 
-//    val defaultStrokeWidth = when (weight) { //TODO: remove, and introduce clocksetting.sevenSegmentOutlineWidth: Float = DEFAULT_STROKE_WIDTH_LIGHT + slider
-//        SevenSegmentWeight.THIN -> DEFAULT_STROKE_WIDTH_THIN
-//        SevenSegmentWeight.LIGHT -> DEFAULT_STROKE_WIDTH_LIGHT
-//        SevenSegmentWeight.REGULAR -> DEFAULT_STROKE_WIDTH_REGULAR
-//        SevenSegmentWeight.SEMIBOLD -> DEFAULT_STROKE_WIDTH_SEMIBOLD
-//        SevenSegmentWeight.BOLD -> DEFAULT_STROKE_WIDTH_BOLD
-//    }
-    val finalStrokeWidth = strokeWidth ?: DEFAULT_STROKE_WIDTH_LIGHT//defaultStrokeWidth
+    val finalStrokeWidth = strokeWidth ?: DEFAULT_STROKE_WIDTH
 
     val finalSegmentColors =
             setSpecifiedColors(segmentColors, defaultSegmentColors(charColor))
 
     // "Simulate" the "background" of real 7-Segments builtin to some real display
-    val offColor = //TODO: add switch to settings (show segement BG?) to be able to turn it on/off
+    val offColor =
         if (isSystemInDarkTheme())//TODO: don't forget to replace material theme bg color here, when start thinking about clock BG color(then, consider clock BG color here..)!
             MaterialTheme.colorScheme.background.lighten(OFFCOLOR_LIGHTNESS_DELTA)
         else MaterialTheme.colorScheme.background.darken(OFFCOLOR_LIGHTNESS_DELTA)
@@ -217,7 +210,7 @@ fun SevenSegmentChar(
 
             if(finalChar.contains(Segment.BOTTOM))
                 draw(bottomSegment(sizeConditions),
-                    finalSegmentColors.getValue(Segment.BOTTOM),style,finalStrokeWidth)
+                    finalSegmentColors.getValue(Segment.BOTTOM),style, finalStrokeWidth)
 
             if(finalChar.contains(Segment.TOP_LEFT))
                 draw(topLeftSegment(sizeConditions),

@@ -1,4 +1,4 @@
-package de.oljg.glac.settings.clock.ui.components
+package de.oljg.glac.settings.clock.ui.components.common
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

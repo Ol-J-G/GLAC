@@ -6,6 +6,11 @@ import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.core.util.FontStyle
 import de.oljg.glac.core.util.FontWeight
+import java.util.Locale
+
+// E.g.: places = 1 => formats 1.23456f to "1.2"
+fun Float.format(places: Int) =
+    String.format(Locale.getDefault(), "%.${places}f", this)
 
 object SettingsDefaults {
     const val PREVIEW_SIZE_FACTOR = .3f

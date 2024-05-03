@@ -2,6 +2,7 @@ package de.oljg.glac.core.settings.data
 
 
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_STROKE_WIDTH
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.core.util.FontStyle
@@ -18,6 +19,7 @@ data class ClockSettings(
     val selectedClockCharType: String = ClockCharType.FONT.name,
     val sevenSegmentWeight: String = SevenSegmentWeight.REGULAR.name,
     val sevenSegmentStyle: String = SevenSegmentStyle.REGULAR.name,
+    val sevenSegmentOutlineSize: Float = DEFAULT_STROKE_WIDTH,
     val drawOffSegments: Boolean = true,
     val clockSettingsSectionPreviewIsExpanded: Boolean = false,
     val clockSettingsSectionDisplayIsExpanded: Boolean = false,

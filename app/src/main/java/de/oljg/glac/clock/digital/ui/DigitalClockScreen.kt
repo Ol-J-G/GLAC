@@ -117,7 +117,7 @@ fun DigitalClockScreen(
 
 //    sevenSegmentStyle: SevenSegmentStyle = SevenSegmentStyle.REGULAR,
 //    sevenSegmentWeight: SevenSegmentWeight = SevenSegmentWeight.REGULAR,
-    sevenSegmentOutlineStrokeWidth: Float? = null,
+//    sevenSegmentOutlineStrokeWidth: Float? = null,
     segmentColors: Map<Segment, Color> = emptyMap(),
 //        mapOf(
 //            Pair(Segment.TOP, Color.Yellow),
@@ -260,7 +260,7 @@ fun DigitalClockScreen(
                 segmentColors = segmentColors,
                 style = SevenSegmentStyle.valueOf(clockSettings.sevenSegmentStyle),
                 weight = SevenSegmentWeight.valueOf(clockSettings.sevenSegmentWeight),
-                strokeWidth = sevenSegmentOutlineStrokeWidth,
+                strokeWidth = clockSettings.sevenSegmentOutlineSize,
                 drawOffSegments = clockSettings.drawOffSegments
             )
     }

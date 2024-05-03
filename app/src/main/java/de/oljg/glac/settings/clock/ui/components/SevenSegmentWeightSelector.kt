@@ -1,6 +1,7 @@
 package de.oljg.glac.settings.clock.ui.components
 
 import androidx.compose.runtime.Composable
+import de.oljg.glac.settings.clock.ui.components.common.DropDownSelector
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SEVEN_SEGMENT_WEIGHTS
 import de.oljg.glac.settings.clock.ui.utils.prettyPrintEnumName
 
