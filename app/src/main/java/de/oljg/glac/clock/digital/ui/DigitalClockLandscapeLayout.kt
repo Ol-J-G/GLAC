@@ -143,8 +143,9 @@ fun DigitalClockLandscapeLayout(
         (previewState.currentTimeStringLength != currentTimeFormatted.length ||
                 previewState.currentFont != clockSettings.fontName ||
                 previewState.currentFontWeight != clockSettings.fontWeight ||
-                previewState.currentFontStyle != clockSettings.fontStyle
-                )
+                previewState.currentFontStyle != clockSettings.fontStyle ||
+                previewState.currentDividerStyle != clockSettings.dividerStyle
+        )
     ) {
         /**
          * Calculate biggest font size that fits into clockBox container in landscape layout.
@@ -171,7 +172,8 @@ fun DigitalClockLandscapeLayout(
                     currentTimeStringLength = currentTimeFormatted.length,
                     currentFont = clockSettings.fontName,
                     currentFontWeight = clockSettings.fontWeight,
-                    currentFontStyle = clockSettings.fontStyle
+                    currentFontStyle = clockSettings.fontStyle,
+                    currentDividerStyle = clockSettings.dividerStyle
                 )
             },
             clockBoxSize = clockBoxSize,

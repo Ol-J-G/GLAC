@@ -4,6 +4,7 @@ import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
+import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.core.util.FontStyle
@@ -82,4 +83,6 @@ object SettingsDefaults {
     val SEVEN_SEGMENT_STYLES = SevenSegmentStyle.entries.map { style -> style.name }
 
     val CLOCK_CHAR_TYPES = ClockCharType.entries.map { type -> type.name }
+
+    val DIVIDER_STYLES = DividerStyle.entries.map { style -> style.name }
 }

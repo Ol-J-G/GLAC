@@ -97,16 +97,16 @@ fun DigitalClockScreen(
     daytimeMarkerDividerChar: Char = '_',
 
 
-    dividerAttributes: DividerAttributes = DividerAttributes(
-        dividerStyle = DividerStyle.LINE,
-//        dividerDashCount = 5,
-//        dividerLineCap = StrokeCap.Butt,
-//        dividerThickness = Dp.Unspecified,
-//        dividerPadding = Dp.Unspecified,
-        dividerColor = charColor,
-//        dividerLengthPercent = .5f,
-//        dividerDashDottedPartCount = 3
-    ),
+//    dividerAttributes: DividerAttributes = DividerAttributes(
+//        dividerStyle = DividerStyle.LINE,
+////        dividerDashCount = 5,
+////        dividerLineCap = StrokeCap.Butt,
+////        dividerThickness = Dp.Unspecified,
+////        dividerPadding = Dp.Unspecified,
+//        dividerColor = charColor,
+////        dividerLengthPercent = .5f,
+////        dividerDashDottedPartCount = 3
+//    ),
 
 //    clockCharType: ClockCharType = ClockCharType.FONT,
 //    fontFamily: FontFamily = FontFamily.SansSerif,
@@ -142,6 +142,17 @@ fun DigitalClockScreen(
         clockSettings.fontName,
         clockSettings.fontWeight,
         clockSettings.fontStyle
+    )
+
+    val dividerAttributes = DividerAttributes(
+        dividerStyle = DividerStyle.valueOf(clockSettings.dividerStyle),
+//        dividerDashCount = 5,
+//        dividerLineCap = StrokeCap.Butt,
+//        dividerThickness = Dp.Unspecified,
+//        dividerPadding = Dp.Unspecified,
+        dividerColor = charColor,
+//        dividerLengthPercent = .5f,
+//        dividerDashDottedPartCount = 3
     )
 
     val timePattern = buildString {

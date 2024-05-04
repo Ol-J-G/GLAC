@@ -104,7 +104,8 @@ fun DigitalClockPortraitLayout(
         (previewState.currentTimeStringLength != currentTimeWithoutSeparators.length ||
                 previewState.currentFont != clockSettings.fontName ||
                 previewState.currentFontWeight != clockSettings.fontWeight ||
-                previewState.currentFontStyle != clockSettings.fontStyle
+                previewState.currentFontStyle != clockSettings.fontStyle ||
+                previewState.currentDividerStyle != clockSettings.dividerStyle
         )
     ) {
         /**
@@ -138,7 +139,8 @@ fun DigitalClockPortraitLayout(
                     currentTimeStringLength = currentTimeWithoutSeparators.length,
                     currentFont = clockSettings.fontName,
                     currentFontWeight = clockSettings.fontWeight,
-                    currentFontStyle = clockSettings.fontStyle
+                    currentFontStyle = clockSettings.fontStyle,
+                    currentDividerStyle = clockSettings.dividerStyle
                 )
             }
         )

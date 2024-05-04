@@ -27,4 +27,5 @@
     <string name="_7_segment">7-Segment</string>
     <string name="off_segments">Off-Segments</string>
     <string name="outline_size">Outline Size</string>
+    <string name="divider">Divider</string>
 </resources>

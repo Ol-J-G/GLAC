@@ -31,7 +31,8 @@ data class PreviewState(
     var currentTimeStringLength: Int = 0,
     var currentFont: String = "",
     var currentFontWeight: String = "",
-    var currentFontStyle: String = ""
+    var currentFontStyle: String = "",
+    var currentDividerStyle: String = ""
 )
 
 

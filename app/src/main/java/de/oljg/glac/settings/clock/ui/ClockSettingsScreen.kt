@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import de.oljg.glac.settings.clock.ui.components.sections.ClockCharacterSettings
 import de.oljg.glac.settings.clock.ui.components.sections.ClockDisplaySettings
+import de.oljg.glac.settings.clock.ui.components.sections.ClockDividerSettings
 import de.oljg.glac.settings.clock.ui.components.sections.ClockPreview
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SCREEN_HORIZONTAL_OUTER_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SCREEN_PREVIEW_DIVIDER_PADDING
@@ -55,6 +56,7 @@ fun ClockSettingsScreen() {
             ) {
                 ClockDisplaySettings()
                 ClockCharacterSettings()
+                ClockDividerSettings()
             }
         }
     }
