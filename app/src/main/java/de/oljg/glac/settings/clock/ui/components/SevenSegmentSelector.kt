@@ -2,17 +2,20 @@ package de.oljg.glac.settings.clock.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.MAX_STROKE_WIDTH
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.MIN_STROKE_WIDTH
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSlider
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSwitch
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.settings.clock.ui.utils.prettyPrintOnePlace
 
 @Composable
@@ -40,7 +43,7 @@ fun SevenSegmentSelector(
         )
         AnimatedVisibility(visible = isOutlineStyleSelected) {
             Column {
-                Divider(modifier = Modifier.padding(top = 8.dp, bottom = 16.dp))
+                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 SettingsSlider(
                     label = stringResource(R.string.outline_size),
                     value = selectedOutlineSize,
@@ -48,9 +51,10 @@ fun SevenSegmentSelector(
                     onValueChangeFinished = onNewOutlineSizeSelected,
                     valueRange = MIN_STROKE_WIDTH..MAX_STROKE_WIDTH
                 )
+                Spacer(modifier = Modifier.fillMaxWidth().height(DEFAULT_VERTICAL_SPACE / 2))
             }
         }
-        Divider(modifier = Modifier.padding(top = 8.dp, bottom = 16.dp))
+        Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
         SettingsSwitch(
             label = stringResource(R.string.off_segments),
             checked = drawOffSegments,

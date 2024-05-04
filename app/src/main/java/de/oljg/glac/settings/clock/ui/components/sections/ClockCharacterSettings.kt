@@ -4,6 +4,9 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.TweenSpec
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
@@ -11,7 +14,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
@@ -28,6 +30,7 @@ import de.oljg.glac.settings.clock.ui.components.FontSelector
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
 import de.oljg.glac.settings.clock.ui.components.SevenSegmentSelector
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSlider
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.settings.clock.ui.utils.prettyPrintPercentage
 import kotlinx.coroutines.launch
 
@@ -40,7 +43,7 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
     ).value
 
     SettingsSection(
-        sectionTitle = stringResource(R.string.clock_characters),
+        sectionTitle = stringResource(R.string.characters),
         expanded = clockSettings.clockSettingsSectionClockCharIsExpanded,
         onExpandedChange = { expanded ->
             coroutineScope.launch {
@@ -65,7 +68,7 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
                 }
             }
         )
-        Divider(modifier = Modifier.padding(vertical = 8.dp))
+        Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
         Crossfade(
             targetState = ClockCharType.valueOf(clockSettings.selectedClockCharType),
             animationSpec = TweenSpec(),
@@ -154,22 +157,7 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
                 }
             }
         }
-        Divider(modifier = Modifier.padding(vertical = 16.dp))
-        SettingsSlider(
-            label =  "${stringResource(id = R.string.daytime_marker)} " +
-                    stringResource(id = R.string.size),
-            value = clockSettings.daytimeMarkerSizeFactor,
-            sliderValuePrettyPrint = Float::prettyPrintPercentage,
-            valueRange = MIN_DAYTIME_MARKER_SIZE_FACTOR..DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
-            onValueChangeFinished = { newSizeFactor ->
-                coroutineScope.launch {
-                    viewModel.updateClockSettings(
-                        clockSettings.copy(daytimeMarkerSizeFactor = newSizeFactor)
-                    )
-                }
-            }
-        )
-        Divider(modifier = Modifier.padding(vertical = 16.dp))
+        Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
         SettingsSlider(
             label =  "${stringResource(id = R.string.digit)} " +
                     stringResource(id = R.string.size),
@@ -184,5 +172,21 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
                 }
             }
         )
+        Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+        SettingsSlider(
+            label =  "${stringResource(id = R.string.daytime_marker)} " +
+                    stringResource(id = R.string.size),
+            value = clockSettings.daytimeMarkerSizeFactor,
+            sliderValuePrettyPrint = Float::prettyPrintPercentage,
+            valueRange = MIN_DAYTIME_MARKER_SIZE_FACTOR..DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
+            onValueChangeFinished = { newSizeFactor ->
+                coroutineScope.launch {
+                    viewModel.updateClockSettings(
+                        clockSettings.copy(daytimeMarkerSizeFactor = newSizeFactor)
+                    )
+                }
+            }
+        )
+        Spacer(modifier = Modifier.fillMaxWidth().height(DEFAULT_VERTICAL_SPACE))
     }
 }

@@ -2,6 +2,7 @@ package de.oljg.glac.settings.clock.ui.utils
 
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
@@ -53,11 +54,26 @@ fun String.prettyPrintEnumName(): String {
 object SettingsDefaults {
     const val PREVIEW_SIZE_FACTOR = .3f
 
-    val SETTINGS_SCREEN_HORIZONTAL_PADDING = 8.dp
-    val SETTINGS_SCREEN_VERTICAL_PADDING = 16.dp
+    val SETTINGS_SCREEN_HORIZONTAL_OUTER_PADDING = 8.dp
+    val SETTINGS_SCREEN_VERTICAL_OUTER_PADDING = 16.dp
+
+    val SETTINGS_SCREEN_PREVIEW_DIVIDER_PADDING = 8.dp
+    val DEFAULT_VERTICAL_SPACE = 16.dp
+    val SETTINGS_HORIZONTAL_PADDING = 16.dp
 
     val DROPDOWN_END_PADDING = 4.dp
     val DROPDOWN_ROW_VERTICAL_PADDING = 8.dp
+    val TRAILING_ICON_END_PADDING = 12.dp
+    val DEFAULT_ROUNDED_CORNER_SIZE = 8.dp
+    val DEFAULT_BORDER_WIDTH = 1.dp
+
+    val RADIO_BUTTON_ROW_HEIGHT = 56.dp
+    val SETTINGS_SECTION_HEIGHT = 48.dp
+    val DEFAULT_ICON_BUTTON_SIZE = 22.dp
+
+
+
+    val CLOCK_CHAR_TYPE_FONT_SIZE = 18.sp
 
     val FONT_WEIGHTS = FontWeight.entries.map { weight -> weight.name }
     val FONT_STYLES = FontStyle.entries.map { style -> style.name }

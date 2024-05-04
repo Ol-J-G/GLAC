@@ -12,10 +12,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import de.oljg.glac.R
 import de.oljg.glac.settings.clock.ui.utils.FileUtilDefaults
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_ICON_BUTTON_SIZE
 import de.oljg.glac.settings.clock.ui.utils.openDocumentAndSaveLocalCopy
 import kotlinx.coroutines.launch
 
@@ -45,7 +45,7 @@ fun ImportFontFamilyButton(
 
     IconButton(onClick = { documentPicker.launch(FileUtilDefaults.FONT_MIMETYPES) }) {
         Icon(
-            modifier = Modifier.size(22.dp),
+            modifier = Modifier.size(DEFAULT_ICON_BUTTON_SIZE),
             imageVector = Icons.Filled.Add,
             contentDescription = stringResource(R.string.import_font)
         )

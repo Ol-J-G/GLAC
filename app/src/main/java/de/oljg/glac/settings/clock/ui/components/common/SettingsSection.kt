@@ -31,6 +31,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_BORDER_WIDTH
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_ROUNDED_CORNER_SIZE
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_HORIZONTAL_PADDING
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SECTION_HEIGHT
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.TRAILING_ICON_END_PADDING
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -42,10 +48,10 @@ fun SettingsSection(
 ) {
     Surface(
         modifier = Modifier
-            .padding(vertical = 8.dp),
-        shape = RoundedCornerShape(8.dp),
+            .padding(vertical = DEFAULT_VERTICAL_SPACE / 2),
+        shape = RoundedCornerShape(DEFAULT_ROUNDED_CORNER_SIZE),
         border = BorderStroke(
-            1.dp, if (expanded)
+            width = DEFAULT_BORDER_WIDTH, color = if (expanded)
                 MaterialTheme.colorScheme.onPrimaryContainer
             else MaterialTheme.colorScheme.onSecondaryContainer
         )
@@ -54,7 +60,7 @@ fun SettingsSection(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp)
+                    .height(SETTINGS_SECTION_HEIGHT)
                     .background(
                         if (expanded) MaterialTheme.colorScheme.primaryContainer
                         else MaterialTheme.colorScheme.secondaryContainer
@@ -64,8 +70,7 @@ fun SettingsSection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    modifier = Modifier
-                        .padding(start = 16.dp),
+                    modifier = Modifier.padding(start = SETTINGS_HORIZONTAL_PADDING),
                     text = sectionTitle,
                     style = MaterialTheme.typography.titleLarge
                 )
@@ -75,19 +80,17 @@ fun SettingsSection(
             val density = LocalDensity.current
             AnimatedVisibility(
                 visible = expanded,
-                enter = slideInVertically {
-                    with(density) { -40.dp.roundToPx() }
-                } + expandVertically(
-                    // Expand from the top.
-                    expandFrom = Alignment.Top
-                ) + fadeIn(
-                    initialAlpha = 0.1f
-                ),
+                enter = slideInVertically { with(density) { -40.dp.roundToPx() } }
+                        + expandVertically(expandFrom = Alignment.Top)
+                        + fadeIn(initialAlpha = 0.1f),
                 exit = slideOutVertically() + shrinkVertically() + fadeOut()
             ) {
                 Column(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .padding(
+                            horizontal = SETTINGS_HORIZONTAL_PADDING,
+                            vertical = DEFAULT_VERTICAL_SPACE / 2
+                        )
                 ) {
                     settingsContent.invoke()
                 }
@@ -100,7 +103,7 @@ fun SettingsSection(
 private fun SettingsSectionTrailingIcon(expanded: Boolean) {
     Icon(
         modifier = Modifier
-            .padding(end = 12.dp)
+            .padding(end = TRAILING_ICON_END_PADDING)
             .rotate(if (expanded) 180f else 0f),
         imageVector = Icons.Filled.KeyboardDoubleArrowDown,
         contentDescription = null
