@@ -17,18 +17,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
-import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_DIGIT_SIZE_FACTOR
-import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
-import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.MIN_CLOCK_DIGIT_SIZE_FACTOR
-import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.MIN_DAYTIME_MARKER_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.contains
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.ClockCharTypeSelector
 import de.oljg.glac.settings.clock.ui.components.FontSelector
-import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
 import de.oljg.glac.settings.clock.ui.components.SevenSegmentSelector
+import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSlider
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.settings.clock.ui.utils.prettyPrintPercentage
@@ -163,7 +159,6 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
                     stringResource(id = R.string.size),
             value = clockSettings.digitSizeFactor,
             sliderValuePrettyPrint = Float::prettyPrintPercentage,
-            valueRange = MIN_CLOCK_DIGIT_SIZE_FACTOR..DEFAULT_CLOCK_DIGIT_SIZE_FACTOR,
             onValueChangeFinished = { newSizeFactor ->
                 coroutineScope.launch {
                     viewModel.updateClockSettings(
@@ -178,7 +173,6 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
                     stringResource(id = R.string.size),
             value = clockSettings.daytimeMarkerSizeFactor,
             sliderValuePrettyPrint = Float::prettyPrintPercentage,
-            valueRange = MIN_DAYTIME_MARKER_SIZE_FACTOR..DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
             onValueChangeFinished = { newSizeFactor ->
                 coroutineScope.launch {
                     viewModel.updateClockSettings(

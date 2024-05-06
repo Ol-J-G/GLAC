@@ -29,4 +29,9 @@
     <string name="outline_size">Outline Size</string>
     <string name="divider">Divider</string>
     <string name="spacing">Spacing</string>
+    <string name="length">Length</string>
+    <string name="thickness">Thickness</string>
+    <string name="quantity">Quantity</string>
+    <string name="dots">Dots</string>
+    <string name="dashes">Dashes</string>
 </resources>

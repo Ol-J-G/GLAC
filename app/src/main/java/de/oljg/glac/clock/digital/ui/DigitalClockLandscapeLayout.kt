@@ -324,7 +324,7 @@ fun DigitalClockLandscapeLayout(
                                         dividerColor = finalDividerColor,
                                         dividerStyle = finalDividerStyle,
                                         dividerLineCap = dividerAttributes.dividerLineCap,
-                                        dividerLengthPercent = dividerAttributes.dividerLengthPercent,
+                                        dividerLengthPercent = dividerAttributes.dividerLengthPercentage,
                                         dividerDashDottedPartCount = dividerAttributes.dividerDashDottedPartCount,
                                         dividerRotateAngle = dividerAttributes.dividerRotateAngle,
                                         orientation = Configuration.ORIENTATION_LANDSCAPE

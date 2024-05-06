@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.clock.digital.ui.components.SevenSegmentChar
@@ -148,11 +149,11 @@ fun DigitalClockScreen(
     val dividerAttributes = DividerAttributes(
         dividerStyle = DividerStyle.valueOf(clockSettings.dividerStyle),
         dividerThickness = clockSettings.dividerThickness.pxToDp(),
-//        dividerDashCount = 5,
-//        dividerLineCap = StrokeCap.Butt,
-        dividerColor = charColor,
-//        dividerLengthPercent = .5f,
-//        dividerDashDottedPartCount = 3
+        dividerLengthPercentage = clockSettings.dividerLengthPercentage,
+        dividerDashCount = clockSettings.dividerDashCount,
+        dividerDashDottedPartCount = clockSettings.dividerDashDottedPartCount,
+        dividerLineCap = StrokeCap.Round,
+        dividerColor = charColor
     )
 
     val timePattern = buildString {

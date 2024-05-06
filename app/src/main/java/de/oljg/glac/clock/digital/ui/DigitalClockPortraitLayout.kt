@@ -357,7 +357,7 @@ fun DigitalClockPortraitLayout(
                                     dividerColor = finalDividerColor,
                                     dividerStyle = dividerAttributes.dividerStyle,
                                     dividerLineCap = dividerAttributes.dividerLineCap,
-                                    dividerLengthPercent = dividerAttributes.dividerLengthPercent,
+                                    dividerLengthPercent = dividerAttributes.dividerLengthPercentage,
                                     dividerDashDottedPartCount = dividerAttributes.dividerDashDottedPartCount,
                                     orientation = Configuration.ORIENTATION_PORTRAIT
                                 )

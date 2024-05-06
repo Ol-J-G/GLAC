@@ -2,6 +2,7 @@ package de.oljg.glac.clock.digital.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_DIGIT_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_PADDING
@@ -34,8 +36,7 @@ import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
-import de.oljg.glac.clock.digital.ui.utils.dividerCount
-import de.oljg.glac.clock.digital.ui.utils.evaluateDividerAttributes
+import de.oljg.glac.clock.digital.ui.utils.evaluateDividerRotateAngle
 
 @Composable
 fun DigitalClock(
@@ -61,17 +62,20 @@ fun DigitalClock(
     val currentDisplayOrientation = LocalConfiguration.current.orientation
     var clockBoxSize by remember { mutableStateOf(IntSize.Zero) }
 
-    val finalDividerAttributes = evaluateDividerAttributes(
-        dividerAttributes = dividerAttributes,
-        dividerCount = currentTimeFormatted.dividerCount(
-            minutesSecondsDividerChar,
-            hoursMinutesDividerChar,
-            daytimeMarkerDividerChar
-        ),
-        clockBoxSize = clockBoxSize,
-        currentDisplayOrientation = currentDisplayOrientation,
-        isClockCharTypeSevenSegment = clockCharType == ClockCharType.SEVEN_SEGMENT,
-        sevenSegmentStyle = sevenSegmentStyle
+    // In case of 7-seg italic style and only in landscape o. => rotate divider appropriately
+    val dividerRotateAngle =
+        if (clockCharType == ClockCharType.SEVEN_SEGMENT)
+            evaluateDividerRotateAngle(sevenSegmentStyle)
+
+        /**
+         * No need to rotate dividers with ClockCharType.FONT (fonts have unknown/different italic
+         * angles).
+         * TODO_LATER: allow anyways, but let user rotate manually
+         */
+        else 0f
+
+    val finalDividerAttributes = dividerAttributes.copy(
+        dividerRotateAngle = dividerRotateAngle,
     )
 
     Box(
@@ -79,6 +83,10 @@ fun DigitalClock(
             .padding(DEFAULT_CLOCK_PADDING)
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
+            .border(
+                width = if (previewMode) 2.dp else 0.dp,
+                color = MaterialTheme.colorScheme.inverseOnSurface
+            )
             .onGloballyPositioned { layoutCoordinates ->
                 clockBoxSize = layoutCoordinates.size
             }

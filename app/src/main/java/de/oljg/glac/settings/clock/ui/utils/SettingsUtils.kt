@@ -9,26 +9,40 @@ import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.core.util.FontStyle
 import de.oljg.glac.core.util.FontWeight
-import java.util.Locale
-
-// E.g.: places = 1 => formats 1.23456f to "1.2"
-fun Float.format(places: Int) =
-    String.format(Locale.getDefault(), "%.${places}f", this)
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.PIXEL
 
 
-fun Float.prettyPrintOnePlace() = this.format(places = 1)
+fun Float.prettyPrintPixel() = this.cutOffDecimalPlaces() + " " + PIXEL
 
+fun Float.cutOffDecimalPlaces() = this.toString().substring(
+    startIndex = 0,
+    endIndex = this.toInt().toString().length
+)
+
+/**
+ * Just needed to pretty print percentage.
+ * Examples:
+ * 0.00000f => "0.00"
+ * 0.07000f => "0.07"
+ * 0.12000f => "0.12"
+ * 1.00000f => "1.00"
+ */
+private fun Float.formatTwoDecimalPlaces(): String {
+    if(this >= 0f && this < .01f) return "0.00"
+    require(this in .01f..100f)
+    return this.toString().substring(startIndex = 0, endIndex = 4)
+}
 
 /**
  * Examples:
- * 0.00f => 0 %
- * 0.07f => 7 %
- * 0.12f => 12 %
- * 1.00f => 100 %
+ * 0.00000f => "0 %"
+ * 0.07000f => "7 %"
+ * 0.12000f => "12 %"
+ * 1.00000f => "100 %"
  */
 fun Float.prettyPrintPercentage(): String {
     val percentage = if (this == 1f) "100"
-    else this.format(places = 2).replace(Regex("0[,.]0?"),"")
+    else this.formatTwoDecimalPlaces().replace(Regex("0[,.]0?"),"")
     return buildString {
         append(percentage)
         append(" %")
@@ -72,9 +86,8 @@ object SettingsDefaults {
     val SETTINGS_SECTION_HEIGHT = 48.dp
     val DEFAULT_ICON_BUTTON_SIZE = 22.dp
 
-
-
     val CLOCK_CHAR_TYPE_FONT_SIZE = 18.sp
+    const val PIXEL = "Pixel"
 
     val FONT_WEIGHTS = FontWeight.entries.map { weight -> weight.name }
     val FONT_STYLES = FontStyle.entries.map { style -> style.name }
@@ -85,4 +98,8 @@ object SettingsDefaults {
     val CLOCK_CHAR_TYPES = ClockCharType.entries.map { type -> type.name }
 
     val DIVIDER_STYLES = DividerStyle.entries.map { style -> style.name }
+    val DIVIDER_STYLES_WITHOUT_CHAR_STYLE = DividerStyle.entries.filterNot { style ->
+        style == DividerStyle.CHAR
+    }.map { style -> style.name }
+
 }

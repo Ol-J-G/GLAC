@@ -24,9 +24,6 @@ import de.oljg.glac.clock.digital.ui.utils.ScreenSizeDefaults.DEFAULT_MAX_SCREEN
 fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 
 @Composable
-fun Float.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
-
-@Composable
 fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
 
 
@@ -36,7 +33,7 @@ data class PreviewState(
     var currentFontWeight: String = "",
     var currentFontStyle: String = "",
     var currentDividerStyle: String = "",
-    var currentDividerThickness: Float = 0f
+    var currentDividerThickness: Int = 0
 )
 
 

@@ -53,10 +53,7 @@ object ClockDefaults {
 
     val DEFAULT_CLOCK_PADDING = 0.dp
 
-    const val MIN_CLOCK_DIGIT_SIZE_FACTOR = 0f // 0% (min size)
     const val DEFAULT_CLOCK_DIGIT_SIZE_FACTOR = 1f // 100% (max size)
-
-    const val MIN_DAYTIME_MARKER_SIZE_FACTOR = 0f // 0% (min size)
     const val DEFAULT_DAYTIME_MARKER_SIZE_FACTOR = 1f // 100% (max size)
 }
 

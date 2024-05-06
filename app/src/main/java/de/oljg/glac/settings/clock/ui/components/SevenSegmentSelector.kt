@@ -16,7 +16,7 @@ import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.MIN_STROKE_WIDTH
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSlider
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSwitch
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
-import de.oljg.glac.settings.clock.ui.utils.prettyPrintOnePlace
+import de.oljg.glac.settings.clock.ui.utils.prettyPrintPixel
 
 @Composable
 fun SevenSegmentSelector(
@@ -47,7 +47,7 @@ fun SevenSegmentSelector(
                 SettingsSlider(
                     label = stringResource(R.string.outline_size),
                     value = selectedOutlineSize,
-                    sliderValuePrettyPrint = Float::prettyPrintOnePlace,
+                    sliderValuePrettyPrint = Float::prettyPrintPixel,
                     onValueChangeFinished = onNewOutlineSizeSelected,
                     valueRange = MIN_STROKE_WIDTH..MAX_STROKE_WIDTH
                 )

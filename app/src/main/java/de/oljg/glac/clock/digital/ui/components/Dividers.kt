@@ -124,11 +124,11 @@ fun LineDivider(
              * Calculate an equally distributed amount of DOTs
              * (will lower given divider thickness a bit, but looks more harmonic imho)
              */
-            val dotCount = dividerLenght / dividerThickness.toPx()
+            val dotCount = (dividerLenght / dividerThickness.toPx()).toInt()
             val gapFactor = 2
 
             // even count of dots, odd count of gaps
-            val dotAndGapCount = (dotCount.toInt() * gapFactor) - 1
+            val dotAndGapCount = (dotCount * gapFactor) - 1
             val averageDotWidth = dividerLenght / dotAndGapCount
 
             val pathEffect = when (dividerStyle) {

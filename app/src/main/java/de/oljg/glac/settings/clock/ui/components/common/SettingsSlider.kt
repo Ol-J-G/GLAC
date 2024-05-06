@@ -23,23 +23,24 @@ fun SettingsSlider(
     value: Float,
     sliderValuePrettyPrint: (Float) -> String = { floatValue -> floatValue.toString() },
     onValueChangeFinished: (Float) -> Unit,
-    valueRange: ClosedFloatingPointRange<Float>
+    valueRange: ClosedFloatingPointRange<Float>? = null
 ) {
-        var sliderValue by remember(value) { mutableFloatStateOf(value) }
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = DEFAULT_VERTICAL_SPACE / 2),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(text = "${label}:")
-            Text(text = sliderValuePrettyPrint(sliderValue))
-        }
-        Spacer(modifier = Modifier.fillMaxWidth().height(DEFAULT_VERTICAL_SPACE / 2))
-        Slider(
-            value = sliderValue,
-            onValueChange = { newValue -> sliderValue = newValue },
-            onValueChangeFinished = { onValueChangeFinished(sliderValue) },
-            valueRange = valueRange,
-        )
+    val finalValueRange = valueRange ?: 0f..1f // percentage by default
+    var sliderValue by remember(value) { mutableFloatStateOf(value) }
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = DEFAULT_VERTICAL_SPACE / 2),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(text = "${label}:")
+        Text(text = sliderValuePrettyPrint(sliderValue))
+    }
+    Spacer(modifier = Modifier.fillMaxWidth().height(DEFAULT_VERTICAL_SPACE / 2))
+    Slider(
+        value = sliderValue,
+        onValueChange = { newValue -> sliderValue = newValue },
+        onValueChangeFinished = { onValueChangeFinished(sliderValue) },
+        valueRange = finalValueRange
+    )
 }
 
