@@ -6,7 +6,6 @@ import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.SEGMENT_CHARS_MAP
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.SEVEN_SEGMENT_CHARS
 import kotlin.math.atan
@@ -139,15 +138,13 @@ fun defaultSegmentColors(charColor: Color): Map<Segment, Color> {
 @Composable
 fun calculateMaxCharSizeSevenSegment(
     dividerStyle: DividerStyle,
-    dividerPadding: Dp,
     dividerThickness: Dp,
     dividerCount: Int,
     clockBoxSize: IntSize,
     currentTimeFormatted: String
 ): Pair<Dp, Dp> {
     val spaceNeededForDividers =
-        if (dividerStyle != DividerStyle.NONE)
-            ((2 * dividerPadding + dividerThickness) * dividerCount)
+        if (dividerStyle != DividerStyle.NONE) dividerThickness * dividerCount
         else 0.dp
 
     val availableWidthForSevenSegmentClockChar =

@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.components.ClockCharColumn
@@ -56,6 +55,7 @@ import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.core.util.ClockPartsTestTags
 import de.oljg.glac.core.util.TestTags
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.PREVIEW_SIZE_FACTOR
 
 
 @Composable
@@ -97,7 +97,7 @@ fun DigitalClockPortraitLayout(
     }
 
     val widestChar =
-        if(currentTimeWithoutSeparators.last().isLetter()) WIDEST_LETTER else WIDEST_DIGIT
+        if (currentTimeWithoutSeparators.last().isLetter()) WIDEST_LETTER else WIDEST_DIGIT
 
     if (clockCharType == ClockCharType.FONT &&
         // Re-measure when one of the following changes (needed for settings preview)
@@ -105,8 +105,9 @@ fun DigitalClockPortraitLayout(
                 previewState.currentFont != clockSettings.fontName ||
                 previewState.currentFontWeight != clockSettings.fontWeight ||
                 previewState.currentFontStyle != clockSettings.fontStyle ||
-                previewState.currentDividerStyle != clockSettings.dividerStyle
-        )
+                previewState.currentDividerStyle != clockSettings.dividerStyle ||
+                previewState.currentDividerThickness != clockSettings.dividerThickness
+                )
     ) {
         /**
          * Calculate biggest font size that fits into clockBox container in portrait layout.
@@ -127,11 +128,6 @@ fun DigitalClockPortraitLayout(
                 dividerAttributes.dividerThickness
             else 0.dp,
 
-            dividerPaddingToTakeIntoAccount =
-            if (dividerAttributes.dividerStyle != DividerStyle.NONE)
-                dividerAttributes.dividerPadding
-            else 0.dp,
-
             onFontSizeMeasured = { measuredFontSize, measuredSize ->
                 maxFontSize = measuredFontSize
                 finalFontBoundsSize = measuredSize
@@ -140,7 +136,8 @@ fun DigitalClockPortraitLayout(
                     currentFont = clockSettings.fontName,
                     currentFontWeight = clockSettings.fontWeight,
                     currentFontStyle = clockSettings.fontStyle,
-                    currentDividerStyle = clockSettings.dividerStyle
+                    currentDividerStyle = clockSettings.dividerStyle,
+                    currentDividerThickness = clockSettings.dividerThickness
                 )
             }
         )
@@ -148,7 +145,7 @@ fun DigitalClockPortraitLayout(
 
     val spaceNeededForDividers =
         if (dividerAttributes.dividerStyle != DividerStyle.NONE)
-            ((2 * dividerAttributes.dividerPadding + dividerAttributes.dividerThickness) * dividerCount)
+            (dividerAttributes.dividerThickness * dividerCount)
         else 0.dp
 
     /**
@@ -332,9 +329,10 @@ fun DigitalClockPortraitLayout(
                                  * to be rotated => kinda ugly/weird imho)
                                  */
                                 ColonDivider(
-                                    dividerPadding = dividerAttributes.dividerPadding,
                                     clockBoxSize = clockBoxSize,
-                                    dividerThickness = dividerAttributes.dividerThickness,
+                                    dividerThickness = if (previewMode)
+                                        dividerAttributes.dividerThickness * PREVIEW_SIZE_FACTOR
+                                    else dividerAttributes.dividerThickness,
                                     dividerColor = finalDividerColor,
 
                                     /**
@@ -351,8 +349,9 @@ fun DigitalClockPortraitLayout(
 
                             else ->
                                 LineDivider(
-                                    dividerPadding = dividerAttributes.dividerPadding,
-                                    dividerThickness = dividerAttributes.dividerThickness,
+                                    dividerThickness = if (previewMode)
+                                        dividerAttributes.dividerThickness * PREVIEW_SIZE_FACTOR
+                                    else dividerAttributes.dividerThickness,
                                     clockBoxSize = clockBoxSize,
                                     dividerDashCount = dividerAttributes.dividerDashCount,
                                     dividerColor = finalDividerColor,

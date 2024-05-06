@@ -52,8 +52,7 @@ fun MeasureFontSize(
     clockBoxSize: IntSize,
     dividerCount: Int,
     isOrientationPortrait: Boolean,
-    dividerStrokeWithToTakeIntoAccount: Dp = 0.dp,
-    dividerPaddingToTakeIntoAccount: Dp = 0.dp
+    dividerStrokeWithToTakeIntoAccount: Dp = 0.dp
 ) {
     val coroutineScope = rememberCoroutineScope()
     var measureMultiplier by remember { mutableFloatStateOf(1f) }
@@ -61,7 +60,6 @@ fun MeasureFontSize(
     var fixedMultiplier by remember { mutableFloatStateOf(1f) }
 
     val dividerStrokeWidthInt = dividerStrokeWithToTakeIntoAccount.dpToPx().roundToInt()
-    val dividerPaddingInt = dividerPaddingToTakeIntoAccount.dpToPx().roundToInt()
 
     if (!fits) {
         Text(
@@ -86,9 +84,9 @@ fun MeasureFontSize(
                      */
                     // Substract the space needed for all dividers from available size
                     val availableHeight = clockBoxSize.height -
-                            ((dividerStrokeWidthInt + (2 * dividerPaddingInt)) * dividerCount)
+                            (dividerStrokeWidthInt * dividerCount)
                     val availableWidth = clockBoxSize.width -
-                            ((dividerStrokeWidthInt + (2 * dividerPaddingInt)) * dividerCount)
+                            (dividerStrokeWidthInt * dividerCount)
 
                     val doesNotFitInPortraitOrientation =
                         textLayoutResult.size.height >= availableHeight / (dividerCount + 1)

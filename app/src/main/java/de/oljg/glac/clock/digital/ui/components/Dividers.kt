@@ -2,7 +2,6 @@ package de.oljg.glac.clock.digital.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -36,7 +35,6 @@ import de.oljg.glac.core.util.TestTags
  */
 @Composable
 fun LineDivider(
-    dividerPadding: Dp,
     dividerThickness: Dp,
     clockBoxSize: IntSize,
     dividerDashCount: Int,
@@ -52,7 +50,6 @@ fun LineDivider(
         modifier = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             Modifier
                 .testTag(TestTags.LINE_DIVIDER)
-                .padding(dividerPadding)
                 .requiredSize(
                     width = clockBoxSize.width.pxToDp(),
                     height = dividerThickness
@@ -60,7 +57,6 @@ fun LineDivider(
         } else {
             Modifier
                 .testTag(TestTags.LINE_DIVIDER)
-                .padding(dividerPadding)
                 .requiredSize(
                     width = dividerThickness,
                     height = clockBoxSize.height.pxToDp()
@@ -160,8 +156,7 @@ fun LineDivider(
             rotate(degrees = dividerRotateAngle, pivot = size.center) {
                 if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                     drawLine( // centered horizontal
-                        start =
-                        Offset(gapBetweenEdgeAndDivider, size.center.y),
+                        start = Offset(gapBetweenEdgeAndDivider, size.center.y),
                         end = Offset(size.width - gapBetweenEdgeAndDivider, size.center.y),
                         color = dividerColor,
                         strokeWidth = dividerThickness.toPx(),
@@ -266,7 +261,6 @@ private fun DrawScope.drawDashDottedLine(
 //TODO_LATER: introduce outline variant => appropriate for 7-seg outline styles
 @Composable
 fun ColonDivider(
-    dividerPadding: Dp,
     clockBoxSize: IntSize,
     dividerThickness: Dp,
     dividerColor: Color,
@@ -279,7 +273,6 @@ fun ColonDivider(
         Canvas(
             modifier = Modifier
                 .testTag(TestTags.COLON_DIVIDER)
-                .padding(top = dividerPadding, bottom = dividerPadding)
                 .size(width = clockBoxSize.width.pxToDp(), height = dividerThickness)
         ) {
             drawColon(
@@ -299,7 +292,6 @@ fun ColonDivider(
         Canvas(
             Modifier
                 .testTag(TestTags.COLON_DIVIDER)
-                .padding(start = dividerPadding, end = dividerPadding)
                 .size(width = dividerThickness, height = clockBoxSize.height.pxToDp()),
         ) {
             rotate(degrees = dividerRotateAngle, pivot = size.center) {

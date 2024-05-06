@@ -28,4 +28,5 @@
     <string name="off_segments">Off-Segments</string>
     <string name="outline_size">Outline Size</string>
     <string name="divider">Divider</string>
+    <string name="spacing">Spacing</string>
 </resources>

@@ -32,6 +32,7 @@ data class ClockSettings(
     val daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
 
     val dividerStyle: String = DividerStyle.LINE.name,
+    val dividerThickness: Float = 1f,
 
     val clockSettingsSectionPreviewIsExpanded: Boolean = false,
     val clockSettingsSectionDisplayIsExpanded: Boolean = false,

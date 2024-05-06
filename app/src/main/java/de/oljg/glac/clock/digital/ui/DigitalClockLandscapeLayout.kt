@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -63,6 +62,7 @@ import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.core.util.ClockPartsTestTags
 import de.oljg.glac.core.util.TestTags
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.PREVIEW_SIZE_FACTOR
 
 @Composable
 fun DigitalClockLandscapeLayout(
@@ -80,15 +80,6 @@ fun DigitalClockLandscapeLayout(
     clockPartsColors: ClockPartsColors? = null,
 
     dividerAttributes: DividerAttributes,
-//    dividerStyle: DividerStyle = DividerStyle.LINE,
-//    dividerDashCount: Int = DividerDefaults.DEFAULT_DASH_COUNT,
-//    dividerLineCap: StrokeCap = StrokeCap.Butt,
-//    dividerThickness: Dp = DEFAULT_DIVIDER_THICKNESS_LINE,
-//    dividerPadding: Dp = DEFAULT_DIVIDER_PADDING_LINE,
-//    dividerColor: Color = MaterialTheme.colorScheme.onSurface,
-//    dividerLengthPercent: Float = DEFAULT_DIVIDER_LENGTH_FACTOR,
-//    dividerDashDottedPartCount: Int = DEFAULT_DASH_DOTTED_PART_COUNT,
-//    dividerRotateAngle: Float = 0f,
 
     startFontSize: TextUnit = evaluateStartFontSize(
         Configuration.ORIENTATION_LANDSCAPE,
@@ -144,7 +135,8 @@ fun DigitalClockLandscapeLayout(
                 previewState.currentFont != clockSettings.fontName ||
                 previewState.currentFontWeight != clockSettings.fontWeight ||
                 previewState.currentFontStyle != clockSettings.fontStyle ||
-                previewState.currentDividerStyle != clockSettings.dividerStyle
+                previewState.currentDividerStyle != clockSettings.dividerStyle ||
+                previewState.currentDividerThickness != clockSettings.dividerThickness
         )
     ) {
         /**
@@ -163,8 +155,6 @@ fun DigitalClockLandscapeLayout(
             fontStyle = fontStyle,
             dividerStrokeWithToTakeIntoAccount =
             if (finalDividerStyle != DividerStyle.CHAR) dividerAttributes.dividerThickness else 0.dp,
-            dividerPaddingToTakeIntoAccount =
-            if (finalDividerStyle != DividerStyle.CHAR) dividerAttributes.dividerPadding else 0.dp,
             onFontSizeMeasured = { measuredFontSize, measuredSize ->
                 maxFontSize = measuredFontSize
                 finalFontBoundsSize = measuredSize
@@ -173,7 +163,8 @@ fun DigitalClockLandscapeLayout(
                     currentFont = clockSettings.fontName,
                     currentFontWeight = clockSettings.fontWeight,
                     currentFontStyle = clockSettings.fontStyle,
-                    currentDividerStyle = clockSettings.dividerStyle
+                    currentDividerStyle = clockSettings.dividerStyle,
+                    currentDividerThickness = clockSettings.dividerThickness
                 )
             },
             clockBoxSize = clockBoxSize,
@@ -216,7 +207,6 @@ fun DigitalClockLandscapeLayout(
 
             else -> calculateMaxCharSizeSevenSegment(
                 dividerStyle = dividerAttributes.dividerStyle,
-                dividerPadding = dividerAttributes.dividerPadding,
                 dividerThickness = dividerAttributes.dividerThickness,
                 dividerCount = dividerCount,
                 clockBoxSize = clockBoxSize,
@@ -299,18 +289,14 @@ fun DigitalClockLandscapeLayout(
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
-                            modifier = Modifier
-                                .padding(
-                                    top = dividerAttributes.dividerPadding,
-                                    bottom = dividerAttributes.dividerPadding
-                                )
                         ) {
                             when (finalDividerStyle) {
                                 DividerStyle.COLON ->
                                     ColonDivider(
-                                        dividerPadding = dividerAttributes.dividerPadding,
                                         clockBoxSize = clockBoxSize,
-                                        dividerThickness = dividerAttributes.dividerThickness,
+                                        dividerThickness = if (previewMode)
+                                            dividerAttributes.dividerThickness * PREVIEW_SIZE_FACTOR
+                                        else dividerAttributes.dividerThickness,
                                         dividerColor = finalDividerColor,
                                         dividerRotateAngle = dividerAttributes.dividerRotateAngle,
 
@@ -330,8 +316,9 @@ fun DigitalClockLandscapeLayout(
 
                                 else ->
                                     LineDivider(
-                                        dividerPadding = dividerAttributes.dividerPadding,
-                                        dividerThickness = dividerAttributes.dividerThickness,
+                                        dividerThickness = if (previewMode)
+                                            dividerAttributes.dividerThickness * PREVIEW_SIZE_FACTOR
+                                        else dividerAttributes.dividerThickness,
                                         clockBoxSize = clockBoxSize,
                                         dividerDashCount = dividerAttributes.dividerDashCount,
                                         dividerColor = finalDividerColor,

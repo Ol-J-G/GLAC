@@ -28,6 +28,7 @@ import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
 import de.oljg.glac.clock.digital.ui.utils.evaluateFont
+import de.oljg.glac.clock.digital.ui.utils.pxToDp
 import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
@@ -146,10 +147,9 @@ fun DigitalClockScreen(
 
     val dividerAttributes = DividerAttributes(
         dividerStyle = DividerStyle.valueOf(clockSettings.dividerStyle),
+        dividerThickness = clockSettings.dividerThickness.pxToDp(),
 //        dividerDashCount = 5,
 //        dividerLineCap = StrokeCap.Butt,
-//        dividerThickness = Dp.Unspecified,
-//        dividerPadding = Dp.Unspecified,
         dividerColor = charColor,
 //        dividerLengthPercent = .5f,
 //        dividerDashDottedPartCount = 3
