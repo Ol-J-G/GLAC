@@ -35,12 +35,20 @@ fun DividerStyle.isNeitherNoneNorChar() = this != DividerStyle.NONE && this != D
 
 fun DividerStyle.isLineBased() = this.name.contains(DividerStyle.LINE.name)
 
+fun DividerStyle.isLineOrDashedLine() = this == DividerStyle.LINE || this == DividerStyle.DASHED_LINE
+
+fun DividerStyle.isRotatable() = this.isLineBased() || this == DividerStyle.COLON
+
+enum class DividerLineEnd {
+    ROUND,
+    ANGULAR
+}
 
 data class DividerAttributes(
     val dividerStyle: DividerStyle = DividerStyle.LINE,
     val dividerThickness: Dp = Dp.Unspecified,
     val dividerColor: Color, // must be set in a composable (no access here to MaterialTheme...)
-    val dividerLineCap: StrokeCap = StrokeCap.Butt,
+    val dividerLineCap: StrokeCap = StrokeCap.Round,
     val dividerLengthPercentage: Float = DEFAULT_DIVIDER_LENGTH_FACTOR,
     val dividerDashCount: Int = DEFAULT_DASH_COUNT,
     val dividerDashDottedPartCount: Int = DEFAULT_DASH_DOTTED_PART_COUNT,
@@ -90,8 +98,9 @@ object DividerDefaults {
 
     const val MIN_DIVIDER_THICKNESS = 1
     const val MAX_DIVIDER_THICKNESS = 128
+    const val DEFAULT_DIVIDER_THICKNESS = 2
 
-    const val DEFAULT_DIVIDER_LENGTH_FACTOR = .9f
+    const val DEFAULT_DIVIDER_LENGTH_FACTOR = .90f
 
     const val MIN_DASH_COUNT = 2
     const val MAX_DASH_COUNT = 40
@@ -100,6 +109,10 @@ object DividerDefaults {
     const val MIN_DASH_DOTTED_PART_COUNT = 1
     const val MAX_DASH_DOTTED_PART_COUNT = 20
     const val DEFAULT_DASH_DOTTED_PART_COUNT = 7
+
+    const val MIN_DIVIDER_ROTATE_ANGLE = -45f
+    const val MAX_DIVIDER_ROTATE_ANGLE = 45f
+    const val DEFAULT_DIVIDER_ROTATE_ANGLE = 0f
 
     /**
      * Caution! Don't change two const below...

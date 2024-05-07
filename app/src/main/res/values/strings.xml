@@ -34,4 +34,6 @@
     <string name="quantity">Quantity</string>
     <string name="dots">Dots</string>
     <string name="dashes">Dashes</string>
+    <string name="line_end">Line End</string>
+    <string name="reset">Reset</string>
 </resources>

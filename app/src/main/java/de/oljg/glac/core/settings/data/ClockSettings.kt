@@ -7,7 +7,10 @@ import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_DOTTED_PART_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_LENGTH_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_ROTATE_ANGLE
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_THICKNESS
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
+import de.oljg.glac.clock.digital.ui.utils.DividerLineEnd
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_STROKE_WIDTH
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
@@ -20,7 +23,7 @@ data class ClockSettings(
     val showSeconds: Boolean = true,
     val showDaytimeMarker: Boolean = false,
 
-    val selectedClockCharType: String = ClockCharType.FONT.name,
+    val clockCharType: String = ClockCharType.FONT.name,
 
     val fontName: String = "D_Din_Regular.ttf",
     val fontWeight: String = FontWeight.NORMAL.name,
@@ -35,11 +38,12 @@ data class ClockSettings(
     val daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
 
     val dividerStyle: String = DividerStyle.LINE.name,
-    val dividerThickness: Int = 1,
+    val dividerThickness: Int = DEFAULT_DIVIDER_THICKNESS,
     val dividerLengthPercentage: Float = DEFAULT_DIVIDER_LENGTH_FACTOR,
     val dividerDashCount: Int = DEFAULT_DASH_COUNT,
     val dividerDashDottedPartCount: Int = DEFAULT_DASH_DOTTED_PART_COUNT,
-
+    val dividerLineEnd: String = DividerLineEnd.ROUND.name,
+    val dividerRotateAngle: Float = DEFAULT_DIVIDER_ROTATE_ANGLE,
 
     val clockSettingsSectionPreviewIsExpanded: Boolean = false,
     val clockSettingsSectionDisplayIsExpanded: Boolean = false,

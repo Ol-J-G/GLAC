@@ -41,15 +41,13 @@ enum class SevenSegmentStyle {
     OUTLINE_REVERSE_ITALIC
 }
 
-fun SevenSegmentStyle.isItalic(): Boolean {
-    return this.name == SevenSegmentStyle.ITALIC.name ||
-            this.name == SevenSegmentStyle.OUTLINE_ITALIC.name
-}
+fun SevenSegmentStyle.isItalic() =
+    this.name == SevenSegmentStyle.ITALIC.name ||
+    this.name == SevenSegmentStyle.OUTLINE_ITALIC.name
 
-fun SevenSegmentStyle.isReverseItalic(): Boolean {
-    return this.name.contains(SevenSegmentStyle.REVERSE_ITALIC.name)
-}
+fun SevenSegmentStyle.isReverseItalic() = this.name.contains(SevenSegmentStyle.REVERSE_ITALIC.name)
 
+fun SevenSegmentStyle.isItalicOrReverseItalic() = this.isItalic() || this.isReverseItalic()
 
 fun Char.contains(segment: Segment): Boolean {
     return when (segment) {

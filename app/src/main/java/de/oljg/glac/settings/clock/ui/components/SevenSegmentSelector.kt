@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_STROKE_WIDTH
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.MAX_STROKE_WIDTH
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.MIN_STROKE_WIDTH
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSlider
@@ -27,6 +28,7 @@ fun SevenSegmentSelector(
     isOutlineStyleSelected: Boolean,
     selectedOutlineSize: Float,
     onNewOutlineSizeSelected: (Float) -> Unit,
+    onResetOutlineSize: () -> Unit,
     drawOffSegments: Boolean,
     onDrawOffSegmentsChanged: (Boolean) -> Unit
 ) {
@@ -47,8 +49,10 @@ fun SevenSegmentSelector(
                 SettingsSlider(
                     label = stringResource(R.string.outline_size),
                     value = selectedOutlineSize,
-                    sliderValuePrettyPrint = Float::prettyPrintPixel,
+                    defaultValue = DEFAULT_STROKE_WIDTH,
+                    sliderValuePrettyPrintFun = Float::prettyPrintPixel,
                     onValueChangeFinished = onNewOutlineSizeSelected,
+                    onResetValue = onResetOutlineSize,
                     valueRange = MIN_STROKE_WIDTH..MAX_STROKE_WIDTH
                 )
                 Spacer(modifier = Modifier.fillMaxWidth().height(DEFAULT_VERTICAL_SPACE / 2))

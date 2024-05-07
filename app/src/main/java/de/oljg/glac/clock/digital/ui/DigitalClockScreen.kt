@@ -24,15 +24,18 @@ import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.HideSystemBars
+import de.oljg.glac.clock.digital.ui.utils.DividerLineEnd
 import de.oljg.glac.clock.digital.ui.utils.Segment
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
+import de.oljg.glac.clock.digital.ui.utils.evaluateDividerRotateAngle
 import de.oljg.glac.clock.digital.ui.utils.evaluateFont
 import de.oljg.glac.clock.digital.ui.utils.pxToDp
 import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
+import de.oljg.glac.settings.clock.ui.utils.isSevenSegmentItalicOrReverseItalic
 import kotlinx.coroutines.delay
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -136,7 +139,7 @@ fun DigitalClockScreen(
         initial = ClockSettings()
     ).value
 
-    val clockCharType = ClockCharType.valueOf(clockSettings.selectedClockCharType)
+    val clockCharType = ClockCharType.valueOf(clockSettings.clockCharType)
 
     val context = LocalContext.current
     val (finalFontFamily, finalFontWeight, finalFontStyle) = evaluateFont(
@@ -146,15 +149,33 @@ fun DigitalClockScreen(
         clockSettings.fontStyle
     )
 
+    // In case of 7-seg italic style and only in landscape o. => rotate divider appropriately
+    val currentSevenSegmentStyle = SevenSegmentStyle.valueOf(clockSettings.sevenSegmentStyle)
+    val dividerRotateAngle =
+        if (isSevenSegmentItalicOrReverseItalic(clockCharType, currentSevenSegmentStyle))
+            evaluateDividerRotateAngle(currentSevenSegmentStyle)
+
+        /**
+         * Actually no need to rotate dividers with ClockCharType.FONT, but in case of italic
+         * fonts, they have unknown/different italic angles, so, let user set it up, just according
+         * to some imported font.
+         */
+        else clockSettings.dividerRotateAngle
+
     val dividerAttributes = DividerAttributes(
         dividerStyle = DividerStyle.valueOf(clockSettings.dividerStyle),
         dividerThickness = clockSettings.dividerThickness.pxToDp(),
         dividerLengthPercentage = clockSettings.dividerLengthPercentage,
         dividerDashCount = clockSettings.dividerDashCount,
         dividerDashDottedPartCount = clockSettings.dividerDashDottedPartCount,
-        dividerLineCap = StrokeCap.Round,
+        dividerLineCap =
+        if (DividerLineEnd.valueOf(clockSettings.dividerLineEnd) == DividerLineEnd.ROUND)
+            StrokeCap.Round else StrokeCap.Butt,
+        dividerRotateAngle = dividerRotateAngle,
         dividerColor = charColor
     )
+
+    //TODO: add settings for colon position
 
     val timePattern = buildString {
         if (clockSettings.showDaytimeMarker) append("hh") else append("HH")
@@ -249,7 +270,6 @@ fun DigitalClockScreen(
         dividerAttributes = dividerAttributes,
         currentTimeFormatted = currentTimeFormatted,
         clockCharType = clockCharType,
-        sevenSegmentStyle = SevenSegmentStyle.valueOf(clockSettings.sevenSegmentStyle),
         digitSizeFactor = clockSettings.digitSizeFactor,
         daytimeMarkerSizeFactor = clockSettings.daytimeMarkerSizeFactor
     ) { clockChar, clockCharFontSize, clockCharColor, clockCharSize ->

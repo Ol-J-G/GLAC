@@ -5,15 +5,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
+import de.oljg.glac.clock.digital.ui.utils.DividerLineEnd
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
+import de.oljg.glac.clock.digital.ui.utils.isItalicOrReverseItalic
 import de.oljg.glac.core.util.FontStyle
 import de.oljg.glac.core.util.FontWeight
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.PIXEL
+import kotlin.math.floor
 
+
+fun Float.prettyPrintAngle() = this.formatToOneDecimalPlace() + " °"
+
+fun Float.formatToOneDecimalPlace(): String {
+   return (floor(this * 10) / 10).toString()
+}
 
 fun Float.prettyPrintPixel() = this.cutOffDecimalPlaces() + " " + PIXEL
 
+/**
+ * 12.345678f => "12"
+ */
 fun Float.cutOffDecimalPlaces() = this.toString().substring(
     startIndex = 0,
     endIndex = this.toInt().toString().length
@@ -21,24 +33,31 @@ fun Float.cutOffDecimalPlaces() = this.toString().substring(
 
 /**
  * Just needed to pretty print percentage.
+ *
+ * Note: String.format() still has no option to set roundingMode, so, implemented this function..
+ *
  * Examples:
- * 0.00000f => "0.00"
- * 0.07000f => "0.07"
- * 0.12000f => "0.12"
- * 1.00000f => "1.00"
+ * 0f       => "0.00"
+ * 0.07123f => "0.07"
+ * 0.12123f => "0.12"
+ * 0.9f     => "0.90"
+ * 1f       => "1.00"
  */
-private fun Float.formatTwoDecimalPlaces(): String {
-    if(this >= 0f && this < .01f) return "0.00"
-    require(this in .01f..100f)
-    return this.toString().substring(startIndex = 0, endIndex = 4)
+fun Float.formatTwoDecimalPlaces(): String {
+    require(this in 0f..1f)
+    val thisString = this.toString()
+    return if(thisString.length == 3)
+        thisString.substring(0, 3) + "0"
+    else thisString.substring(0, 4)
 }
 
 /**
  * Examples:
- * 0.00000f => "0 %"
- * 0.07000f => "7 %"
- * 0.12000f => "12 %"
- * 1.00000f => "100 %"
+ * 0f       => "0.00" => "0 %"
+ * 0.07123f => "0.07" => "7 %"
+ * 0.12123f => "0.12" => "12 %"
+ * 0.9f     => "0.90" => "90 %"
+ * 1f       => "1.00" => "100 %"
  */
 fun Float.prettyPrintPercentage(): String {
     val percentage = if (this == 1f) "100"
@@ -66,6 +85,13 @@ fun String.prettyPrintEnumName(): String {
     }
 }
 
+
+fun isSevenSegmentItalicOrReverseItalic(
+    clockCharType: ClockCharType,
+    sevenSegmentStyle: SevenSegmentStyle
+) = clockCharType == ClockCharType.SEVEN_SEGMENT && sevenSegmentStyle.isItalicOrReverseItalic()
+
+
 object SettingsDefaults {
     const val PREVIEW_SIZE_FACTOR = .3f
 
@@ -85,6 +111,9 @@ object SettingsDefaults {
     val RADIO_BUTTON_ROW_HEIGHT = 56.dp
     val SETTINGS_SECTION_HEIGHT = 48.dp
     val DEFAULT_ICON_BUTTON_SIZE = 22.dp
+    val RESET_BUTTON_SIZE = 36.dp
+    val SETTINGS_SLIDER_HEIGHT = 58.dp
+    val TEXT_ICON_SPACE = 20.dp
 
     val CLOCK_CHAR_TYPE_FONT_SIZE = 18.sp
     const val PIXEL = "Pixel"
@@ -102,4 +131,5 @@ object SettingsDefaults {
         style == DividerStyle.CHAR
     }.map { style -> style.name }
 
+    val DIVIDER_LINE_ENDS = DividerLineEnd.entries.map { lineEnd -> lineEnd.name }
 }

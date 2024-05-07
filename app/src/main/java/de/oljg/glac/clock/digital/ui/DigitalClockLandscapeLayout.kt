@@ -78,9 +78,7 @@ fun DigitalClockLandscapeLayout(
     fontStyle: FontStyle = FontStyle.Normal,
     charColors: Map<Char, Color> = defaultClockCharColors(MaterialTheme.colorScheme.onSurface),
     clockPartsColors: ClockPartsColors? = null,
-
     dividerAttributes: DividerAttributes,
-
     startFontSize: TextUnit = evaluateStartFontSize(
         Configuration.ORIENTATION_LANDSCAPE,
         previewMode

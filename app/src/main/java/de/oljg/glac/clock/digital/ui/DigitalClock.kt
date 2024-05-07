@@ -34,9 +34,7 @@ import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
-import de.oljg.glac.clock.digital.ui.utils.evaluateDividerRotateAngle
 
 @Composable
 fun DigitalClock(
@@ -52,7 +50,6 @@ fun DigitalClock(
         DividerAttributes(dividerColor = MaterialTheme.colorScheme.onSurface),
     currentTimeFormatted: String,
     clockCharType: ClockCharType = ClockCharType.FONT,
-    sevenSegmentStyle: SevenSegmentStyle = SevenSegmentStyle.REGULAR,
     charColors: Map<Char, Color> = defaultClockCharColors(MaterialTheme.colorScheme.onSurface),
     clockPartsColors: ClockPartsColors? = null,
     digitSizeFactor: Float = DEFAULT_CLOCK_DIGIT_SIZE_FACTOR,
@@ -61,22 +58,6 @@ fun DigitalClock(
 ) {
     val currentDisplayOrientation = LocalConfiguration.current.orientation
     var clockBoxSize by remember { mutableStateOf(IntSize.Zero) }
-
-    // In case of 7-seg italic style and only in landscape o. => rotate divider appropriately
-    val dividerRotateAngle =
-        if (clockCharType == ClockCharType.SEVEN_SEGMENT)
-            evaluateDividerRotateAngle(sevenSegmentStyle)
-
-        /**
-         * No need to rotate dividers with ClockCharType.FONT (fonts have unknown/different italic
-         * angles).
-         * TODO_LATER: allow anyways, but let user rotate manually
-         */
-        else 0f
-
-    val finalDividerAttributes = dividerAttributes.copy(
-        dividerRotateAngle = dividerRotateAngle,
-    )
 
     Box(
         modifier = Modifier
@@ -104,7 +85,7 @@ fun DigitalClock(
                 fontWeight = fontWeight,
                 fontStyle = fontStyle,
                 currentTimeFormatted = currentTimeFormatted,
-                dividerAttributes = finalDividerAttributes,
+                dividerAttributes = dividerAttributes,
                 charColors = charColors,
                 clockPartsColors = clockPartsColors,
                 digitSizeFactor = digitSizeFactor,
@@ -133,7 +114,7 @@ fun DigitalClock(
                         daytimeMarkerDividerChar
                     ).forEach { notASeparatorChar -> append(notASeparatorChar) }
                 },
-                dividerAttributes = finalDividerAttributes,
+                dividerAttributes = dividerAttributes,
                 charColors = charColors,
                 clockPartsColors = clockPartsColors,
                 digitSizeFactor = digitSizeFactor,

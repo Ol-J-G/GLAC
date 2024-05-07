@@ -2,7 +2,6 @@ package de.oljg.glac.clock.digital.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -335,6 +334,9 @@ fun DigitalClockPortraitLayout(
                                     else dividerAttributes.dividerThickness,
                                     dividerColor = finalDividerColor,
 
+                                    // != 0f => not useful (yet) in portrait
+                                    dividerRotateAngle = 0f,
+
                                     /**
                                      * Special kind of 'colon-circle' placement
                                      * => 10% distance from the edges, is quite in harmony
@@ -359,10 +361,13 @@ fun DigitalClockPortraitLayout(
                                     dividerLineCap = dividerAttributes.dividerLineCap,
                                     dividerLengthPercent = dividerAttributes.dividerLengthPercentage,
                                     dividerDashDottedPartCount = dividerAttributes.dividerDashDottedPartCount,
+
+                                    // != 0f => not useful (yet) in portrait
+                                    dividerRotateAngle = 0f,
                                     orientation = Configuration.ORIENTATION_PORTRAIT
                                 )
                         }
-                    } else Box {} // don't draw any divider, draw "nothing" ...
+                    }
                 }
             }
         }

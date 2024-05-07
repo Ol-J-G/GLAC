@@ -17,6 +17,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_DIGIT_SIZE_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_STROKE_WIDTH
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.contains
 import de.oljg.glac.core.settings.data.ClockSettings
@@ -53,12 +56,12 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
     ) {
         ClockCharTypeSelector(
             label = "${stringResource(R.string.type)}:",
-            selectedClockCharType = clockSettings.selectedClockCharType,
+            selectedClockCharType = clockSettings.clockCharType,
             onClockCharTypeSelected = { newClockCharType ->
                 coroutineScope.launch {
                     viewModel.updateClockSettings(
                         clockSettings.copy(
-                            selectedClockCharType = newClockCharType
+                            clockCharType = newClockCharType
                         )
                     )
                 }
@@ -66,7 +69,7 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
         )
         Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
         Crossfade(
-            targetState = ClockCharType.valueOf(clockSettings.selectedClockCharType),
+            targetState = ClockCharType.valueOf(clockSettings.clockCharType),
             animationSpec = TweenSpec(),
             label = "crossfade"
         ) { clockCharType ->
@@ -141,6 +144,14 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
                                 )
                             }
                         },
+                        onResetOutlineSize = {
+                            coroutineScope.launch {
+                                viewModel.updateClockSettings(
+                                    clockSettings.copy(sevenSegmentOutlineSize = DEFAULT_STROKE_WIDTH)
+                                )
+                            }
+                            DEFAULT_STROKE_WIDTH
+                        },
                         drawOffSegments = clockSettings.drawOffSegments,
                         onDrawOffSegmentsChanged = { newValue ->
                             coroutineScope.launch {
@@ -158,11 +169,19 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
             label =  "${stringResource(id = R.string.digit)} " +
                     stringResource(id = R.string.size),
             value = clockSettings.digitSizeFactor,
-            sliderValuePrettyPrint = Float::prettyPrintPercentage,
+            defaultValue = DEFAULT_CLOCK_DIGIT_SIZE_FACTOR,
+            sliderValuePrettyPrintFun = Float::prettyPrintPercentage,
             onValueChangeFinished = { newSizeFactor ->
                 coroutineScope.launch {
                     viewModel.updateClockSettings(
                         clockSettings.copy(digitSizeFactor = newSizeFactor)
+                    )
+                }
+            },
+            onResetValue = {
+                coroutineScope.launch {
+                    viewModel.updateClockSettings(
+                        clockSettings.copy(digitSizeFactor = DEFAULT_CLOCK_DIGIT_SIZE_FACTOR)
                     )
                 }
             }
@@ -172,11 +191,19 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
             label =  "${stringResource(id = R.string.daytime_marker)} " +
                     stringResource(id = R.string.size),
             value = clockSettings.daytimeMarkerSizeFactor,
-            sliderValuePrettyPrint = Float::prettyPrintPercentage,
+            defaultValue = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
+            sliderValuePrettyPrintFun = Float::prettyPrintPercentage,
             onValueChangeFinished = { newSizeFactor ->
                 coroutineScope.launch {
                     viewModel.updateClockSettings(
                         clockSettings.copy(daytimeMarkerSizeFactor = newSizeFactor)
+                    )
+                }
+            },
+            onResetValue = {
+                coroutineScope.launch {
+                    viewModel.updateClockSettings(
+                        clockSettings.copy(daytimeMarkerSizeFactor = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR)
                     )
                 }
             }

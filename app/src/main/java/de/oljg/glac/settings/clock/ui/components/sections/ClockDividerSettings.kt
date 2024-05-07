@@ -4,6 +4,9 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
@@ -13,22 +16,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
+import de.oljg.glac.clock.digital.ui.utils.ClockCharType
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_COUNT
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_DOTTED_PART_COUNT
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_LENGTH_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_ROTATE_ANGLE
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_THICKNESS
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.MAX_DASH_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.MAX_DASH_DOTTED_PART_COUNT
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.MAX_DIVIDER_ROTATE_ANGLE
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.MAX_DIVIDER_THICKNESS
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.MIN_DASH_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.MIN_DASH_DOTTED_PART_COUNT
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.MIN_DIVIDER_ROTATE_ANGLE
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.MIN_DIVIDER_THICKNESS
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.isLineBased
+import de.oljg.glac.clock.digital.ui.utils.isLineOrDashedLine
 import de.oljg.glac.clock.digital.ui.utils.isNeitherNoneNorChar
+import de.oljg.glac.clock.digital.ui.utils.isRotatable
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
+import de.oljg.glac.settings.clock.ui.components.DividerLineEndSelector
 import de.oljg.glac.settings.clock.ui.components.DividerStyleSelector
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSlider
-import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.settings.clock.ui.utils.cutOffDecimalPlaces
+import de.oljg.glac.settings.clock.ui.utils.isSevenSegmentItalicOrReverseItalic
+import de.oljg.glac.settings.clock.ui.utils.prettyPrintAngle
 import de.oljg.glac.settings.clock.ui.utils.prettyPrintPercentage
 import de.oljg.glac.settings.clock.ui.utils.prettyPrintPixel
 import kotlinx.coroutines.launch
@@ -69,16 +86,24 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             visible = DividerStyle.valueOf(clockSettings.dividerStyle).isNeitherNoneNorChar()
         ) {
             Column {
-                Divider(modifier = Modifier.padding(vertical = SettingsDefaults.DEFAULT_VERTICAL_SPACE))
+                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 SettingsSlider(
                     label = stringResource(R.string.thickness),
                     value = clockSettings.dividerThickness.toFloat(),
-                    sliderValuePrettyPrint = Float::prettyPrintPixel,
+                    defaultValue = DEFAULT_DIVIDER_THICKNESS.toFloat(),
+                    sliderValuePrettyPrintFun = Float::prettyPrintPixel,
                     valueRange = MIN_DIVIDER_THICKNESS.toFloat()..MAX_DIVIDER_THICKNESS.toFloat(),
                     onValueChangeFinished = { newSizeFactor ->
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
                                 clockSettings.copy(dividerThickness = newSizeFactor.toInt())
+                            )
+                        }
+                    },
+                    onResetValue = {
+                        coroutineScope.launch {
+                            viewModel.updateClockSettings(
+                                clockSettings.copy(dividerThickness = DEFAULT_DIVIDER_THICKNESS)
                             )
                         }
                     }
@@ -90,15 +115,24 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             visible = DividerStyle.valueOf(clockSettings.dividerStyle).isLineBased()
         ) {
             Column {
-                Divider(modifier = Modifier.padding(vertical = SettingsDefaults.DEFAULT_VERTICAL_SPACE))
+                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 SettingsSlider(
                     label = stringResource(R.string.length),
                     value = clockSettings.dividerLengthPercentage,
-                    sliderValuePrettyPrint = Float::prettyPrintPercentage,
+                    defaultValue = DEFAULT_DIVIDER_LENGTH_FACTOR,
+                    sliderValuePrettyPrintFun = Float::prettyPrintPercentage,
                     onValueChangeFinished = { newLength ->
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
                                 clockSettings.copy(dividerLengthPercentage = newLength)
+                            )
+                        }
+                    },
+                    onResetValue = {
+                        coroutineScope.launch {
+                            viewModel.updateClockSettings(
+                                clockSettings.copy(
+                                    dividerLengthPercentage = DEFAULT_DIVIDER_LENGTH_FACTOR)
                             )
                         }
                     }
@@ -110,16 +144,24 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             visible = DividerStyle.valueOf(clockSettings.dividerStyle) == DividerStyle.DASHED_LINE
         ) {
             Column {
-                Divider(modifier = Modifier.padding(vertical = SettingsDefaults.DEFAULT_VERTICAL_SPACE))
+                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 SettingsSlider(
                     label = stringResource(R.string.dashes),
                     value = clockSettings.dividerDashCount.toFloat(),
-                    sliderValuePrettyPrint = Float::cutOffDecimalPlaces,
+                    defaultValue = DEFAULT_DASH_COUNT.toFloat(),
+                    sliderValuePrettyPrintFun = Float::cutOffDecimalPlaces,
                     valueRange = MIN_DASH_COUNT.toFloat()..MAX_DASH_COUNT.toFloat(),
                     onValueChangeFinished = { newCount ->
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
                                 clockSettings.copy(dividerDashCount = newCount.toInt())
+                            )
+                        }
+                    },
+                    onResetValue = {
+                        coroutineScope.launch {
+                            viewModel.updateClockSettings(
+                                clockSettings.copy(dividerDashCount = DEFAULT_DASH_COUNT)
                             )
                         }
                     }
@@ -131,17 +173,81 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             visible = DividerStyle.valueOf(clockSettings.dividerStyle) == DividerStyle.DASHDOTTED_LINE
         ) {
             Column {
-                Divider(modifier = Modifier.padding(vertical = SettingsDefaults.DEFAULT_VERTICAL_SPACE))
+                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 SettingsSlider(
                     label = stringResource(R.string.dots),
                     value = clockSettings.dividerDashDottedPartCount.toFloat(),
-                    sliderValuePrettyPrint = Float::cutOffDecimalPlaces,
+                    defaultValue = DEFAULT_DASH_DOTTED_PART_COUNT.toFloat(),
+                    sliderValuePrettyPrintFun = Float::cutOffDecimalPlaces,
                     valueRange =
                     MIN_DASH_DOTTED_PART_COUNT.toFloat()..MAX_DASH_DOTTED_PART_COUNT.toFloat(),
                     onValueChangeFinished = { newCount ->
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
                                 clockSettings.copy(dividerDashDottedPartCount = newCount.toInt())
+                            )
+                        }
+                    },
+                    onResetValue = {
+                        coroutineScope.launch {
+                            viewModel.updateClockSettings(
+                                clockSettings.copy(
+                                    dividerDashDottedPartCount = DEFAULT_DASH_DOTTED_PART_COUNT)
+                            )
+                        }
+                    }
+                )
+            }
+        }
+
+        AnimatedVisibility(
+            visible = DividerStyle.valueOf(clockSettings.dividerStyle).isLineOrDashedLine()
+        ) {
+            Column {
+                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+                DividerLineEndSelector(
+                    label = stringResource(R.string.line_end),
+                    selectedDividerLineEnd = clockSettings.dividerLineEnd,
+                    onNewDividerLineEndSelected = { newLineEnd ->
+                        coroutineScope.launch {
+                            viewModel.updateClockSettings(
+                                clockSettings.copy(dividerLineEnd = newLineEnd))
+                        }
+                    }
+                )
+                Spacer(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(DEFAULT_VERTICAL_SPACE / 2))
+            }
+        }
+
+        AnimatedVisibility(
+            visible = DividerStyle.valueOf(clockSettings.dividerStyle).isRotatable() &&
+            !isSevenSegmentItalicOrReverseItalic(
+                ClockCharType.valueOf(clockSettings.clockCharType),
+                SevenSegmentStyle.valueOf(clockSettings.sevenSegmentStyle)
+            )
+        ) {
+            Column {
+                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+                SettingsSlider(
+                    label = "Angle",
+                    value = clockSettings.dividerRotateAngle,
+                    defaultValue = DEFAULT_DIVIDER_ROTATE_ANGLE,
+                    sliderValuePrettyPrintFun = Float::prettyPrintAngle,
+                    valueRange = MIN_DIVIDER_ROTATE_ANGLE..MAX_DIVIDER_ROTATE_ANGLE,
+                    onValueChangeFinished = { newAngle ->
+                        coroutineScope.launch {
+                            viewModel.updateClockSettings(
+                                clockSettings.copy(dividerRotateAngle = newAngle)
+                            )
+                        }
+                    },
+                    onResetValue = {
+                        coroutineScope.launch {
+                            viewModel.updateClockSettings(
+                                clockSettings.copy(
+                                    dividerRotateAngle = DEFAULT_DIVIDER_ROTATE_ANGLE)
                             )
                         }
                     }
