@@ -4,21 +4,32 @@ import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
-import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.DividerLineEnd
+import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.clock.digital.ui.utils.isItalicOrReverseItalic
 import de.oljg.glac.core.util.FontStyle
 import de.oljg.glac.core.util.FontWeight
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.PIXEL
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 import kotlin.math.floor
 
+fun Float.prettyPrintCirclePosition() = this.prettyPrintPercentage(postfix = "% From Edge")
 
-fun Float.prettyPrintAngle() = this.formatToOneDecimalPlace() + " °"
+fun Float.prettyPrintAngle() = this.formatOneDecimalPlace() + " °"
 
-fun Float.formatToOneDecimalPlace(): String {
+/**
+ * Round down and let one decimal place remain.
+ * Finally replace internal floating point with the decimal separator char depending
+ * on current Locale.
+ *
+ * Note: String.format() still has no option to set roundingMode, so, implemented this function..
+ */
+fun Float.formatOneDecimalPlace(): String { //TODO: maybe refactor to generic version with places: Int param
    return (floor(this * 10) / 10).toString()
+       .replace('.', DecimalFormatSymbols.getInstance(Locale.getDefault()).decimalSeparator)
 }
 
 fun Float.prettyPrintPixel() = this.cutOffDecimalPlaces() + " " + PIXEL
@@ -33,15 +44,16 @@ fun Float.cutOffDecimalPlaces() = this.toString().substring(
 
 /**
  * Just needed to pretty print percentage.
+ * (decimal separator char doesn't matter here...)
  *
  * Note: String.format() still has no option to set roundingMode, so, implemented this function..
  *
  * Examples:
- * 0f       => "0.00"
+ * 0f (0.0) => "0.00"
  * 0.07123f => "0.07"
  * 0.12123f => "0.12"
  * 0.9f     => "0.90"
- * 1f       => "1.00"
+ * 1f (1.0) => "1.00"
  */
 fun Float.formatTwoDecimalPlaces(): String {
     require(this in 0f..1f)
@@ -59,12 +71,12 @@ fun Float.formatTwoDecimalPlaces(): String {
  * 0.9f     => "0.90" => "90 %"
  * 1f       => "1.00" => "100 %"
  */
-fun Float.prettyPrintPercentage(): String {
+fun Float.prettyPrintPercentage(postfix: String = " %"): String {
     val percentage = if (this == 1f) "100"
     else this.formatTwoDecimalPlaces().replace(Regex("0[,.]0?"),"")
     return buildString {
         append(percentage)
-        append(" %")
+        append(postfix)
     }
 }
 
@@ -113,10 +125,23 @@ object SettingsDefaults {
     val DEFAULT_ICON_BUTTON_SIZE = 22.dp
     val RESET_BUTTON_SIZE = 36.dp
     val SETTINGS_SLIDER_HEIGHT = 58.dp
-    val TEXT_ICON_SPACE = 20.dp
+    val TEXT_ICON_SPACE = 12.dp
 
     val CLOCK_CHAR_TYPE_FONT_SIZE = 18.sp
     const val PIXEL = "Pixel"
+
+    val COLOR_SELECTOR_HEIGHT = 92.dp
+    val COLOR_SELECTOR_TF_TOP_PADDING = 8.dp
+    val COLOR_SELECTOR_COLOR_SWATCH_SIZE = 40.dp
+    val COLOR_SELECTOR_HEX_TEXTFIELD_WIDTH = 112.dp
+    val COLOR_SELECTOR_TF_COLOR_SWATCH_SPACE = 16.dp
+
+    val COLOR_PICKER_DEFAULT_PADDING = 16.dp
+    val COLOR_PICKER_SLIDER_HEIGHT = 36.dp
+    val COLOR_PICKER_HEIGHT = 250.dp
+    val COLOR_PICKER_BORDER_WIDTH = 1.dp
+    val COLOR_PICKER_BUTTON_SPACE = 0.dp
+    const val COLOR_PICKER_FLASHING_COLOR_ANIM_DURATION = 825
 
     val FONT_WEIGHTS = FontWeight.entries.map { weight -> weight.name }
     val FONT_STYLES = FontStyle.entries.map { style -> style.name }

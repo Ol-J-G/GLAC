@@ -92,6 +92,9 @@ dependencies {
     // Brilliant Tool! E.g. used to brighten/darken a given (compose) color ...
     implementation ("com.github.SmartToolFactory:Compose-Extended-Colors:1.0.0-alpha07")
 
+    // Best open source color picker! For a comfortable UX and joy while picking colors :>
+    implementation("com.github.skydoves:colorpicker-compose:1.0.7")
+
     // Compose dependencies
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")

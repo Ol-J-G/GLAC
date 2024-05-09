@@ -264,8 +264,8 @@ fun ColonDivider(
     clockBoxSize: IntSize,
     dividerThickness: Dp,
     dividerColor: Color,
-    firstCirclePositionPercent: Float = .33f,
-    secondCirclePositionPercent: Float = .66f,
+    firstCirclePosition: Float = .33f,
+    secondCirclePosition: Float = .66f,
     dividerRotateAngle: Float = 0f,
     orientation: Int
 ) {
@@ -277,11 +277,11 @@ fun ColonDivider(
         ) {
             drawColon(
                 firstCircleCenter = Offset(
-                    x = size.width * firstCirclePositionPercent,
+                    x = size.width * firstCirclePosition,
                     y = size.center.y
                 ),
                 secondCircleCenter = Offset(
-                    x = size.width * secondCirclePositionPercent,
+                    x = size.width * secondCirclePosition,
                     y = size.center.y
                 ),
                 radius = dividerThickness.toPx() / 2,
@@ -298,11 +298,11 @@ fun ColonDivider(
                 drawColon(
                     firstCircleCenter = Offset(
                         size.center.x,
-                        size.height * firstCirclePositionPercent
+                        size.height * firstCirclePosition
                     ),
                     secondCircleCenter = Offset(
                         size.center.x,
-                        size.height * secondCirclePositionPercent
+                        size.height * secondCirclePosition
                     ),
                     radius = dividerThickness.toPx() / 2,
                     dividerColor

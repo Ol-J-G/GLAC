@@ -39,8 +39,6 @@ import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.WIDEST_LETTER
 import de.oljg.glac.clock.digital.ui.utils.ClockParts
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_FIRST_CIRCLE_POSITION_PORTRAIT_SPECIAL
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_SECOND_CIRCLE_POSITION_PORTRAIT_SPECIAL
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.MeasureFontSize
 import de.oljg.glac.clock.digital.ui.utils.PreviewState
@@ -342,10 +340,8 @@ fun DigitalClockPortraitLayout(
                                      * => 10% distance from the edges, is quite in harmony
                                      * (imho)
                                      */
-                                    firstCirclePositionPercent =
-                                    DEFAULT_FIRST_CIRCLE_POSITION_PORTRAIT_SPECIAL,
-                                    secondCirclePositionPercent =
-                                    DEFAULT_SECOND_CIRCLE_POSITION_PORTRAIT_SPECIAL,
+                                    firstCirclePosition = dividerAttributes.colonFirstCirclePosition,
+                                    secondCirclePosition = dividerAttributes.colonSecondCirclePosition,
                                     orientation = Configuration.ORIENTATION_PORTRAIT
                                 )
 

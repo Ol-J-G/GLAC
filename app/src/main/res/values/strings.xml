@@ -36,4 +36,12 @@
     <string name="dashes">Dashes</string>
     <string name="line_end">Line End</string>
     <string name="reset">Reset</string>
+    <string name="colors">Colors</string>
+    <string name="confirm">Confirm</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="hex_code">Hex Code</string>
+    <string name="invalid_code">Invalid Code</string>
+    <string name="first_circle_position">First Circle Position</string>
+    <string name="second_circle_position">Second Circle Position</string>
+    <string name="angle">Angle</string>
 </resources>

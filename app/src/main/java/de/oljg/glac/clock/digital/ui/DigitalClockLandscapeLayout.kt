@@ -40,14 +40,8 @@ import de.oljg.glac.clock.digital.ui.utils.ClockParts
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_FIRST_CIRCLE_POSITION_AT_ONE_DIVIDER
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_FIRST_CIRCLE_POSITION_AT_THREE_DIVIDERS
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_FIRST_CIRCLE_POSITION_AT_TWO_DIVIDERS
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_SECOND_CIRCLE_POSITION_AT_ONE_DIVIDER
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_SECOND_CIRCLE_POSITION_AT_THREE_DIVIDERS
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_SECOND_CIRCLE_POSITION_AT_TWO_DIVIDERS
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.MeasureFontSize
 import de.oljg.glac.clock.digital.ui.utils.PreviewState
@@ -297,18 +291,19 @@ fun DigitalClockLandscapeLayout(
                                         else dividerAttributes.dividerThickness,
                                         dividerColor = finalDividerColor,
                                         dividerRotateAngle = dividerAttributes.dividerRotateAngle,
+                                        firstCirclePosition = dividerAttributes.colonFirstCirclePosition,
+                                        secondCirclePosition = dividerAttributes.colonSecondCirclePosition,
 
-                                        //TODO_LATER: maybe create params => configurable, to let user adjust it
-                                        firstCirclePositionPercent = when (dividerCount) {
-                                            1 -> DEFAULT_FIRST_CIRCLE_POSITION_AT_ONE_DIVIDER
-                                            2 -> DEFAULT_FIRST_CIRCLE_POSITION_AT_TWO_DIVIDERS
-                                            else -> DEFAULT_FIRST_CIRCLE_POSITION_AT_THREE_DIVIDERS
-                                        },
-                                        secondCirclePositionPercent = when (dividerCount) {
-                                            1 -> DEFAULT_SECOND_CIRCLE_POSITION_AT_ONE_DIVIDER
-                                            2 -> DEFAULT_SECOND_CIRCLE_POSITION_AT_TWO_DIVIDERS
-                                            else -> DEFAULT_SECOND_CIRCLE_POSITION_AT_THREE_DIVIDERS
-                                        },
+//                                        firstCirclePosition = when (dividerCount) {
+//                                            1 -> DEFAULT_FIRST_CIRCLE_POSITION_AT_ONE_DIVIDER
+//                                            2 -> DEFAULT_FIRST_CIRCLE_POSITION_AT_TWO_DIVIDERS
+//                                            else -> DEFAULT_FIRST_CIRCLE_POSITION_AT_THREE_DIVIDERS
+//                                        },
+//                                        secondCirclePosition = when (dividerCount) {
+//                                            1 -> DEFAULT_SECOND_CIRCLE_POSITION_AT_ONE_DIVIDER
+//                                            2 -> DEFAULT_SECOND_CIRCLE_POSITION_AT_TWO_DIVIDERS
+//                                            else -> DEFAULT_SECOND_CIRCLE_POSITION_AT_THREE_DIVIDERS
+//                                        },
                                         orientation = Configuration.ORIENTATION_LANDSCAPE
                                     )
 

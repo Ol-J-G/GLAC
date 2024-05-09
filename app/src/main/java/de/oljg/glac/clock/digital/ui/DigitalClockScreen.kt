@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.clock.digital.ui.components.SevenSegmentChar
@@ -22,9 +23,9 @@ import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
+import de.oljg.glac.clock.digital.ui.utils.DividerLineEnd
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.HideSystemBars
-import de.oljg.glac.clock.digital.ui.utils.DividerLineEnd
 import de.oljg.glac.clock.digital.ui.utils.Segment
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
@@ -55,7 +56,7 @@ fun DigitalClockScreen(
 //    clockCharSizeFactor: Float = DEFAULT_CLOCK_DIGIT_SIZE_FACTOR,
 //    daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
 
-    charColor: Color = MaterialTheme.colorScheme.onSurface,
+//    charColor: Color = MaterialTheme.colorScheme.onSurface,
     charColors: Map<Char, Color> = emptyMap(),
 //        mapOf(
 //            Pair('0', Color.Yellow),
@@ -72,30 +73,30 @@ fun DigitalClockScreen(
 //            Pair('P', Color.Magenta.copy(alpha = .5f)),
 //            Pair('M', Color.Yellow.copy(alpha = .3f)),
 //        ),
-    clockPartsColors: ClockPartsColors? = //null,
-        ClockPartsColors(
-            hours = ClockPartsColors.DigitPairColor(
-                tens = Color.Green,
-                ones = Color.Green.copy(alpha = .5f)
-            ),
-            minutes = ClockPartsColors.DigitPairColor(
-                tens = Color.Yellow,
-                ones = Color.Yellow.copy(alpha = .5f)
-            ),
-            seconds = ClockPartsColors.DigitPairColor(
-                tens = Color.Red,
-                ones = Color.Red.copy(alpha = .5f)
-            ),
-            daytimeMarker = ClockPartsColors.DaytimeMarkerColor(
-                anteOrPost = Color.White,
-                meridiem = Color.Gray
-            ),
-            dividers = ClockPartsColors.DividerColor(
-                hoursMinutes = Color.Red,
-                minutesSeconds = Color.Yellow,
-                daytimeMarker = Color.Green
-            )
-        ),
+    clockPartsColors: ClockPartsColors? = null,
+//        ClockPartsColors(
+//            hours = ClockPartsColors.DigitPairColor(
+//                tens = Color.Green,
+//                ones = Color.Green.copy(alpha = .5f)
+//            ),
+//            minutes = ClockPartsColors.DigitPairColor(
+//                tens = Color.Yellow,
+//                ones = Color.Yellow.copy(alpha = .5f)
+//            ),
+//            seconds = ClockPartsColors.DigitPairColor(
+//                tens = Color.Red,
+//                ones = Color.Red.copy(alpha = .5f)
+//            ),
+//            daytimeMarker = ClockPartsColors.DaytimeMarkerColor(
+//                anteOrPost = Color.White,
+//                meridiem = Color.Gray
+//            ),
+//            dividers = ClockPartsColors.DividerColor(
+//                hoursMinutes = Color.Red,
+//                minutesSeconds = Color.Yellow,
+//                daytimeMarker = Color.Green
+//            )
+//        ),
 
     hoursMinutesDividerChar: Char = DEFAULT_HOURS_MINUTES_DIVIDER_CHAR,
     minutesSecondsDividerChar: Char = DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR,
@@ -162,6 +163,9 @@ fun DigitalClockScreen(
          */
         else clockSettings.dividerRotateAngle
 
+    val charColor =
+        Color(clockSettings.charColor ?: MaterialTheme.colorScheme.onSurface.toArgb())
+
     val dividerAttributes = DividerAttributes(
         dividerStyle = DividerStyle.valueOf(clockSettings.dividerStyle),
         dividerThickness = clockSettings.dividerThickness.pxToDp(),
@@ -172,10 +176,10 @@ fun DigitalClockScreen(
         if (DividerLineEnd.valueOf(clockSettings.dividerLineEnd) == DividerLineEnd.ROUND)
             StrokeCap.Round else StrokeCap.Butt,
         dividerRotateAngle = dividerRotateAngle,
+        colonFirstCirclePosition = clockSettings.colonFirstCirclePosition,
+        colonSecondCirclePosition = clockSettings.colonSecondCirclePosition,
         dividerColor = charColor
     )
-
-    //TODO: add settings for colon position
 
     val timePattern = buildString {
         if (clockSettings.showDaytimeMarker) append("hh") else append("HH")

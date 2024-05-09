@@ -24,13 +24,13 @@ class SettingsUtilsTest {
 
     @Test
     fun testFormatTwoDecimalPlaces_zero() {
-        val testFloat = 0f
+        val testFloat = 0f // is internally 0.0
         assertThat(testFloat.formatTwoDecimalPlaces()).isEqualTo("0.00")
     }
 
     @Test
     fun testFormatTwoDecimalPlaces_one() {
-        val testFloat = 1f
+        val testFloat = 1f // is internally 1.0
         assertThat(testFloat.formatTwoDecimalPlaces()).isEqualTo("1.00")
     }
 }

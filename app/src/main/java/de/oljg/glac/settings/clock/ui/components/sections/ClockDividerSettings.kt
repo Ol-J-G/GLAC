@@ -17,6 +17,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_COLON_FIRST_CIRCLE_POSITION
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_COLON_SECOND_CIRCLE_POSITION
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_DOTTED_PART_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_LENGTH_FACTOR
@@ -46,6 +48,7 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SP
 import de.oljg.glac.settings.clock.ui.utils.cutOffDecimalPlaces
 import de.oljg.glac.settings.clock.ui.utils.isSevenSegmentItalicOrReverseItalic
 import de.oljg.glac.settings.clock.ui.utils.prettyPrintAngle
+import de.oljg.glac.settings.clock.ui.utils.prettyPrintCirclePosition
 import de.oljg.glac.settings.clock.ui.utils.prettyPrintPercentage
 import de.oljg.glac.settings.clock.ui.utils.prettyPrintPixel
 import kotlinx.coroutines.launch
@@ -231,7 +234,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             Column {
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 SettingsSlider(
-                    label = "Angle",
+                    label = stringResource(R.string.angle),
                     value = clockSettings.dividerRotateAngle,
                     defaultValue = DEFAULT_DIVIDER_ROTATE_ANGLE,
                     sliderValuePrettyPrintFun = Float::prettyPrintAngle,
@@ -255,8 +258,59 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             }
         }
 
-
-
+        AnimatedVisibility(
+            visible = DividerStyle.valueOf(clockSettings.dividerStyle) == DividerStyle.COLON
+        ) {
+            Column {
+                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+                SettingsSlider(
+                    label = stringResource(R.string.first_circle_position),
+                    value = clockSettings.colonFirstCirclePosition,
+                    defaultValue = DEFAULT_COLON_FIRST_CIRCLE_POSITION,
+                    sliderValuePrettyPrintFun = Float::prettyPrintCirclePosition,
+                    onValueChangeFinished = { newPosition ->
+                        coroutineScope.launch {
+                            viewModel.updateClockSettings(
+                                clockSettings.copy(colonFirstCirclePosition = newPosition)
+                            )
+                        }
+                    },
+                    onResetValue = {
+                        coroutineScope.launch {
+                            viewModel.updateClockSettings(
+                                clockSettings.copy(
+                                    colonFirstCirclePosition = DEFAULT_COLON_FIRST_CIRCLE_POSITION)
+                            )
+                        }
+                    }
+                )
+                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+                SettingsSlider(
+                    label = stringResource(R.string.second_circle_position),
+                    value = clockSettings.colonSecondCirclePosition,
+                    defaultValue = DEFAULT_COLON_SECOND_CIRCLE_POSITION,
+                    sliderValuePrettyPrintFun = Float::prettyPrintCirclePosition,
+                    onValueChangeFinished = { newPosition ->
+                        coroutineScope.launch {
+                            viewModel.updateClockSettings(
+                                clockSettings.copy(colonSecondCirclePosition = newPosition)
+                            )
+                        }
+                    },
+                    onResetValue = {
+                        coroutineScope.launch {
+                            viewModel.updateClockSettings(
+                                clockSettings.copy(
+                                    colonSecondCirclePosition = DEFAULT_COLON_SECOND_CIRCLE_POSITION)
+                            )
+                        }
+                    }
+                )
+                Spacer(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(DEFAULT_VERTICAL_SPACE / 2))
+            }
+        }
     }
 }
 

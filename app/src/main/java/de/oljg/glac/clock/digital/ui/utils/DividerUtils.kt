@@ -5,6 +5,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_COLON_FIRST_CIRCLE_POSITION
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_COLON_SECOND_CIRCLE_POSITION
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_DOTTED_PART_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR
@@ -52,7 +54,9 @@ data class DividerAttributes(
     val dividerLengthPercentage: Float = DEFAULT_DIVIDER_LENGTH_FACTOR,
     val dividerDashCount: Int = DEFAULT_DASH_COUNT,
     val dividerDashDottedPartCount: Int = DEFAULT_DASH_DOTTED_PART_COUNT,
-    val dividerRotateAngle: Float = 0f
+    val dividerRotateAngle: Float = 0f,
+    val colonFirstCirclePosition: Float = DEFAULT_COLON_FIRST_CIRCLE_POSITION,
+    val colonSecondCirclePosition: Float = DEFAULT_COLON_SECOND_CIRCLE_POSITION
 )
 
 
@@ -114,6 +118,9 @@ object DividerDefaults {
     const val MAX_DIVIDER_ROTATE_ANGLE = 45f
     const val DEFAULT_DIVIDER_ROTATE_ANGLE = 0f
 
+    const val DEFAULT_COLON_FIRST_CIRCLE_POSITION = .45f
+    const val DEFAULT_COLON_SECOND_CIRCLE_POSITION = .55f
+
     /**
      * Caution! Don't change two const below...
      * It's NOT dynamical by now, means works only with
@@ -129,30 +136,5 @@ object DividerDefaults {
      */
     const val DEFAULT_DISTANCE_DASH_TO_DASH_FACTOR = 2f
     const val DEFAULT_DISTANCE_CIRCLE_TO_CIRCLE_FACTOR = 1.5f
-
-    /**
-     * Default DividerStyle.COLON positions in percent.
-     *
-     * The more dividers, the smaller the chars and 'colon-circles'
-     * => Distance from 'colon-circle' to 'colon-circle' cannot be the same in every case and
-     *    must be adjusted to be in harmony (imho) ...
-     *
-     * They are constructed as follows:
-     * From the center (.5f), minus X for 1st and plus X for the 2nd,
-     * e.g. X=0.2 => 1st: 0.5 - 0.2 = 0.3, 2nd: 0.5 + 0.2 = 0.7
-     */
-    const val DEFAULT_FIRST_CIRCLE_POSITION_AT_ONE_DIVIDER = .3f // X = 0.2 (30% dist from edge)
-    const val DEFAULT_SECOND_CIRCLE_POSITION_AT_ONE_DIVIDER = .7f // X = 0.2 (30% dist from edge)
-
-    const val DEFAULT_FIRST_CIRCLE_POSITION_AT_TWO_DIVIDERS = .4f // X = 0.1 (40% dist from edge)
-    const val DEFAULT_SECOND_CIRCLE_POSITION_AT_TWO_DIVIDERS = .6f // X = 0.1 (40% dist from edge)
-
-    const val DEFAULT_FIRST_CIRCLE_POSITION_AT_THREE_DIVIDERS =
-        .42f // X = 0.08 (42% dist from edge)
-    const val DEFAULT_SECOND_CIRCLE_POSITION_AT_THREE_DIVIDERS =
-        .58f // X = 0.08 (42% dist from edge)
-
-    const val DEFAULT_FIRST_CIRCLE_POSITION_PORTRAIT_SPECIAL = .1f // X = 0.4 (10% dist from edge)
-    const val DEFAULT_SECOND_CIRCLE_POSITION_PORTRAIT_SPECIAL = .9f // X = 0.4 (10% dist from edge)
 }
 
