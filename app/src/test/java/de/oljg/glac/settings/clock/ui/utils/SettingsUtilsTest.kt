@@ -1,36 +1,51 @@
 package de.oljg.glac.settings.clock.ui.utils
 
 import com.google.common.truth.Truth.assertThat
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.FLOAT_PERCENTAGE_BETWEEN_ZERO_ONE
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.PERCENTAGE_ONLY_2_PLACES
+import de.oljg.glac.util.UnitTestDefaults.FAILED_REQUIREMENT
+import org.junit.Assert.assertThrows
 import org.junit.Test
 
 class SettingsUtilsTest {
+
+    // negative test
     @Test
-    fun testFormatTwoDecimalPlaces_lengthOf3() {
-        val testFloat = 0.9f
-        assertThat(testFloat.formatTwoDecimalPlaces()).isEqualTo("0.90")
+    fun `Format float percentage, float with places != 2 must throw exception`() {
+        val testFloat = 0.4567f
+        val e = assertThrows(IllegalArgumentException::class.java) {
+            testFloat.format(places = 0, percentage = true)
+        }
+        assertThat(e).hasMessageThat().isEqualTo(PERCENTAGE_ONLY_2_PLACES)
     }
 
+    // negative test
     @Test
-    fun testFormatTwoDecimalPlaces_lengthGreaterThan3_tens() {
-        val testFloat = 0.45678f
-        assertThat(testFloat.formatTwoDecimalPlaces()).isEqualTo("0.45")
+    fun `Format float percentage, float input has to be less than 1f`() {
+        val testFloat = 2.4567f
+        val e = assertThrows(IllegalArgumentException::class.java) {
+            testFloat.format(places = 2, percentage = true)
+        }
+        assertThat(e).hasMessageThat().isEqualTo(FLOAT_PERCENTAGE_BETWEEN_ZERO_ONE)
     }
 
+    // negative test
     @Test
-    fun testFormatTwoDecimalPlaces_lengthGreaterThan3_ones() {
-        val testFloat = 0.07543f
-        assertThat(testFloat.formatTwoDecimalPlaces()).isEqualTo("0.07")
+    fun `Format float percentage, float input has to be greater than 0f`() {
+        val testFloat = -2.4567f
+        val e = assertThrows(IllegalArgumentException::class.java) {
+            testFloat.format(places = 2, percentage = true)
+        }
+        assertThat(e).hasMessageThat().isEqualTo(FLOAT_PERCENTAGE_BETWEEN_ZERO_ONE)
     }
 
+    // negative test
     @Test
-    fun testFormatTwoDecimalPlaces_zero() {
-        val testFloat = 0f // is internally 0.0
-        assertThat(testFloat.formatTwoDecimalPlaces()).isEqualTo("0.00")
-    }
-
-    @Test
-    fun testFormatTwoDecimalPlaces_one() {
-        val testFloat = 1f // is internally 1.0
-        assertThat(testFloat.formatTwoDecimalPlaces()).isEqualTo("1.00")
+    fun `Format float, places have to be greater than 0f`() {
+        val testFloat = -2.4567f
+        val e = assertThrows(IllegalArgumentException::class.java) {
+            testFloat.format(places = -1, percentage = false)
+        }
+        assertThat(e).hasMessageThat().isEqualTo(FAILED_REQUIREMENT)
     }
 }
