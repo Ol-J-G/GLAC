@@ -44,4 +44,20 @@
     <string name="first_circle_position">First Circle Position</string>
     <string name="second_circle_position">Second Circle Position</string>
     <string name="angle">Angle</string>
+    <string name="character">Character</string>
+    <string name="invalid_char">Invalid Char</string>
+    <string name="between">Between</string>
+    <string name="hours">Hours</string>
+    <string name="minutes">Minutes</string>
+
+    <!-- Minutes abbreviation -->
+    <string name="min">Min</string>
+
+    <!-- Seconds abbreviation -->
+    <string name="sec">Sec</string>
+    <string name="caution">CAUTION!</string>
+    <string name="character_dividers_are_not_really_useful_in_portrait_mode">Character dividers are not really useful in portrait mode!</string>
+    <string name="line_dividers_have_been_selected_automatically_as_a_replacement">Line dividers have been selected automatically as a replacement!</string>
+    <string name="please_select_a_different_divider_style_to_make_further_settings">Please select a different divider style to make further settings.</string>
+    <string name="alternatively_rotate_your_device_to_set_up_character_dividers">(Alternatively, rotate your device to set up character dividers)</string>
 </resources>

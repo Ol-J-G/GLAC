@@ -56,7 +56,10 @@ data class DividerAttributes(
     val dividerDashDottedPartCount: Int = DEFAULT_DASH_DOTTED_PART_COUNT,
     val dividerRotateAngle: Float = 0f,
     val colonFirstCirclePosition: Float = DEFAULT_COLON_FIRST_CIRCLE_POSITION,
-    val colonSecondCirclePosition: Float = DEFAULT_COLON_SECOND_CIRCLE_POSITION
+    val colonSecondCirclePosition: Float = DEFAULT_COLON_SECOND_CIRCLE_POSITION,
+    val hoursMinutesDividerChar: Char = DEFAULT_HOURS_MINUTES_DIVIDER_CHAR,
+    val minutesSecondsDividerChar: Char = DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR,
+    val daytimeMarkerDividerChar: Char = DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR
 )
 
 

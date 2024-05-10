@@ -21,8 +21,6 @@ import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.DividerLineEnd
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.HideSystemBars
@@ -98,9 +96,9 @@ fun DigitalClockScreen(
 //            )
 //        ),
 
-    hoursMinutesDividerChar: Char = DEFAULT_HOURS_MINUTES_DIVIDER_CHAR,
-    minutesSecondsDividerChar: Char = DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR,
-    daytimeMarkerDividerChar: Char = '_',
+//    hoursMinutesDividerChar: Char = DEFAULT_HOURS_MINUTES_DIVIDER_CHAR,
+//    minutesSecondsDividerChar: Char = DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR,
+//    daytimeMarkerDividerChar: Char = '_',
 
 
 //    dividerAttributes: DividerAttributes = DividerAttributes(
@@ -178,19 +176,23 @@ fun DigitalClockScreen(
         dividerRotateAngle = dividerRotateAngle,
         colonFirstCirclePosition = clockSettings.colonFirstCirclePosition,
         colonSecondCirclePosition = clockSettings.colonSecondCirclePosition,
-        dividerColor = charColor
+        dividerColor = charColor,
+        hoursMinutesDividerChar = clockSettings.hoursMinutesDividerChar,
+        minutesSecondsDividerChar = clockSettings.minutesSecondsDividerChar,
+        daytimeMarkerDividerChar = clockSettings.daytimeMarkerDividerChar
     )
+
 
     val timePattern = buildString {
         if (clockSettings.showDaytimeMarker) append("hh") else append("HH")
-        append(hoursMinutesDividerChar)
+        append(clockSettings.hoursMinutesDividerChar)
         append("mm")
         if (clockSettings.showSeconds) {
-            append(minutesSecondsDividerChar)
+            append(clockSettings.minutesSecondsDividerChar)
             append("ss")
         }
         if (clockSettings.showDaytimeMarker) {
-            append(daytimeMarkerDividerChar)
+            append(clockSettings.daytimeMarkerDividerChar)
             append("a")
         }
     }
@@ -263,12 +265,12 @@ fun DigitalClockScreen(
     DigitalClock(
         previewMode = previewMode,
         onClick = onClick,
-        minutesSecondsDividerChar = minutesSecondsDividerChar,
-        hoursMinutesDividerChar = hoursMinutesDividerChar,
-        daytimeMarkerDividerChar = daytimeMarkerDividerChar,
+        hoursMinutesDividerChar = clockSettings.hoursMinutesDividerChar,
+        minutesSecondsDividerChar = clockSettings.minutesSecondsDividerChar,
+        daytimeMarkerDividerChar = clockSettings.daytimeMarkerDividerChar,
         fontFamily = finalFontFamily, // for measurement
-        fontWeight = finalFontWeight,
-        fontStyle = finalFontStyle,
+        fontWeight = finalFontWeight, // for measurement
+        fontStyle = finalFontStyle, // for measurement
         charColors = finalCharColors,
         clockPartsColors = clockPartsColors,
         dividerAttributes = dividerAttributes,

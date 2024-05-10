@@ -11,6 +11,7 @@ import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.clock.digital.ui.utils.isItalicOrReverseItalic
 import de.oljg.glac.core.util.FontStyle
 import de.oljg.glac.core.util.FontWeight
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.INVALID_DIVIDER_CHARS
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.PIXEL
 import java.text.DecimalFormatSymbols
 import java.util.Locale
@@ -28,8 +29,8 @@ fun Float.prettyPrintAngle() = this.formatOneDecimalPlace() + " °"
  * Note: String.format() still has no option to set roundingMode, so, implemented this function..
  */
 fun Float.formatOneDecimalPlace(): String { //TODO: maybe refactor to generic version with places: Int param
-   return (floor(this * 10) / 10).toString()
-       .replace('.', DecimalFormatSymbols.getInstance(Locale.getDefault()).decimalSeparator)
+    return (floor(this * 10) / 10).toString()
+        .replace('.', DecimalFormatSymbols.getInstance(Locale.getDefault()).decimalSeparator)
 }
 
 fun Float.prettyPrintPixel() = this.cutOffDecimalPlaces() + " " + PIXEL
@@ -58,7 +59,7 @@ fun Float.cutOffDecimalPlaces() = this.toString().substring(
 fun Float.formatTwoDecimalPlaces(): String {
     require(this in 0f..1f)
     val thisString = this.toString()
-    return if(thisString.length == 3)
+    return if (thisString.length == 3)
         thisString.substring(0, 3) + "0"
     else thisString.substring(0, 4)
 }
@@ -73,7 +74,7 @@ fun Float.formatTwoDecimalPlaces(): String {
  */
 fun Float.prettyPrintPercentage(postfix: String = " %"): String {
     val percentage = if (this == 1f) "100"
-    else this.formatTwoDecimalPlaces().replace(Regex("0[,.]0?"),"")
+    else this.formatTwoDecimalPlaces().replace(Regex("0[,.]0?"), "")
     return buildString {
         append(percentage)
         append(postfix)
@@ -96,6 +97,10 @@ fun String.prettyPrintEnumName(): String {
         }
     }
 }
+
+fun String.isValidDividerChar() = this.length == 1 &&
+        !this.toCharArray()[0].isLetterOrDigit() &&
+        this.toCharArray()[0] !in INVALID_DIVIDER_CHARS
 
 
 fun isSevenSegmentItalicOrReverseItalic(
@@ -142,6 +147,14 @@ object SettingsDefaults {
     val COLOR_PICKER_BORDER_WIDTH = 1.dp
     val COLOR_PICKER_BUTTON_SPACE = 0.dp
     const val COLOR_PICKER_FLASHING_COLOR_ANIM_DURATION = 825
+
+    /**
+     * DateTimeFormatter reserved chars and such ones that would lead to an incomplete
+     * string literal, etc. (in other words: these chars cannot be part of a time format string)
+     */
+    val INVALID_DIVIDER_CHARS = listOf('#', '{', '}', '\'', '[', ']', '™')
+    val CHAR_SELECTOR_TF_WIDTH = 120.dp
+    val CHAR_SELECTOR_TF_TOP_PADDING = 8.dp
 
     val FONT_WEIGHTS = FontWeight.entries.map { weight -> weight.name }
     val FONT_STYLES = FontStyle.entries.map { style -> style.name }

@@ -1,5 +1,6 @@
 package de.oljg.glac.settings.clock.ui.components.sections
 
+import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
@@ -40,6 +42,8 @@ import de.oljg.glac.clock.digital.ui.utils.isNeitherNoneNorChar
 import de.oljg.glac.clock.digital.ui.utils.isRotatable
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
+import de.oljg.glac.settings.clock.ui.components.CharDividerPortraitWarning
+import de.oljg.glac.settings.clock.ui.components.DividerCharSelector
 import de.oljg.glac.settings.clock.ui.components.DividerLineEndSelector
 import de.oljg.glac.settings.clock.ui.components.DividerStyleSelector
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
@@ -80,7 +84,8 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             onNewDividerStyleSelected = { newDividerStyle ->
                 coroutineScope.launch {
                     viewModel.updateClockSettings(
-                        clockSettings.copy(dividerStyle = newDividerStyle))
+                        clockSettings.copy(dividerStyle = newDividerStyle)
+                    )
                 }
             }
         )
@@ -135,7 +140,8 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
                                 clockSettings.copy(
-                                    dividerLengthPercentage = DEFAULT_DIVIDER_LENGTH_FACTOR)
+                                    dividerLengthPercentage = DEFAULT_DIVIDER_LENGTH_FACTOR
+                                )
                             )
                         }
                     }
@@ -195,7 +201,8 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
                                 clockSettings.copy(
-                                    dividerDashDottedPartCount = DEFAULT_DASH_DOTTED_PART_COUNT)
+                                    dividerDashDottedPartCount = DEFAULT_DASH_DOTTED_PART_COUNT
+                                )
                             )
                         }
                     }
@@ -214,22 +221,26 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                     onNewDividerLineEndSelected = { newLineEnd ->
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
-                                clockSettings.copy(dividerLineEnd = newLineEnd))
+                                clockSettings.copy(dividerLineEnd = newLineEnd)
+                            )
                         }
                     }
                 )
-                Spacer(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(DEFAULT_VERTICAL_SPACE / 2))
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(DEFAULT_VERTICAL_SPACE / 2)
+                )
             }
         }
 
         AnimatedVisibility(
             visible = DividerStyle.valueOf(clockSettings.dividerStyle).isRotatable() &&
-            !isSevenSegmentItalicOrReverseItalic(
-                ClockCharType.valueOf(clockSettings.clockCharType),
-                SevenSegmentStyle.valueOf(clockSettings.sevenSegmentStyle)
-            )
+                    LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE &&
+                    !isSevenSegmentItalicOrReverseItalic(
+                        ClockCharType.valueOf(clockSettings.clockCharType),
+                        SevenSegmentStyle.valueOf(clockSettings.sevenSegmentStyle)
+                    )
         ) {
             Column {
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
@@ -250,7 +261,8 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
                                 clockSettings.copy(
-                                    dividerRotateAngle = DEFAULT_DIVIDER_ROTATE_ANGLE)
+                                    dividerRotateAngle = DEFAULT_DIVIDER_ROTATE_ANGLE
+                                )
                             )
                         }
                     }
@@ -279,7 +291,8 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
                                 clockSettings.copy(
-                                    colonFirstCirclePosition = DEFAULT_COLON_FIRST_CIRCLE_POSITION)
+                                    colonFirstCirclePosition = DEFAULT_COLON_FIRST_CIRCLE_POSITION
+                                )
                             )
                         }
                     }
@@ -301,15 +314,77 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
                                 clockSettings.copy(
-                                    colonSecondCirclePosition = DEFAULT_COLON_SECOND_CIRCLE_POSITION)
+                                    colonSecondCirclePosition = DEFAULT_COLON_SECOND_CIRCLE_POSITION
+                                )
                             )
                         }
                     }
                 )
-                Spacer(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(DEFAULT_VERTICAL_SPACE / 2))
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(DEFAULT_VERTICAL_SPACE / 2)
+                )
             }
+        }
+
+        AnimatedVisibility(
+            visible = DividerStyle.valueOf(clockSettings.dividerStyle) == DividerStyle.CHAR &&
+                    LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+        ) {
+            Column {
+                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+                DividerCharSelector(
+                    title = stringResource(R.string.between) + " " +
+                            stringResource(R.string.hours) + " / " +
+                            stringResource(R.string.minutes),
+                    char = clockSettings.hoursMinutesDividerChar,
+                    onCharChanged = { newChar ->
+                        coroutineScope.launch {
+                            viewModel.updateClockSettings(
+                                clockSettings.copy(hoursMinutesDividerChar = newChar)
+                            )
+                        }
+                    }
+                )
+                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+                DividerCharSelector(
+                    title = stringResource(R.string.between) + " " +
+                            stringResource(R.string.minutes) + " / " +
+                            stringResource(R.string.seconds),
+                    char = clockSettings.minutesSecondsDividerChar,
+                    onCharChanged = { newChar ->
+                        coroutineScope.launch {
+                            viewModel.updateClockSettings(
+                                clockSettings.copy(minutesSecondsDividerChar = newChar)
+                            )
+                        }
+                    }
+                )
+                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+                DividerCharSelector(
+                    title = stringResource(R.string.between) + " " +
+                            stringResource(R.string.min) + ". | " +
+                            stringResource(R.string.sec) + ". / " +
+                            stringResource(R.string.daytime_marker),
+                    char = clockSettings.daytimeMarkerDividerChar,
+                    onCharChanged = { newChar ->
+                        coroutineScope.launch {
+                            viewModel.updateClockSettings(
+                                clockSettings.copy(daytimeMarkerDividerChar = newChar)
+                            )
+                        }
+                    }
+                )
+                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE / 2))
+            }
+        }
+
+        AnimatedVisibility(
+            visible = DividerStyle.valueOf(clockSettings.dividerStyle) == DividerStyle.CHAR &&
+                    LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+        ) {
+            CharDividerPortraitWarning()
         }
     }
 }
