@@ -56,6 +56,7 @@ data class ClockSettings(
     val daytimeMarkerDividerChar: Char = DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR,
 
     val charColor: Int? = null,
+    val dividerColor: Int? = null,
 
     val clockSettingsSectionPreviewIsExpanded: Boolean = false,
     val clockSettingsSectionDisplayIsExpanded: Boolean = false,

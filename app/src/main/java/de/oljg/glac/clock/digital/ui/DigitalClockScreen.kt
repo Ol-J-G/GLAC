@@ -176,7 +176,7 @@ fun DigitalClockScreen(
         dividerRotateAngle = dividerRotateAngle,
         colonFirstCirclePosition = clockSettings.colonFirstCirclePosition,
         colonSecondCirclePosition = clockSettings.colonSecondCirclePosition,
-        dividerColor = charColor,
+        dividerColor = Color(clockSettings.dividerColor ?: charColor.toArgb()),
         hoursMinutesDividerChar = clockSettings.hoursMinutesDividerChar,
         minutesSecondsDividerChar = clockSettings.minutesSecondsDividerChar,
         daytimeMarkerDividerChar = clockSettings.daytimeMarkerDividerChar

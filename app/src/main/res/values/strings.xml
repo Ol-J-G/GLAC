@@ -60,4 +60,5 @@
     <string name="line_dividers_have_been_selected_automatically_as_a_replacement">Line dividers have been selected automatically as a replacement!</string>
     <string name="please_select_a_different_divider_style_to_make_further_settings">Please select a different divider style to make further settings.</string>
     <string name="alternatively_rotate_your_device_to_set_up_character_dividers">(Alternatively, rotate your device to set up character dividers)</string>
+    <string name="dividers">Dividers</string>
 </resources>
