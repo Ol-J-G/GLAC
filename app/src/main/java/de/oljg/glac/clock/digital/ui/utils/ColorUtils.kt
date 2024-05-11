@@ -3,8 +3,8 @@ package de.oljg.glac.clock.digital.ui.utils
 import androidx.compose.ui.graphics.Color
 import com.smarttoolfactory.extendedcolors.model.ColorItem
 import com.smarttoolfactory.extendedcolors.util.HSLUtil
-import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.CLOCK_CHARS
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.SEVEN_SEGMENT_CHARS
+import de.oljg.glac.core.util.CommonClockUtils.CLOCK_CHARS
 
 data class ClockPartsColors(
     override val hours: DigitPairColor,
@@ -36,13 +36,12 @@ data class ClockPartsColors(
     )
 }
 
-
 fun defaultClockCharColors(charColor: Color): Map<Char, Color> {
     return buildMap {
         CLOCK_CHARS.forEach { char ->
             put(char, charColor)
         }
-    }.toMap()
+    }
 }
 
 

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -26,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import de.oljg.glac.R
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_SELECTOR_COLOR_SWATCH_SIZE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_SELECTOR_HEIGHT
@@ -61,7 +59,7 @@ fun ColorSelector(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(title)
+        Text(title) //TODO: add reset to default similar as in divider settings
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(
@@ -88,8 +86,6 @@ fun ColorSelector(
                         )
                 },
                 singleLine = true,
-
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
 
             )
             Box(modifier = Modifier

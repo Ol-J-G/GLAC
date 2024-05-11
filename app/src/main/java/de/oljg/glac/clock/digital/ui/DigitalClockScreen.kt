@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.clock.digital.ui.components.SevenSegmentChar
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
-import de.oljg.glac.clock.digital.ui.utils.ClockDefaults
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
 import de.oljg.glac.clock.digital.ui.utils.DividerLineEnd
@@ -47,15 +46,7 @@ fun DigitalClockScreen(
     previewMode: Boolean = false,
     onClick: () -> Unit = {},
 
-//    showSeconds: Boolean = true,
-//    showDaytimeMarker: Boolean = true,
-
-
-//    clockCharSizeFactor: Float = DEFAULT_CLOCK_DIGIT_SIZE_FACTOR,
-//    daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
-
-//    charColor: Color = MaterialTheme.colorScheme.onSurface,
-    charColors: Map<Char, Color> = emptyMap(),
+//    charColors: Map<Char, Color> = //emptyMap(),
 //        mapOf(
 //            Pair('0', Color.Yellow),
 //            Pair('1', Color.Red),
@@ -96,30 +87,6 @@ fun DigitalClockScreen(
 //            )
 //        ),
 
-//    hoursMinutesDividerChar: Char = DEFAULT_HOURS_MINUTES_DIVIDER_CHAR,
-//    minutesSecondsDividerChar: Char = DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR,
-//    daytimeMarkerDividerChar: Char = '_',
-
-
-//    dividerAttributes: DividerAttributes = DividerAttributes(
-//        dividerStyle = DividerStyle.LINE,
-////        dividerDashCount = 5,
-////        dividerLineCap = StrokeCap.Butt,
-////        dividerThickness = Dp.Unspecified,
-////        dividerPadding = Dp.Unspecified,
-//        dividerColor = charColor,
-////        dividerLengthPercent = .5f,
-////        dividerDashDottedPartCount = 3
-//    ),
-
-//    clockCharType: ClockCharType = ClockCharType.FONT,
-//    fontFamily: FontFamily = FontFamily.SansSerif,
-//    fontWeight: FontWeight = FontWeight.Normal,
-//    fontStyle: FontStyle = FontStyle.Normal,
-
-//    sevenSegmentStyle: SevenSegmentStyle = SevenSegmentStyle.REGULAR,
-//    sevenSegmentWeight: SevenSegmentWeight = SevenSegmentWeight.REGULAR,
-//    sevenSegmentOutlineStrokeWidth: Float? = null,
     segmentColors: Map<Segment, Color> = emptyMap(),
 //        mapOf(
 //            Pair(Segment.TOP, Color.Yellow),
@@ -151,18 +118,18 @@ fun DigitalClockScreen(
     // In case of 7-seg italic style and only in landscape o. => rotate divider appropriately
     val currentSevenSegmentStyle = SevenSegmentStyle.valueOf(clockSettings.sevenSegmentStyle)
     val dividerRotateAngle =
-        if (isSevenSegmentItalicOrReverseItalic(clockCharType, currentSevenSegmentStyle))
-            evaluateDividerRotateAngle(currentSevenSegmentStyle)
+            if (isSevenSegmentItalicOrReverseItalic(clockCharType, currentSevenSegmentStyle))
+                evaluateDividerRotateAngle(currentSevenSegmentStyle)
 
-        /**
-         * Actually no need to rotate dividers with ClockCharType.FONT, but in case of italic
-         * fonts, they have unknown/different italic angles, so, let user set it up, just according
-         * to some imported font.
-         */
-        else clockSettings.dividerRotateAngle
+            /**
+             * Actually no need to rotate dividers with ClockCharType.FONT, but in case of italic
+             * fonts, they have unknown/different italic angles, so, let user set it up, just according
+             * to some imported font.
+             */
+            else clockSettings.dividerRotateAngle
 
     val charColor =
-        Color(clockSettings.charColor ?: MaterialTheme.colorScheme.onSurface.toArgb())
+            Color(clockSettings.charColor ?: MaterialTheme.colorScheme.onSurface.toArgb())
 
     val dividerAttributes = DividerAttributes(
         dividerStyle = DividerStyle.valueOf(clockSettings.dividerStyle),
@@ -204,14 +171,14 @@ fun DigitalClockScreen(
 
     val currentTimeFormatted =
 
-        /**
-         * Just show 'A' or 'P' instead of "AM"/"PM" in case of 7-segment.
-         * => cut off 'M', which is always the last char...
-         */
-        if (clockCharType == ClockCharType.SEVEN_SEGMENT && clockSettings.showDaytimeMarker)
-            formatter.format(currentTime).dropLast(1)
-        else
-            formatter.format(currentTime)
+            /**
+             * Just show 'A' or 'P' instead of "AM"/"PM" in case of 7-segment.
+             * => cut off 'M', which is always the last char...
+             */
+            if (clockCharType == ClockCharType.SEVEN_SEGMENT && clockSettings.showDaytimeMarker)
+                formatter.format(currentTime).dropLast(1)
+            else
+                formatter.format(currentTime)
 
     LaunchedEffect(key1 = currentTime) {
 
@@ -239,8 +206,8 @@ fun DigitalClockScreen(
          * second/minute starts
          */
         val delayMillis =
-            if (clockSettings.showSeconds || previewMode) 1000L - (currentTime.nano / 1000000).toLong()
-            else 1000L * 60 - (currentTime.second * 1000L) - (currentTime.nano / 1000000).toLong()
+                if (clockSettings.showSeconds || previewMode) 1000L - (currentTime.nano / 1000000).toLong()
+                else 1000L * 60 - (currentTime.second * 1000L) - (currentTime.nano / 1000000).toLong()
         delay(delayMillis)
         currentTime = LocalTime.now()
 //        Log.d(
@@ -249,18 +216,14 @@ fun DigitalClockScreen(
 //        )
     }
 
-    /**
-     * Only allow to set colors for valid chars (others make no sense,
-     * since they're not in use..)
-     */
-    charColors.keys.forEach { char ->
-        if (char !in ClockDefaults.CLOCK_CHARS)
-            throw IllegalArgumentException(
-                "'$char' is not a valid clock character! Valid: ${ClockDefaults.CLOCK_CHARS}"
-            )
-    }
+    val charColors = if(clockSettings.setColorsPerChar) buildMap {
+        clockSettings.charColors.forEach { entry ->
+            put(entry.key, Color(entry.value))
+        }
+    } else emptyMap()
+
     val finalCharColors =
-        setSpecifiedColors(charColors, defaultClockCharColors(charColor))
+            setSpecifiedColors(charColors, defaultClockCharColors(charColor))
 
     DigitalClock(
         previewMode = previewMode,

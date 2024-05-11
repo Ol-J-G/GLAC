@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.SEGMENT_CHARS_MAP
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.SEVEN_SEGMENT_CHARS
+import de.oljg.glac.core.util.CommonClockUtils.DIGIT_CHARS
 import kotlin.math.atan
 
 enum class Segment {
@@ -175,7 +176,7 @@ fun calculateMaxCharSizeSevenSegment(
 // @formatter:off
 object SevenSegmentDefaults {
     private val SEVEN_SEGMENT_DAYTIME_MARKER_CHARS = listOf('A', 'P')
-    val SEVEN_SEGMENT_CHARS = ClockDefaults.DIGIT_CHARS + SEVEN_SEGMENT_DAYTIME_MARKER_CHARS
+    val SEVEN_SEGMENT_CHARS = DIGIT_CHARS + SEVEN_SEGMENT_DAYTIME_MARKER_CHARS
 
     // Which char contains which segement
     val SEGMENT_CHARS_MAP = mapOf(

@@ -5,6 +5,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -18,6 +20,7 @@ import de.oljg.glac.R
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.ColorSelector
+import de.oljg.glac.settings.clock.ui.components.ColorsPerCharSelector
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import kotlinx.coroutines.launch
@@ -52,7 +55,9 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 viewModel.updateClockSettings(clockSettings.copy(charColor = newColor.toArgb()))
             }
         }
-        Spacer(modifier = Modifier.fillMaxWidth().height(DEFAULT_VERTICAL_SPACE / 2))
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .height(DEFAULT_VERTICAL_SPACE / 2))
         ColorSelector(
             title = stringResource(R.string.dividers),
             color = Color(color =
@@ -64,7 +69,7 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 viewModel.updateClockSettings(clockSettings.copy(dividerColor = newColor.toArgb()))
             }
         }
-
-
+        Divider(modifier = Modifier.padding(top = DEFAULT_VERTICAL_SPACE))
+        ColorsPerCharSelector()
     }
 }

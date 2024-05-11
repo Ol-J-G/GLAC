@@ -21,6 +21,8 @@ import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.core.util.FontStyle
 import de.oljg.glac.core.util.FontWeight
+import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -55,8 +57,12 @@ data class ClockSettings(
     val minutesSecondsDividerChar: Char = DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR,
     val daytimeMarkerDividerChar: Char = DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR,
 
-    val charColor: Int? = null,
+    val charColor: Int? = null, //TODO: maybe write ColorToColorIntSerializer?
     val dividerColor: Int? = null,
+    val setColorsPerChar: Boolean = false,
+
+    @Serializable(with = CharColorsSerializer::class)
+    val charColors: PersistentMap<Char, Int> = persistentMapOf(),
 
     val clockSettingsSectionPreviewIsExpanded: Boolean = false,
     val clockSettingsSectionDisplayIsExpanded: Boolean = false,

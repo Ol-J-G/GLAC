@@ -1,7 +1,7 @@
 package de.oljg.glac.clock.digital.ui.utils
 
 import androidx.compose.ui.unit.dp
-import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DAYTIME_MARKER_CHARS
+import de.oljg.glac.core.util.CommonClockUtils.DAYTIME_MARKER_CHARS
 
 
 enum class ClockCharType {
@@ -43,13 +43,6 @@ object ClockDefaults {
     // Should be the widest digit in most non-monospace fonts
     const val WIDEST_DIGIT: Char = '8'
 
-    /**
-     * E.g. used to set colors per char.
-     * Without divider chars (they have an own color property)
-     */
-    val DIGIT_CHARS = listOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
-    val DAYTIME_MARKER_CHARS = listOf('A', 'P', 'M')
-    val CLOCK_CHARS = DIGIT_CHARS + DAYTIME_MARKER_CHARS
 
     val DEFAULT_CLOCK_PADDING = 0.dp
 
