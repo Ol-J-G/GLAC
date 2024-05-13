@@ -12,6 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.RestartAlt
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -26,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_SELECTOR_COLOR_SWATCH_SIZE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_SELECTOR_HEIGHT
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_SELECTOR_HEX_TEXTFIELD_WIDTH
@@ -40,6 +45,8 @@ import de.oljg.glac.settings.clock.ui.utils.isArgbHexCode
 fun ColorSelector(
     title: String,
     color: Color,
+    defaultColor: Color,
+    onResetColor: () -> Unit,
     onColorChanged: (Color) -> Unit
 ) {
     var showColorPicker by remember {
@@ -51,7 +58,9 @@ fun ColorSelector(
     var isValidInput by remember {
         mutableStateOf(true)
     }
-
+    var showResetButton by remember(color) {
+        mutableStateOf(color != defaultColor)
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -59,7 +68,28 @@ fun ColorSelector(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(title) //TODO: add reset to default similar as in divider settings
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(
+                COLOR_SELECTOR_TF_COLOR_SWATCH_SPACE, Alignment.Start
+            )
+        ) {
+            Text(title)
+            AnimatedVisibility(visible = showResetButton) {
+                IconButton(onClick = {
+                    onResetColor.invoke()
+                    showResetButton = false
+                }) {
+                    Icon(
+                        modifier = Modifier.size(SettingsDefaults.RESET_BUTTON_SIZE),
+                        imageVector = Icons.Filled.RestartAlt,
+                        contentDescription = stringResource(R.string.reset) +
+                                " " + stringResource(R.string.color_for) + " $title",
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            }
+        }
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(
@@ -75,7 +105,10 @@ fun ColorSelector(
                 onValueChange = { newValue ->
                     textFieldInput = newValue
                     isValidInput = textFieldInput.isArgbHexCode()
-                    if (isValidInput) onColorChanged(Color.fromHexCode(textFieldInput))
+                    if (isValidInput) {
+                        onColorChanged(Color.fromHexCode(textFieldInput))
+                        showResetButton = true
+                    }
                 },
                 supportingText = {
                     if (!isValidInput)
@@ -100,6 +133,7 @@ fun ColorSelector(
         ColorPickerDialog(onDismissRequest = { showColorPicker = false }) { newColor, newHexCode ->
             onColorChanged(newColor)
             textFieldInput = newHexCode
+            showResetButton = true
         }
     }
 }

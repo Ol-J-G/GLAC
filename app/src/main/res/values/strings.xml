@@ -62,4 +62,5 @@
     <string name="alternatively_rotate_your_device_to_set_up_character_dividers">(Alternatively, rotate your device to set up character dividers)</string>
     <string name="dividers">Dividers</string>
     <string name="set_color_per_character">Set Color Per Character</string>
+    <string name="color_for">color for</string>
 </resources>

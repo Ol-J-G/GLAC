@@ -28,20 +28,20 @@ import kotlin.math.pow
  * Note: String.format() still has no option to set roundingMode, so, implemented this function..
  */
 fun Float.format(places: Int, percentage: Boolean = false): String {
-    if(percentage && places != 2)
+    if (percentage && places != 2)
         throw IllegalArgumentException(PERCENTAGE_ONLY_2_PLACES)
 
-    if(percentage && this !in 0f..1f)
+    if (percentage && this !in 0f..1f)
         throw IllegalArgumentException(FLOAT_PERCENTAGE_BETWEEN_ZERO_ONE)
 
-    if(places == 0) return this.cutOffDecimalPlaces()
+    if (places == 0) return this.cutOffDecimalPlaces()
     require(places > 0)
 
     val factor = 10f.pow(places)
     val result = (floor(this * factor) / factor).toString()
     return buildString {
         append(result)
-        if(result.length == 3 && percentage) append("0") // e.g. 0.9 => "0.9>0<"
+        if (result.length == 3 && percentage) append("0") // e.g. 0.9 => "0.9>0<"
     }
 
 }

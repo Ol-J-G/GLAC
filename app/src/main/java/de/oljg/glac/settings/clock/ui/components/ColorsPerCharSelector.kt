@@ -59,13 +59,22 @@ fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                         clockSettings.charColors.getOrDefault(
                             key = clockChar,
                             defaultValue = clockSettings.charColor ?: defaultCharColor
-
                     ),
-                ) { newColor ->
+                    defaultColor = clockSettings.charColor ?: defaultCharColor,
+                    onResetColor = {
+                        coroutineScope.launch {
+                            viewModel.updateClockSettings(
+                                clockSettings.copy(
+                                    charColors = clockSettings.charColors.remove(clockChar)
+                                )
+                            )
+                        }
+                    }
+                ) { selectedColor ->
                     coroutineScope.launch {
                         viewModel.updateClockSettings(
                             clockSettings.copy(
-                                charColors = clockSettings.charColors.put(clockChar, newColor)
+                                charColors = clockSettings.charColors.put(clockChar, selectedColor)
                             )
                         )
                     }

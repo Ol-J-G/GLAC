@@ -47,10 +47,16 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     ) {
         ColorSelector(
             title = stringResource(id = R.string.characters),
-            color = clockSettings.charColor ?: defaultCharColor
-        ) { newColor ->
+            color = clockSettings.charColor ?: defaultCharColor,
+            defaultColor = defaultCharColor,
+            onResetColor = {
+                coroutineScope.launch {
+                    viewModel.updateClockSettings(clockSettings.copy(charColor = null))
+                }
+            }
+        ) { selectedColor ->
             coroutineScope.launch {
-                viewModel.updateClockSettings(clockSettings.copy(charColor = newColor))
+                viewModel.updateClockSettings(clockSettings.copy(charColor = selectedColor))
             }
         }
         Spacer(modifier = Modifier
@@ -59,9 +65,15 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
         ColorSelector(
             title = stringResource(R.string.dividers),
             color = clockSettings.dividerColor ?: clockSettings.charColor ?: defaultCharColor,
-        ) { newColor ->
+            defaultColor = clockSettings.charColor ?: defaultCharColor,
+            onResetColor = {
+                coroutineScope.launch {
+                    viewModel.updateClockSettings(clockSettings.copy(dividerColor = null))
+                }
+            },
+        ) { selectedColor ->
             coroutineScope.launch {
-                viewModel.updateClockSettings(clockSettings.copy(dividerColor = newColor))
+                viewModel.updateClockSettings(clockSettings.copy(dividerColor = selectedColor))
             }
         }
         Divider(modifier = Modifier.padding(top = DEFAULT_VERTICAL_SPACE))
