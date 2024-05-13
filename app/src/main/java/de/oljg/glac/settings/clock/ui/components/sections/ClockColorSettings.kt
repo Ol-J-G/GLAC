@@ -12,8 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
@@ -49,10 +47,10 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     ) {
         ColorSelector(
             title = stringResource(id = R.string.characters),
-            color = Color(clockSettings.charColor ?: defaultCharColor.toArgb()),
+            color = clockSettings.charColor ?: defaultCharColor
         ) { newColor ->
             coroutineScope.launch {
-                viewModel.updateClockSettings(clockSettings.copy(charColor = newColor.toArgb()))
+                viewModel.updateClockSettings(clockSettings.copy(charColor = newColor))
             }
         }
         Spacer(modifier = Modifier
@@ -60,13 +58,10 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             .height(DEFAULT_VERTICAL_SPACE / 2))
         ColorSelector(
             title = stringResource(R.string.dividers),
-            color = Color(color =
-                clockSettings.dividerColor ?:
-                clockSettings.charColor ?:
-                defaultCharColor.toArgb()),
+            color = clockSettings.dividerColor ?: clockSettings.charColor ?: defaultCharColor,
         ) { newColor ->
             coroutineScope.launch {
-                viewModel.updateClockSettings(clockSettings.copy(dividerColor = newColor.toArgb()))
+                viewModel.updateClockSettings(clockSettings.copy(dividerColor = newColor))
             }
         }
         Divider(modifier = Modifier.padding(top = DEFAULT_VERTICAL_SPACE))

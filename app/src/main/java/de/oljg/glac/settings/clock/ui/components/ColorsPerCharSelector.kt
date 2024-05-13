@@ -14,8 +14,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
@@ -57,20 +55,17 @@ fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             CLOCK_CHARS.forEach { clockChar ->
                 ColorSelector(
                     title = clockChar.toString(),
-                    color = Color(
+                    color =
                         clockSettings.charColors.getOrDefault(
                             key = clockChar,
-                            defaultValue = clockSettings.charColor ?: defaultCharColor.toArgb()
-                        )
+                            defaultValue = clockSettings.charColor ?: defaultCharColor
+
                     ),
                 ) { newColor ->
                     coroutineScope.launch {
                         viewModel.updateClockSettings(
                             clockSettings.copy(
-                                charColors = clockSettings.charColors.put(
-                                    clockChar,
-                                    newColor.toArgb()
-                                )
+                                charColors = clockSettings.charColors.put(clockChar, newColor)
                             )
                         )
                     }

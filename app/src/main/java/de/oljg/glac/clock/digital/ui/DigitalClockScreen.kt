@@ -13,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.clock.digital.ui.components.SevenSegmentChar
@@ -128,8 +127,10 @@ fun DigitalClockScreen(
              */
             else clockSettings.dividerRotateAngle
 
-    val charColor =
-            Color(clockSettings.charColor ?: MaterialTheme.colorScheme.onSurface.toArgb())
+//    val charColor =
+//            Color(clockSettings.charColor ?: MaterialTheme.colorScheme.onSurface.toArgb())
+    val charColor = clockSettings.charColor ?: MaterialTheme.colorScheme.onSurface
+
 
     val dividerAttributes = DividerAttributes(
         dividerStyle = DividerStyle.valueOf(clockSettings.dividerStyle),
@@ -143,7 +144,7 @@ fun DigitalClockScreen(
         dividerRotateAngle = dividerRotateAngle,
         colonFirstCirclePosition = clockSettings.colonFirstCirclePosition,
         colonSecondCirclePosition = clockSettings.colonSecondCirclePosition,
-        dividerColor = Color(clockSettings.dividerColor ?: charColor.toArgb()),
+        dividerColor = clockSettings.dividerColor ?: charColor,
         hoursMinutesDividerChar = clockSettings.hoursMinutesDividerChar,
         minutesSecondsDividerChar = clockSettings.minutesSecondsDividerChar,
         daytimeMarkerDividerChar = clockSettings.daytimeMarkerDividerChar
@@ -216,14 +217,8 @@ fun DigitalClockScreen(
 //        )
     }
 
-    val charColors = if(clockSettings.setColorsPerChar) buildMap {
-        clockSettings.charColors.forEach { entry ->
-            put(entry.key, Color(entry.value))
-        }
-    } else emptyMap()
-
-    val finalCharColors =
-            setSpecifiedColors(charColors, defaultClockCharColors(charColor))
+    val charColors = if(clockSettings.setColorsPerChar) clockSettings.charColors else emptyMap()
+    val finalCharColors = setSpecifiedColors(charColors, defaultClockCharColors(charColor))
 
     DigitalClock(
         previewMode = previewMode,

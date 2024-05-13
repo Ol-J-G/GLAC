@@ -1,6 +1,7 @@
 package de.oljg.glac.core.settings.data
 
 
+import androidx.compose.ui.graphics.Color
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_DIGIT_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
@@ -57,12 +58,16 @@ data class ClockSettings(
     val minutesSecondsDividerChar: Char = DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR,
     val daytimeMarkerDividerChar: Char = DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR,
 
-    val charColor: Int? = null, //TODO: maybe write ColorToColorIntSerializer?
-    val dividerColor: Int? = null,
+    @Serializable(with = ColorSerializer::class)
+    val charColor: Color? = null,
+
+    @Serializable(with = ColorSerializer::class)
+    val dividerColor: Color? = null,
     val setColorsPerChar: Boolean = false,
 
     @Serializable(with = CharColorsSerializer::class)
-    val charColors: PersistentMap<Char, Int> = persistentMapOf(),
+    val charColors: PersistentMap<Char, @Serializable(with = ColorSerializer::class) Color> =
+            persistentMapOf(),
 
     val clockSettingsSectionPreviewIsExpanded: Boolean = false,
     val clockSettingsSectionDisplayIsExpanded: Boolean = false,
