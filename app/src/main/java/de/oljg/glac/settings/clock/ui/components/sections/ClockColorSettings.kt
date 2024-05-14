@@ -5,8 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -59,9 +57,11 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 viewModel.updateClockSettings(clockSettings.copy(charColor = selectedColor))
             }
         }
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .height(DEFAULT_VERTICAL_SPACE / 2))
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(DEFAULT_VERTICAL_SPACE / 2)
+        )
         ColorSelector(
             title = stringResource(R.string.dividers),
             color = clockSettings.dividerColor ?: clockSettings.charColor ?: defaultCharColor,
@@ -76,7 +76,12 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 viewModel.updateClockSettings(clockSettings.copy(dividerColor = selectedColor))
             }
         }
-        Divider(modifier = Modifier.padding(top = DEFAULT_VERTICAL_SPACE))
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .height(DEFAULT_VERTICAL_SPACE))
         ColorsPerCharSelector()
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .height(DEFAULT_VERTICAL_SPACE / 2))
     }
 }
