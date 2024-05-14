@@ -39,6 +39,7 @@ import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.drawColorIndicator
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import de.oljg.glac.R
+import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_BORDER_WIDTH
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_BUTTON_SPACE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_DEFAULT_PADDING
@@ -54,7 +55,7 @@ fun ColorPickerDialog(
     val colorPickerController = rememberColorPickerController()
     val clipboardManager = LocalClipboardManager.current
 
-    val defaultOnSurfaceColor = MaterialTheme.colorScheme.onSurface
+    val defaultOnSurfaceColor = defaultColor()
     var selectedColor by remember {
         mutableStateOf(defaultOnSurfaceColor)
     }

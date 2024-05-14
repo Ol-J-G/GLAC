@@ -109,7 +109,6 @@ fun isSevenSegmentItalicOrReverseItalic(
     sevenSegmentStyle: SevenSegmentStyle
 ) = clockCharType == ClockCharType.SEVEN_SEGMENT && sevenSegmentStyle.isItalicOrReverseItalic()
 
-
 object SettingsDefaults {
     const val PREVIEW_SIZE_FACTOR = .3f
 

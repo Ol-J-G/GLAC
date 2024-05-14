@@ -35,6 +35,9 @@ import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_ASPECT_R
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_ITALIC_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_SEVEN_SEGMENT_CHAR_PADDING
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_STROKE_WIDTH
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.OFFCOLOR_LIGHTNESS_DELTA
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.OFFSEGMENT_OUTLINE_STROKE_WIDTH
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.SEVEN_SEGMENT_CHARS
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.WEIGHT_FACTOR_BLACK
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.WEIGHT_FACTOR_BOLD
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.WEIGHT_FACTOR_EXTRABOLD
@@ -44,9 +47,6 @@ import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.WEIGHT_FACTOR_ME
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.WEIGHT_FACTOR_REGULAR
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.WEIGHT_FACTOR_SEMIBOLD
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.WEIGHT_FACTOR_THIN
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.OFFCOLOR_LIGHTNESS_DELTA
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.OFFSEGMENT_OUTLINE_STROKE_WIDTH
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.SEVEN_SEGMENT_CHARS
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.clock.digital.ui.utils.contains
@@ -56,6 +56,7 @@ import de.oljg.glac.clock.digital.ui.utils.evaluateTransformationMatrix
 import de.oljg.glac.clock.digital.ui.utils.isSevenSegmentChar
 import de.oljg.glac.clock.digital.ui.utils.lighten
 import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
+import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.ui.theme.GLACTheme
 
 @Preview(
@@ -114,7 +115,7 @@ fun PreviewDigits() {
 fun SevenSegmentChar(
     modifier: Modifier = Modifier,
     char: Char,
-    charColor: Color = MaterialTheme.colorScheme.onSurface,
+    charColor: Color = defaultColor(),
     segmentColors: Map<Segment, Color> = emptyMap(),
     style: SevenSegmentStyle = SevenSegmentStyle.REGULAR,
     weight: SevenSegmentWeight = SevenSegmentWeight.REGULAR,

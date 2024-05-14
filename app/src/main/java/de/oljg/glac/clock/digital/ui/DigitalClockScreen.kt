@@ -2,7 +2,6 @@ package de.oljg.glac.clock.digital.ui
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,6 +30,7 @@ import de.oljg.glac.clock.digital.ui.utils.evaluateFont
 import de.oljg.glac.clock.digital.ui.utils.pxToDp
 import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
 import de.oljg.glac.core.settings.data.ClockSettings
+import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.utils.isSevenSegmentItalicOrReverseItalic
 import kotlinx.coroutines.delay
@@ -44,47 +44,6 @@ fun DigitalClockScreen(
     fullScreen: Boolean = false,
     previewMode: Boolean = false,
     onClick: () -> Unit = {},
-
-//    charColors: Map<Char, Color> = //emptyMap(),
-//        mapOf(
-//            Pair('0', Color.Yellow),
-//            Pair('1', Color.Red),
-//            Pair('2', Color.Green),
-//            Pair('3', Color.Blue),
-//            Pair('4', Color.Cyan),
-//            Pair('5', Color.Magenta),
-//            Pair('6', Color.Yellow.copy(alpha = .5f)),
-//            Pair('7', Color.Red.copy(alpha = .5f)),
-//            Pair('8', Color.Green.copy(alpha = .5f)),
-//            Pair('9', Color.Blue.copy(alpha = .5f)),
-//            Pair('A', Color.Cyan.copy(alpha = .5f)),
-//            Pair('P', Color.Magenta.copy(alpha = .5f)),
-//            Pair('M', Color.Yellow.copy(alpha = .3f)),
-//        ),
-    clockPartsColors: ClockPartsColors? = null,
-//        ClockPartsColors(
-//            hours = ClockPartsColors.DigitPairColor(
-//                tens = Color.Green,
-//                ones = Color.Green.copy(alpha = .5f)
-//            ),
-//            minutes = ClockPartsColors.DigitPairColor(
-//                tens = Color.Yellow,
-//                ones = Color.Yellow.copy(alpha = .5f)
-//            ),
-//            seconds = ClockPartsColors.DigitPairColor(
-//                tens = Color.Red,
-//                ones = Color.Red.copy(alpha = .5f)
-//            ),
-//            daytimeMarker = ClockPartsColors.DaytimeMarkerColor(
-//                anteOrPost = Color.White,
-//                meridiem = Color.Gray
-//            ),
-//            dividers = ClockPartsColors.DividerColor(
-//                hoursMinutes = Color.Red,
-//                minutesSeconds = Color.Yellow,
-//                daytimeMarker = Color.Green
-//            )
-//        ),
 
     segmentColors: Map<Segment, Color> = emptyMap(),
 //        mapOf(
@@ -127,10 +86,28 @@ fun DigitalClockScreen(
              */
             else clockSettings.dividerRotateAngle
 
-//    val charColor =
-//            Color(clockSettings.charColor ?: MaterialTheme.colorScheme.onSurface.toArgb())
-    val charColor = clockSettings.charColor ?: MaterialTheme.colorScheme.onSurface
-
+    /**
+     * Clock character colors will be drawn layer-like as follows:
+     *
+     * defaultColor()
+     * < charColor (one colors for all chars)
+     * < charColors (one color for each char, e.g. '1' will be red, ...)
+     * < clockPartColors (one color per clock part, e.g. minutes (tens and/or ones) will be red)
+     * (< segmentColors) (one color for each of the 7-segments)
+     *
+     * This means, it can be mixed in some way. e.g you can configure a clock with
+     * * all chars gray
+     * * hours red
+     * * minutes yellow
+     * * different green toned colors for 0-9, where seconds will cycle those colors
+     * * while AM/PM will be gray, because they're unset, so default all chars grey will be drawn
+     * ...
+     */
+    val charColor = clockSettings.charColor ?: defaultColor()
+    val charColors = if(clockSettings.setColorsPerChar) clockSettings.charColors else emptyMap()
+    val finalCharColors = setSpecifiedColors(charColors, defaultClockCharColors(charColor))
+    val finalClockPartsColors = if (clockSettings.setColorsPerClockPart)
+        clockSettings.clockPartsColors else ClockPartsColors()
 
     val dividerAttributes = DividerAttributes(
         dividerStyle = DividerStyle.valueOf(clockSettings.dividerStyle),
@@ -149,7 +126,6 @@ fun DigitalClockScreen(
         minutesSecondsDividerChar = clockSettings.minutesSecondsDividerChar,
         daytimeMarkerDividerChar = clockSettings.daytimeMarkerDividerChar
     )
-
 
     val timePattern = buildString {
         if (clockSettings.showDaytimeMarker) append("hh") else append("HH")
@@ -217,9 +193,6 @@ fun DigitalClockScreen(
 //        )
     }
 
-    val charColors = if(clockSettings.setColorsPerChar) clockSettings.charColors else emptyMap()
-    val finalCharColors = setSpecifiedColors(charColors, defaultClockCharColors(charColor))
-
     DigitalClock(
         previewMode = previewMode,
         onClick = onClick,
@@ -230,7 +203,7 @@ fun DigitalClockScreen(
         fontWeight = finalFontWeight, // for measurement
         fontStyle = finalFontStyle, // for measurement
         charColors = finalCharColors,
-        clockPartsColors = clockPartsColors,
+        clockPartsColors = finalClockPartsColors,
         dividerAttributes = dividerAttributes,
         currentTimeFormatted = currentTimeFormatted,
         clockCharType = clockCharType,

@@ -4,35 +4,52 @@ import androidx.compose.ui.graphics.Color
 import com.smarttoolfactory.extendedcolors.model.ColorItem
 import com.smarttoolfactory.extendedcolors.util.HSLUtil
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.SEVEN_SEGMENT_CHARS
+import de.oljg.glac.core.settings.data.ColorSerializer
 import de.oljg.glac.core.util.CommonClockUtils.CLOCK_CHARS
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ClockPartsColors(
-    override val hours: DigitPairColor,
-    override val minutes: DigitPairColor,
-    override val seconds: DigitPairColor,
-    override val daytimeMarker: DaytimeMarkerColor,
-    val dividers: DividerColor
+    override val hours: DigitPairColor? = null,
+    override val minutes: DigitPairColor? = null,
+    override val seconds: DigitPairColor? = null,
+    override val daytimeMarker: DaytimeMarkerColor? = null,
+    val dividers: DividerColor? = null
 ) : ClockParts<Color> {
+    @Serializable
     data class DigitPairColor(
-        override val ones: Color,
-        override val tens: Color
+
+        @Serializable(with = ColorSerializer::class)
+        override val ones: Color? = null,
+
+        @Serializable(with = ColorSerializer::class)
+        override val tens: Color? = null
     ) : DigitPair<Color>
 
+    @Serializable
     data class DaytimeMarkerColor( // AM/PM
-        override val anteOrPost: Color, // 'A' or 'P'
-        override val meridiem: Color // 'M'
+
+        @Serializable(with = ColorSerializer::class)
+        override val anteOrPost: Color? = null, // 'A' or 'P'
+
+        @Serializable(with = ColorSerializer::class)
+        override val meridiem: Color? = null // 'M'
     ) : DaytimeMarker<Color>
 
+    @Serializable
     data class DividerColor(
 
         // Color for divider between hours and minutes
-        val hoursMinutes: Color,
+        @Serializable(with = ColorSerializer::class)
+        val hoursMinutes: Color? = null,
 
         // Color for divider between minutes and seconds/daytime marker
-        val minutesSeconds: Color,
+        @Serializable(with = ColorSerializer::class)
+        val minutesSeconds: Color? = null,
 
         // Color for divider between minutes/secondes and daytime marker
-        val daytimeMarker: Color
+        @Serializable(with = ColorSerializer::class)
+        val daytimeMarker: Color? = null
     )
 }
 

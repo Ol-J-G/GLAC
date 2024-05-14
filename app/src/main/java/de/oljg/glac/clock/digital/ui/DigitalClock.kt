@@ -35,6 +35,7 @@ import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DAYTIME_MARKE
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
+import de.oljg.glac.core.util.defaultColor
 
 @Composable
 fun DigitalClock(
@@ -47,11 +48,11 @@ fun DigitalClock(
     fontWeight: FontWeight = FontWeight.Normal,
     fontStyle: FontStyle = FontStyle.Normal,
     dividerAttributes: DividerAttributes =
-        DividerAttributes(dividerColor = MaterialTheme.colorScheme.onSurface),
+        DividerAttributes(dividerColor = defaultColor()),
     currentTimeFormatted: String,
     clockCharType: ClockCharType = ClockCharType.FONT,
-    charColors: Map<Char, Color> = defaultClockCharColors(MaterialTheme.colorScheme.onSurface),
-    clockPartsColors: ClockPartsColors? = null,
+    charColors: Map<Char, Color> = defaultClockCharColors(defaultColor()),
+    clockPartsColors: ClockPartsColors = ClockPartsColors(),
     digitSizeFactor: Float = DEFAULT_CLOCK_DIGIT_SIZE_FACTOR,
     daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
     clockChar: @Composable (Char, TextUnit, Color, DpSize) -> Unit

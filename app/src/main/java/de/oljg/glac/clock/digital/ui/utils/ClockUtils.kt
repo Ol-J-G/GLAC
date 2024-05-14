@@ -16,18 +16,18 @@ fun Char.isDaytimeMarkerChar(): Boolean {
 
 
 interface ClockParts<T> {
-    val hours: DigitPair<T>
-    val minutes: DigitPair<T>
-    val seconds: DigitPair<T>
-    val daytimeMarker: DaytimeMarker<T>
+    val hours: DigitPair<T>?
+    val minutes: DigitPair<T>?
+    val seconds: DigitPair<T>?
+    val daytimeMarker: DaytimeMarker<T>?
 }
 interface DigitPair<T> {
-    val ones: T
-    val tens: T
+    val ones: T?
+    val tens: T?
 }
 interface DaytimeMarker<T> {
-    val anteOrPost: T
-    val meridiem: T
+    val anteOrPost: T?
+    val meridiem: T?
 }
 
 

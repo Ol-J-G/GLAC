@@ -19,32 +19,31 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import de.oljg.glac.R
 import de.oljg.glac.core.settings.data.ClockSettings
-import de.oljg.glac.core.util.CommonClockUtils.CLOCK_CHARS
-import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
-import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
+import de.oljg.glac.settings.clock.ui.components.color.clockparts.HoursOnesColorSelector
+import de.oljg.glac.settings.clock.ui.components.color.clockparts.HoursTensColorSelector
+import de.oljg.glac.settings.clock.ui.components.color.clockparts.MinutesOnesColorSelector
+import de.oljg.glac.settings.clock.ui.components.color.clockparts.MinutesTensColorSelector
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_BORDER_WIDTH
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_ROUNDED_CORNER_SIZE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SECTION_HEIGHT
 import kotlinx.coroutines.launch
 
 @Composable
-fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
+fun ColorsPerClockPartSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val coroutineScope = rememberCoroutineScope()
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
     ).value
-    val defaultCharColor = defaultColor()
 
     Surface(
         modifier = Modifier
             .border(
-                width = SettingsDefaults.DEFAULT_BORDER_WIDTH,
+                width = DEFAULT_BORDER_WIDTH,
                 color = MaterialTheme.colorScheme.outlineVariant,
                 shape = RoundedCornerShape(DEFAULT_ROUNDED_CORNER_SIZE)
             )
@@ -58,53 +57,29 @@ fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(stringResource(R.string.color_per_character))
+                Text("Colors per Clock Part")
                 Switch(
-                    checked = clockSettings.setColorsPerChar,
+                    checked = clockSettings.setColorsPerClockPart,
                     onCheckedChange = {
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
-                                clockSettings.copy(setColorsPerChar = !clockSettings.setColorsPerChar)
+                                clockSettings.copy(
+                                    setColorsPerClockPart = !clockSettings.setColorsPerClockPart)
                             )
                         }
                     }
                 )
             }
 
-            AnimatedVisibility(visible = clockSettings.setColorsPerChar) {
+            AnimatedVisibility(visible = clockSettings.setColorsPerClockPart) {
                 Column {
                     Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
-                    CLOCK_CHARS.forEach { clockChar ->
-                        ColorSelector(
-                            title = clockChar.toString(),
-                            color =
-                            clockSettings.charColors.getOrDefault(
-                                key = clockChar,
-                                defaultValue = clockSettings.charColor ?: defaultCharColor
-                            ),
-                            defaultColor = clockSettings.charColor ?: defaultCharColor,
-                            onResetColor = {
-                                coroutineScope.launch {
-                                    viewModel.updateClockSettings(
-                                        clockSettings.copy(
-                                            charColors = clockSettings.charColors.remove(clockChar)
-                                        )
-                                    )
-                                }
-                            }
-                        ) { selectedColor ->
-                            coroutineScope.launch {
-                                viewModel.updateClockSettings(
-                                    clockSettings.copy(
-                                        charColors = clockSettings.charColors.put(
-                                            clockChar,
-                                            selectedColor
-                                        )
-                                    )
-                                )
-                            }
-                        }
-                    }
+                    HoursTensColorSelector()
+                    HoursOnesColorSelector()
+                    MinutesTensColorSelector()
+                    MinutesOnesColorSelector()
+
+
                 }
             }
         }

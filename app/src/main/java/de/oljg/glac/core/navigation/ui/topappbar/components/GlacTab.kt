@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,10 +26,11 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.INACTIVE_TAB_OPACITY
-import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TOP_APP_BAR_HEIGHT
 import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TAB_FADE_IN_ANIMATION_DELAY
 import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TAB_FADE_IN_ANIMATION_DURATION
 import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TAB_FADE_OUT_ANIMATION_DURATION
+import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TOP_APP_BAR_HEIGHT
+import de.oljg.glac.core.util.defaultColor
 import java.util.Locale
 
 @Composable
@@ -41,7 +41,7 @@ fun GlacTab(
     onSelected: () -> Unit,
     tabIsSelected: Boolean
 ) {
-    val color = MaterialTheme.colorScheme.onSurface
+    val color = defaultColor()
     val durationMillis = if (tabIsSelected) TAB_FADE_IN_ANIMATION_DURATION else TAB_FADE_OUT_ANIMATION_DURATION
     val animSpec = remember {
         tween<Color>(

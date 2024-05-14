@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_DIGIT_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_COLON_FIRST_CIRCLE_POSITION
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_COLON_SECOND_CIRCLE_POSITION
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_COUNT
@@ -63,11 +64,15 @@ data class ClockSettings(
 
     @Serializable(with = ColorSerializer::class)
     val dividerColor: Color? = null,
+
     val setColorsPerChar: Boolean = false,
 
     @Serializable(with = CharColorsSerializer::class)
     val charColors: PersistentMap<Char, @Serializable(with = ColorSerializer::class) Color> =
             persistentMapOf(),
+
+    val setColorsPerClockPart: Boolean = false,
+    val clockPartsColors: ClockPartsColors = ClockPartsColors(),
 
     val clockSettingsSectionPreviewIsExpanded: Boolean = false,
     val clockSettingsSectionDisplayIsExpanded: Boolean = false,

@@ -2,7 +2,6 @@
 
 package de.oljg.glac.test.isolated
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
@@ -20,6 +19,7 @@ import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.clock.digital.ui.utils.evaluateScreenDetails
+import de.oljg.glac.core.util.defaultColor
 
 /**
  * "Parameterized" DigitalClockLandscapeLayout where test device's screen size is used as
@@ -35,9 +35,8 @@ fun DigitalClockLandscapeLayoutIsolatedFont(
         clockBoxSize = evaluateScreenDetails().screenSize,
         dividerAttributes = DividerAttributes(
             dividerStyle = dividerStyle,
-            dividerColor = MaterialTheme.colorScheme.onSurface,
+            dividerColor = defaultColor(),
             dividerThickness = 2.dp,
-            dividerPadding = 2.dp
         )
     ) { char, finalFontSize, clockCharColor, _ ->
         Text(
@@ -61,9 +60,8 @@ fun DigitalClockPortraitLayoutIsolatedFont(
         clockBoxSize = evaluateScreenDetails().screenSize,
         dividerAttributes = DividerAttributes(
             dividerStyle = dividerStyle,
-            dividerColor = MaterialTheme.colorScheme.onSurface,
+            dividerColor = defaultColor(),
             dividerThickness = 2.dp,
-            dividerPadding = 2.dp
         )
     ) { char, finalFontSize, clockCharColor, _ ->
         Text(
@@ -88,9 +86,8 @@ fun DigitalClockLandscapeLayoutIsolatedSevenSegment(
         clockBoxSize = evaluateScreenDetails().screenSize,
         dividerAttributes = DividerAttributes(
             dividerStyle = dividerStyle,
-            dividerColor = MaterialTheme.colorScheme.onSurface,
+            dividerColor = defaultColor(),
             dividerThickness = 2.dp,
-            dividerPadding = 2.dp
         ),
         clockCharType = ClockCharType.SEVEN_SEGMENT
     ) { char, _, clockCharColor, clockCharSize ->
@@ -119,9 +116,8 @@ fun DigitalClockPortraitLayoutIsolatedSevenSegment(
         clockBoxSize = evaluateScreenDetails().screenSize,
         dividerAttributes = DividerAttributes(
             dividerStyle = dividerStyle,
-            dividerColor = MaterialTheme.colorScheme.onSurface,
+            dividerColor = defaultColor(),
             dividerThickness = 2.dp,
-            dividerPadding = 2.dp
         ),
         clockCharType = ClockCharType.SEVEN_SEGMENT
     ) { char, _, clockCharColor, clockCharSize ->
