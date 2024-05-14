@@ -15,8 +15,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
-import de.oljg.glac.settings.clock.ui.components.ColorSelector
-import de.oljg.glac.settings.clock.ui.components.ColorsPerCharSelector
+import de.oljg.glac.settings.clock.ui.components.color.ColorSelector
+import de.oljg.glac.settings.clock.ui.components.color.ColorsPerCharSelector
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import kotlinx.coroutines.launch

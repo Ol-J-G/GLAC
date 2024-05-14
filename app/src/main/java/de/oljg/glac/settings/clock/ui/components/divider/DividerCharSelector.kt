@@ -1,4 +1,4 @@
-package de.oljg.glac.settings.clock.ui.components
+package de.oljg.glac.settings.clock.ui.components.divider
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

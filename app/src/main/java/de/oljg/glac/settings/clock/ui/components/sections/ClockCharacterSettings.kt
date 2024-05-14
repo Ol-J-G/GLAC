@@ -19,14 +19,11 @@ import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_DIGIT_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_STROKE_WIDTH
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
-import de.oljg.glac.clock.digital.ui.utils.contains
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
-import de.oljg.glac.settings.clock.ui.components.ClockCharTypeSelector
-import de.oljg.glac.settings.clock.ui.components.FontSelector
-import de.oljg.glac.settings.clock.ui.components.SevenSegmentSelector
+import de.oljg.glac.settings.clock.ui.components.character.ClockCharTypeSelector
+import de.oljg.glac.settings.clock.ui.components.character.FontSelector
+import de.oljg.glac.settings.clock.ui.components.character.SevenSegmentSelector
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSlider
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
@@ -74,94 +71,8 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
             label = "crossfade"
         ) { clockCharType ->
             when (clockCharType) {
-                ClockCharType.FONT -> {
-                    FontSelector(
-                        selectedFontFamily = clockSettings.fontName,
-                        onNewFontFamilySelected = { newFontName ->
-                            coroutineScope.launch {
-                                viewModel.updateClockSettings(
-                                    clockSettings.copy(fontName = newFontName)
-                                )
-                            }
-                        },
-                        onNewFontFamilyImported = { newFontUri ->
-                            coroutineScope.launch {
-                                viewModel.updateClockSettings(
-                                    clockSettings.copy(fontName = newFontUri)
-                                )
-                            }
-                        },
-                        selectedFontWeight = clockSettings.fontWeight,
-                        onNewFontWeightSelected = { newFontWeight ->
-                            coroutineScope.launch {
-                                viewModel.updateClockSettings(
-                                    clockSettings.copy(fontWeight = newFontWeight)
-                                )
-                            }
-                        },
-                        selectedFontStyle = clockSettings.fontStyle,
-                        onNewFontStyleSelected = { newFontStyle ->
-                            coroutineScope.launch {
-                                viewModel.updateClockSettings(
-                                    clockSettings.copy(fontStyle = newFontStyle)
-                                )
-                            }
-                        }
-                    )
-                }
-
-                ClockCharType.SEVEN_SEGMENT -> {
-                    SevenSegmentSelector(
-                        selectedSevenSegmentWeight = clockSettings.sevenSegmentWeight,
-                        onNewSevenSegmentWeightSelected = { newSevenSegmentWeight ->
-                            coroutineScope.launch {
-                                viewModel.updateClockSettings(
-                                    clockSettings.copy(
-                                        sevenSegmentWeight = newSevenSegmentWeight
-                                    )
-                                )
-                            }
-                        },
-                        selectedSevenSegmentStyle = clockSettings.sevenSegmentStyle,
-                        onNewSevenSegmentStyleSelected = { newSevenSegmentStyle ->
-                            coroutineScope.launch {
-                                viewModel.updateClockSettings(
-                                    clockSettings.copy(
-                                        sevenSegmentStyle = newSevenSegmentStyle
-                                    )
-                                )
-                            }
-                        },
-                        isOutlineStyleSelected = clockSettings.sevenSegmentStyle
-                            .contains(SevenSegmentStyle.OUTLINE.name),
-                        selectedOutlineSize = clockSettings.sevenSegmentOutlineSize,
-                        onNewOutlineSizeSelected = { newValue ->
-                            coroutineScope.launch {
-                                viewModel.updateClockSettings(
-                                    clockSettings.copy(
-                                        sevenSegmentOutlineSize = newValue
-                                    )
-                                )
-                            }
-                        },
-                        onResetOutlineSize = {
-                            coroutineScope.launch {
-                                viewModel.updateClockSettings(
-                                    clockSettings.copy(sevenSegmentOutlineSize = DEFAULT_STROKE_WIDTH)
-                                )
-                            }
-                            DEFAULT_STROKE_WIDTH
-                        },
-                        drawOffSegments = clockSettings.drawOffSegments,
-                        onDrawOffSegmentsChanged = { newValue ->
-                            coroutineScope.launch {
-                                viewModel.updateClockSettings(
-                                    clockSettings.copy(drawOffSegments = newValue)
-                                )
-                            }
-                        }
-                    )
-                }
+                ClockCharType.FONT -> FontSelector()
+                ClockCharType.SEVEN_SEGMENT -> SevenSegmentSelector()
             }
         }
         Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
@@ -203,7 +114,8 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
             onResetValue = {
                 coroutineScope.launch {
                     viewModel.updateClockSettings(
-                        clockSettings.copy(daytimeMarkerSizeFactor = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR)
+                        clockSettings.copy(
+                            daytimeMarkerSizeFactor = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR)
                     )
                 }
             }

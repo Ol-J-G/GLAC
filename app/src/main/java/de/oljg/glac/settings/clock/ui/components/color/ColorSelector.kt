@@ -1,4 +1,4 @@
-package de.oljg.glac.settings.clock.ui.components
+package de.oljg.glac.settings.clock.ui.components.color
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background

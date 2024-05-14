@@ -1,4 +1,4 @@
-package de.oljg.glac.settings.clock.ui.components
+package de.oljg.glac.settings.clock.ui.components.color
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.border
@@ -42,8 +42,6 @@ fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
 
     Surface(
         modifier = Modifier
-//            .background(MaterialTheme.colorScheme.tertiaryContainer, RoundedCornerShape(DEFAULT_ROUNDED_CORNER_SIZE))
-//            .clip(RoundedCornerShape(DEFAULT_ROUNDED_CORNER_SIZE))
             .border(
                 width = SettingsDefaults.DEFAULT_BORDER_WIDTH,
                 color = MaterialTheme.colorScheme.outlineVariant,

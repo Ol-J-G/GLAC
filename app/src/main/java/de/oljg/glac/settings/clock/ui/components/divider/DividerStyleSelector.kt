@@ -1,4 +1,4 @@
-package de.oljg.glac.settings.clock.ui.components
+package de.oljg.glac.settings.clock.ui.components.divider
 
 import android.content.res.Configuration
 import androidx.compose.runtime.Composable

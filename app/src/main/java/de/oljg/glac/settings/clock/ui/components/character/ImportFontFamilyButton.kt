@@ -1,4 +1,4 @@
-package de.oljg.glac.settings.clock.ui.components
+package de.oljg.glac.settings.clock.ui.components.character
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts

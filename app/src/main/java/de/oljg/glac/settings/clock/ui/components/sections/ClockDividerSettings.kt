@@ -19,8 +19,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_COLON_FIRST_CIRCLE_POSITION
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_COLON_SECOND_CIRCLE_POSITION
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_DOTTED_PART_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_LENGTH_FACTOR
@@ -42,17 +40,17 @@ import de.oljg.glac.clock.digital.ui.utils.isNeitherNoneNorChar
 import de.oljg.glac.clock.digital.ui.utils.isRotatable
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
-import de.oljg.glac.settings.clock.ui.components.CharDividerPortraitWarning
-import de.oljg.glac.settings.clock.ui.components.DividerCharSelector
-import de.oljg.glac.settings.clock.ui.components.DividerLineEndSelector
-import de.oljg.glac.settings.clock.ui.components.DividerStyleSelector
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSlider
+import de.oljg.glac.settings.clock.ui.components.divider.CharDividerOptionsSelector
+import de.oljg.glac.settings.clock.ui.components.divider.CharDividerPortraitWarning
+import de.oljg.glac.settings.clock.ui.components.divider.ColonDividerOptionsSelector
+import de.oljg.glac.settings.clock.ui.components.divider.DividerLineEndSelector
+import de.oljg.glac.settings.clock.ui.components.divider.DividerStyleSelector
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.settings.clock.ui.utils.cutOffDecimalPlaces
 import de.oljg.glac.settings.clock.ui.utils.isSevenSegmentItalicOrReverseItalic
 import de.oljg.glac.settings.clock.ui.utils.prettyPrintAngle
-import de.oljg.glac.settings.clock.ui.utils.prettyPrintCirclePosition
 import de.oljg.glac.settings.clock.ui.utils.prettyPrintPercentage
 import de.oljg.glac.settings.clock.ui.utils.prettyPrintPixel
 import kotlinx.coroutines.launch
@@ -275,51 +273,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
         ) {
             Column {
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
-                SettingsSlider(
-                    label = stringResource(R.string.first_circle_position),
-                    value = clockSettings.colonFirstCirclePosition,
-                    defaultValue = DEFAULT_COLON_FIRST_CIRCLE_POSITION,
-                    sliderValuePrettyPrintFun = Float::prettyPrintCirclePosition,
-                    onValueChangeFinished = { newPosition ->
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(colonFirstCirclePosition = newPosition)
-                            )
-                        }
-                    },
-                    onResetValue = {
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    colonFirstCirclePosition = DEFAULT_COLON_FIRST_CIRCLE_POSITION
-                                )
-                            )
-                        }
-                    }
-                )
-                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
-                SettingsSlider(
-                    label = stringResource(R.string.second_circle_position),
-                    value = clockSettings.colonSecondCirclePosition,
-                    defaultValue = DEFAULT_COLON_SECOND_CIRCLE_POSITION,
-                    sliderValuePrettyPrintFun = Float::prettyPrintCirclePosition,
-                    onValueChangeFinished = { newPosition ->
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(colonSecondCirclePosition = newPosition)
-                            )
-                        }
-                    },
-                    onResetValue = {
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    colonSecondCirclePosition = DEFAULT_COLON_SECOND_CIRCLE_POSITION
-                                )
-                            )
-                        }
-                    }
-                )
+                ColonDividerOptionsSelector()
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -334,48 +288,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
         ) {
             Column {
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
-                DividerCharSelector(
-                    title = stringResource(R.string.between) + " " +
-                            stringResource(R.string.hours) + " / " +
-                            stringResource(R.string.minutes),
-                    char = clockSettings.hoursMinutesDividerChar,
-                    onCharChanged = { newChar ->
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(hoursMinutesDividerChar = newChar)
-                            )
-                        }
-                    }
-                )
-                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
-                DividerCharSelector(
-                    title = stringResource(R.string.between) + " " +
-                            stringResource(R.string.minutes) + " / " +
-                            stringResource(R.string.seconds),
-                    char = clockSettings.minutesSecondsDividerChar,
-                    onCharChanged = { newChar ->
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(minutesSecondsDividerChar = newChar)
-                            )
-                        }
-                    }
-                )
-                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
-                DividerCharSelector(
-                    title = stringResource(R.string.between) + " " +
-                            stringResource(R.string.min) + ". | " +
-                            stringResource(R.string.sec) + ". / " +
-                            stringResource(R.string.daytime_marker),
-                    char = clockSettings.daytimeMarkerDividerChar,
-                    onCharChanged = { newChar ->
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(daytimeMarkerDividerChar = newChar)
-                            )
-                        }
-                    }
-                )
+                CharDividerOptionsSelector()
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE / 2))
             }
         }

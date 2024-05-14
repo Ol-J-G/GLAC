@@ -1,4 +1,4 @@
-package de.oljg.glac.settings.clock.ui.components
+package de.oljg.glac.settings.clock.ui.components.character
 
 import androidx.compose.runtime.Composable
 import de.oljg.glac.settings.clock.ui.components.common.DropDownSelector
