@@ -16,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
-import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.CLOCK_CHAR_TYPES
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.CLOCK_CHAR_TYPE_FONT_SIZE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.RADIO_BUTTON_ROW_HEIGHT
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_HORIZONTAL_PADDING
@@ -24,8 +23,8 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_HORIZONTAL
 @Composable
 fun ClockCharTypeSelector(
     label: String,
-    selectedClockCharType: String,
-    onClockCharTypeSelected: (String) -> Unit
+    selectedClockCharType: ClockCharType,
+    onClockCharTypeSelected: (ClockCharType) -> Unit
 ) {
     Row(
         Modifier.fillMaxWidth(),
@@ -35,26 +34,26 @@ fun ClockCharTypeSelector(
     ) {
         Text(label)
         Row(Modifier.selectableGroup()) {
-            CLOCK_CHAR_TYPES.forEach { text ->
+            ClockCharType.entries.forEach { clockCharType ->
                 Row(
                     Modifier
                         .height(RADIO_BUTTON_ROW_HEIGHT)
                         .selectable(
-                            selected = (text == selectedClockCharType),
-                            onClick = { onClockCharTypeSelected(text) },
+                            selected = (clockCharType == selectedClockCharType),
+                            onClick = { onClockCharTypeSelected(clockCharType) },
                             role = Role.RadioButton
                         )
                         .padding(horizontal = SETTINGS_HORIZONTAL_PADDING),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     RadioButton(
-                        selected = (text == selectedClockCharType),
+                        selected = (clockCharType == selectedClockCharType),
                         onClick = null // null recommended for accessibility with screenreaders
                     )
                     Text(
                         modifier = Modifier.padding(start = SETTINGS_HORIZONTAL_PADDING),
-                        text = if (text == ClockCharType.FONT.name) stringResource(R.string.font)
-                        else stringResource(R.string._7_segment),
+                        text = if (clockCharType == ClockCharType.FONT)
+                            stringResource(R.string.font) else stringResource(R.string._7_segment),
                         fontSize = CLOCK_CHAR_TYPE_FONT_SIZE
                     )
                 }

@@ -66,7 +66,7 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
         )
         Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
         Crossfade(
-            targetState = ClockCharType.valueOf(clockSettings.clockCharType),
+            targetState = clockSettings.clockCharType,
             animationSpec = TweenSpec(),
             label = "crossfade"
         ) { clockCharType ->

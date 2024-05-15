@@ -15,7 +15,7 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
 import kotlinx.coroutines.launch
 
 @Composable
-fun CharDividerOptionsSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
+fun DividerCharsSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val coroutineScope = rememberCoroutineScope()
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()

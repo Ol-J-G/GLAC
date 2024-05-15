@@ -43,12 +43,16 @@ enum class SevenSegmentStyle {
 }
 
 fun SevenSegmentStyle.isItalic() =
-    this.name == SevenSegmentStyle.ITALIC.name ||
-    this.name == SevenSegmentStyle.OUTLINE_ITALIC.name
+        this == SevenSegmentStyle.ITALIC || this == SevenSegmentStyle.OUTLINE_ITALIC
 
-fun SevenSegmentStyle.isReverseItalic() = this.name.contains(SevenSegmentStyle.REVERSE_ITALIC.name)
+fun SevenSegmentStyle.isReverseItalic() =
+        this == SevenSegmentStyle.REVERSE_ITALIC || this == SevenSegmentStyle.OUTLINE_REVERSE_ITALIC
 
 fun SevenSegmentStyle.isItalicOrReverseItalic() = this.isItalic() || this.isReverseItalic()
+
+fun SevenSegmentStyle.isOutline() = this == SevenSegmentStyle.OUTLINE
+        || this == SevenSegmentStyle.OUTLINE_ITALIC
+        || this == SevenSegmentStyle.OUTLINE_REVERSE_ITALIC
 
 fun Char.contains(segment: Segment): Boolean {
     return when (segment) {
@@ -143,11 +147,11 @@ fun calculateMaxCharSizeSevenSegment(
     currentTimeFormatted: String
 ): Pair<Dp, Dp> {
     val spaceNeededForDividers =
-        if (dividerStyle != DividerStyle.NONE) dividerThickness * dividerCount
-        else 0.dp
+            if (dividerStyle != DividerStyle.NONE) dividerThickness * dividerCount
+            else 0.dp
 
     val availableWidthForSevenSegmentClockChar =
-        clockBoxSize.width.pxToDp() - spaceNeededForDividers
+            clockBoxSize.width.pxToDp() - spaceNeededForDividers
 
     val availableHeightForSevenSegmentClockChar = clockBoxSize.height.pxToDp()
 
@@ -156,7 +160,7 @@ fun calculateMaxCharSizeSevenSegment(
      * respecting aspect ratio (1:2) (w:h)
      */
     var charWidthSevenSegment =
-        availableWidthForSevenSegmentClockChar / currentTimeFormatted.length
+            availableWidthForSevenSegmentClockChar / currentTimeFormatted.length
     var charHeightSevenSegment = charWidthSevenSegment * 2
 
     /**
@@ -208,7 +212,7 @@ object SevenSegmentDefaults {
     const val WEIGHT_FACTOR_EXTRABOLD = .09f
     const val WEIGHT_FACTOR_BLACK = .0999f
 
-    const val DEFAULT_STROKE_WIDTH = 2f
+    const val DEFAULT_OUTLINE_SIZE = 2f
     const val MIN_STROKE_WIDTH = 1f
     const val MAX_STROKE_WIDTH = 16f
 

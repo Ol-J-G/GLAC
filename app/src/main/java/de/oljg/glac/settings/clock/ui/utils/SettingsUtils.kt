@@ -148,6 +148,8 @@ object SettingsDefaults {
     val COLOR_PICKER_BUTTON_SPACE = 0.dp
     const val COLOR_PICKER_FLASHING_COLOR_ANIM_DURATION = 825
 
+    val MULTI_COLOR_SELECTOR_PADDING = 4.dp
+
     /**
      * DateTimeFormatter reserved chars and such ones that would lead to an incomplete
      * string literal, etc. (in other words: these chars cannot be part of a time format string)
@@ -161,8 +163,6 @@ object SettingsDefaults {
 
     val SEVEN_SEGMENT_WEIGHTS = SevenSegmentWeight.entries.map { weight -> weight.name }
     val SEVEN_SEGMENT_STYLES = SevenSegmentStyle.entries.map { style -> style.name }
-
-    val CLOCK_CHAR_TYPES = ClockCharType.entries.map { type -> type.name }
 
     val DIVIDER_STYLES = DividerStyle.entries.map { style -> style.name }
     val DIVIDER_STYLES_WITHOUT_CHAR_STYLE = DividerStyle.entries.filterNot { style ->

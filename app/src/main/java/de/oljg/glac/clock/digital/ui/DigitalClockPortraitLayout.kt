@@ -100,9 +100,9 @@ fun DigitalClockPortraitLayout(
         // Re-measure when one of the following changes (needed for settings preview)
         (previewState.currentTimeStringLength != currentTimeWithoutSeparators.length ||
                 previewState.currentFont != clockSettings.fontName ||
-                previewState.currentFontWeight != clockSettings.fontWeight ||
-                previewState.currentFontStyle != clockSettings.fontStyle ||
-                previewState.currentDividerStyle != clockSettings.dividerStyle ||
+                previewState.currentFontWeight != clockSettings.fontWeight.name ||
+                previewState.currentFontStyle != clockSettings.fontStyle.name ||
+                previewState.currentDividerStyle != clockSettings.dividerStyle.name ||
                 previewState.currentDividerThickness != clockSettings.dividerThickness
                 )
     ) {
@@ -131,9 +131,9 @@ fun DigitalClockPortraitLayout(
                 previewState = previewState.copy(
                     currentTimeStringLength = currentTimeWithoutSeparators.length,
                     currentFont = clockSettings.fontName,
-                    currentFontWeight = clockSettings.fontWeight,
-                    currentFontStyle = clockSettings.fontStyle,
-                    currentDividerStyle = clockSettings.dividerStyle,
+                    currentFontWeight = clockSettings.fontWeight.name,
+                    currentFontStyle = clockSettings.fontStyle.name,
+                    currentDividerStyle = clockSettings.dividerStyle.name,
                     currentDividerThickness = clockSettings.dividerThickness
                 )
             }
@@ -451,12 +451,12 @@ private fun evaluateDividerColorUsingIndex(
      * => 7-seg, with daytime marker, e.g. formattedTime: '1234A'
      */
     return when (index) {
-        0 -> clockPartsColors.dividers?.hoursMinutes ?: defaultDividerColor
+        0 -> clockPartsColors.dividers.hoursMinutes ?: defaultDividerColor
         2 ->
             if (formattedTime.length in (5..6) && formattedTime.toCharArray().last().isLetter())
-                clockPartsColors.dividers?.daytimeMarker ?: defaultDividerColor
-            else clockPartsColors.dividers?.minutesSeconds ?: defaultDividerColor
+                clockPartsColors.dividers.daytimeMarker ?: defaultDividerColor
+            else clockPartsColors.dividers.minutesSeconds ?: defaultDividerColor
 
-        else -> clockPartsColors.dividers?.daytimeMarker ?: defaultDividerColor// 4
+        else -> clockPartsColors.dividers.daytimeMarker ?: defaultDividerColor// 4
     }
 }

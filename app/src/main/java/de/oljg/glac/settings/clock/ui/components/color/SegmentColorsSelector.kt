@@ -22,8 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
+import de.oljg.glac.clock.digital.ui.utils.Segment
 import de.oljg.glac.core.settings.data.ClockSettings
-import de.oljg.glac.core.util.CommonClockUtils.CLOCK_CHARS
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
@@ -31,10 +31,11 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_ROUNDED_COR
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.MULTI_COLOR_SELECTOR_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SECTION_HEIGHT
+import de.oljg.glac.settings.clock.ui.utils.prettyPrintEnumName
 import kotlinx.coroutines.launch
 
 @Composable
-fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
+fun SegmentColorsSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val coroutineScope = rememberCoroutineScope()
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
@@ -58,28 +59,29 @@ fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(stringResource(R.string.color_per_character))
+                Text(stringResource(R.string.segment_colors))
                 Switch(
-                    checked = clockSettings.setColorsPerChar,
+                    checked = clockSettings.setSegmentColors,
                     onCheckedChange = {
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
-                                clockSettings.copy(setColorsPerChar = !clockSettings.setColorsPerChar)
+                                clockSettings.copy(
+                                    setSegmentColors = !clockSettings.setSegmentColors)
                             )
                         }
                     }
                 )
             }
 
-            AnimatedVisibility(visible = clockSettings.setColorsPerChar) {
+            AnimatedVisibility(visible = clockSettings.setSegmentColors) {
                 Column {
                     Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
-                    CLOCK_CHARS.forEach { clockChar ->
+                    Segment.entries.forEach { segment ->
                         ColorSelector(
-                            title = clockChar.toString(),
+                            title = segment.name.prettyPrintEnumName(),
                             color =
-                            clockSettings.charColors.getOrDefault(
-                                key = clockChar,
+                            clockSettings.segmentColors.getOrDefault(
+                                key = segment,
                                 defaultValue = clockSettings.charColor ?: defaultCharColor
                             ),
                             defaultColor = clockSettings.charColor ?: defaultCharColor,
@@ -87,7 +89,7 @@ fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                                 coroutineScope.launch {
                                     viewModel.updateClockSettings(
                                         clockSettings.copy(
-                                            charColors = clockSettings.charColors.remove(clockChar)
+                                            segmentColors = clockSettings.segmentColors.remove(segment)
                                         )
                                     )
                                 }
@@ -96,8 +98,8 @@ fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                             coroutineScope.launch {
                                 viewModel.updateClockSettings(
                                     clockSettings.copy(
-                                        charColors = clockSettings.charColors.put(
-                                            clockChar,
+                                        segmentColors = clockSettings.segmentColors.put(
+                                            segment,
                                             selectedColor
                                         )
                                     )

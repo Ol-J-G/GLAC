@@ -10,7 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -19,11 +18,7 @@ import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
 import de.oljg.glac.clock.digital.ui.utils.DividerLineEnd
-import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.HideSystemBars
-import de.oljg.glac.clock.digital.ui.utils.Segment
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
 import de.oljg.glac.clock.digital.ui.utils.evaluateDividerRotateAngle
 import de.oljg.glac.clock.digital.ui.utils.evaluateFont
@@ -43,18 +38,7 @@ fun DigitalClockScreen(
     viewModel: ClockSettingsViewModel = hiltViewModel(),
     fullScreen: Boolean = false,
     previewMode: Boolean = false,
-    onClick: () -> Unit = {},
-
-    segmentColors: Map<Segment, Color> = emptyMap(),
-//        mapOf(
-//            Pair(Segment.TOP, Color.Yellow),
-//            Pair(Segment.CENTER, Color.Yellow.copy(alpha = .5f)),
-//            Pair(Segment.BOTTOM, Color.Red),
-//            Pair(Segment.TOP_LEFT, Color.Green),
-//            Pair(Segment.TOP_RIGHT, Color.Green.copy(alpha = 0.5f)),
-//            Pair(Segment.BOTTOM_LEFT, Color.Red.copy(alpha = 0.6f)),
-//            Pair(Segment.BOTTOM_RIGHT, Color.Red.copy(alpha = 0.3f))
-//        ),
+    onClick: () -> Unit = {}
 ) {
     if (fullScreen)
         HideSystemBars()
@@ -63,26 +47,26 @@ fun DigitalClockScreen(
         initial = ClockSettings()
     ).value
 
-    val clockCharType = ClockCharType.valueOf(clockSettings.clockCharType)
+    val clockCharType = clockSettings.clockCharType
 
     val context = LocalContext.current
     val (finalFontFamily, finalFontWeight, finalFontStyle) = evaluateFont(
         context,
         clockSettings.fontName,
-        clockSettings.fontWeight,
-        clockSettings.fontStyle
+        clockSettings.fontWeight.name,
+        clockSettings.fontStyle.name
     )
 
     // In case of 7-seg italic style and only in landscape o. => rotate divider appropriately
-    val currentSevenSegmentStyle = SevenSegmentStyle.valueOf(clockSettings.sevenSegmentStyle)
+    val currentSevenSegmentStyle = clockSettings.sevenSegmentStyle
     val dividerRotateAngle =
             if (isSevenSegmentItalicOrReverseItalic(clockCharType, currentSevenSegmentStyle))
                 evaluateDividerRotateAngle(currentSevenSegmentStyle)
 
             /**
              * Actually no need to rotate dividers with ClockCharType.FONT, but in case of italic
-             * fonts, they have unknown/different italic angles, so, let user set it up, just according
-             * to some imported font.
+             * fonts, they have unknown/different italic angles, so, let user set it up, just
+             * according to some imported font.
              */
             else clockSettings.dividerRotateAngle
 
@@ -104,19 +88,23 @@ fun DigitalClockScreen(
      * ...
      */
     val charColor = clockSettings.charColor ?: defaultColor()
-    val charColors = if(clockSettings.setColorsPerChar) clockSettings.charColors else emptyMap()
+    val charColors = if (clockSettings.setColorsPerChar)
+        clockSettings.charColors else emptyMap()
+
     val finalCharColors = setSpecifiedColors(charColors, defaultClockCharColors(charColor))
     val finalClockPartsColors = if (clockSettings.setColorsPerClockPart)
         clockSettings.clockPartsColors else ClockPartsColors()
 
+    val segmentColors = if (clockSettings.setSegmentColors)
+        clockSettings.segmentColors else emptyMap()
+
     val dividerAttributes = DividerAttributes(
-        dividerStyle = DividerStyle.valueOf(clockSettings.dividerStyle),
+        dividerStyle = clockSettings.dividerStyle,
         dividerThickness = clockSettings.dividerThickness.pxToDp(),
         dividerLengthPercentage = clockSettings.dividerLengthPercentage,
         dividerDashCount = clockSettings.dividerDashCount,
         dividerDashDottedPartCount = clockSettings.dividerDashDottedPartCount,
-        dividerLineCap =
-        if (DividerLineEnd.valueOf(clockSettings.dividerLineEnd) == DividerLineEnd.ROUND)
+        dividerLineCap = if (clockSettings.dividerLineEnd == DividerLineEnd.ROUND)
             StrokeCap.Round else StrokeCap.Butt,
         dividerRotateAngle = dividerRotateAngle,
         colonFirstCirclePosition = clockSettings.colonFirstCirclePosition,
@@ -210,8 +198,8 @@ fun DigitalClockScreen(
         digitSizeFactor = clockSettings.digitSizeFactor,
         daytimeMarkerSizeFactor = clockSettings.daytimeMarkerSizeFactor
     ) { clockChar, clockCharFontSize, clockCharColor, clockCharSize ->
-        if (clockCharType == ClockCharType.FONT)
-            Text(
+        when (clockCharType) {
+            ClockCharType.FONT -> Text(
                 text = clockChar.toString(),
                 fontSize = clockCharFontSize,
                 fontFamily = finalFontFamily,
@@ -219,16 +207,16 @@ fun DigitalClockScreen(
                 fontStyle = finalFontStyle,
                 color = clockCharColor,
             )
-        else
-            SevenSegmentChar(
+            else -> SevenSegmentChar(
                 char = clockChar,
                 charSize = clockCharSize,
                 charColor = clockCharColor,
                 segmentColors = segmentColors,
-                style = SevenSegmentStyle.valueOf(clockSettings.sevenSegmentStyle),
-                weight = SevenSegmentWeight.valueOf(clockSettings.sevenSegmentWeight),
-                strokeWidth = clockSettings.sevenSegmentOutlineSize,
+                style = clockSettings.sevenSegmentStyle,
+                weight = clockSettings.sevenSegmentWeight,
+                outlineSize = clockSettings.sevenSegmentOutlineSize,
                 drawOffSegments = clockSettings.drawOffSegments
             )
+        }
     }
 }

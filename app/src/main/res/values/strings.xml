@@ -72,4 +72,6 @@
     <string name="ante">Ante</string>
     <string name="post">Post</string>
     <string name="meridiem">Meridiem</string>
+    <string name="generate_random">Generate random</string>
+    <string name="segment_colors">Segment Colors</string>
 </resources>

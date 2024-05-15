@@ -98,7 +98,7 @@ fun DigitalClockLandscapeLayoutIsolatedSevenSegment(
             segmentColors = emptyMap(),
             style = SevenSegmentStyle.REGULAR,
             weight = SevenSegmentWeight.REGULAR,
-            strokeWidth = SevenSegmentDefaults.DEFAULT_STROKE_WIDTH,
+            outlineSize = SevenSegmentDefaults.DEFAULT_OUTLINE_SIZE,
             drawOffSegments = false
         )
     }
@@ -128,7 +128,7 @@ fun DigitalClockPortraitLayoutIsolatedSevenSegment(
             segmentColors = emptyMap(),
             style = SevenSegmentStyle.REGULAR,
             weight = SevenSegmentWeight.REGULAR,
-            strokeWidth = SevenSegmentDefaults.DEFAULT_STROKE_WIDTH,
+            outlineSize = SevenSegmentDefaults.DEFAULT_OUTLINE_SIZE,
             drawOffSegments = false
         )
     }

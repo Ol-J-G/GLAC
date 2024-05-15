@@ -2,6 +2,8 @@ package de.oljg.glac.settings.clock.ui.components.sections
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,12 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
+import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.color.ColorSelector
 import de.oljg.glac.settings.clock.ui.components.color.ColorsPerCharSelector
 import de.oljg.glac.settings.clock.ui.components.color.ColorsPerClockPartSelector
+import de.oljg.glac.settings.clock.ui.components.color.SegmentColorsSelector
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import kotlinx.coroutines.launch
@@ -81,10 +85,22 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             .fillMaxWidth()
             .height(DEFAULT_VERTICAL_SPACE))
         ColorsPerCharSelector()
+
         Spacer(modifier = Modifier
             .fillMaxWidth()
             .height(DEFAULT_VERTICAL_SPACE))
         ColorsPerClockPartSelector()
+
+        AnimatedVisibility(visible = clockSettings.clockCharType == ClockCharType.SEVEN_SEGMENT) {
+            Column {
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(DEFAULT_VERTICAL_SPACE)
+                )
+                SegmentColorsSelector()
+            }
+        }
         Spacer(modifier = Modifier
             .fillMaxWidth()
             .height(DEFAULT_VERTICAL_SPACE / 2))

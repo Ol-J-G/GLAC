@@ -125,9 +125,9 @@ fun DigitalClockLandscapeLayout(
         // Re-measure when one of the following changes (needed for settings preview)
         (previewState.currentTimeStringLength != currentTimeFormatted.length ||
                 previewState.currentFont != clockSettings.fontName ||
-                previewState.currentFontWeight != clockSettings.fontWeight ||
-                previewState.currentFontStyle != clockSettings.fontStyle ||
-                previewState.currentDividerStyle != clockSettings.dividerStyle ||
+                previewState.currentFontWeight != clockSettings.fontWeight.name ||
+                previewState.currentFontStyle != clockSettings.fontStyle.name ||
+                previewState.currentDividerStyle != clockSettings.dividerStyle.name ||
                 previewState.currentDividerThickness != clockSettings.dividerThickness
         )
     ) {
@@ -153,9 +153,9 @@ fun DigitalClockLandscapeLayout(
                 previewState = previewState.copy(
                     currentTimeStringLength = currentTimeFormatted.length,
                     currentFont = clockSettings.fontName,
-                    currentFontWeight = clockSettings.fontWeight,
-                    currentFontStyle = clockSettings.fontStyle,
-                    currentDividerStyle = clockSettings.dividerStyle,
+                    currentFontWeight = clockSettings.fontWeight.name,
+                    currentFontStyle = clockSettings.fontStyle.name,
+                    currentDividerStyle = clockSettings.dividerStyle.name,
                     currentDividerThickness = clockSettings.dividerThickness
                 )
             },
@@ -547,23 +547,23 @@ private fun evaluateDividerColorUsingIndex(
 
     return if (isFontCharDivider)
         when (index) {
-            2 -> clockParts.dividers?.hoursMinutes ?: defaultColor
+            2 -> clockParts.dividers.hoursMinutes ?: defaultColor
             5 ->
                 if (formattedTimeContainsNoSecondsButDaytimeMarkerAndDividers)
-                    clockParts.dividers?.daytimeMarker ?: defaultColor
-                else clockParts.dividers?.minutesSeconds ?: defaultColor
+                    clockParts.dividers.daytimeMarker ?: defaultColor
+                else clockParts.dividers.minutesSeconds ?: defaultColor
 
-            else -> clockParts.dividers?.daytimeMarker ?: defaultColor // last possible incoming index: 8
+            else -> clockParts.dividers.daytimeMarker ?: defaultColor // last possible incoming index: 8
         }
     else
         when (index) {
-            2 -> clockParts.dividers?.hoursMinutes ?: defaultColor
+            2 -> clockParts.dividers.hoursMinutes ?: defaultColor
             4 ->
                 if (formattedTimeContainsNoSecondsButDaytimeMarker)
-                    clockParts.dividers?.daytimeMarker ?: defaultColor
-                else clockParts.dividers?.minutesSeconds ?: defaultColor
+                    clockParts.dividers.daytimeMarker ?: defaultColor
+                else clockParts.dividers.minutesSeconds ?: defaultColor
 
-            else -> clockParts.dividers?.daytimeMarker ?: defaultColor // last possible incoming index: 6
+            else -> clockParts.dividers.daytimeMarker ?: defaultColor // last possible incoming index: 6
         }
 }
 

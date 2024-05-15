@@ -54,7 +54,7 @@ fun ClockSettingsScreen() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(scrollState)
-            ) {
+            ) {//TODO: add different layout(use space!) for landscape/expanded (2 columns with 2 sections each?)
                 ClockDisplaySettings()
                 ClockCharacterSettings()
                 ClockDividerSettings()

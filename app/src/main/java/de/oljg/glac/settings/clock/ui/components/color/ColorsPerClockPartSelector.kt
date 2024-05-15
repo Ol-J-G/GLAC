@@ -20,7 +20,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.settings.data.ClockSettings
@@ -39,6 +38,7 @@ import de.oljg.glac.settings.clock.ui.components.color.clockparts.SecondsTensCol
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_BORDER_WIDTH
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_ROUNDED_CORNER_SIZE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.MULTI_COLOR_SELECTOR_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SECTION_HEIGHT
 import kotlinx.coroutines.launch
 
@@ -58,7 +58,7 @@ fun ColorsPerClockPartSelector(viewModel: ClockSettingsViewModel = hiltViewModel
             )
             .padding(DEFAULT_VERTICAL_SPACE / 2),
     ) {
-        Column(modifier = Modifier.padding(4.dp)) {
+        Column(modifier = Modifier.padding(MULTI_COLOR_SELECTOR_PADDING)) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

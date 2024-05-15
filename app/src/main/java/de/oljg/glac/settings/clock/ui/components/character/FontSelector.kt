@@ -9,6 +9,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.settings.data.ClockSettings
+import de.oljg.glac.core.util.FontStyle
+import de.oljg.glac.core.util.FontWeight
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.utils.isFileUri
 import kotlinx.coroutines.launch
@@ -64,7 +66,7 @@ fun FontSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                     onNewFontWeightSelected = { newFontWeight ->
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
-                                clockSettings.copy(fontWeight = newFontWeight)
+                                clockSettings.copy(fontWeight = FontWeight.valueOf(newFontWeight))
                             )
                         }
                     }
@@ -75,7 +77,7 @@ fun FontSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                     onNewFontStyleSelected = { newFontStyle ->
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
-                                clockSettings.copy(fontStyle = newFontStyle)
+                                clockSettings.copy(fontStyle = FontStyle.valueOf(newFontStyle))
                             )
                         }
                     }

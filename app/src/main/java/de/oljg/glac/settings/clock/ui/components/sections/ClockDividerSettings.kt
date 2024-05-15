@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
-import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_DOTTED_PART_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_LENGTH_FACTOR
@@ -32,8 +31,8 @@ import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.MIN_DASH_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.MIN_DASH_DOTTED_PART_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.MIN_DIVIDER_ROTATE_ANGLE
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.MIN_DIVIDER_THICKNESS
+import de.oljg.glac.clock.digital.ui.utils.DividerLineEnd
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.isLineBased
 import de.oljg.glac.clock.digital.ui.utils.isLineOrDashedLine
 import de.oljg.glac.clock.digital.ui.utils.isNeitherNoneNorChar
@@ -42,9 +41,9 @@ import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSlider
-import de.oljg.glac.settings.clock.ui.components.divider.CharDividerOptionsSelector
 import de.oljg.glac.settings.clock.ui.components.divider.CharDividerPortraitWarning
 import de.oljg.glac.settings.clock.ui.components.divider.ColonDividerOptionsSelector
+import de.oljg.glac.settings.clock.ui.components.divider.DividerCharsSelector
 import de.oljg.glac.settings.clock.ui.components.divider.DividerLineEndSelector
 import de.oljg.glac.settings.clock.ui.components.divider.DividerStyleSelector
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
@@ -82,15 +81,13 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             onNewDividerStyleSelected = { newDividerStyle ->
                 coroutineScope.launch {
                     viewModel.updateClockSettings(
-                        clockSettings.copy(dividerStyle = newDividerStyle)
+                        clockSettings.copy(dividerStyle = DividerStyle.valueOf(newDividerStyle))
                     )
                 }
             }
         )
 
-        AnimatedVisibility(
-            visible = DividerStyle.valueOf(clockSettings.dividerStyle).isNeitherNoneNorChar()
-        ) {
+        AnimatedVisibility(visible = clockSettings.dividerStyle.isNeitherNoneNorChar()) {
             Column {
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 SettingsSlider(
@@ -117,9 +114,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             }
         }
 
-        AnimatedVisibility(
-            visible = DividerStyle.valueOf(clockSettings.dividerStyle).isLineBased()
-        ) {
+        AnimatedVisibility(visible = clockSettings.dividerStyle.isLineBased()) {
             Column {
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 SettingsSlider(
@@ -147,9 +142,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             }
         }
 
-        AnimatedVisibility(
-            visible = DividerStyle.valueOf(clockSettings.dividerStyle) == DividerStyle.DASHED_LINE
-        ) {
+        AnimatedVisibility(visible = clockSettings.dividerStyle == DividerStyle.DASHED_LINE) {
             Column {
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 SettingsSlider(
@@ -176,9 +169,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             }
         }
 
-        AnimatedVisibility(
-            visible = DividerStyle.valueOf(clockSettings.dividerStyle) == DividerStyle.DASHDOTTED_LINE
-        ) {
+        AnimatedVisibility(visible = clockSettings.dividerStyle == DividerStyle.DASHDOTTED_LINE) {
             Column {
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 SettingsSlider(
@@ -208,9 +199,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             }
         }
 
-        AnimatedVisibility(
-            visible = DividerStyle.valueOf(clockSettings.dividerStyle).isLineOrDashedLine()
-        ) {
+        AnimatedVisibility(visible = clockSettings.dividerStyle.isLineOrDashedLine()) {
             Column {
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 DividerLineEndSelector(
@@ -219,7 +208,8 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                     onNewDividerLineEndSelected = { newLineEnd ->
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
-                                clockSettings.copy(dividerLineEnd = newLineEnd)
+                                clockSettings.copy(
+                                    dividerLineEnd = DividerLineEnd.valueOf(newLineEnd))
                             )
                         }
                     }
@@ -233,12 +223,12 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
         }
 
         AnimatedVisibility(
-            visible = DividerStyle.valueOf(clockSettings.dividerStyle).isRotatable() &&
-                    LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE &&
-                    !isSevenSegmentItalicOrReverseItalic(
-                        ClockCharType.valueOf(clockSettings.clockCharType),
-                        SevenSegmentStyle.valueOf(clockSettings.sevenSegmentStyle)
-                    )
+            visible = clockSettings.dividerStyle.isRotatable()
+                    && LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+                    && !isSevenSegmentItalicOrReverseItalic(
+                clockSettings.clockCharType,
+                clockSettings.sevenSegmentStyle
+            )
         ) {
             Column {
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
@@ -268,9 +258,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             }
         }
 
-        AnimatedVisibility(
-            visible = DividerStyle.valueOf(clockSettings.dividerStyle) == DividerStyle.COLON
-        ) {
+        AnimatedVisibility(visible = clockSettings.dividerStyle == DividerStyle.COLON) {
             Column {
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 ColonDividerOptionsSelector()
@@ -283,19 +271,19 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
         }
 
         AnimatedVisibility(
-            visible = DividerStyle.valueOf(clockSettings.dividerStyle) == DividerStyle.CHAR &&
-                    LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+            visible = clockSettings.dividerStyle == DividerStyle.CHAR
+                    && LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
         ) {
             Column {
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
-                CharDividerOptionsSelector()
+                DividerCharsSelector()
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE / 2))
             }
         }
 
         AnimatedVisibility(
-            visible = DividerStyle.valueOf(clockSettings.dividerStyle) == DividerStyle.CHAR &&
-                    LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+            visible = clockSettings.dividerStyle == DividerStyle.CHAR
+                    && LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
         ) {
             CharDividerPortraitWarning()
         }

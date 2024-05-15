@@ -14,11 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_STROKE_WIDTH
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_OUTLINE_SIZE
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.MAX_STROKE_WIDTH
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.MIN_STROKE_WIDTH
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
-import de.oljg.glac.clock.digital.ui.utils.contains
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
+import de.oljg.glac.clock.digital.ui.utils.isOutline
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSlider
@@ -42,7 +43,7 @@ fun SevenSegmentSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 coroutineScope.launch {
                     viewModel.updateClockSettings(
                         clockSettings.copy(
-                            sevenSegmentWeight = newSevenSegmentWeight
+                            sevenSegmentWeight = SevenSegmentWeight.valueOf(newSevenSegmentWeight)
                         )
                     )
                 }
@@ -55,20 +56,19 @@ fun SevenSegmentSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 coroutineScope.launch {
                     viewModel.updateClockSettings(
                         clockSettings.copy(
-                            sevenSegmentStyle = newSevenSegmentStyle
+                            sevenSegmentStyle = SevenSegmentStyle.valueOf(newSevenSegmentStyle)
                         )
                     )
                 }
             }
         )
-        AnimatedVisibility(visible = clockSettings.sevenSegmentStyle
-            .contains(SevenSegmentStyle.OUTLINE.name)) {
+        AnimatedVisibility(visible = clockSettings.sevenSegmentStyle.isOutline()) {
             Column {
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 SettingsSlider(
                     label = stringResource(R.string.outline_size),
                     value = clockSettings.sevenSegmentOutlineSize,
-                    defaultValue = DEFAULT_STROKE_WIDTH,
+                    defaultValue = DEFAULT_OUTLINE_SIZE,
                     sliderValuePrettyPrintFun = Float::prettyPrintPixel,
                     onValueChangeFinished = { newValue ->
                         coroutineScope.launch {
@@ -82,10 +82,10 @@ fun SevenSegmentSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                     onResetValue = {
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
-                                clockSettings.copy(sevenSegmentOutlineSize = DEFAULT_STROKE_WIDTH)
+                                clockSettings.copy(sevenSegmentOutlineSize = DEFAULT_OUTLINE_SIZE)
                             )
                         }
-                        DEFAULT_STROKE_WIDTH
+                        DEFAULT_OUTLINE_SIZE
                     },
                     valueRange = MIN_STROKE_WIDTH..MAX_STROKE_WIDTH
                 )

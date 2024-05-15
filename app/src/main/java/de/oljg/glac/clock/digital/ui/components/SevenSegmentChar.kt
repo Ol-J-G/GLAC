@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.DpSize
 import de.oljg.glac.clock.digital.ui.utils.Segment
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_ASPECT_RATIO
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_ITALIC_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_OUTLINE_SIZE
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_SEVEN_SEGMENT_CHAR_PADDING
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_STROKE_WIDTH
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.OFFCOLOR_LIGHTNESS_DELTA
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.OFFSEGMENT_OUTLINE_STROKE_WIDTH
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.SEVEN_SEGMENT_CHARS
@@ -53,6 +53,7 @@ import de.oljg.glac.clock.digital.ui.utils.contains
 import de.oljg.glac.clock.digital.ui.utils.darken
 import de.oljg.glac.clock.digital.ui.utils.defaultSegmentColors
 import de.oljg.glac.clock.digital.ui.utils.evaluateTransformationMatrix
+import de.oljg.glac.clock.digital.ui.utils.isOutline
 import de.oljg.glac.clock.digital.ui.utils.isSevenSegmentChar
 import de.oljg.glac.clock.digital.ui.utils.lighten
 import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
@@ -119,7 +120,7 @@ fun SevenSegmentChar(
     segmentColors: Map<Segment, Color> = emptyMap(),
     style: SevenSegmentStyle = SevenSegmentStyle.REGULAR,
     weight: SevenSegmentWeight = SevenSegmentWeight.REGULAR,
-    strokeWidth: Float? = null,
+    outlineSize: Float? = null,
     charSize: DpSize? = null,
     drawOffSegments: Boolean
 ) {
@@ -149,14 +150,14 @@ fun SevenSegmentChar(
         SevenSegmentWeight.BLACK -> WEIGHT_FACTOR_BLACK
     }
 
-    val finalStrokeWidth = strokeWidth ?: DEFAULT_STROKE_WIDTH
+    val finalOutlineSize = outlineSize ?: DEFAULT_OUTLINE_SIZE
 
     val finalSegmentColors =
             setSpecifiedColors(segmentColors, defaultSegmentColors(charColor))
 
-    // "Simulate" the "background" of real 7-Segments builtin to some real display
+    // "Simulate" the "background" of real 7-Segments built in some real display
     val offColor =
-        if (isSystemInDarkTheme())//TODO: don't forget to replace material theme bg color here, when start thinking about clock BG color(then, consider clock BG color here..)!
+        if (isSystemInDarkTheme())//TODO_LATER: don't forget to replace material theme bg color here, when start thinking about clock BG color(then, consider clock BG color here..)!
             MaterialTheme.colorScheme.background.lighten(OFFCOLOR_LIGHTNESS_DELTA)
         else MaterialTheme.colorScheme.background.darken(OFFCOLOR_LIGHTNESS_DELTA)
     val offOutlineColor =
@@ -203,31 +204,31 @@ fun SevenSegmentChar(
 
             if(finalChar.contains(Segment.TOP))
                 draw(topSegment(sizeConditions),
-                    finalSegmentColors.getValue(Segment.TOP), style, finalStrokeWidth)
+                    finalSegmentColors.getValue(Segment.TOP), style, finalOutlineSize)
 
             if(finalChar.contains(Segment.CENTER))
                 draw(centerSegment(sizeConditions),
-                    finalSegmentColors.getValue(Segment.CENTER), style, finalStrokeWidth)
+                    finalSegmentColors.getValue(Segment.CENTER), style, finalOutlineSize)
 
             if(finalChar.contains(Segment.BOTTOM))
                 draw(bottomSegment(sizeConditions),
-                    finalSegmentColors.getValue(Segment.BOTTOM),style, finalStrokeWidth)
+                    finalSegmentColors.getValue(Segment.BOTTOM),style, finalOutlineSize)
 
             if(finalChar.contains(Segment.TOP_LEFT))
                 draw(topLeftSegment(sizeConditions),
-                    finalSegmentColors.getValue(Segment.TOP_LEFT), style, finalStrokeWidth)
+                    finalSegmentColors.getValue(Segment.TOP_LEFT), style, finalOutlineSize)
 
             if(finalChar.contains(Segment.TOP_RIGHT))
                 draw(topRightSegment(sizeConditions),
-                    finalSegmentColors.getValue(Segment.TOP_RIGHT), style, finalStrokeWidth)
+                    finalSegmentColors.getValue(Segment.TOP_RIGHT), style, finalOutlineSize)
 
             if(finalChar.contains(Segment.BOTTOM_LEFT))
                 draw(bottomLeftSegment(sizeConditions),
-                    finalSegmentColors.getValue(Segment.BOTTOM_LEFT), style, finalStrokeWidth)
+                    finalSegmentColors.getValue(Segment.BOTTOM_LEFT), style, finalOutlineSize)
 
             if(finalChar.contains(Segment.BOTTOM_RIGHT))
                 draw(bottomRightSegment(sizeConditions),
-                    finalSegmentColors.getValue(Segment.BOTTOM_RIGHT), style, finalStrokeWidth)
+                    finalSegmentColors.getValue(Segment.BOTTOM_RIGHT), style, finalOutlineSize)
             // @formatter:on
         }
     }
@@ -247,8 +248,7 @@ private fun DrawScope.draw(
         style =
             when {
                 drawOffSegmentOutline -> Stroke(OFFSEGMENT_OUTLINE_STROKE_WIDTH)
-                strokeWidth != null && style.name.startsWith(SevenSegmentStyle.OUTLINE.name) ->
-                    Stroke(strokeWidth)
+                strokeWidth != null && style.isOutline() -> Stroke(strokeWidth)
                 else -> Fill
             }
     )
