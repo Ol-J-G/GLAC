@@ -6,7 +6,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
-import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
@@ -23,8 +22,8 @@ fun MinutesTensColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()
     val currentClockPartsColors = clockSettings.clockPartsColors
 
     ColorSelector(
-        title = stringResource(id = R.string.minutes) + " " + stringResource(R.string.tens),
-        color = clockSettings.clockPartsColors.minutes?.tens
+        title = stringResource(id = R.string.min) + ". " + stringResource(R.string.tens),
+        color = clockSettings.clockPartsColors.minutes.tens
             ?: clockSettings.charColor
             ?: defaultCharColor,
         defaultColor = clockSettings.charColor ?: defaultCharColor,
@@ -33,10 +32,7 @@ fun MinutesTensColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()
                 viewModel.updateClockSettings(
                     clockSettings.copy(
                         clockPartsColors = currentClockPartsColors.copy(
-                            minutes = ClockPartsColors.DigitPairColor(
-                                tens = null,
-                                ones = currentClockPartsColors.minutes?.ones
-                            )
+                            minutes = currentClockPartsColors.minutes.copy(tens = null)
                         )
                     )
                 )
@@ -47,10 +43,7 @@ fun MinutesTensColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()
             viewModel.updateClockSettings(
                 clockSettings.copy(
                     clockPartsColors = currentClockPartsColors.copy(
-                        minutes = ClockPartsColors.DigitPairColor(
-                            tens = selectedColor,
-                            ones = currentClockPartsColors.minutes?.ones
-                        )
+                        minutes = currentClockPartsColors.minutes.copy(tens = selectedColor)
                     )
                 )
             )

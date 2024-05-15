@@ -19,14 +19,23 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import de.oljg.glac.R
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
+import de.oljg.glac.settings.clock.ui.components.color.clockparts.AntePostColorSelector
+import de.oljg.glac.settings.clock.ui.components.color.clockparts.DaytimeMarkerDividerColorSelector
+import de.oljg.glac.settings.clock.ui.components.color.clockparts.HoursMinutesDividerColorSelector
 import de.oljg.glac.settings.clock.ui.components.color.clockparts.HoursOnesColorSelector
 import de.oljg.glac.settings.clock.ui.components.color.clockparts.HoursTensColorSelector
+import de.oljg.glac.settings.clock.ui.components.color.clockparts.MeridiemColorSelector
 import de.oljg.glac.settings.clock.ui.components.color.clockparts.MinutesOnesColorSelector
+import de.oljg.glac.settings.clock.ui.components.color.clockparts.MinutesSecondsDividerColorSelector
 import de.oljg.glac.settings.clock.ui.components.color.clockparts.MinutesTensColorSelector
+import de.oljg.glac.settings.clock.ui.components.color.clockparts.SecondsOnesColorSelector
+import de.oljg.glac.settings.clock.ui.components.color.clockparts.SecondsTensColorSelector
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_BORDER_WIDTH
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_ROUNDED_CORNER_SIZE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
@@ -57,7 +66,7 @@ fun ColorsPerClockPartSelector(viewModel: ClockSettingsViewModel = hiltViewModel
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Colors per Clock Part")
+                Text(stringResource(R.string.color_per_clock_part))
                 Switch(
                     checked = clockSettings.setColorsPerClockPart,
                     onCheckedChange = {
@@ -78,8 +87,13 @@ fun ColorsPerClockPartSelector(viewModel: ClockSettingsViewModel = hiltViewModel
                     HoursOnesColorSelector()
                     MinutesTensColorSelector()
                     MinutesOnesColorSelector()
-
-
+                    SecondsTensColorSelector()
+                    SecondsOnesColorSelector()
+                    AntePostColorSelector()
+                    MeridiemColorSelector()
+                    HoursMinutesDividerColorSelector()
+                    MinutesSecondsDividerColorSelector()
+                    DaytimeMarkerDividerColorSelector()
                 }
             }
         }

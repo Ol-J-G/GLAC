@@ -93,7 +93,7 @@ fun ColorSelector(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(
-                COLOR_SELECTOR_TF_COLOR_SWATCH_SPACE, Alignment.End
+                COLOR_SELECTOR_TF_COLOR_SWATCH_SPACE * 2, Alignment.End
             )
         ) {
             OutlinedTextField(

@@ -13,7 +13,7 @@ import de.oljg.glac.settings.clock.ui.components.color.ColorSelector
 import kotlinx.coroutines.launch
 
 @Composable
-fun MinutesOnesColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
+fun SecondsOnesColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val coroutineScope = rememberCoroutineScope()
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
@@ -22,8 +22,8 @@ fun MinutesOnesColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()
     val currentClockPartsColors = clockSettings.clockPartsColors
 
     ColorSelector(
-        title = stringResource(id = R.string.min) + ". " + stringResource(R.string.ones),
-        color = clockSettings.clockPartsColors.minutes.ones
+        title = stringResource(id = R.string.sec) + ". " + stringResource(R.string.ones),
+        color = clockSettings.clockPartsColors.seconds.ones
             ?: clockSettings.charColor
             ?: defaultCharColor,
         defaultColor = clockSettings.charColor ?: defaultCharColor,
@@ -32,7 +32,7 @@ fun MinutesOnesColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()
                 viewModel.updateClockSettings(
                     clockSettings.copy(
                         clockPartsColors = currentClockPartsColors.copy(
-                            minutes = currentClockPartsColors.minutes.copy(ones = null)
+                            seconds = currentClockPartsColors.seconds.copy(ones = null)
                         )
                     )
                 )
@@ -43,7 +43,7 @@ fun MinutesOnesColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()
             viewModel.updateClockSettings(
                 clockSettings.copy(
                     clockPartsColors = currentClockPartsColors.copy(
-                        minutes = currentClockPartsColors.minutes.copy(ones = selectedColor)
+                        seconds = currentClockPartsColors.seconds.copy(ones = selectedColor)
                     )
                 )
             )

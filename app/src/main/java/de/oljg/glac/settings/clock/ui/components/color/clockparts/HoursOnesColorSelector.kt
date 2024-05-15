@@ -6,7 +6,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
-import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.core.settings.data.ClockSettings
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
@@ -24,7 +23,7 @@ fun HoursOnesColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) 
 
     ColorSelector(
         title = stringResource(id = R.string.hours) + " " + stringResource(R.string.ones),
-        color = clockSettings.clockPartsColors.hours?.ones
+        color = clockSettings.clockPartsColors.hours.ones
             ?: clockSettings.charColor
             ?: defaultCharColor,
         defaultColor = clockSettings.charColor ?: defaultCharColor,
@@ -33,10 +32,7 @@ fun HoursOnesColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) 
                 viewModel.updateClockSettings(
                     clockSettings.copy(
                         clockPartsColors = currentClockPartsColors.copy(
-                            hours = ClockPartsColors.DigitPairColor(
-                                tens = currentClockPartsColors.hours?.tens,
-                                ones = null
-                            )
+                            hours = currentClockPartsColors.hours.copy(ones = null)
                         )
                     )
                 )
@@ -47,10 +43,7 @@ fun HoursOnesColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) 
             viewModel.updateClockSettings(
                 clockSettings.copy(
                     clockPartsColors = currentClockPartsColors.copy(
-                        hours = ClockPartsColors.DigitPairColor(
-                            tens = currentClockPartsColors.hours?.tens,
-                            ones = selectedColor
-                        )
+                        hours = currentClockPartsColors.hours.copy(ones = selectedColor)
                     )
                 )
             )

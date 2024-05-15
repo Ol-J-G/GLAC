@@ -13,7 +13,7 @@ import de.oljg.glac.settings.clock.ui.components.color.ColorSelector
 import kotlinx.coroutines.launch
 
 @Composable
-fun MinutesOnesColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
+fun HoursMinutesDividerColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val coroutineScope = rememberCoroutineScope()
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
@@ -22,17 +22,18 @@ fun MinutesOnesColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()
     val currentClockPartsColors = clockSettings.clockPartsColors
 
     ColorSelector(
-        title = stringResource(id = R.string.min) + ". " + stringResource(R.string.ones),
-        color = clockSettings.clockPartsColors.minutes.ones
+        title = stringResource(R.string.div_h_m),
+        color = clockSettings.clockPartsColors.dividers.hoursMinutes
+            ?: clockSettings.dividerColor
             ?: clockSettings.charColor
             ?: defaultCharColor,
-        defaultColor = clockSettings.charColor ?: defaultCharColor,
+        defaultColor = clockSettings.dividerColor ?: clockSettings.charColor ?: defaultCharColor,
         onResetColor = {
             coroutineScope.launch {
                 viewModel.updateClockSettings(
                     clockSettings.copy(
                         clockPartsColors = currentClockPartsColors.copy(
-                            minutes = currentClockPartsColors.minutes.copy(ones = null)
+                            dividers = currentClockPartsColors.dividers.copy(hoursMinutes = null)
                         )
                     )
                 )
@@ -43,7 +44,7 @@ fun MinutesOnesColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()
             viewModel.updateClockSettings(
                 clockSettings.copy(
                     clockPartsColors = currentClockPartsColors.copy(
-                        minutes = currentClockPartsColors.minutes.copy(ones = selectedColor)
+                        dividers = currentClockPartsColors.dividers.copy(hoursMinutes = selectedColor)
                     )
                 )
             )

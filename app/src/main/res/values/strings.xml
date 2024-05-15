@@ -65,4 +65,11 @@
     <string name="color_for">color for</string>
     <string name="tens">Tens</string>
     <string name="ones">Ones</string>
+    <string name="color_per_clock_part">Color per Clock Part</string>
+    <string name="div_m_s_dm">Div. M|S/DM</string>
+    <string name="div_h_m">Div. H/M</string>
+    <string name="div_m_s">Div. M/S</string>
+    <string name="ante">Ante</string>
+    <string name="post">Post</string>
+    <string name="meridiem">Meridiem</string>
 </resources>

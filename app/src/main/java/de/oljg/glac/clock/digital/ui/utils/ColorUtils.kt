@@ -10,12 +10,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ClockPartsColors(
-    override val hours: DigitPairColor? = null,
-    override val minutes: DigitPairColor? = null,
-    override val seconds: DigitPairColor? = null,
-    override val daytimeMarker: DaytimeMarkerColor? = null,
-    val dividers: DividerColor? = null
+    override val hours: DigitPairColor = DigitPairColor(),
+    override val minutes: DigitPairColor = DigitPairColor(),
+    override val seconds: DigitPairColor = DigitPairColor(),
+    override val daytimeMarker: DaytimeMarkerColor = DaytimeMarkerColor(),
+    val dividers: DividerColor = DividerColor()
 ) : ClockParts<Color> {
+
     @Serializable
     data class DigitPairColor(
 
