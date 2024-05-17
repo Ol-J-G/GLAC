@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import de.oljg.glac.clock.digital.ui.utils.ScreenDetails
+import de.oljg.glac.clock.digital.ui.utils.evaluateScreenDetails
 import de.oljg.glac.core.navigation.GlacNavHost
 import de.oljg.glac.core.navigation.common.ClockFullScreen
 import de.oljg.glac.core.navigation.common.ClockSettingsSubScreen
@@ -27,10 +31,13 @@ import de.oljg.glac.core.navigation.common.SettingsScreen
 import de.oljg.glac.core.navigation.common.allGlacScreens
 import de.oljg.glac.core.navigation.common.glacSettingsSubScreens
 import de.oljg.glac.core.navigation.common.glacTabScreens
+import de.oljg.glac.core.navigation.common.isSettingsScreen
 import de.oljg.glac.core.navigation.common.isSettingsSubScreen
 import de.oljg.glac.core.navigation.navigateSingleTopTo
 import de.oljg.glac.core.navigation.ui.bottombar.GlacBottomNavigationBar
+import de.oljg.glac.core.navigation.ui.navigationrail.GlacNavigationRail
 import de.oljg.glac.core.navigation.ui.topappbar.GlacTabBar
+import de.oljg.glac.core.util.CommonLayoutDefaults.DEFAULT_NAVIGATION_RAIL_WIDTH
 import de.oljg.glac.ui.theme.GLACTheme
 
 @AndroidEntryPoint
@@ -62,6 +69,9 @@ fun GlacApp() {
             mutableStateOf(ClockSettingsSubScreen.route)
         }
 
+        // Basically, show navigation rail (side bar) only when screen width is medium or expanded
+        val showNavigationRail =
+                evaluateScreenDetails().screenWidthType !is ScreenDetails.DisplayType.Compact
 
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -90,19 +100,20 @@ fun GlacApp() {
                             },
 
                             /**
-                             * Let settings tab stay selected when one of the bottom bar's tabs
-                             * (sub settings) are selected.
+                             * Let settings tab stay selected when one of the bottom bar's /
+                             * navigation rail's tabs (sub settings) are selected.
                              */
-                            currentScreen = if (currentScreen.isSettingsSubScreen()) SettingsScreen
-                            else currentScreen
+                            currentScreen = if (currentScreen.isSettingsSubScreen())
+                                SettingsScreen else currentScreen
                         )
                     }
                 },
                 bottomBar = {
                     /**
-                     * Show bottom navigation bar only in case a settings screen is selected.
+                     * Show bottom navigation bar only in case a settings screen is selected and
+                     * screen width is compact.
                      */
-                    if (currentScreen is SettingsScreen || currentScreen.isSettingsSubScreen()) {
+                    if (!showNavigationRail && currentScreen.isSettingsScreen()) {
                         GlacBottomNavigationBar(
                             bottomNavigationBarScreens = glacSettingsSubScreens,
                             selected = { screen ->
@@ -116,14 +127,30 @@ fun GlacApp() {
                     }
                 }
             ) { scaffoldInnerPadding ->
-                GlacNavHost(
-                    modifier =
-                    if (currentScreen is ClockFullScreen) Modifier.padding(0.dp)
-                    else Modifier.padding(scaffoldInnerPadding),
-                    navController = navController,
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(if(currentScreen is ClockFullScreen)
+                            PaddingValues(0.dp) else scaffoldInnerPadding)
+                        .padding(start = if (showNavigationRail && currentScreen.isSettingsScreen())
+                            DEFAULT_NAVIGATION_RAIL_WIDTH else 0.dp)
+                ) {
+                    GlacNavHost(navController = navController)
+                }
             }
         }
+
+        if (showNavigationRail && currentScreen.isSettingsScreen())
+            GlacNavigationRail(
+                navigationRailScreens = glacSettingsSubScreens,
+                selected = { screen ->
+                    currentSubSettingsScreenRoute == screen.route
+                },
+                onNavigationRailItemIsClicked = { screen ->
+                    currentSubSettingsScreenRoute = screen.route
+                    navController.navigateSingleTopTo(screen.route)
+                }
+            )
     }
 }
 

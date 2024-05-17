@@ -73,7 +73,7 @@ fun ClockThemeSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 .fillMaxWidth()
                 .height(DEFAULT_VERTICAL_SPACE / 2)
         )
-        DropDownSelector(
+        DropDownSelector( //TODO: add reset theme option => allow any theme to reset to defaults => ClockTheme()
             label = stringResource(R.string.theme_name),
             selectedValue = textFieldValue,
             onNewValueSelected = { selectedThemeName ->

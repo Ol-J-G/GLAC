@@ -52,8 +52,8 @@ fun SettingsSection(
         shape = RoundedCornerShape(DEFAULT_ROUNDED_CORNER_SIZE),
         border = BorderStroke(
             width = DEFAULT_BORDER_WIDTH, color = if (expanded)
-                MaterialTheme.colorScheme.onPrimaryContainer
-            else MaterialTheme.colorScheme.onSecondaryContainer
+                MaterialTheme.colorScheme.outline
+            else MaterialTheme.colorScheme.outlineVariant
         )
     ) {
         Column {
@@ -62,8 +62,8 @@ fun SettingsSection(
                     .fillMaxWidth()
                     .height(SETTINGS_SECTION_HEIGHT)
                     .background(
-                        if (expanded) MaterialTheme.colorScheme.primaryContainer
-                        else MaterialTheme.colorScheme.secondaryContainer
+                        if (expanded) MaterialTheme.colorScheme.inverseOnSurface
+                        else MaterialTheme.colorScheme.surface
                     )
                     .clickable(onClick = { onExpandedChange(!expanded) }),
                 horizontalArrangement = Arrangement.SpaceBetween,

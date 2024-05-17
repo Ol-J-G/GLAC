@@ -111,7 +111,6 @@ fun DropDownSelector(
                     expanded = dropDownIsExpanded,
                     onDismissRequest = {
                         dropDownIsExpanded = false
-                        keyboardController?.hide()
                     },
                 ) {
                     values.forEach { value ->

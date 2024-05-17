@@ -39,12 +39,15 @@ import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.drawColorIndicator
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import de.oljg.glac.R
+import de.oljg.glac.clock.digital.ui.utils.ScreenDetails
+import de.oljg.glac.clock.digital.ui.utils.evaluateScreenDetails
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_BORDER_WIDTH
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_BUTTON_SPACE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_DEFAULT_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_FLASHING_COLOR_ANIM_DURATION
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_HEIGHT
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_HEIGHT_COMPACT
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_SLIDER_HEIGHT
 
 @Composable
@@ -93,7 +96,9 @@ fun ColorPickerDialog(
                 HsvColorPicker(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(COLOR_PICKER_HEIGHT)
+                        .height(if(evaluateScreenDetails().screenWidthType
+                                    is ScreenDetails.DisplayType.Compact)
+                            COLOR_PICKER_HEIGHT_COMPACT else COLOR_PICKER_HEIGHT)
                         .padding(COLOR_PICKER_DEFAULT_PADDING * 2),
                     drawOnPosSelected = {
                         drawColorIndicator(

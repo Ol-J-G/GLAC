@@ -26,11 +26,12 @@ interface GlacScreen {
         get() = GlacDefault.emptyImageVector
 }
 
-fun GlacScreen.isSettingsSubScreen(): Boolean {
-    return this is ClockSettingsSubScreen ||
-            this is AlarmSettingsSubScreen ||
-            this is CommonSettingsSubScreen
-}
+fun GlacScreen.isSettingsSubScreen() = this is ClockSettingsSubScreen
+        || this is AlarmSettingsSubScreen
+        || this is CommonSettingsSubScreen
+
+fun GlacScreen.isSettingsScreen() = this is SettingsScreen || this.isSettingsSubScreen()
+
 
 object ClockScreen : GlacScreen {
     override val route = GlacRoute.CLOCK.name
@@ -82,5 +83,6 @@ object AboutScreen : GlacScreen {
 
 
 val glacTabScreens = listOf(ClockScreen, AlarmsScreen, SettingsScreen, AboutScreen)
-val glacSettingsSubScreens = listOf(ClockSettingsSubScreen, AlarmSettingsSubScreen, CommonSettingsSubScreen)
+val glacSettingsSubScreens =
+        listOf(ClockSettingsSubScreen, AlarmSettingsSubScreen, CommonSettingsSubScreen)
 val allGlacScreens = glacTabScreens + glacSettingsSubScreens

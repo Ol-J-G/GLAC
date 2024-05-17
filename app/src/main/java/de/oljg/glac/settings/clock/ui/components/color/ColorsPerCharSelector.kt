@@ -52,7 +52,8 @@ fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
         modifier = Modifier
             .border(
                 width = DEFAULT_BORDER_WIDTH,
-                color = MaterialTheme.colorScheme.outlineVariant,
+                color = if(clockTheme.setColorsPerChar)
+                    MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.outlineVariant,
                 shape = RoundedCornerShape(DEFAULT_ROUNDED_CORNER_SIZE)
             )
             .padding(DEFAULT_VERTICAL_SPACE / 2),

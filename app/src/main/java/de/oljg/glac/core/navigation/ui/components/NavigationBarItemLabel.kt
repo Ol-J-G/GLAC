@@ -1,4 +1,4 @@
-package de.oljg.glac.core.navigation.ui.bottombar.components
+package de.oljg.glac.core.navigation.ui.components
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

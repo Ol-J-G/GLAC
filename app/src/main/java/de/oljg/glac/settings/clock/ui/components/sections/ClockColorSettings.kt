@@ -54,6 +54,11 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             }
         }
     ) {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(DEFAULT_VERTICAL_SPACE / 2)
+        )
         ColorSelector(
             title = stringResource(id = R.string.characters),
             color = clockTheme.charColor ?: defaultCharColor,

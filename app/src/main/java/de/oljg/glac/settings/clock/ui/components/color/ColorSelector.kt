@@ -50,8 +50,7 @@ import kotlin.random.Random
 @Composable
 fun ColorSelector(
     title: String,
-    startPadding: Dp = EDGE_PADDING / 2,
-    endPadding: Dp = EDGE_PADDING / 2,
+    edgePadding: Dp = EDGE_PADDING / 2,
     color: Color,
     defaultColor: Color,
     onResetColor: () -> Unit,
@@ -82,7 +81,6 @@ fun ColorSelector(
                 COLOR_SELECTOR_TF_COLOR_SWATCH_SPACE, Alignment.Start
             )
         ) {
-            Text(modifier = Modifier.padding(start = startPadding), text = title)
             Crossfade( // generate random color || reset color
                 targetState = showResetButton,
                 animationSpec = TweenSpec(),
@@ -119,6 +117,7 @@ fun ColorSelector(
                     }
                 }
             }
+            Text(text = title)
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -154,7 +153,7 @@ fun ColorSelector(
 
             // Current selected color
             Box(modifier = Modifier
-                .padding(end = endPadding)
+                .padding(end = edgePadding)
                 .clip(CircleShape)
                 .size(COLOR_SELECTOR_COLOR_SWATCH_SIZE)
                 .background(color)
