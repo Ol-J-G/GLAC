@@ -21,6 +21,7 @@ import de.oljg.glac.settings.clock.ui.components.sections.ClockColorSettings
 import de.oljg.glac.settings.clock.ui.components.sections.ClockDisplaySettings
 import de.oljg.glac.settings.clock.ui.components.sections.ClockDividerSettings
 import de.oljg.glac.settings.clock.ui.components.sections.ClockPreview
+import de.oljg.glac.settings.clock.ui.components.sections.ClockThemeSettings
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SCREEN_HORIZONTAL_OUTER_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SCREEN_PREVIEW_DIVIDER_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SCREEN_VERTICAL_OUTER_PADDING
@@ -54,7 +55,8 @@ fun ClockSettingsScreen() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(scrollState)
-            ) {//TODO: add different layout(use space!) for landscape/expanded (2 columns with 2 sections each?)
+            ) {//TODO: add different layout(use availabe space!) for landscape/expanded (2 columns with 2 sections each?)
+                ClockThemeSettings()
                 ClockDisplaySettings()
                 ClockCharacterSettings()
                 ClockDividerSettings()

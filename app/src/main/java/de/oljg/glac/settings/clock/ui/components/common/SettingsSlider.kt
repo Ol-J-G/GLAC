@@ -26,9 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.EDGE_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.RESET_BUTTON_SIZE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SLIDER_HEIGHT
-import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.TEXT_ICON_SPACE
 
 
 @Composable
@@ -54,10 +54,10 @@ fun SettingsSlider(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(TEXT_ICON_SPACE, Alignment.End),
+            horizontalArrangement = Arrangement.spacedBy(EDGE_PADDING, Alignment.End),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = label)
+            Text(modifier = Modifier.padding(start = EDGE_PADDING), text = label)
             AnimatedVisibility(visible = showResetButton) {
                 IconButton(onClick = {
                     showResetButton = false
@@ -72,12 +72,13 @@ fun SettingsSlider(
                 }
             }
         }
-        Text(text = sliderValuePrettyPrintFun(sliderValue))
+        Text(modifier = Modifier.padding(end = EDGE_PADDING), text = sliderValuePrettyPrintFun(sliderValue))
     }
     Spacer(modifier = Modifier
         .fillMaxWidth()
         .height(DEFAULT_VERTICAL_SPACE / 2))
     Slider(
+        modifier = Modifier.padding(horizontal = EDGE_PADDING),
         value = sliderValue,
         onValueChange = { newValue -> sliderValue = newValue },
         onValueChangeFinished = {

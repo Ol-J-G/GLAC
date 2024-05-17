@@ -17,7 +17,7 @@ import de.oljg.glac.R
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
 
 @Composable
-fun CharDividerPortraitWarning() {
+fun CharDividerSevenSegmentWarning() {
     Surface(
         modifier = Modifier
             .padding(vertical = SettingsDefaults.DEFAULT_VERTICAL_SPACE),
@@ -43,8 +43,7 @@ fun CharDividerPortraitWarning() {
                 color = MaterialTheme.colorScheme.error
             )
             Text(
-                text = stringResource(
-                    R.string.character_dividers_are_not_really_useful_in_portrait_mode),
+                text = stringResource(R.string.character_dividers_are_not_suitable_for_7_segement),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.error
             )
@@ -57,12 +56,6 @@ fun CharDividerPortraitWarning() {
             Text(
                 stringResource(
                     R.string.please_select_a_different_divider_style_to_make_further_settings),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.error
-            )
-            Text(
-                stringResource(
-                    R.string.alternatively_rotate_your_device_to_set_up_character_dividers),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.error
             )

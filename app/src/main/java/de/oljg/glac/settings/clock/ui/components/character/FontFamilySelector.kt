@@ -60,8 +60,8 @@ fun FontFamilySelector(
         onNewValueSelected = onNewFontFamilySelected,
         values = allFontFileNamesAndUris,
         prettyPrintValue = String::prettyPrintFontName,
-        maxWidthFraction = .85f
-    ) {
-        ImportFontFamilyButton(onNewFontFamilyImported = onNewFontFamilyImported)
-    }
+        addValueComponent = {
+            ImportFontFamilyButton(onNewFontFamilyImported = onNewFontFamilyImported)
+        }
+    )
 }

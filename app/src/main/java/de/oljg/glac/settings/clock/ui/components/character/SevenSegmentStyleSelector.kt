@@ -17,8 +17,7 @@ fun SevenSegmentStyleSelector(
         selectedValue = selectedSevenSegmentStyle.name,
         onNewValueSelected = onNewSevenSegmentStyleSelected,
         values = SEVEN_SEGMENT_STYLES,
-        prettyPrintValue = String::prettyPrintEnumName,
-        maxWidthFraction = .8f
+        prettyPrintValue = String::prettyPrintEnumName
     )
 }
 

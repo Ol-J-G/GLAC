@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import de.oljg.glac.R
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_SELECTOR_COLOR_SWATCH_SIZE
@@ -39,6 +40,7 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_SELECTOR_HEIG
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_SELECTOR_HEX_TEXTFIELD_WIDTH
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_SELECTOR_TF_COLOR_SWATCH_SPACE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_SELECTOR_TF_TOP_PADDING
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.EDGE_PADDING
 import de.oljg.glac.settings.clock.ui.utils.argbHexCode
 import de.oljg.glac.settings.clock.ui.utils.fromHexCode
 import de.oljg.glac.settings.clock.ui.utils.isArgbHexCode
@@ -48,6 +50,8 @@ import kotlin.random.Random
 @Composable
 fun ColorSelector(
     title: String,
+    startPadding: Dp = EDGE_PADDING / 2,
+    endPadding: Dp = EDGE_PADDING / 2,
     color: Color,
     defaultColor: Color,
     onResetColor: () -> Unit,
@@ -78,7 +82,7 @@ fun ColorSelector(
                 COLOR_SELECTOR_TF_COLOR_SWATCH_SPACE, Alignment.Start
             )
         ) {
-            Text(title)
+            Text(modifier = Modifier.padding(start = startPadding), text = title)
             Crossfade( // generate random color || reset color
                 targetState = showResetButton,
                 animationSpec = TweenSpec(),
@@ -150,6 +154,7 @@ fun ColorSelector(
 
             // Current selected color
             Box(modifier = Modifier
+                .padding(end = endPadding)
                 .clip(CircleShape)
                 .size(COLOR_SELECTOR_COLOR_SWATCH_SIZE)
                 .background(color)

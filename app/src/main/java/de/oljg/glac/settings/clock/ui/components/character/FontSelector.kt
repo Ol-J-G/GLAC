@@ -9,6 +9,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.settings.data.ClockSettings
+import de.oljg.glac.core.settings.data.ClockTheme
 import de.oljg.glac.core.util.FontStyle
 import de.oljg.glac.core.util.FontWeight
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
@@ -21,22 +22,33 @@ fun FontSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
     ).value
+    val clockThemeName = clockSettings.clockThemeName
+    val clockTheme = clockSettings.themes.getOrDefault(
+        key = clockThemeName,
+        defaultValue = ClockTheme()
+    )
 
     Column {
         FontFamilySelector(
-            label = "${stringResource(R.string.family)}:  ",
-            selectedFontFamily = clockSettings.fontName,
+            label = "${stringResource(R.string.family)}  ",
+            selectedFontFamily = clockTheme.fontName,
             onNewFontFamilySelected = { newFontName ->
                 coroutineScope.launch {
                     viewModel.updateClockSettings(
-                        clockSettings.copy(fontName = newFontName)
+                        clockSettings.copy(
+                            themes = clockSettings.themes.put(
+                                clockThemeName, clockTheme.copy(fontName = newFontName))
+                        )
                     )
                 }
             },
             onNewFontFamilyImported = { newFontUri ->
                 coroutineScope.launch {
                     viewModel.updateClockSettings(
-                        clockSettings.copy(fontName = newFontUri)
+                        clockSettings.copy(
+                            themes = clockSettings.themes.put(
+                                clockThemeName, clockTheme.copy(fontName = newFontUri))
+                        )
                     )
                 }
             }
@@ -51,33 +63,41 @@ fun FontSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
          * "double italic" :> etc.), which is going to confuse users for sure(!), so, better don't
          * display weight/style options at all.
          *
-         * Instead, weight/style is part of [ClockSettings.fontName], e.g.:
+         * Instead, weight/style is part of [ClockTheme.fontName], e.g.:
          * 'file://...Titillium-BoldItalic.ttf' will appear as 'Titillium BoldItalic' ...
          *
          * (Maybe sometimes, it's conceivable that there will be an option for users
          * to select font files and map it to appropriate weight/style, and then weigth/style
          * options could stay visible...)
          */
-        AnimatedVisibility(visible = !clockSettings.fontName.isFileUri()) {
+        AnimatedVisibility(visible = !clockTheme.fontName.isFileUri()) {
             Column {
                 FontWeightSelector(
-                    label = "${stringResource(R.string.weight)}:",
-                    selectedFontWeight = clockSettings.fontWeight,
+                    label = stringResource(R.string.weight),
+                    selectedFontWeight = clockTheme.fontWeight,
                     onNewFontWeightSelected = { newFontWeight ->
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
-                                clockSettings.copy(fontWeight = FontWeight.valueOf(newFontWeight))
+                                clockSettings.copy(
+                                    themes = clockSettings.themes.put(
+                                        clockThemeName, clockTheme.copy(
+                                            fontWeight = FontWeight.valueOf(newFontWeight)))
+                                )
                             )
                         }
                     }
                 )
                 FontStyleSelector(
-                    label = "${stringResource(R.string.style)}:    ",
-                    selectedFontStyle = clockSettings.fontStyle,
+                    label = "${stringResource(R.string.style)}    ",
+                    selectedFontStyle = clockTheme.fontStyle,
                     onNewFontStyleSelected = { newFontStyle ->
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
-                                clockSettings.copy(fontStyle = FontStyle.valueOf(newFontStyle))
+                                clockSettings.copy(
+                                    themes = clockSettings.themes.put(
+                                        clockThemeName, clockTheme.copy(
+                                            fontStyle = FontStyle.valueOf(newFontStyle)))
+                                )
                             )
                         }
                     }

@@ -12,6 +12,7 @@ import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_COLON_FIRST_CIRCLE_POSITION
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_COLON_SECOND_CIRCLE_POSITION
 import de.oljg.glac.core.settings.data.ClockSettings
+import de.oljg.glac.core.settings.data.ClockTheme
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSlider
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
@@ -24,16 +25,24 @@ fun ColonDividerOptionsSelector(viewModel: ClockSettingsViewModel = hiltViewMode
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
     ).value
+    val clockThemeName = clockSettings.clockThemeName
+    val clockTheme = clockSettings.themes.getOrDefault(
+        key = clockThemeName,
+        defaultValue = ClockTheme()
+    )
 
     SettingsSlider(
         label = stringResource(R.string.first_circle_position),
-        value = clockSettings.colonFirstCirclePosition,
+        value = clockTheme.colonFirstCirclePosition,
         defaultValue = DEFAULT_COLON_FIRST_CIRCLE_POSITION,
         sliderValuePrettyPrintFun = Float::prettyPrintCirclePosition,
         onValueChangeFinished = { newPosition ->
             coroutineScope.launch {
                 viewModel.updateClockSettings(
-                    clockSettings.copy(colonFirstCirclePosition = newPosition)
+                    clockSettings.copy(
+                        themes = clockSettings.themes.put(
+                            clockThemeName, clockTheme.copy(colonFirstCirclePosition = newPosition))
+                    )
                 )
             }
         },
@@ -41,7 +50,9 @@ fun ColonDividerOptionsSelector(viewModel: ClockSettingsViewModel = hiltViewMode
             coroutineScope.launch {
                 viewModel.updateClockSettings(
                     clockSettings.copy(
-                        colonFirstCirclePosition = DEFAULT_COLON_FIRST_CIRCLE_POSITION
+                        themes = clockSettings.themes.put(
+                            clockThemeName, clockTheme.copy(
+                                colonFirstCirclePosition = DEFAULT_COLON_FIRST_CIRCLE_POSITION))
                     )
                 )
             }
@@ -50,13 +61,16 @@ fun ColonDividerOptionsSelector(viewModel: ClockSettingsViewModel = hiltViewMode
     Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
     SettingsSlider(
         label = stringResource(R.string.second_circle_position),
-        value = clockSettings.colonSecondCirclePosition,
+        value = clockTheme.colonSecondCirclePosition,
         defaultValue = DEFAULT_COLON_SECOND_CIRCLE_POSITION,
         sliderValuePrettyPrintFun = Float::prettyPrintCirclePosition,
         onValueChangeFinished = { newPosition ->
             coroutineScope.launch {
                 viewModel.updateClockSettings(
-                    clockSettings.copy(colonSecondCirclePosition = newPosition)
+                    clockSettings.copy(
+                        themes = clockSettings.themes.put(
+                            clockThemeName, clockTheme.copy(colonSecondCirclePosition = newPosition))
+                    )
                 )
             }
         },
@@ -64,7 +78,9 @@ fun ColonDividerOptionsSelector(viewModel: ClockSettingsViewModel = hiltViewMode
             coroutineScope.launch {
                 viewModel.updateClockSettings(
                     clockSettings.copy(
-                        colonSecondCirclePosition = DEFAULT_COLON_SECOND_CIRCLE_POSITION
+                        themes = clockSettings.themes.put(
+                            clockThemeName, clockTheme.copy(
+                                colonSecondCirclePosition = DEFAULT_COLON_SECOND_CIRCLE_POSITION))
                     )
                 )
             }

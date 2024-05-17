@@ -8,4 +8,6 @@ object CommonClockUtils {
     val DIGIT_CHARS = listOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
     val DAYTIME_MARKER_CHARS = listOf('A', 'P', 'M')
     val CLOCK_CHARS = DIGIT_CHARS + DAYTIME_MARKER_CHARS
+
+    const val DEFAULT_THEME_NAME = "Default"
 }

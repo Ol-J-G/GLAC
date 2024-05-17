@@ -16,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.core.settings.data.ClockSettings
+import de.oljg.glac.core.settings.data.ClockTheme
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.color.ColorSelector
@@ -33,6 +34,11 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
     ).value
+    val clockThemeName = clockSettings.clockThemeName
+    val clockTheme = clockSettings.themes.getOrDefault(
+        key = clockThemeName,
+        defaultValue = ClockTheme()
+    )
     val defaultCharColor = defaultColor()
 
     SettingsSection(
@@ -50,16 +56,26 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     ) {
         ColorSelector(
             title = stringResource(id = R.string.characters),
-            color = clockSettings.charColor ?: defaultCharColor,
+            color = clockTheme.charColor ?: defaultCharColor,
             defaultColor = defaultCharColor,
             onResetColor = {
                 coroutineScope.launch {
-                    viewModel.updateClockSettings(clockSettings.copy(charColor = null))
+                    viewModel.updateClockSettings(
+                        clockSettings.copy(
+                            themes = clockSettings.themes.put(
+                                clockThemeName, clockTheme.copy(charColor = null))
+                        )
+                    )
                 }
             }
         ) { selectedColor ->
             coroutineScope.launch {
-                viewModel.updateClockSettings(clockSettings.copy(charColor = selectedColor))
+                viewModel.updateClockSettings(
+                    clockSettings.copy(
+                        themes = clockSettings.themes.put(
+                            clockThemeName, clockTheme.copy(charColor = selectedColor))
+                    )
+                )
             }
         }
         Spacer(
@@ -69,16 +85,26 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
         )
         ColorSelector(
             title = stringResource(R.string.dividers),
-            color = clockSettings.dividerColor ?: clockSettings.charColor ?: defaultCharColor,
-            defaultColor = clockSettings.charColor ?: defaultCharColor,
+            color = clockTheme.dividerColor ?: clockTheme.charColor ?: defaultCharColor,
+            defaultColor = clockTheme.charColor ?: defaultCharColor,
             onResetColor = {
                 coroutineScope.launch {
-                    viewModel.updateClockSettings(clockSettings.copy(dividerColor = null))
+                    viewModel.updateClockSettings(
+                        clockSettings.copy(
+                            themes = clockSettings.themes.put(
+                                clockThemeName, clockTheme.copy(dividerColor = null))
+                        )
+                    )
                 }
             },
         ) { selectedColor ->
             coroutineScope.launch {
-                viewModel.updateClockSettings(clockSettings.copy(dividerColor = selectedColor))
+                viewModel.updateClockSettings(
+                    clockSettings.copy(
+                        themes = clockSettings.themes.put(
+                            clockThemeName, clockTheme.copy(dividerColor = selectedColor))
+                    )
+                )
             }
         }
         Spacer(modifier = Modifier
@@ -91,7 +117,7 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             .height(DEFAULT_VERTICAL_SPACE))
         ColorsPerClockPartSelector()
 
-        AnimatedVisibility(visible = clockSettings.clockCharType == ClockCharType.SEVEN_SEGMENT) {
+        AnimatedVisibility(visible = clockTheme.clockCharType == ClockCharType.SEVEN_SEGMENT) {
             Column {
                 Spacer(
                     modifier = Modifier

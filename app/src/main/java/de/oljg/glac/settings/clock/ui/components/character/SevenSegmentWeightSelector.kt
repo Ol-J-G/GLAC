@@ -17,7 +17,6 @@ fun SevenSegmentWeightSelector(
         selectedValue = selectedSevenSegmentWeight.name,
         onNewValueSelected = onNewSevenSegmentWeightSelected,
         values = SEVEN_SEGMENT_WEIGHTS,
-        prettyPrintValue = String::prettyPrintEnumName,
-        maxWidthFraction = .8f
+        prettyPrintValue = String::prettyPrintEnumName
     )
 }

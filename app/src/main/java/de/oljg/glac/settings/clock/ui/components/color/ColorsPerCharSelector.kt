@@ -23,12 +23,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.settings.data.ClockSettings
+import de.oljg.glac.core.settings.data.ClockTheme
 import de.oljg.glac.core.util.CommonClockUtils.CLOCK_CHARS
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
-import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_BORDER_WIDTH
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_ROUNDED_CORNER_SIZE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.EDGE_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.MULTI_COLOR_SELECTOR_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SECTION_HEIGHT
 import kotlinx.coroutines.launch
@@ -39,12 +41,17 @@ fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
     ).value
+    val clockThemeName = clockSettings.clockThemeName
+    val clockTheme = clockSettings.themes.getOrDefault(
+        key = clockThemeName,
+        defaultValue = ClockTheme()
+    )
     val defaultCharColor = defaultColor()
 
     Surface(
         modifier = Modifier
             .border(
-                width = SettingsDefaults.DEFAULT_BORDER_WIDTH,
+                width = DEFAULT_BORDER_WIDTH,
                 color = MaterialTheme.colorScheme.outlineVariant,
                 shape = RoundedCornerShape(DEFAULT_ROUNDED_CORNER_SIZE)
             )
@@ -58,36 +65,48 @@ fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(stringResource(R.string.color_per_character))
+                Text(
+                    modifier = Modifier.padding(start = EDGE_PADDING / 2),
+                    text = stringResource(R.string.color_per_character)
+                )
                 Switch(
-                    checked = clockSettings.setColorsPerChar,
+                    checked = clockTheme.setColorsPerChar,
                     onCheckedChange = {
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
-                                clockSettings.copy(setColorsPerChar = !clockSettings.setColorsPerChar)
+                                clockSettings.copy(
+                                    themes = clockSettings.themes.put(
+                                        clockThemeName, clockTheme.copy(
+                                            setColorsPerChar = !clockTheme.setColorsPerChar))
+                                )
                             )
                         }
                     }
                 )
             }
 
-            AnimatedVisibility(visible = clockSettings.setColorsPerChar) {
+            AnimatedVisibility(visible = clockTheme.setColorsPerChar) {
                 Column {
-                    Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+                    Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE / 2))
                     CLOCK_CHARS.forEach { clockChar ->
                         ColorSelector(
                             title = clockChar.toString(),
-                            color =
-                            clockSettings.charColors.getOrDefault(
+                            color = clockTheme.charColors.getOrDefault(
                                 key = clockChar,
-                                defaultValue = clockSettings.charColor ?: defaultCharColor
+                                defaultValue = clockTheme.charColor ?: defaultCharColor
                             ),
-                            defaultColor = clockSettings.charColor ?: defaultCharColor,
+                            defaultColor = clockTheme.charColor ?: defaultCharColor,
                             onResetColor = {
                                 coroutineScope.launch {
                                     viewModel.updateClockSettings(
                                         clockSettings.copy(
-                                            charColors = clockSettings.charColors.remove(clockChar)
+                                            themes = clockSettings.themes.put(
+                                                clockThemeName, clockTheme.copy(
+                                                    charColors = clockTheme.charColors.remove(
+                                                        clockChar
+                                                    )
+                                                )
+                                            )
                                         )
                                     )
                                 }
@@ -96,9 +115,13 @@ fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                             coroutineScope.launch {
                                 viewModel.updateClockSettings(
                                     clockSettings.copy(
-                                        charColors = clockSettings.charColors.put(
-                                            clockChar,
-                                            selectedColor
+                                        themes = clockSettings.themes.put(
+                                            clockThemeName, clockTheme.copy(
+                                                charColors = clockTheme.charColors.put(
+                                                    clockChar,
+                                                    selectedColor
+                                                )
+                                            )
                                         )
                                     )
                                 )

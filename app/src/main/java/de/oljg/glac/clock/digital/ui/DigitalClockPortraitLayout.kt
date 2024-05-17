@@ -48,6 +48,7 @@ import de.oljg.glac.clock.digital.ui.utils.evalutateDividerCount
 import de.oljg.glac.clock.digital.ui.utils.isDaytimeMarkerChar
 import de.oljg.glac.clock.digital.ui.utils.pxToDp
 import de.oljg.glac.core.settings.data.ClockSettings
+import de.oljg.glac.core.settings.data.ClockTheme
 import de.oljg.glac.core.util.ClockPartsTestTags
 import de.oljg.glac.core.util.TestTags
 import de.oljg.glac.core.util.defaultColor
@@ -88,6 +89,10 @@ fun DigitalClockPortraitLayout(
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
     ).value
+    val clockTheme = clockSettings.themes.getOrDefault(
+        key = clockSettings.clockThemeName,
+        defaultValue = ClockTheme()
+    )
 
     var previewState by remember {
         mutableStateOf(PreviewState())
@@ -99,11 +104,11 @@ fun DigitalClockPortraitLayout(
     if (clockCharType == ClockCharType.FONT &&
         // Re-measure when one of the following changes (needed for settings preview)
         (previewState.currentTimeStringLength != currentTimeWithoutSeparators.length ||
-                previewState.currentFont != clockSettings.fontName ||
-                previewState.currentFontWeight != clockSettings.fontWeight.name ||
-                previewState.currentFontStyle != clockSettings.fontStyle.name ||
-                previewState.currentDividerStyle != clockSettings.dividerStyle.name ||
-                previewState.currentDividerThickness != clockSettings.dividerThickness
+                previewState.currentFont != clockTheme.fontName ||
+                previewState.currentFontWeight != clockTheme.fontWeight.name ||
+                previewState.currentFontStyle != clockTheme.fontStyle.name ||
+                previewState.currentDividerStyle != clockTheme.dividerStyle.name ||
+                previewState.currentDividerThickness != clockTheme.dividerThickness
                 )
     ) {
         /**
@@ -130,11 +135,11 @@ fun DigitalClockPortraitLayout(
                 finalFontBoundsSize = measuredSize
                 previewState = previewState.copy(
                     currentTimeStringLength = currentTimeWithoutSeparators.length,
-                    currentFont = clockSettings.fontName,
-                    currentFontWeight = clockSettings.fontWeight.name,
-                    currentFontStyle = clockSettings.fontStyle.name,
-                    currentDividerStyle = clockSettings.dividerStyle.name,
-                    currentDividerThickness = clockSettings.dividerThickness
+                    currentFont = clockTheme.fontName,
+                    currentFontWeight = clockTheme.fontWeight.name,
+                    currentFontStyle = clockTheme.fontStyle.name,
+                    currentDividerStyle = clockTheme.dividerStyle.name,
+                    currentDividerThickness = clockTheme.dividerThickness
                 )
             }
         )

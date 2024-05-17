@@ -10,6 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.settings.data.ClockSettings
+import de.oljg.glac.core.settings.data.ClockTheme
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
 import kotlinx.coroutines.launch
@@ -20,30 +21,46 @@ fun DividerCharsSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
     ).value
+    val clockThemeName = clockSettings.clockThemeName
+    val clockTheme = clockSettings.themes.getOrDefault(
+        key = clockThemeName,
+        defaultValue = ClockTheme()
+    )
 
     DividerCharSelector(
         title = stringResource(R.string.between) + " " +
                 stringResource(R.string.hours) + " / " +
                 stringResource(R.string.minutes),
-        char = clockSettings.hoursMinutesDividerChar,
+        char = clockTheme.hoursMinutesDividerChar,
         onCharChanged = { newChar ->
             coroutineScope.launch {
                 viewModel.updateClockSettings(
-                    clockSettings.copy(hoursMinutesDividerChar = newChar)
+                    clockSettings.copy(
+                        themes = clockSettings.themes.put(
+                            clockThemeName, clockTheme.copy(hoursMinutesDividerChar = newChar))
+                    )
                 )
             }
         }
     )
-    Divider(modifier = Modifier.padding(vertical = SettingsDefaults.DEFAULT_VERTICAL_SPACE))
+    Divider(
+        modifier = Modifier.padding(
+            top = SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2,
+            bottom = SettingsDefaults.DEFAULT_VERTICAL_SPACE
+        )
+    )
     DividerCharSelector(
         title = stringResource(R.string.between) + " " +
                 stringResource(R.string.minutes) + " / " +
                 stringResource(R.string.seconds),
-        char = clockSettings.minutesSecondsDividerChar,
+        char = clockTheme.minutesSecondsDividerChar,
         onCharChanged = { newChar ->
             coroutineScope.launch {
                 viewModel.updateClockSettings(
-                    clockSettings.copy(minutesSecondsDividerChar = newChar)
+                    clockSettings.copy(
+                        themes = clockSettings.themes.put(
+                            clockThemeName, clockTheme.copy(minutesSecondsDividerChar = newChar))
+                    )
                 )
             }
         }
@@ -54,11 +71,14 @@ fun DividerCharsSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 stringResource(R.string.min) + ". | " +
                 stringResource(R.string.sec) + ". / " +
                 stringResource(R.string.daytime_marker),
-        char = clockSettings.daytimeMarkerDividerChar,
+        char = clockTheme.daytimeMarkerDividerChar,
         onCharChanged = { newChar ->
             coroutineScope.launch {
                 viewModel.updateClockSettings(
-                    clockSettings.copy(daytimeMarkerDividerChar = newChar)
+                    clockSettings.copy(
+                        themes = clockSettings.themes.put(
+                            clockThemeName, clockTheme.copy(daytimeMarkerDividerChar = newChar))
+                    )
                 )
             }
         }

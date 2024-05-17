@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.settings.data.ClockSettings
+import de.oljg.glac.core.settings.data.ClockTheme
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSwitch
@@ -26,6 +27,11 @@ fun ClockDisplaySettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
     ).value
+    val clockThemeName = clockSettings.clockThemeName
+    val clockTheme = clockSettings.themes.getOrDefault(
+        key = clockThemeName,
+        defaultValue = ClockTheme()
+    )
 
     SettingsSection(
         sectionTitle = stringResource(R.string.display),
@@ -43,20 +49,30 @@ fun ClockDisplaySettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
         Spacer(modifier = Modifier.fillMaxWidth().height(DEFAULT_VERTICAL_SPACE / 2))
         SettingsSwitch(
             label = stringResource(R.string.seconds),
-            checked = clockSettings.showSeconds,
+            checked = clockTheme.showSeconds,
             onCheckedChange = { newValue ->
                 coroutineScope.launch {
-                    viewModel.updateClockSettings(clockSettings.copy(showSeconds = newValue))
+                    viewModel.updateClockSettings(
+                        clockSettings.copy(
+                            themes = clockSettings.themes.put(
+                                clockThemeName, clockTheme.copy(showSeconds = newValue))
+                        )
+                    )
                 }
             }
         )
         Spacer(modifier = Modifier.fillMaxWidth().height(DEFAULT_VERTICAL_SPACE / 2))
         SettingsSwitch(
             label = stringResource(R.string.daytime_marker),
-            checked = clockSettings.showDaytimeMarker,
+            checked = clockTheme.showDaytimeMarker,
             onCheckedChange = { newValue ->
                 coroutineScope.launch {
-                    viewModel.updateClockSettings(clockSettings.copy(showDaytimeMarker = newValue))
+                    viewModel.updateClockSettings(
+                        clockSettings.copy(
+                            themes = clockSettings.themes.put(
+                                clockThemeName, clockTheme.copy(showDaytimeMarker = newValue))
+                        )
+                    )
                 }
             }
         )

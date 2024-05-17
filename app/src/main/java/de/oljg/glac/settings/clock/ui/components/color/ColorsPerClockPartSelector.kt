@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.settings.data.ClockSettings
+import de.oljg.glac.core.settings.data.ClockTheme
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.color.clockparts.AntePostColorSelector
 import de.oljg.glac.settings.clock.ui.components.color.clockparts.DaytimeMarkerDividerColorSelector
@@ -38,6 +39,7 @@ import de.oljg.glac.settings.clock.ui.components.color.clockparts.SecondsTensCol
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_BORDER_WIDTH
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_ROUNDED_CORNER_SIZE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.EDGE_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.MULTI_COLOR_SELECTOR_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SECTION_HEIGHT
 import kotlinx.coroutines.launch
@@ -48,6 +50,11 @@ fun ColorsPerClockPartSelector(viewModel: ClockSettingsViewModel = hiltViewModel
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
     ).value
+    val clockThemeName = clockSettings.clockThemeName
+    val clockTheme = clockSettings.themes.getOrDefault(
+        key = clockThemeName,
+        defaultValue = ClockTheme()
+    )
 
     Surface(
         modifier = Modifier
@@ -66,23 +73,30 @@ fun ColorsPerClockPartSelector(viewModel: ClockSettingsViewModel = hiltViewModel
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(stringResource(R.string.color_per_clock_part))
+                Text(
+                    modifier = Modifier.padding(start = EDGE_PADDING / 2),
+                    text = stringResource(R.string.color_per_clock_part)
+                )
                 Switch(
-                    checked = clockSettings.setColorsPerClockPart,
+                    checked = clockTheme.setColorsPerClockPart,
                     onCheckedChange = {
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
                                 clockSettings.copy(
-                                    setColorsPerClockPart = !clockSettings.setColorsPerClockPart)
+                                    themes = clockSettings.themes.put(
+                                        clockThemeName, clockTheme.copy(
+                                            setColorsPerClockPart =
+                                            !clockTheme.setColorsPerClockPart))
+                                )
                             )
                         }
                     }
                 )
             }
 
-            AnimatedVisibility(visible = clockSettings.setColorsPerClockPart) {
+            AnimatedVisibility(visible = clockTheme.setColorsPerClockPart) {
                 Column {
-                    Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+                    Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE / 2))
                     HoursTensColorSelector()
                     HoursOnesColorSelector()
                     MinutesTensColorSelector()

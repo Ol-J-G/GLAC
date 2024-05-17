@@ -81,7 +81,7 @@ fun Float.prettyPrintPercentage(postfix: String = " %"): String {
 }
 
 
-fun String.prettyPrintEnumName(): String {
+fun String.prettyPrintEnumName(): String { //TODO: remove this and use string res instead => i18n (see SegmentColorsSelector)
     val words = this.lowercase().split('_')
     return buildString {
         words.forEachIndexed { index, word ->
@@ -110,6 +110,9 @@ fun isSevenSegmentItalicOrReverseItalic(
 ) = clockCharType == ClockCharType.SEVEN_SEGMENT && sevenSegmentStyle.isItalicOrReverseItalic()
 
 object SettingsDefaults {
+    const val MIN_THEME_NAME_LENGTH = 1
+    const val MAX_THEME_NAME_LENGTH = 30
+
     const val PREVIEW_SIZE_FACTOR = .3f
 
     val SETTINGS_SCREEN_HORIZONTAL_OUTER_PADDING = 8.dp
@@ -127,12 +130,12 @@ object SettingsDefaults {
 
     val RADIO_BUTTON_ROW_HEIGHT = 56.dp
     val SETTINGS_SECTION_HEIGHT = 48.dp
-    val DEFAULT_ICON_BUTTON_SIZE = 22.dp
+    val DEFAULT_ICON_BUTTON_SIZE = 44.dp
     val RESET_BUTTON_SIZE = 36.dp
     val SETTINGS_SLIDER_HEIGHT = 58.dp
-    val TEXT_ICON_SPACE = 12.dp
+    val EDGE_PADDING = 12.dp
 
-    val CLOCK_CHAR_TYPE_FONT_SIZE = 18.sp
+    val CLOCK_CHAR_TYPE_FONT_SIZE = 20.sp
     const val PIXEL = "Pixel"
 
     val COLOR_SELECTOR_HEIGHT = 92.dp

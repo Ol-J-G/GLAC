@@ -25,6 +25,7 @@ import de.oljg.glac.clock.digital.ui.utils.evaluateFont
 import de.oljg.glac.clock.digital.ui.utils.pxToDp
 import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
 import de.oljg.glac.core.settings.data.ClockSettings
+import de.oljg.glac.core.settings.data.ClockTheme
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.utils.isSevenSegmentItalicOrReverseItalic
@@ -47,18 +48,23 @@ fun DigitalClockScreen(
         initial = ClockSettings()
     ).value
 
-    val clockCharType = clockSettings.clockCharType
+    val clockTheme = clockSettings.themes.getOrDefault(
+        key = clockSettings.clockThemeName,
+        defaultValue = ClockTheme()
+    )
+
+    val clockCharType = clockTheme.clockCharType
 
     val context = LocalContext.current
     val (finalFontFamily, finalFontWeight, finalFontStyle) = evaluateFont(
         context,
-        clockSettings.fontName,
-        clockSettings.fontWeight.name,
-        clockSettings.fontStyle.name
+        clockTheme.fontName,
+        clockTheme.fontWeight.name,
+        clockTheme.fontStyle.name
     )
 
     // In case of 7-seg italic style and only in landscape o. => rotate divider appropriately
-    val currentSevenSegmentStyle = clockSettings.sevenSegmentStyle
+    val currentSevenSegmentStyle = clockTheme.sevenSegmentStyle
     val dividerRotateAngle =
             if (isSevenSegmentItalicOrReverseItalic(clockCharType, currentSevenSegmentStyle))
                 evaluateDividerRotateAngle(currentSevenSegmentStyle)
@@ -68,7 +74,7 @@ fun DigitalClockScreen(
              * fonts, they have unknown/different italic angles, so, let user set it up, just
              * according to some imported font.
              */
-            else clockSettings.dividerRotateAngle
+            else clockTheme.dividerRotateAngle
 
     /**
      * Clock character colors will be drawn layer-like as follows:
@@ -87,44 +93,44 @@ fun DigitalClockScreen(
      * * while AM/PM will be gray, because they're unset, so default all chars grey will be drawn
      * ...
      */
-    val charColor = clockSettings.charColor ?: defaultColor()
-    val charColors = if (clockSettings.setColorsPerChar)
-        clockSettings.charColors else emptyMap()
+    val charColor = clockTheme.charColor ?: defaultColor()
+    val charColors = if (clockTheme.setColorsPerChar)
+        clockTheme.charColors else emptyMap()
 
     val finalCharColors = setSpecifiedColors(charColors, defaultClockCharColors(charColor))
-    val finalClockPartsColors = if (clockSettings.setColorsPerClockPart)
-        clockSettings.clockPartsColors else ClockPartsColors()
+    val finalClockPartsColors = if (clockTheme.setColorsPerClockPart)
+        clockTheme.clockPartsColors else ClockPartsColors()
 
-    val segmentColors = if (clockSettings.setSegmentColors)
-        clockSettings.segmentColors else emptyMap()
+    val segmentColors = if (clockTheme.setSegmentColors)
+        clockTheme.segmentColors else emptyMap()
 
     val dividerAttributes = DividerAttributes(
-        dividerStyle = clockSettings.dividerStyle,
-        dividerThickness = clockSettings.dividerThickness.pxToDp(),
-        dividerLengthPercentage = clockSettings.dividerLengthPercentage,
-        dividerDashCount = clockSettings.dividerDashCount,
-        dividerDashDottedPartCount = clockSettings.dividerDashDottedPartCount,
-        dividerLineCap = if (clockSettings.dividerLineEnd == DividerLineEnd.ROUND)
+        dividerStyle = clockTheme.dividerStyle,
+        dividerThickness = clockTheme.dividerThickness.pxToDp(),
+        dividerLengthPercentage = clockTheme.dividerLengthPercentage,
+        dividerDashCount = clockTheme.dividerDashCount,
+        dividerDashDottedPartCount = clockTheme.dividerDashDottedPartCount,
+        dividerLineCap = if (clockTheme.dividerLineEnd == DividerLineEnd.ROUND)
             StrokeCap.Round else StrokeCap.Butt,
         dividerRotateAngle = dividerRotateAngle,
-        colonFirstCirclePosition = clockSettings.colonFirstCirclePosition,
-        colonSecondCirclePosition = clockSettings.colonSecondCirclePosition,
-        dividerColor = clockSettings.dividerColor ?: charColor,
-        hoursMinutesDividerChar = clockSettings.hoursMinutesDividerChar,
-        minutesSecondsDividerChar = clockSettings.minutesSecondsDividerChar,
-        daytimeMarkerDividerChar = clockSettings.daytimeMarkerDividerChar
+        colonFirstCirclePosition = clockTheme.colonFirstCirclePosition,
+        colonSecondCirclePosition = clockTheme.colonSecondCirclePosition,
+        dividerColor = clockTheme.dividerColor ?: charColor,
+        hoursMinutesDividerChar = clockTheme.hoursMinutesDividerChar,
+        minutesSecondsDividerChar = clockTheme.minutesSecondsDividerChar,
+        daytimeMarkerDividerChar = clockTheme.daytimeMarkerDividerChar
     )
 
     val timePattern = buildString {
-        if (clockSettings.showDaytimeMarker) append("hh") else append("HH")
-        append(clockSettings.hoursMinutesDividerChar)
+        if (clockTheme.showDaytimeMarker) append("hh") else append("HH")
+        append(clockTheme.hoursMinutesDividerChar)
         append("mm")
-        if (clockSettings.showSeconds) {
-            append(clockSettings.minutesSecondsDividerChar)
+        if (clockTheme.showSeconds) {
+            append(clockTheme.minutesSecondsDividerChar)
             append("ss")
         }
-        if (clockSettings.showDaytimeMarker) {
-            append(clockSettings.daytimeMarkerDividerChar)
+        if (clockTheme.showDaytimeMarker) {
+            append(clockTheme.daytimeMarkerDividerChar)
             append("a")
         }
     }
@@ -140,7 +146,7 @@ fun DigitalClockScreen(
              * Just show 'A' or 'P' instead of "AM"/"PM" in case of 7-segment.
              * => cut off 'M', which is always the last char...
              */
-            if (clockCharType == ClockCharType.SEVEN_SEGMENT && clockSettings.showDaytimeMarker)
+            if (clockCharType == ClockCharType.SEVEN_SEGMENT && clockTheme.showDaytimeMarker)
                 formatter.format(currentTime).dropLast(1)
             else
                 formatter.format(currentTime)
@@ -171,7 +177,7 @@ fun DigitalClockScreen(
          * second/minute starts
          */
         val delayMillis =
-                if (clockSettings.showSeconds || previewMode) 1000L - (currentTime.nano / 1000000).toLong()
+                if (clockTheme.showSeconds || previewMode) 1000L - (currentTime.nano / 1000000).toLong()
                 else 1000L * 60 - (currentTime.second * 1000L) - (currentTime.nano / 1000000).toLong()
         delay(delayMillis)
         currentTime = LocalTime.now()
@@ -184,9 +190,9 @@ fun DigitalClockScreen(
     DigitalClock(
         previewMode = previewMode,
         onClick = onClick,
-        hoursMinutesDividerChar = clockSettings.hoursMinutesDividerChar,
-        minutesSecondsDividerChar = clockSettings.minutesSecondsDividerChar,
-        daytimeMarkerDividerChar = clockSettings.daytimeMarkerDividerChar,
+        hoursMinutesDividerChar = clockTheme.hoursMinutesDividerChar,
+        minutesSecondsDividerChar = clockTheme.minutesSecondsDividerChar,
+        daytimeMarkerDividerChar = clockTheme.daytimeMarkerDividerChar,
         fontFamily = finalFontFamily, // for measurement
         fontWeight = finalFontWeight, // for measurement
         fontStyle = finalFontStyle, // for measurement
@@ -195,8 +201,8 @@ fun DigitalClockScreen(
         dividerAttributes = dividerAttributes,
         currentTimeFormatted = currentTimeFormatted,
         clockCharType = clockCharType,
-        digitSizeFactor = clockSettings.digitSizeFactor,
-        daytimeMarkerSizeFactor = clockSettings.daytimeMarkerSizeFactor
+        digitSizeFactor = clockTheme.digitSizeFactor,
+        daytimeMarkerSizeFactor = clockTheme.daytimeMarkerSizeFactor
     ) { clockChar, clockCharFontSize, clockCharColor, clockCharSize ->
         when (clockCharType) {
             ClockCharType.FONT -> Text(
@@ -212,10 +218,10 @@ fun DigitalClockScreen(
                 charSize = clockCharSize,
                 charColor = clockCharColor,
                 segmentColors = segmentColors,
-                style = clockSettings.sevenSegmentStyle,
-                weight = clockSettings.sevenSegmentWeight,
-                outlineSize = clockSettings.sevenSegmentOutlineSize,
-                drawOffSegments = clockSettings.drawOffSegments
+                style = clockTheme.sevenSegmentStyle,
+                weight = clockTheme.sevenSegmentWeight,
+                outlineSize = clockTheme.sevenSegmentOutlineSize,
+                drawOffSegments = clockTheme.drawOffSegments
             )
         }
     }

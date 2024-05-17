@@ -7,6 +7,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.settings.data.ClockSettings
+import de.oljg.glac.core.settings.data.ClockTheme
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.color.ColorSelector
@@ -18,22 +19,33 @@ fun HoursMinutesDividerColorSelector(viewModel: ClockSettingsViewModel = hiltVie
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
     ).value
+    val clockThemeName = clockSettings.clockThemeName
+    val clockTheme = clockSettings.themes.getOrDefault(
+        key = clockThemeName,
+        defaultValue = ClockTheme()
+    )
     val defaultCharColor = defaultColor()
-    val currentClockPartsColors = clockSettings.clockPartsColors
+    val currentClockPartsColors = clockTheme.clockPartsColors
 
     ColorSelector(
         title = stringResource(R.string.div_h_m),
-        color = clockSettings.clockPartsColors.dividers.hoursMinutes
-            ?: clockSettings.dividerColor
-            ?: clockSettings.charColor
+        color = clockTheme.clockPartsColors.dividers.hoursMinutes
+            ?: clockTheme.dividerColor
+            ?: clockTheme.charColor
             ?: defaultCharColor,
-        defaultColor = clockSettings.dividerColor ?: clockSettings.charColor ?: defaultCharColor,
+        defaultColor = clockTheme.dividerColor ?: clockTheme.charColor ?: defaultCharColor,
         onResetColor = {
             coroutineScope.launch {
                 viewModel.updateClockSettings(
                     clockSettings.copy(
-                        clockPartsColors = currentClockPartsColors.copy(
-                            dividers = currentClockPartsColors.dividers.copy(hoursMinutes = null)
+                        themes = clockSettings.themes.put(
+                            clockThemeName, clockTheme.copy(
+                                clockPartsColors = currentClockPartsColors.copy(
+                                    dividers = currentClockPartsColors.dividers.copy(
+                                        hoursMinutes = null
+                                    )
+                                )
+                            )
                         )
                     )
                 )
@@ -43,8 +55,14 @@ fun HoursMinutesDividerColorSelector(viewModel: ClockSettingsViewModel = hiltVie
         coroutineScope.launch {
             viewModel.updateClockSettings(
                 clockSettings.copy(
-                    clockPartsColors = currentClockPartsColors.copy(
-                        dividers = currentClockPartsColors.dividers.copy(hoursMinutes = selectedColor)
+                    themes = clockSettings.themes.put(
+                        clockThemeName, clockTheme.copy(
+                            clockPartsColors = currentClockPartsColors.copy(
+                                dividers = currentClockPartsColors.dividers.copy(
+                                    hoursMinutes = selectedColor
+                                )
+                            )
+                        )
                     )
                 )
             )

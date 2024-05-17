@@ -65,8 +65,8 @@
     <string name="color_for">color for</string>
     <string name="tens">Tens</string>
     <string name="ones">Ones</string>
-    <string name="color_per_clock_part">Color per Clock Part</string>
-    <string name="div_m_s_dm">Div. M|S/DM</string>
+    <string name="color_per_clock_part">Color Per Clock Part</string>
+    <string name="div_dm">Div. DM</string>
     <string name="div_h_m">Div. H/M</string>
     <string name="div_m_s">Div. M/S</string>
     <string name="ante">Ante</string>
@@ -74,4 +74,19 @@
     <string name="meridiem">Meridiem</string>
     <string name="generate_random">Generate random</string>
     <string name="segment_colors">Segment Colors</string>
+    <string name="please_enter_a_name">Please enter a name!</string>
+    <string name="invalid_lenght">Invalid Length</string>
+    <string name="allowed">Allowed</string>
+    <string name="remove_theme">Remove Theme</string>
+    <string name="add_theme">Add Theme</string>
+    <string name="top">Top</string>
+    <string name="center">Center</string>
+    <string name="bottom">Bottom</string>
+    <string name="top_l">Top L</string>
+    <string name="top_r">Top R</string>
+    <string name="bottom_l">Bottom L</string>
+    <string name="bottom_r">Bottom R</string>
+    <string name="theme">Theme</string>
+    <string name="theme_name">Theme Name</string>
+    <string name="character_dividers_are_not_suitable_for_7_segement">Character dividers are not suitable for use together with 7-Segement clock characters!</string>
 </resources>

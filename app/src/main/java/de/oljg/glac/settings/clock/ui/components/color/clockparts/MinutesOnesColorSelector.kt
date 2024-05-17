@@ -7,6 +7,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.settings.data.ClockSettings
+import de.oljg.glac.core.settings.data.ClockTheme
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.color.ColorSelector
@@ -18,21 +19,32 @@ fun MinutesOnesColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
     ).value
+    val clockThemeName = clockSettings.clockThemeName
+    val clockTheme = clockSettings.themes.getOrDefault(
+        key = clockThemeName,
+        defaultValue = ClockTheme()
+    )
     val defaultCharColor = defaultColor()
-    val currentClockPartsColors = clockSettings.clockPartsColors
+    val currentClockPartsColors = clockTheme.clockPartsColors
 
     ColorSelector(
         title = stringResource(id = R.string.min) + ". " + stringResource(R.string.ones),
-        color = clockSettings.clockPartsColors.minutes.ones
-            ?: clockSettings.charColor
+        color = clockTheme.clockPartsColors.minutes.ones
+            ?: clockTheme.charColor
             ?: defaultCharColor,
-        defaultColor = clockSettings.charColor ?: defaultCharColor,
+        defaultColor = clockTheme.charColor ?: defaultCharColor,
         onResetColor = {
             coroutineScope.launch {
                 viewModel.updateClockSettings(
                     clockSettings.copy(
-                        clockPartsColors = currentClockPartsColors.copy(
-                            minutes = currentClockPartsColors.minutes.copy(ones = null)
+                        themes = clockSettings.themes.put(
+                            clockThemeName, clockTheme.copy(
+                                clockPartsColors = currentClockPartsColors.copy(
+                                    minutes = currentClockPartsColors.minutes.copy(
+                                        ones = null
+                                    )
+                                )
+                            )
                         )
                     )
                 )
@@ -42,8 +54,14 @@ fun MinutesOnesColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()
         coroutineScope.launch {
             viewModel.updateClockSettings(
                 clockSettings.copy(
-                    clockPartsColors = currentClockPartsColors.copy(
-                        minutes = currentClockPartsColors.minutes.copy(ones = selectedColor)
+                    themes = clockSettings.themes.put(
+                        clockThemeName, clockTheme.copy(
+                            clockPartsColors = currentClockPartsColors.copy(
+                                minutes = currentClockPartsColors.minutes.copy(
+                                    ones = selectedColor
+                                )
+                            )
+                        )
                     )
                 )
             )

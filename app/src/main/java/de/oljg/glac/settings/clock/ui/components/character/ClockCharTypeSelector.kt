@@ -22,17 +22,15 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_HORIZONTAL
 
 @Composable
 fun ClockCharTypeSelector(
-    label: String,
     selectedClockCharType: ClockCharType,
     onClockCharTypeSelected: (ClockCharType) -> Unit
 ) {
     Row(
         Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.Center
 
     ) {
-        Text(label)
         Row(Modifier.selectableGroup()) {
             ClockCharType.entries.forEach { clockCharType ->
                 Row(

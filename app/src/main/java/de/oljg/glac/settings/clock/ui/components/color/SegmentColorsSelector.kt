@@ -24,14 +24,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.Segment
 import de.oljg.glac.core.settings.data.ClockSettings
+import de.oljg.glac.core.settings.data.ClockTheme
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
-import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_BORDER_WIDTH
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_ROUNDED_CORNER_SIZE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.EDGE_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.MULTI_COLOR_SELECTOR_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SECTION_HEIGHT
-import de.oljg.glac.settings.clock.ui.utils.prettyPrintEnumName
 import kotlinx.coroutines.launch
 
 @Composable
@@ -40,12 +41,17 @@ fun SegmentColorsSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
         initial = ClockSettings()
     ).value
+    val clockThemeName = clockSettings.clockThemeName
+    val clockTheme = clockSettings.themes.getOrDefault(
+        key = clockThemeName,
+        defaultValue = ClockTheme()
+    )
     val defaultCharColor = defaultColor()
 
     Surface(
         modifier = Modifier
             .border(
-                width = SettingsDefaults.DEFAULT_BORDER_WIDTH,
+                width = DEFAULT_BORDER_WIDTH,
                 color = MaterialTheme.colorScheme.outlineVariant,
                 shape = RoundedCornerShape(DEFAULT_ROUNDED_CORNER_SIZE)
             )
@@ -59,37 +65,58 @@ fun SegmentColorsSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(stringResource(R.string.segment_colors))
+                Text(
+                    modifier = Modifier.padding(start = EDGE_PADDING / 2),
+                    text = stringResource(R.string.segment_colors)
+                )
                 Switch(
-                    checked = clockSettings.setSegmentColors,
+                    checked = clockTheme.setSegmentColors,
                     onCheckedChange = {
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
                                 clockSettings.copy(
-                                    setSegmentColors = !clockSettings.setSegmentColors)
+                                    themes = clockSettings.themes.put(
+                                        clockThemeName, clockTheme.copy(
+                                            setSegmentColors = !clockTheme.setSegmentColors
+                                        )
+                                    )
+                                )
                             )
                         }
                     }
                 )
             }
 
-            AnimatedVisibility(visible = clockSettings.setSegmentColors) {
+            AnimatedVisibility(visible = clockTheme.setSegmentColors) {
                 Column {
-                    Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+                    Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE / 2))
                     Segment.entries.forEach { segment ->
                         ColorSelector(
-                            title = segment.name.prettyPrintEnumName(),
-                            color =
-                            clockSettings.segmentColors.getOrDefault(
+                            title = when (segment) {
+                                Segment.TOP -> stringResource(R.string.top)
+                                Segment.CENTER -> stringResource(R.string.center)
+                                Segment.BOTTOM -> stringResource(R.string.bottom)
+                                Segment.TOP_LEFT -> stringResource(R.string.top_l)
+                                Segment.TOP_RIGHT -> stringResource(R.string.top_r)
+                                Segment.BOTTOM_LEFT -> stringResource(R.string.bottom_l)
+                                Segment.BOTTOM_RIGHT -> stringResource(R.string.bottom_r)
+                            },
+                            color = clockTheme.segmentColors.getOrDefault(
                                 key = segment,
-                                defaultValue = clockSettings.charColor ?: defaultCharColor
+                                defaultValue = clockTheme.charColor ?: defaultCharColor
                             ),
-                            defaultColor = clockSettings.charColor ?: defaultCharColor,
+                            defaultColor = clockTheme.charColor ?: defaultCharColor,
                             onResetColor = {
                                 coroutineScope.launch {
                                     viewModel.updateClockSettings(
                                         clockSettings.copy(
-                                            segmentColors = clockSettings.segmentColors.remove(segment)
+                                            themes = clockSettings.themes.put(
+                                                clockThemeName, clockTheme.copy(
+                                                    segmentColors = clockTheme.segmentColors.remove(
+                                                        segment
+                                                    )
+                                                )
+                                            )
                                         )
                                     )
                                 }
@@ -98,9 +125,13 @@ fun SegmentColorsSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                             coroutineScope.launch {
                                 viewModel.updateClockSettings(
                                     clockSettings.copy(
-                                        segmentColors = clockSettings.segmentColors.put(
-                                            segment,
-                                            selectedColor
+                                        themes = clockSettings.themes.put(
+                                            clockThemeName, clockTheme.copy(
+                                                segmentColors = clockTheme.segmentColors.put(
+                                                    segment,
+                                                    selectedColor
+                                                )
+                                            )
                                         )
                                     )
                                 )
