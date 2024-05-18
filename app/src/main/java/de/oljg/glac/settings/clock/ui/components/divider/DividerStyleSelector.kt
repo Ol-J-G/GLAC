@@ -6,7 +6,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.settings.clock.ui.components.common.DropDownSelector
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
-import de.oljg.glac.settings.clock.ui.utils.prettyPrintEnumName
 
 @Composable
 fun DividerStyleSelector(
@@ -15,12 +14,12 @@ fun DividerStyleSelector(
     onNewDividerStyleSelected: (String) -> Unit
 ) {
     DropDownSelector(
+        type = DividerStyle::class,
         label = label,
         selectedValue = selectedDividerStyle.name,
         onNewValueSelected = onNewDividerStyleSelected,
         values = if(LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE)
             SettingsDefaults.DIVIDER_STYLES
         else SettingsDefaults.DIVIDER_STYLES_WITHOUT_CHAR_STYLE, // no char in portrait layout
-        prettyPrintValue = String::prettyPrintEnumName
     )
 }

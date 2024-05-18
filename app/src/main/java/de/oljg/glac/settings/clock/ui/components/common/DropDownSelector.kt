@@ -26,9 +26,11 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.sp
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_ICON_BUTTON_SIZE
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DROP_DOWN_MENU_ITEM_FONT_SIZE
+import de.oljg.glac.settings.clock.ui.utils.translateDropDownItemText
+import kotlin.reflect.KClass
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,10 +40,12 @@ fun DropDownSelector(
     onNewValueSelected: (String) -> Unit,
     values: List<String>,
     prettyPrintValue: (String) -> String = { value -> value },
+    type: KClass<out Any> = String::class,
     maxWidthFraction: Float = 1f,
     readOnly: Boolean = true,
     onTextFieldValueChanged: (String) -> Unit = {},
     supportingText: @Composable () -> Unit = {},
+    resetValueComponent: @Composable () -> Unit = {},
     removeValueComponent: @Composable () -> Unit = {},
     addValueComponent: @Composable () -> Unit = {}
 ) {
@@ -73,8 +77,9 @@ fun DropDownSelector(
                 ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                addValueComponent.invoke()
+                resetValueComponent.invoke()
                 removeValueComponent.invoke()
+                addValueComponent.invoke()
             }
             ExposedDropdownMenuBox(
                 modifier = Modifier
@@ -86,7 +91,11 @@ fun DropDownSelector(
                     modifier = Modifier
                         .menuAnchor()
                         .fillMaxWidth(maxWidthFraction),
-                    value = prettyPrintValue(selectedValue),
+                    value = translateDropDownItemText(
+                        type = type,
+                        itemValue = selectedValue,
+                        defaultPrettyPrinter = prettyPrintValue
+                    ),
                     label = { Text(label) },
                     onValueChange = { newTextValue ->
                         onTextFieldValueChanged(newTextValue)
@@ -117,8 +126,12 @@ fun DropDownSelector(
                         DropdownMenuItem(
                             text = {
                                 Text(
-                                    text = prettyPrintValue(value),
-                                    fontSize = 18.sp
+                                    text = translateDropDownItemText(
+                                        type = type,
+                                        itemValue = value,
+                                        defaultPrettyPrinter = prettyPrintValue
+                                    ),
+                                    fontSize = DROP_DOWN_MENU_ITEM_FONT_SIZE
                                 )
                             },
                             onClick = {

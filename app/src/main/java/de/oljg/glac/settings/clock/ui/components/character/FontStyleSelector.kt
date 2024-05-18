@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import de.oljg.glac.core.util.FontStyle
 import de.oljg.glac.settings.clock.ui.components.common.DropDownSelector
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.FONT_STYLES
-import de.oljg.glac.settings.clock.ui.utils.prettyPrintEnumName
 
 
 @Composable
@@ -14,11 +13,11 @@ fun FontStyleSelector(
     onNewFontStyleSelected: (String) -> Unit
 ) {
     DropDownSelector(
+        type = FontStyle::class,
         label = label,
         selectedValue = selectedFontStyle.name,
         onNewValueSelected = onNewFontStyleSelected,
         values = FONT_STYLES,
-        prettyPrintValue = String::prettyPrintEnumName
     )
 }
 

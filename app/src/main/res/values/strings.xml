@@ -88,4 +88,25 @@
     <string name="theme">Theme</string>
     <string name="theme_name">Theme Name</string>
     <string name="character_dividers_are_not_suitable_for_7_segement">Character dividers are not suitable for use together with 7-Segement clock characters!</string>
+    <string name="reset_theme">Reset Theme</string>
+    <string name="normal">Normal</string>
+    <string name="italic">Italic</string>
+    <string name="medium">Medium</string>
+    <string name="thin">Thin</string>
+    <string name="extra">Extra</string>
+    <string name="light">Light</string>
+    <string name="bold">Bold</string>
+    <string name="semi">Semi</string>
+    <string name="black">Black</string>
+    <string name="regular">Regular</string>
+    <string name="reverse">Reverse</string>
+    <string name="outline">Outline</string>
+    <string name="round">Round</string>
+    <string name="angular">Angular</string>
+    <string name="none">None</string>
+    <string name="line">Line</string>
+    <string name="dashed">Dashed</string>
+    <string name="dotted">Dotted</string>
+    <string name="dash_dotted">Dash-Dotted</string>
+    <string name="colon">Colon</string>
 </resources>

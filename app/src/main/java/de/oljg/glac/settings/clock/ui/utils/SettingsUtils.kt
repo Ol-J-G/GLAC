@@ -1,8 +1,10 @@
 package de.oljg.glac.settings.clock.ui.utils
 
-import androidx.compose.ui.text.capitalize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.DividerLineEnd
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
@@ -17,6 +19,7 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.PERCENTAGE_ONLY_2_P
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.PIXEL
 import kotlin.math.floor
 import kotlin.math.pow
+import kotlin.reflect.KClass
 
 
 /**
@@ -81,21 +84,94 @@ fun Float.prettyPrintPercentage(postfix: String = " %"): String {
 }
 
 
-fun String.prettyPrintEnumName(): String { //TODO: remove this and use string res instead => i18n (see SegmentColorsSelector)
-    val words = this.lowercase().split('_')
-    return buildString {
-        words.forEachIndexed { index, word ->
-            append(word.capitalize(androidx.compose.ui.text.intl.Locale.current))
+@Composable
+fun FontWeight.translate() = when(this) {
+    FontWeight.THIN -> stringResource(R.string.thin)
+    FontWeight.EXTRA_LIGHT -> stringResource(R.string.extra) + " " + stringResource(R.string.light)
+    FontWeight.LIGHT-> stringResource(R.string.light)
+    FontWeight.NORMAL -> stringResource(R.string.normal)
+    FontWeight.MEDIUM -> stringResource(R.string.medium)
+    FontWeight.SEMI_BOLD -> stringResource(R.string.semi) + " " + stringResource(R.string.bold)
+    FontWeight.BOLD -> stringResource(R.string.bold)
+    FontWeight.EXTRA_BOLD -> stringResource(R.string.extra) + " " + stringResource(R.string.bold)
+    FontWeight.BLACK -> stringResource(R.string.black)
+}
 
-            /**
-             * _Example_
-             * Input        : "WORD_WORD"
-             * Don't do this: "Word Word "
-             * Do this      : "Word Word" (<= blank only between words)
-             */
-            if (index + 1 != words.size) append(' ')
-        }
-    }
+
+@Composable
+fun FontStyle.translate() = when(this) {
+    FontStyle.NORMAL -> stringResource(R.string.normal)
+    FontStyle.ITALIC -> stringResource(R.string.italic)
+}
+
+
+@Composable
+fun SevenSegmentStyle.translate() = when(this) {
+    SevenSegmentStyle.REGULAR -> stringResource(R.string.regular)
+    SevenSegmentStyle.ITALIC -> stringResource(R.string.italic)
+    SevenSegmentStyle.REVERSE_ITALIC -> stringResource(R.string.reverse) + " " +
+            stringResource(R.string.italic)
+    SevenSegmentStyle.OUTLINE -> stringResource(R.string.outline)
+    SevenSegmentStyle.OUTLINE_ITALIC -> stringResource(R.string.outline) + " " +
+            stringResource(R.string.italic)
+    SevenSegmentStyle.OUTLINE_REVERSE_ITALIC -> stringResource(R.string.outline) + " " +
+            stringResource(R.string.reverse) + " " +
+            stringResource(R.string.italic)
+}
+
+
+@Composable
+fun SevenSegmentWeight.translate() = when(this) {
+    SevenSegmentWeight.THIN -> stringResource(R.string.thin)
+    SevenSegmentWeight.EXTRA_LIGHT -> stringResource(R.string.extra) + " " +
+            stringResource(R.string.light)
+    SevenSegmentWeight.LIGHT-> stringResource(R.string.light)
+    SevenSegmentWeight.REGULAR -> stringResource(R.string.regular)
+    SevenSegmentWeight.MEDIUM -> stringResource(R.string.medium)
+    SevenSegmentWeight.SEMI_BOLD -> stringResource(R.string.semi) + " " +
+            stringResource(R.string.bold)
+    SevenSegmentWeight.BOLD -> stringResource(R.string.bold)
+    SevenSegmentWeight.EXTRA_BOLD -> stringResource(R.string.extra) + " " +
+            stringResource(R.string.bold)
+    SevenSegmentWeight.BLACK -> stringResource(R.string.black)
+}
+
+
+@Composable
+fun DividerStyle.translate() = when(this) {
+    DividerStyle.NONE -> stringResource(R.string.none)
+    DividerStyle.LINE -> stringResource(R.string.line)
+    DividerStyle.DASHED_LINE -> stringResource(R.string.dashed) + " " +
+            stringResource(R.string.line)
+    DividerStyle.DOTTED_LINE -> stringResource(R.string.dotted) + " " +
+            stringResource(R.string.line)
+    DividerStyle.DASHDOTTED_LINE -> stringResource(R.string.dash_dotted) + " " +
+            stringResource(R.string.line)
+    DividerStyle.COLON -> stringResource(R.string.colon)
+    DividerStyle.CHAR -> stringResource(R.string.character)
+}
+
+
+@Composable
+fun DividerLineEnd.translate() = when(this) {
+    DividerLineEnd.ROUND -> stringResource(R.string.round)
+    DividerLineEnd.ANGULAR -> stringResource(R.string.angular)
+}
+
+
+@Composable
+fun translateDropDownItemText(
+    type: KClass<out Any>,
+    itemValue: String,
+    defaultPrettyPrinter: (String) -> String
+) = when(type) {
+    FontStyle::class -> FontStyle.valueOf(itemValue).translate()
+    FontWeight::class -> FontWeight.valueOf(itemValue).translate()
+    SevenSegmentStyle::class -> SevenSegmentStyle.valueOf(itemValue).translate()
+    SevenSegmentWeight::class -> SevenSegmentWeight.valueOf(itemValue).translate()
+    DividerStyle::class -> DividerStyle.valueOf(itemValue).translate()
+    DividerLineEnd::class -> DividerLineEnd.valueOf(itemValue).translate()
+    else -> defaultPrettyPrinter(itemValue)
 }
 
 
@@ -108,6 +184,7 @@ fun isSevenSegmentItalicOrReverseItalic(
     clockCharType: ClockCharType,
     sevenSegmentStyle: SevenSegmentStyle
 ) = clockCharType == ClockCharType.SEVEN_SEGMENT && sevenSegmentStyle.isItalicOrReverseItalic()
+
 
 object SettingsDefaults {
     const val MIN_THEME_NAME_LENGTH = 1
@@ -136,6 +213,7 @@ object SettingsDefaults {
     val EDGE_PADDING = 12.dp
 
     val CLOCK_CHAR_TYPE_FONT_SIZE = 20.sp
+    val DROP_DOWN_MENU_ITEM_FONT_SIZE = 18.sp
     const val PIXEL = "Pixel"
 
     val COLOR_SELECTOR_HEIGHT = 92.dp

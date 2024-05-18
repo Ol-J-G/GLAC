@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material.icons.filled.RemoveCircleOutline
+import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -36,6 +37,7 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_ICON_BUTTON
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.MAX_THEME_NAME_LENGTH
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.MIN_THEME_NAME_LENGTH
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.RESET_BUTTON_SIZE
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.launch
 
@@ -73,7 +75,7 @@ fun ClockThemeSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 .fillMaxWidth()
                 .height(DEFAULT_VERTICAL_SPACE / 2)
         )
-        DropDownSelector( //TODO: add reset theme option => allow any theme to reset to defaults => ClockTheme()
+        DropDownSelector(
             label = stringResource(R.string.theme_name),
             selectedValue = textFieldValue,
             onNewValueSelected = { selectedThemeName ->
@@ -108,12 +110,46 @@ fun ClockThemeSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                         color = MaterialTheme.colorScheme.error
                     )
             },
+            resetValueComponent = {
+                IconButton(
+                    onClick = {
+                        coroutineScope.launch {
+                            viewModel.updateClockSettings(
+                                clockSettings.copy( // reset current theme to default theme
+                                    themes = clockSettings.themes.put(textFieldValue, ClockTheme())
+                                )
+                            )
+                        }
+                    },
+                    enabled = clockSettings.themes.containsKey(textFieldValue)
+                            && clockSettings.themes[textFieldValue] != ClockTheme(),
+                    colors = IconButtonDefaults.iconButtonColors(
+                        contentColor = MaterialTheme.colorScheme.secondary,
+                        disabledContentColor = MaterialTheme.colorScheme.secondaryContainer
+                    )
+                ) {
+                    Icon(
+                        modifier = Modifier.size(RESET_BUTTON_SIZE),
+                        imageVector = Icons.Filled.RestartAlt,
+                        contentDescription = stringResource(R.string.reset_theme)
+                    )
+                }
+            },
             removeValueComponent = {
                 IconButton(
                     onClick = {
                         coroutineScope.launch {
                             viewModel.updateClockSettings(
                                 clockSettings.copy(
+
+                                    /**
+                                     * Remove theme and select default theme afterwards.
+                                     *
+                                     * Note that clockSettings.themes.remove(key) did NOT remove
+                                     * the theme entry (dunno why!??..containsKey(key) was true..
+                                     * oO), so, alternatively, build a new map without the
+                                     * entry to remove...
+                                     */
                                     themes = buildMap {
                                         clockSettings.themes.entries.forEach { (key, value) ->
                                             if (key != textFieldValue) put(key, value)
