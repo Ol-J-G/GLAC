@@ -22,8 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
-import de.oljg.glac.core.settings.data.ClockSettings
-import de.oljg.glac.core.settings.data.ClockTheme
+import de.oljg.glac.core.clock.data.ClockSettings
+import de.oljg.glac.core.clock.data.ClockTheme
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.color.clockparts.AntePostColorSelector
 import de.oljg.glac.settings.clock.ui.components.color.clockparts.DaytimeMarkerDividerColorSelector

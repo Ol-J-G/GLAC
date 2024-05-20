@@ -222,15 +222,16 @@ object SettingsDefaults {
     val COLOR_SELECTOR_HEX_TEXTFIELD_WIDTH = 112.dp
     val COLOR_SELECTOR_TF_COLOR_SWATCH_SPACE = 8.dp
 
-    val COLOR_PICKER_DEFAULT_PADDING = 16.dp
     val COLOR_PICKER_SLIDER_HEIGHT = 36.dp
     val COLOR_PICKER_HEIGHT_COMPACT = 350.dp
     val COLOR_PICKER_HEIGHT = 550.dp
-    val COLOR_PICKER_BORDER_WIDTH = 1.dp
     val COLOR_PICKER_BUTTON_SPACE = 0.dp
     const val COLOR_PICKER_FLASHING_COLOR_ANIM_DURATION = 825
 
     val MULTI_COLOR_SELECTOR_PADDING = 4.dp
+
+    val DIALOG_DEFAULT_PADDING = 16.dp
+    val DIALOG_BORDER_WIDTH = 1.dp
 
     /**
      * DateTimeFormatter reserved chars and such ones that would lead to an incomplete

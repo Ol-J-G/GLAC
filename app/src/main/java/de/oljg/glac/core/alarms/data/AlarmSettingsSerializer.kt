@@ -1,4 +1,4 @@
-package de.oljg.glac.core.settings.data
+package de.oljg.glac.core.alarms.data
 
 import androidx.datastore.core.Serializer
 import kotlinx.serialization.SerializationException
@@ -6,15 +6,15 @@ import kotlinx.serialization.json.Json
 import java.io.InputStream
 import java.io.OutputStream
 
-object ClockSettingsSerializer : Serializer<ClockSettings> {
+object AlarmSettingsSerializer : Serializer<AlarmSettings> {
 
-    override val defaultValue: ClockSettings
-        get() = ClockSettings()
+    override val defaultValue: AlarmSettings
+        get() = AlarmSettings()
 
-    override suspend fun readFrom(input: InputStream): ClockSettings {
+    override suspend fun readFrom(input: InputStream): AlarmSettings {
         return try {
             Json.decodeFromString(
-                deserializer = ClockSettings.serializer(),
+                deserializer = AlarmSettings.serializer(),
                 string = input.readBytes().decodeToString()
             )
         } catch (e: SerializationException) {
@@ -23,10 +23,10 @@ object ClockSettingsSerializer : Serializer<ClockSettings> {
         }
     }
 
-    override suspend fun writeTo(t: ClockSettings, output: OutputStream) {
+    override suspend fun writeTo(t: AlarmSettings, output: OutputStream) {
         output.write(
             Json.encodeToString(
-                serializer = ClockSettings.serializer(),
+                serializer = AlarmSettings.serializer(),
                 value = t
             ).encodeToByteArray()
         )

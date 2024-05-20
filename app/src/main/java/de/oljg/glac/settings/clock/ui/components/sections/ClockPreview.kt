@@ -18,7 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.DigitalClockScreen
 import de.oljg.glac.clock.digital.ui.utils.evaluateScreenDetails
-import de.oljg.glac.core.settings.data.ClockSettings
+import de.oljg.glac.core.clock.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults

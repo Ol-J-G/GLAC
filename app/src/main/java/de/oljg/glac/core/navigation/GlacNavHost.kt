@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import de.oljg.glac.alarms.ui.AlarmsListScreen
 import de.oljg.glac.clock.digital.ui.DigitalClockScreen
 import de.oljg.glac.core.navigation.common.AboutScreen
 import de.oljg.glac.core.navigation.common.AlarmSettingsSubScreen
@@ -44,10 +45,7 @@ fun GlacNavHost(
             )
         }
         composable(route = AlarmsScreen.route) {
-            DummyScreen(
-                text = AlarmsScreen.route,
-                color = Color.Red
-            )
+            AlarmsListScreen()
         }
         navigation(
             route = SettingsScreen.route,

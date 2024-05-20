@@ -24,8 +24,8 @@ import de.oljg.glac.clock.digital.ui.utils.evaluateDividerRotateAngle
 import de.oljg.glac.clock.digital.ui.utils.evaluateFont
 import de.oljg.glac.clock.digital.ui.utils.pxToDp
 import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
-import de.oljg.glac.core.settings.data.ClockSettings
-import de.oljg.glac.core.settings.data.ClockTheme
+import de.oljg.glac.core.clock.data.ClockSettings
+import de.oljg.glac.core.clock.data.ClockTheme
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.utils.isSevenSegmentItalicOrReverseItalic

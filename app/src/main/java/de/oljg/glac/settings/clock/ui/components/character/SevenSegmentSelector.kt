@@ -20,8 +20,8 @@ import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.MIN_STROKE_WIDTH
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.clock.digital.ui.utils.isOutline
-import de.oljg.glac.core.settings.data.ClockSettings
-import de.oljg.glac.core.settings.data.ClockTheme
+import de.oljg.glac.core.clock.data.ClockSettings
+import de.oljg.glac.core.clock.data.ClockTheme
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSlider
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSwitch

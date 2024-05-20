@@ -2,8 +2,8 @@ package de.oljg.glac.settings.clock.ui
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import de.oljg.glac.core.settings.data.ClockSettings
-import de.oljg.glac.core.settings.data.ClockSettingsRepository
+import de.oljg.glac.core.clock.data.ClockSettings
+import de.oljg.glac.core.clock.data.ClockSettingsRepository
 import javax.inject.Inject
 
 @HiltViewModel

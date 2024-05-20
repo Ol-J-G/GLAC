@@ -42,13 +42,13 @@ import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.ScreenDetails
 import de.oljg.glac.clock.digital.ui.utils.evaluateScreenDetails
 import de.oljg.glac.core.util.defaultColor
-import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_BORDER_WIDTH
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_BUTTON_SPACE
-import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_DEFAULT_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_FLASHING_COLOR_ANIM_DURATION
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_HEIGHT
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_HEIGHT_COMPACT
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_SLIDER_HEIGHT
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DIALOG_BORDER_WIDTH
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DIALOG_DEFAULT_PADDING
 
 @Composable
 fun ColorPickerDialog(
@@ -88,7 +88,7 @@ fun ColorPickerDialog(
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.tertiaryContainer)
                 .border(
-                    COLOR_PICKER_BORDER_WIDTH,
+                    DIALOG_BORDER_WIDTH,
                     MaterialTheme.colorScheme.onTertiaryContainer
                 )
         ) {
@@ -99,7 +99,7 @@ fun ColorPickerDialog(
                         .height(if(evaluateScreenDetails().screenWidthType
                                     is ScreenDetails.DisplayType.Compact)
                             COLOR_PICKER_HEIGHT_COMPACT else COLOR_PICKER_HEIGHT)
-                        .padding(COLOR_PICKER_DEFAULT_PADDING * 2),
+                        .padding(DIALOG_DEFAULT_PADDING * 2),
                     drawOnPosSelected = {
                         drawColorIndicator(
                             colorPickerController.selectedPoint.value,
@@ -116,21 +116,21 @@ fun ColorPickerDialog(
                 AlphaSlider(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(COLOR_PICKER_DEFAULT_PADDING)
+                        .padding(DIALOG_DEFAULT_PADDING)
                         .height(COLOR_PICKER_SLIDER_HEIGHT),
                     controller = colorPickerController,
                 )
                 BrightnessSlider(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(COLOR_PICKER_DEFAULT_PADDING)
+                        .padding(DIALOG_DEFAULT_PADDING)
                         .height(COLOR_PICKER_SLIDER_HEIGHT),
                     controller = colorPickerController,
                 )
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(COLOR_PICKER_DEFAULT_PADDING),
+                        .padding(DIALOG_DEFAULT_PADDING),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {

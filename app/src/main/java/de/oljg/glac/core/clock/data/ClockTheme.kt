@@ -1,4 +1,4 @@
-package de.oljg.glac.core.settings.data
+package de.oljg.glac.core.clock.data
 
 import androidx.compose.ui.graphics.Color
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType

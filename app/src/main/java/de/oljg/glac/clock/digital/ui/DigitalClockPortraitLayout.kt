@@ -47,8 +47,8 @@ import de.oljg.glac.clock.digital.ui.utils.evaluateStartFontSize
 import de.oljg.glac.clock.digital.ui.utils.evalutateDividerCount
 import de.oljg.glac.clock.digital.ui.utils.isDaytimeMarkerChar
 import de.oljg.glac.clock.digital.ui.utils.pxToDp
-import de.oljg.glac.core.settings.data.ClockSettings
-import de.oljg.glac.core.settings.data.ClockTheme
+import de.oljg.glac.core.clock.data.ClockSettings
+import de.oljg.glac.core.clock.data.ClockTheme
 import de.oljg.glac.core.util.ClockPartsTestTags
 import de.oljg.glac.core.util.TestTags
 import de.oljg.glac.core.util.defaultColor

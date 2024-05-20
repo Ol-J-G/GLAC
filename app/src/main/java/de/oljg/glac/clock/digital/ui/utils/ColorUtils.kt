@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.smarttoolfactory.extendedcolors.model.ColorItem
 import com.smarttoolfactory.extendedcolors.util.HSLUtil
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.SEVEN_SEGMENT_CHARS
-import de.oljg.glac.core.settings.data.ColorSerializer
+import de.oljg.glac.core.clock.data.ColorSerializer
 import de.oljg.glac.core.util.CommonClockUtils.CLOCK_CHARS
 import kotlinx.serialization.Serializable
 

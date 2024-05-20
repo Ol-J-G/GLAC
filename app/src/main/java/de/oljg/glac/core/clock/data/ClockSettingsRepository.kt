@@ -1,4 +1,4 @@
-package de.oljg.glac.core.settings.data
+package de.oljg.glac.core.clock.data
 
 import android.content.Context
 import androidx.datastore.dataStore

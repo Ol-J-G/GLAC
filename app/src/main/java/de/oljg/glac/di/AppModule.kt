@@ -6,7 +6,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import de.oljg.glac.core.settings.data.ClockSettingsRepository
+import de.oljg.glac.core.alarms.data.AlarmSettingsRepository
+import de.oljg.glac.core.clock.data.ClockSettingsRepository
 import javax.inject.Singleton
 
 @Module
@@ -20,4 +21,13 @@ object AppModule {
     ): ClockSettingsRepository {
         return ClockSettingsRepository(context)
     }
+
+    @Provides
+    @Singleton
+    fun provideAlarmSettingsRepository(
+        @ApplicationContext context: Context
+    ): AlarmSettingsRepository {
+        return AlarmSettingsRepository(context)
+    }
+
 }

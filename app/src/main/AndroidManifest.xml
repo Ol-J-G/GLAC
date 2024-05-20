@@ -2,8 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+
     <application
-        android:name="de.oljg.glac.GlacApplication"
+        android:name=".GlacApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -14,6 +17,11 @@
         android:theme="@style/Theme.GLAC"
         tools:targetApi="31">
         <activity
+            android:name=".AlarmActivity"
+            android:exported="false"
+            android:label="@string/title_activity_alarm"
+            android:theme="@style/Theme.GLAC" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.GLAC">
@@ -23,6 +31,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".core.alarms.data.manager.AlarmReceiver" />
     </application>
 
 </manifest>

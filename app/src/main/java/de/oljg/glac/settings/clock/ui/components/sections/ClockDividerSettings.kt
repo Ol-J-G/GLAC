@@ -38,8 +38,8 @@ import de.oljg.glac.clock.digital.ui.utils.isLineBased
 import de.oljg.glac.clock.digital.ui.utils.isLineOrDashedLine
 import de.oljg.glac.clock.digital.ui.utils.isNeitherNoneNorChar
 import de.oljg.glac.clock.digital.ui.utils.isRotatable
-import de.oljg.glac.core.settings.data.ClockSettings
-import de.oljg.glac.core.settings.data.ClockTheme
+import de.oljg.glac.core.clock.data.ClockSettings
+import de.oljg.glac.core.clock.data.ClockTheme
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSlider
