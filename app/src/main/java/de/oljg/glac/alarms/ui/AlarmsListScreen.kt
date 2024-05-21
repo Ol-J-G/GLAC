@@ -18,7 +18,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,12 +31,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.alarms.ui.components.AddAlarmDialog
+import de.oljg.glac.alarms.ui.components.AlarmListItem
 import de.oljg.glac.core.alarms.data.AlarmSettings
 import de.oljg.glac.core.alarms.data.manager.AndroidAlarmScheduler
 import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
 import kotlinx.coroutines.launch
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -47,7 +46,7 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
         initial = AlarmSettings()
     ).value
 
-    val dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+    
 
     val alarmScheduler = AndroidAlarmScheduler(LocalContext.current)
 
@@ -82,17 +81,23 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
                 modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxWidth()
+                    .padding(horizontal = SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2)
                     .verticalScroll(scrollState)
             ) {
                 alarmSettings.alarms.forEach { alarm ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text("Alarm ${dateTimeFormatter.format(alarm.start)}")
-                    }
+                    AlarmListItem(
+                        start = alarm.start,
+                        isLightAlarm = alarm.isLightAlarm,
+                        lightAlarmDuration = alarm.lightAlarmDuration,
+                        onRemoveAlarm = {
+                            coroutineScope.launch {
+                                viewModel.updateAlarmSettings(
+                                    alarmSettings.copy(alarms = alarmSettings.alarms.remove(alarm))
+                                )
+                            }
+//                            alarmScheduler.cancel(alarm) //TODO: rectivate and test when AddAlarmDialog is finished
+                        }
+                    )
                 }
             }
         }
@@ -104,7 +109,7 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
                         alarmSettings.copy(alarms = alarmSettings.alarms.add(newAlarm))
                     )
                 }
-                alarmScheduler.schedule(newAlarm)
+//                alarmScheduler.schedule(newAlarm) //TODO: rectivate and test when AddAlarmDialog is finished
             }
     }
 }
