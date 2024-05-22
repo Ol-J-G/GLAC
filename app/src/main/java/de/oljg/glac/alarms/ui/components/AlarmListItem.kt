@@ -36,7 +36,6 @@ fun AlarmListItem(
     lightAlarmDuration: Duration,
     onRemoveAlarm: () -> Unit
 ) {
-
     val dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
 
     Surface(
@@ -69,25 +68,21 @@ fun AlarmListItem(
                 }
 
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(SettingsDefaults.SETTINGS_SECTION_HEIGHT),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    modifier = Modifier.padding(start = SettingsDefaults.EDGE_PADDING / 2),
-                    text = "Light Alarm: " + if (isLightAlarm) "Yes" else "No"
-                )
-                AnimatedVisibility(visible = isLightAlarm) {
+            AnimatedVisibility(visible = isLightAlarm) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(SettingsDefaults.SETTINGS_SECTION_HEIGHT),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+
                     Text(
-                        modifier = Modifier.padding(end = SettingsDefaults.EDGE_PADDING / 2),
-                        text = "Duration: " + lightAlarmDuration.toString(unit = DurationUnit.MINUTES)//lightAlarmDuration.inWholeMinutes + " Minutes"
+                        modifier = Modifier.padding(start = SettingsDefaults.EDGE_PADDING / 2),
+                        text = "Light Alarm Duration: "
+                                + lightAlarmDuration.toString(unit = DurationUnit.MINUTES)
                     )
                 }
-
-
             }
         }
     }

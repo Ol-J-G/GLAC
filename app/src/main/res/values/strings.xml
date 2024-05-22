@@ -111,4 +111,15 @@
     <string name="colon">Colon</string>
     <string name="title_activity_alarm">AlarmActivity</string>
     <string name="schedule">Schedule</string>
+    <string name="please_enter_a_number">Please Enter a Number!</string>
+    <string name="please_enter_a_whole_number">Please Enter a Whole Number!</string>
+    <string name="invalid">Invalid</string>
+    <string name="valid_range">Valid Range</string>
+    <string name="alarm_time_must_be_in_the_future">Alarm Time must be at least 5m in the future!</string>
+    <string name="select_date">Select Date</string>
+    <string name="select_time">Select Time</string>
+    <string name="start_date">Start Date</string>
+    <string name="start_time">Start Time</string>
+    <string name="light_alarm">Light Alarm</string>
+    <string name="light_alarm_duration">Light Alarm Duration</string>
 </resources>

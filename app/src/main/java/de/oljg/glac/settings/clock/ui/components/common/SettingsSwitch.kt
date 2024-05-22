@@ -9,12 +9,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.EDGE_PADDING
 
 @Composable
 fun SettingsSwitch(
     label: String,
     checked: Boolean,
+    edgePadding: Dp = EDGE_PADDING,
     onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
@@ -22,9 +24,9 @@ fun SettingsSwitch(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(modifier = Modifier.padding(start = EDGE_PADDING), text = label)
+        Text(modifier = Modifier.padding(start = edgePadding), text = label)
         Switch(
-            modifier = Modifier.padding(end = EDGE_PADDING),
+            modifier = Modifier.padding(end = edgePadding),
             checked = checked,
             onCheckedChange = onCheckedChange
         )

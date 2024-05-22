@@ -11,23 +11,31 @@ import kotlin.time.toJavaDuration
 
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun isValidAlarmStart(localDate: LocalDate?, localTime: LocalTime?, lightAlarmDuration: Duration) =
-        localDate != null && localTime != null
-                && LocalDateTime.of(localDate, localTime).isInFuture(lightAlarmDuration)
+fun isValidAlarmStart(date: LocalDate?, time: LocalTime?, lightAlarmDuration: Duration) =
+        date != null && time != null
+                && LocalDateTime.of(date, time).isInFuture(lightAlarmDuration)
 
 /**
- *
- * ___now___<___lightAlarmTime___<___alarmTime___
- *     |              |                  |
- *                    |< 'sunrise' anim >|< alarmSound
+ * Considers lightAlarmDuration (when > 0) to ensure a user cannot choose an alarm start time, that
+ * is before this users current time / 'now'.
+ * First possible time is now + max. 1 minute (accurate to the minute) to lightAlarmTime or
+ * alarmTime.
  *
  * Note: Is's accurate to the minute (imho not useful to allow alarm start times lower than
  * minutes, at least in order of this app's purpose...)
+ *
+ * Maybe the following "illustration" helps
+ *
+ * ___now____<____lightAlarmTime____<____alarmTime____________
+ *     |               |                      |
+ *  isBefore           |< lightAlarmDuration >|
+ *     |<    5min     >|                      |
+ *                     |<   'sunrise' anim   >|< alarmSound
  */
 @RequiresApi(Build.VERSION_CODES.O)
 fun LocalDateTime.isInFuture(lightAlarmDuration: Duration): Boolean {
     val now = LocalDateTime.now()
-    val alarmTime = this
+    val alarmTime = this.minus(5.minutes)
     val lightAlarmTime = alarmTime.minus(lightAlarmDuration)
     return LocalDateTime.of(now.year, now.month, now.dayOfMonth, now.hour, now.minute)
         .isBefore(lightAlarmTime)
@@ -43,6 +51,10 @@ fun LocalDateTime.isInFuture(lightAlarmDuration: Duration): Boolean {
 operator fun LocalDateTime.minus(amountToSubstract: Duration): LocalDateTime =
         minus(amountToSubstract.toJavaDuration())
 
+@RequiresApi(Build.VERSION_CODES.O)
+operator fun LocalTime.plus(amountToAdd: Duration): LocalTime =
+        plus(amountToAdd.toJavaDuration())
+
 
 fun String.isIntIn(range: IntRange) = when {
     !this.isInt() -> false
@@ -56,7 +68,10 @@ fun String.isInt() = try {
     false
 }
 
-object Defaults {
+object AlarmDefaults {
     val MIN_LIGHT_ALARM_DURATION = 1.minutes
     val MAX_LIGHT_ALARM_DURATION = 60.minutes
+
+    // Users can schedule an alarm from now + ALARM_START_BUFFER
+    val ALARM_START_BUFFER = 5.minutes
 }
