@@ -51,6 +51,12 @@ fun LocalDateTime.isInFuture(lightAlarmDuration: Duration): Boolean {
 operator fun LocalDateTime.minus(amountToSubstract: Duration): LocalDateTime =
         minus(amountToSubstract.toJavaDuration())
 
+
+@RequiresApi(Build.VERSION_CODES.O)
+operator fun LocalDateTime.plus(amountToAdd: Duration): LocalDateTime =
+        plus(amountToAdd.toJavaDuration())
+
+
 @RequiresApi(Build.VERSION_CODES.O)
 operator fun LocalTime.plus(amountToAdd: Duration): LocalTime =
         plus(amountToAdd.toJavaDuration())

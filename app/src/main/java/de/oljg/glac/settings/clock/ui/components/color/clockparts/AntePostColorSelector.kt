@@ -28,7 +28,7 @@ fun AntePostColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val currentClockPartsColors = clockTheme.clockPartsColors
 
     ColorSelector(
-        title = stringResource(R.string.ante) + "/" + stringResource(R.string.post),
+        title = stringResource(R.string.ante_shortened) + "/" + stringResource(R.string.post_shortened),
         color = clockTheme.clockPartsColors.daytimeMarker.anteOrPost
             ?: clockTheme.charColor
             ?: defaultCharColor,

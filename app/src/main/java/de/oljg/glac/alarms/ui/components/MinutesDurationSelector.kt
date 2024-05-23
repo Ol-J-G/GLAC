@@ -1,6 +1,6 @@
 package de.oljg.glac.alarms.ui.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
@@ -26,6 +26,7 @@ import kotlin.time.DurationUnit
 
 @Composable
 fun MinutesDurationSelector(
+    modifier: Modifier = Modifier,
     label: String,
     duration: Duration,
     minDuration: Duration,
@@ -41,7 +42,7 @@ fun MinutesDurationSelector(
     }
 
     OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         value = durationValue,
         label = { Text(text = label + " [" + stringResource(R.string.minutes) + "]") },
         onValueChange = { newTextValue ->
@@ -57,7 +58,7 @@ fun MinutesDurationSelector(
         },
         singleLine = true,
         supportingText = {
-            if (!isValidDuration)
+            AnimatedVisibility(visible = !isValidDuration) {
                 Text(
                     text = when {
                         durationValue.isBlank() -> stringResource(R.string.please_enter_a_number)
@@ -70,14 +71,16 @@ fun MinutesDurationSelector(
                         else -> ""
                     }, color = MaterialTheme.colorScheme.error
                 )
+            }
         },
         trailingIcon = {
-            if (!isValidDuration)
+            AnimatedVisibility(visible = !isValidDuration) {
                 Icon(
                     imageVector = Icons.Filled.Warning,
                     contentDescription = stringResource(R.string.invalid) + " $label",
                     tint = MaterialTheme.colorScheme.error
                 )
+            }
         },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number,

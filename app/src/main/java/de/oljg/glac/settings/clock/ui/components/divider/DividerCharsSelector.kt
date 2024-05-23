@@ -68,8 +68,8 @@ fun DividerCharsSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     Divider(modifier = Modifier.padding(vertical = SettingsDefaults.DEFAULT_VERTICAL_SPACE))
     DividerCharSelector(
         title = stringResource(R.string.between) + " " +
-                stringResource(R.string.min) + ". | " +
-                stringResource(R.string.sec) + ". / " +
+                stringResource(R.string.minutes_shortened) + ". | " +
+                stringResource(R.string.seconds_shortened) + ". / " +
                 stringResource(R.string.daytime_marker),
         char = clockTheme.daytimeMarkerDividerChar,
         onCharChanged = { newChar ->

@@ -28,7 +28,7 @@ fun HoursOnesColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) 
     val currentClockPartsColors = clockTheme.clockPartsColors
 
     ColorSelector(
-        title = stringResource(id = R.string.hours) + " " + stringResource(R.string.ones),
+        title = stringResource(id = R.string.hours_shortened) + " " + stringResource(R.string.ones),
         color = clockTheme.clockPartsColors.hours.ones
             ?: clockTheme.charColor
             ?: defaultCharColor,

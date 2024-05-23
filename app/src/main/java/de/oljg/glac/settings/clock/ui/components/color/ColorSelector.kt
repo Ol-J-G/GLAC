@@ -117,7 +117,7 @@ fun ColorSelector(
                     }
                 }
             }
-            Text(text = title)
+            Text(text = title, style = MaterialTheme.typography.labelSmall)
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,

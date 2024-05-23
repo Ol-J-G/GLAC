@@ -50,10 +50,10 @@
     <string name="minutes">Minutes</string>
 
     <!-- Minutes abbreviation -->
-    <string name="min">Min</string>
+    <string name="minutes_shortened">M</string>
 
     <!-- Seconds abbreviation -->
-    <string name="sec">Sec</string>
+    <string name="seconds_shortened">S</string>
     <string name="caution">CAUTION!</string>
     <string name="character_dividers_are_not_really_useful_in_portrait_mode">Character dividers are not really useful in portrait mode!</string>
     <string name="line_dividers_have_been_selected_automatically_as_a_replacement">Line dividers have been selected automatically as a replacement!</string>
@@ -69,7 +69,9 @@
     <string name="div_h_m">Div. H/M</string>
     <string name="div_m_s">Div. M/S</string>
     <string name="ante">Ante</string>
+    <string name="ante_shortened">A</string>
     <string name="post">Post</string>
+    <string name="post_shortened">P</string>
     <string name="meridiem">Meridiem</string>
     <string name="generate_random">Generate random</string>
     <string name="segment_colors">Segment Colors</string>
@@ -112,14 +114,16 @@
     <string name="title_activity_alarm">AlarmActivity</string>
     <string name="schedule">Schedule</string>
     <string name="please_enter_a_number">Please Enter a Number!</string>
-    <string name="please_enter_a_whole_number">Please Enter a Whole Number!</string>
+    <string name="please_enter_a_whole_number">Please Enter a Whole Positive Number!</string>
     <string name="invalid">Invalid</string>
     <string name="valid_range">Valid Range</string>
     <string name="alarm_time_must_be_in_the_future">Alarm Time must be at least 5m in the future!</string>
-    <string name="select_date">Select Date</string>
+    <string name="select">Select</string>
     <string name="select_time">Select Time</string>
     <string name="start_date">Start Date</string>
     <string name="start_time">Start Time</string>
     <string name="light_alarm">Light Alarm</string>
     <string name="light_alarm_duration">Light Alarm Duration</string>
+    <string name="hours_shortened">H</string>
+    <string name="earliest_possible_alarm_time">"Earliest Possible Alarm Time: "</string>
 </resources>

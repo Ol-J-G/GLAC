@@ -22,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import de.oljg.glac.clock.digital.ui.utils.ScreenDetails
 import de.oljg.glac.clock.digital.ui.utils.evaluateScreenDetails
-import de.oljg.glac.settings.clock.ui.components.color.ColorSelector
 import de.oljg.glac.settings.clock.ui.components.sections.ClockCharacterSettings
 import de.oljg.glac.settings.clock.ui.components.sections.ClockColorSettings
 import de.oljg.glac.settings.clock.ui.components.sections.ClockDisplaySettings
@@ -46,23 +45,23 @@ fun ClockSettingsScreen() {
             verticalArrangement = Arrangement.Top
         ) {
             ClockPreview()
-            Spacer(modifier = Modifier
-                .fillMaxWidth()
-                .height(SETTINGS_SCREEN_PREVIEW_SPACE)
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth() //TODO: remove? each of those Spacers? => check
+                    .height(SETTINGS_SCREEN_PREVIEW_SPACE)
             )
 
-            /**
-             * One column layout is better with medium screens, especially because
-             * navigation rail will be on left/start edge, and then each column af two columns
-             * layout is too small (e.g. [ColorSelector]'s color swatches get squeezesd^^..OO)
-             */
             when (evaluateScreenDetails().screenWidthType) {
-                is ScreenDetails.DisplayType.Expanded -> TwoColumnsLayout()
+                is ScreenDetails.DisplayType.Expanded,
+                ScreenDetails.DisplayType.Medium -> TwoColumnsLayout()
+
                 else -> OneColumnLayout()
             }
-            Spacer(modifier = Modifier
-                .fillMaxWidth()
-                .height(SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2)
+            )
         }
     }
 }
@@ -88,7 +87,9 @@ private fun TwoColumnsLayout() {
             ClockDisplaySettings()
             ClockCharacterSettings()
         }
-        Spacer(modifier = Modifier.width(DEFAULT_HORIZONTAL_SPACE).fillMaxHeight())
+        Spacer(modifier = Modifier
+            .width(DEFAULT_HORIZONTAL_SPACE)
+            .fillMaxHeight())
         Column( // inner right/end scrollable column
             modifier = Modifier
                 .fillMaxWidth()

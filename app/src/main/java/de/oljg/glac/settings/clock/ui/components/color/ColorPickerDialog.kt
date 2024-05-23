@@ -92,7 +92,7 @@ fun ColorPickerDialog(
                     MaterialTheme.colorScheme.onTertiaryContainer
                 )
         ) {
-            Column {
+            Column {// TODO: does not show the whole column in medium width class + low height (phone) => add 2 column layout to cover this? or scrollable?
                 HsvColorPicker(
                     modifier = Modifier
                         .fillMaxWidth()
