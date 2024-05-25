@@ -1,6 +1,11 @@
 package de.oljg.glac.settings.clock.ui.utils
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.mapSaver
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -223,8 +228,10 @@ object SettingsDefaults {
     val COLOR_SELECTOR_TF_COLOR_SWATCH_SPACE = 8.dp
 
     val COLOR_PICKER_SLIDER_HEIGHT = 36.dp
-    val COLOR_PICKER_HEIGHT_COMPACT = 350.dp
-    val COLOR_PICKER_HEIGHT = 550.dp
+    val COLOR_PICKER_HEIGHT_EXTRA_SMALL = 250.dp
+    val COLOR_PICKER_HEIGHT_SMALL = 280.dp
+    val COLOR_PICKER_HEIGHT_MEDIUM = 350.dp
+    val COLOR_PICKER_HEIGHT_LARGE = 550.dp
     val COLOR_PICKER_BUTTON_SPACE = 0.dp
     const val COLOR_PICKER_FLASHING_COLOR_ANIM_DURATION = 825
 
@@ -232,6 +239,11 @@ object SettingsDefaults {
 
     val DIALOG_DEFAULT_PADDING = 16.dp
     val DIALOG_BORDER_WIDTH = 1.dp
+    val DIALOG_SHAPE = RoundedCornerShape(24.dp)
+
+    // To have a bit space and should not be too hard to get your thumbs on dialog control elements
+    const val COLOR_DIALOG_WIDTH = .9f
+    val DIALOG_TONAL_ELEVATION = 6.dp
 
     /**
      * DateTimeFormatter reserved chars and such ones that would lead to an incomplete
@@ -257,4 +269,13 @@ object SettingsDefaults {
     // No need to i18n this
     const val PERCENTAGE_ONLY_2_PLACES = "Use percentage only with 2 places!"
     const val FLOAT_PERCENTAGE_BETWEEN_ZERO_ONE = "Float percentage can only be in 0f..1f!"
+
+    // To use with rememberSavable / to save a Color in a Bundle
+    val colorSaver: Saver<Color, Any> = run {
+        val colorKey = "color"
+        mapSaver(
+            save = { color -> mapOf(colorKey to color.toArgb()) },
+            restore = { colorMap -> Color((colorMap[colorKey] as Int)) }
+        )
+    }
 }

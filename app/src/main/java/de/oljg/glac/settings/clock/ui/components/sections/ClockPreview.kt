@@ -17,11 +17,11 @@ import androidx.compose.ui.unit.DpSize
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.DigitalClockScreen
-import de.oljg.glac.clock.digital.ui.utils.evaluateScreenDetails
+import de.oljg.glac.clock.digital.ui.utils.screenDetails
 import de.oljg.glac.core.clock.data.ClockSettings
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
-import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.PREVIEW_SIZE_FACTOR
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -52,8 +52,8 @@ fun ClockPreview(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 modifier = Modifier
                     .size(
                         DpSize(
-                            evaluateScreenDetails().screenWidth * SettingsDefaults.PREVIEW_SIZE_FACTOR,
-                            evaluateScreenDetails().screenHeight * SettingsDefaults.PREVIEW_SIZE_FACTOR
+                            screenDetails().screenWidth * PREVIEW_SIZE_FACTOR,
+                            screenDetails().screenHeight * PREVIEW_SIZE_FACTOR
                         )
                     ),
                 contentAlignment = Alignment.TopCenter

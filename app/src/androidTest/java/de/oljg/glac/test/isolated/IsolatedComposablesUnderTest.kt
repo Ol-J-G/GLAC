@@ -18,7 +18,7 @@ import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
-import de.oljg.glac.clock.digital.ui.utils.evaluateScreenDetails
+import de.oljg.glac.clock.digital.ui.utils.screenDetails
 import de.oljg.glac.core.util.defaultColor
 
 /**
@@ -32,7 +32,7 @@ fun DigitalClockLandscapeLayoutIsolatedFont(
 ) {
     DigitalClockLandscapeLayout(
         currentTimeFormatted = currentTimeFormatted,
-        clockBoxSize = evaluateScreenDetails().screenSize,
+        clockBoxSize = screenDetails().screenSize,
         dividerAttributes = DividerAttributes(
             dividerStyle = dividerStyle,
             dividerColor = defaultColor(),
@@ -57,7 +57,7 @@ fun DigitalClockPortraitLayoutIsolatedFont(
 ) {
     DigitalClockPortraitLayout(
         currentTimeWithoutSeparators = currentTimeWithoutSeparators,
-        clockBoxSize = evaluateScreenDetails().screenSize,
+        clockBoxSize = screenDetails().screenSize,
         dividerAttributes = DividerAttributes(
             dividerStyle = dividerStyle,
             dividerColor = defaultColor(),
@@ -83,7 +83,7 @@ fun DigitalClockLandscapeLayoutIsolatedSevenSegment(
 ) {
     DigitalClockLandscapeLayout(
         currentTimeFormatted = currentTimeFormatted,
-        clockBoxSize = evaluateScreenDetails().screenSize,
+        clockBoxSize = screenDetails().screenSize,
         dividerAttributes = DividerAttributes(
             dividerStyle = dividerStyle,
             dividerColor = defaultColor(),
@@ -113,7 +113,7 @@ fun DigitalClockPortraitLayoutIsolatedSevenSegment(
 ) {
     DigitalClockPortraitLayout(
         currentTimeWithoutSeparators = currentTimeWithoutSeparators,
-        clockBoxSize = evaluateScreenDetails().screenSize,
+        clockBoxSize = screenDetails().screenSize,
         dividerAttributes = DividerAttributes(
             dividerStyle = dividerStyle,
             dividerColor = defaultColor(),

@@ -46,7 +46,7 @@ data class PreviewState(
  * https://developer.android.com/guide/topics/large-screens/support-different-screen-sizes#kotlin
  */
 @Composable
-fun evaluateScreenDetails(): ScreenDetails {
+fun screenDetails(): ScreenDetails {
     val configuration = LocalConfiguration.current
     return ScreenDetails(
         screenWidthType = when {

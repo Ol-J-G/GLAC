@@ -2,11 +2,14 @@ package de.oljg.glac.alarms.ui.utils
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.mapSaver
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.DurationUnit
 import kotlin.time.toJavaDuration
 
 
@@ -80,4 +83,12 @@ object AlarmDefaults {
 
     // Users can schedule an alarm from now + ALARM_START_BUFFER
     val ALARM_START_BUFFER = 5.minutes
+
+    val minutesSaver: Saver<Duration, Any> = run {
+        val minutes = "minutes"
+        mapSaver(
+            save = { duration -> mapOf(minutes to duration.toInt(DurationUnit.MINUTES)) },
+            restore = { minutesMap -> (minutesMap[minutes] as Int).minutes }
+        )
+    }
 }

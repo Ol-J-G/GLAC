@@ -21,7 +21,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import de.oljg.glac.clock.digital.ui.utils.ScreenDetails
-import de.oljg.glac.clock.digital.ui.utils.evaluateScreenDetails
+import de.oljg.glac.clock.digital.ui.utils.screenDetails
 import de.oljg.glac.settings.clock.ui.components.sections.ClockCharacterSettings
 import de.oljg.glac.settings.clock.ui.components.sections.ClockColorSettings
 import de.oljg.glac.settings.clock.ui.components.sections.ClockDisplaySettings
@@ -36,6 +36,10 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SCREEN_PRE
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ClockSettingsScreen() {
+    val screenDetails = screenDetails()
+    val screenWidthType = screenDetails.screenWidthType
+    val screenHeightType = screenDetails.screenHeightType
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -50,12 +54,15 @@ fun ClockSettingsScreen() {
                     .fillMaxWidth() //TODO: remove? each of those Spacers? => check
                     .height(SETTINGS_SCREEN_PREVIEW_SPACE)
             )
+            when {
+                screenWidthType is ScreenDetails.DisplayType.Compact -> OneColumnLayout()
 
-            when (evaluateScreenDetails().screenWidthType) {
-                is ScreenDetails.DisplayType.Expanded,
-                ScreenDetails.DisplayType.Medium -> TwoColumnsLayout()
+                // E.g. small phones are Medium, but two columns are too much, content is too big
+                screenWidthType is ScreenDetails.DisplayType.Medium
+                        && screenHeightType is ScreenDetails.DisplayType.Compact ->
+                            OneColumnLayout()
 
-                else -> OneColumnLayout()
+                else -> TwoColumnsLayout()
             }
             Spacer(
                 modifier = Modifier
@@ -87,9 +94,11 @@ private fun TwoColumnsLayout() {
             ClockDisplaySettings()
             ClockCharacterSettings()
         }
-        Spacer(modifier = Modifier
-            .width(DEFAULT_HORIZONTAL_SPACE)
-            .fillMaxHeight())
+        Spacer(
+            modifier = Modifier
+                .width(DEFAULT_HORIZONTAL_SPACE)
+                .fillMaxHeight()
+        )
         Column( // inner right/end scrollable column
             modifier = Modifier
                 .fillMaxWidth()

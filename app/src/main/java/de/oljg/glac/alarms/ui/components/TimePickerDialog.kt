@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.DisplayMode
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,7 +27,11 @@ import de.oljg.glac.R
 /**
  * Source:
  * https://medium.com/@droidvikas/exploring-date-and-time-pickers-compose-bytes-120e75349797
+ *
+ * Slightly extended to use a DisplayMode and TimeInput to be able to respect compact screen
+ * size height. (TimePicker is distorted and ugly in this edge case!)
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerDialog(
     title: String = stringResource(id = R.string.select_time),
@@ -33,7 +39,9 @@ fun TimePickerDialog(
     confirmButton: @Composable (() -> Unit),
     dismissButton: @Composable (() -> Unit)? = null,
     containerColor: Color = MaterialTheme.colorScheme.surface,
-    content: @Composable () -> Unit,
+    displayMode: DisplayMode = DisplayMode.Picker,
+    picker: @Composable () -> Unit,
+    input: @Composable () -> Unit,
 ) {
     Dialog(
         onDismissRequest = onDismissRequest,
@@ -62,7 +70,10 @@ fun TimePickerDialog(
                     text = title,
                     style = MaterialTheme.typography.labelMedium
                 )
-                content()
+                when(displayMode) {
+                    DisplayMode.Picker -> picker()
+                    else -> input()
+                }
                 Row(
                     modifier = Modifier
                         .height(40.dp)

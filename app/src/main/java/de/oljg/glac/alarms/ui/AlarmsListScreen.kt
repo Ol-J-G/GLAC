@@ -22,8 +22,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,11 +46,9 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
         initial = AlarmSettings()
     ).value
 
-    
-
     val alarmScheduler = AndroidAlarmScheduler(LocalContext.current)
 
-    var showAddAlarmDialog by remember {
+    var showAddAlarmDialog by rememberSaveable {
         mutableStateOf(false)
     }
 
@@ -102,7 +100,7 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
             }
         }
 
-        if (showAddAlarmDialog)
+        if (showAddAlarmDialog) //TODO: replace with AnimatedVis
             AddAlarmDialog(onDismissRequest = { showAddAlarmDialog = false }) { newAlarm ->
                 coroutineScope.launch {
                     viewModel.updateAlarmSettings(

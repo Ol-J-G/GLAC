@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,18 +23,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimeInput
 import androidx.compose.material3.TimePicker
-import androidx.compose.material3.TimePickerLayoutType
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -43,11 +43,12 @@ import de.oljg.glac.R
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.ALARM_START_BUFFER
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.MAX_LIGHT_ALARM_DURATION
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.MIN_LIGHT_ALARM_DURATION
+import de.oljg.glac.alarms.ui.utils.AlarmDefaults.minutesSaver
 import de.oljg.glac.alarms.ui.utils.isInFuture
 import de.oljg.glac.alarms.ui.utils.isValidAlarmStart
 import de.oljg.glac.alarms.ui.utils.plus
 import de.oljg.glac.clock.digital.ui.utils.ScreenDetails
-import de.oljg.glac.clock.digital.ui.utils.evaluateScreenDetails
+import de.oljg.glac.clock.digital.ui.utils.screenDetails
 import de.oljg.glac.core.alarms.data.Alarm
 import de.oljg.glac.core.alarms.data.AlarmSettings
 import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
@@ -56,6 +57,7 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DIALOG_BORDER_WIDTH
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DIALOG_DEFAULT_PADDING
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DIALOG_TONAL_ELEVATION
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.EDGE_PADDING
 import java.time.Instant
 import java.time.LocalDate
@@ -65,6 +67,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Calendar
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.minutes
 
@@ -76,50 +79,47 @@ fun AddAlarmDialog(
     onDismissRequest: () -> Unit,
     onNewAlarmAdded: (Alarm) -> Unit
 ) {
-    val screenDetails = evaluateScreenDetails()
-    val screenWidthType = screenDetails.screenWidthType
-    val screenHeighttype = screenDetails.screenHeightType
-    val screenHeight = screenDetails.screenHeight
     val scrollState = rememberScrollState()
     val alarmSettings = viewModel.alarmSettingsFlow.collectAsState(
         initial = AlarmSettings()
     ).value
 
-    var isLightAlarm by remember {
+    var isLightAlarm by rememberSaveable {
         mutableStateOf(alarmSettings.isLightAlarm)
     }
-    var lightAlarmDuration by remember {
+
+    var lightAlarmDuration: Duration by rememberSaveable(stateSaver = minutesSaver) {
         mutableStateOf(alarmSettings.lightAlarmDuration)
     }
-    var isValidLightAlarmDuration by remember {
+    var isValidLightAlarmDuration by rememberSaveable {
         mutableStateOf(true) // default value is valid
     }
 
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = Calendar.getInstance().timeInMillis,
         yearRange = LocalDateTime.now().year..LocalDateTime.now().year,
-        initialDisplayMode = when(screenWidthType) {
-            ScreenDetails.DisplayType.Compact -> DisplayMode.Picker
-            else -> DisplayMode.Input
-        }
+
+        /** In case of screenHeightType Compact, users must manually change to [DisplayMode.Input]*/
+        initialDisplayMode = DisplayMode.Picker
     )
-    var showDatePicker by remember { mutableStateOf(false) }
+    var showDatePicker by rememberSaveable { mutableStateOf(false) }
 
     val timePickerState = rememberTimePickerState()
-    var showTimePicker by remember { mutableStateOf(false) }
+    var showTimePicker by rememberSaveable { mutableStateOf(false) }
+
 
     val dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
-    var selectedDate: LocalDate? by remember {
+    var selectedDate: LocalDate? by rememberSaveable {
         mutableStateOf(null)
     }
 
     val timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
-    var selectedTime: LocalTime? by remember {
+    var selectedTime: LocalTime? by rememberSaveable {
         mutableStateOf(null)
     }
     val dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
 
-    var isReadyToScheduleAlarm by remember {
+    var isReadyToScheduleAlarm by rememberSaveable {
         mutableStateOf(false)
     }
     fun checkIfReadyToScheduleAlarm() = isValidAlarmStart(
@@ -146,15 +146,14 @@ fun AddAlarmDialog(
     )
 
 
-    Dialog(onDismissRequest = onDismissRequest) {
+    Dialog(onDismissRequest = onDismissRequest) { //TODO: extract SettingsDialog comp => dialog + surface + @Composable content
         Surface(
+            shape = SettingsDefaults.DIALOG_SHAPE,
+            tonalElevation = DIALOG_TONAL_ELEVATION,
             modifier = Modifier
+                .clip(SettingsDefaults.DIALOG_SHAPE)
+                .background(color = MaterialTheme.colorScheme.surface)
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.tertiaryContainer)
-                .border(
-                    DIALOG_BORDER_WIDTH,
-                    MaterialTheme.colorScheme.outline
-                )
         ) {
             Column {
 
@@ -224,14 +223,13 @@ fun AddAlarmDialog(
 
                     AnimatedVisibility(visible = isLightAlarm) {
                         Row(
-                            modifier = Modifier
-                                .padding(DIALOG_DEFAULT_PADDING)
-                                .fillMaxWidth(),
-
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             MinutesDurationSelector(
+                                modifier = Modifier
+                                    .padding(DIALOG_DEFAULT_PADDING)
+                                    .fillMaxWidth(),
                                 label = stringResource(R.string.light_alarm_duration),
                                 duration = lightAlarmDuration,
                                 minDuration = MIN_LIGHT_ALARM_DURATION,
@@ -359,6 +357,10 @@ fun AddAlarmDialog(
 
     if (showTimePicker) {
         TimePickerDialog(
+            displayMode = when(screenDetails().screenHeightType) {
+                ScreenDetails.DisplayType.Compact -> DisplayMode.Input
+                else -> DisplayMode.Picker
+            },
             onDismissRequest = { showTimePicker = false },
             confirmButton = {
                 TextButton(
@@ -373,17 +375,13 @@ fun AddAlarmDialog(
                 TextButton(onClick = { showTimePicker = false }) {
                     Text(text = stringResource(R.string.dismiss).uppercase())
                 }
+            },
+            picker = {
+                TimePicker(state = timePickerState)
+            },
+            input = {
+                TimeInput(state = timePickerState)
             }
-        ) {
-            TimePicker(
-                modifier = if(screenWidthType !is ScreenDetails.DisplayType.Compact)
-                    Modifier.height(screenHeight * .65f) else Modifier,
-                state = timePickerState,
-                layoutType = when(screenHeighttype) {
-                    ScreenDetails.DisplayType.Compact -> TimePickerLayoutType.Horizontal
-                    else -> TimePickerLayoutType.Vertical
-                }
-            )
-        }
+        )
     }
 }

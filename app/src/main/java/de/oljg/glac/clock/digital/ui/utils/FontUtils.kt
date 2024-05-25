@@ -130,7 +130,7 @@ fun MeasureFontSize(
  */
 @Composable
 fun evaluateStartFontSize(currentDisplayOrientation: Int, previewMode: Boolean): TextUnit {
-    val screenWidth = evaluateScreenDetails().screenWidth
+    val screenWidth = screenDetails().screenWidth
 
     // In portrait, max two digits (e.g. 'hh') have to be measured => bigger startFontSize
     return if (currentDisplayOrientation == Configuration.ORIENTATION_PORTRAIT) {

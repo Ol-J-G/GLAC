@@ -26,11 +26,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import de.oljg.glac.R
@@ -56,7 +58,24 @@ fun ColorSelector(
     onResetColor: () -> Unit,
     onColorChanged: (Color) -> Unit
 ) {
-    var showColorPicker by remember {
+    var initialColor by rememberSaveable(
+        key = color.toArgb().toString(),
+        stateSaver = SettingsDefaults.colorSaver
+    ) {
+        mutableStateOf(color)
+    }
+
+    /**
+     * Since there is usualy more than one [ColorSelector] in s screen/section
+     * (see [de.oljg.glac.settings.clock.ui.components.sections.ClockColorSettings]),
+     * key parameter is needed.
+     * (Without the key, when [ColorPickerDialog] is shown, and config changes, let's say
+     * because of user rotates device, this state doesn't work as expected (dialog disapears
+     * after rotation...), and unless docs claims there will be unique keys autegenerated,
+     * it only worked with specifiing the key manually ... dunno if this is a bug, or if I
+     * misunderstood something ...)
+     */
+    var showColorPicker by rememberSaveable(key = title.hashCode().toString()) {
         mutableStateOf(false)
     }
     var textFieldInput by remember {
@@ -99,12 +118,15 @@ fun ColorSelector(
                             tint = MaterialTheme.colorScheme.secondary
                         )
                     }
+
                     false -> IconButton(onClick = {
-                        onColorChanged(Color(
-                            red = Random.nextInt(until = 256), // until is exclusive => 0..255
-                            green = Random.nextInt(until = 256),
-                            blue = Random.nextInt(until = 256)
-                        ))
+                        onColorChanged(
+                            Color(
+                                red = Random.nextInt(until = 256), // until is exclusive => 0..255
+                                green = Random.nextInt(until = 256),
+                                blue = Random.nextInt(until = 256)
+                            )
+                        )
                         showResetButton = true
                     }) {
                         Icon(
@@ -157,14 +179,22 @@ fun ColorSelector(
                 .clip(CircleShape)
                 .size(COLOR_SELECTOR_COLOR_SWATCH_SIZE)
                 .background(color)
-                .clickable { showColorPicker = !showColorPicker }
+                .clickable {
+                    initialColor = color
+                    showColorPicker = true
+                }
             )
         }
     }
     AnimatedVisibility(visible = showColorPicker) {
-        ColorPickerDialog(onDismissRequest = { showColorPicker = false }) { newColor, newHexCode ->
+        ColorPickerDialog(
+            initialColor = initialColor,
+            onDismissRequest = {
+                showColorPicker = false
+            }
+        ) { newColor, newColorHexCode ->
             onColorChanged(newColor)
-            textFieldInput = newHexCode
+            textFieldInput = newColorHexCode
             showResetButton = true
         }
     }

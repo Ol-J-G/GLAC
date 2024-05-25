@@ -23,7 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import de.oljg.glac.clock.digital.ui.utils.ScreenDetails
-import de.oljg.glac.clock.digital.ui.utils.evaluateScreenDetails
+import de.oljg.glac.clock.digital.ui.utils.screenDetails
 import de.oljg.glac.core.navigation.GlacNavHost
 import de.oljg.glac.core.navigation.common.ClockFullScreen
 import de.oljg.glac.core.navigation.common.ClockSettingsSubScreen
@@ -71,7 +71,7 @@ fun GlacApp() {
 
         // Basically, show navigation rail (side bar) only when screen width is medium or expanded
         val showNavigationRail =
-                evaluateScreenDetails().screenWidthType !is ScreenDetails.DisplayType.Compact
+                screenDetails().screenWidthType !is ScreenDetails.DisplayType.Compact
 
         Surface(
             modifier = Modifier.fillMaxSize(),
