@@ -6,7 +6,6 @@ import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,8 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -28,7 +25,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.stringResource
@@ -36,7 +32,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.github.skydoves.colorpicker.compose.AlphaSlider
 import com.github.skydoves.colorpicker.compose.BrightnessSlider
@@ -48,6 +43,7 @@ import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.ScreenDetails
 import de.oljg.glac.clock.digital.ui.utils.screenDetails
+import de.oljg.glac.core.ui.components.SettingsDialog
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_DIALOG_WIDTH
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_BUTTON_SPACE
@@ -58,8 +54,6 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_HEIGHT
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_HEIGHT_SMALL
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_PICKER_SLIDER_HEIGHT
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DIALOG_DEFAULT_PADDING
-import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DIALOG_SHAPE
-import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DIALOG_TONAL_ELEVATION
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.colorSaver
 
 @Composable
@@ -72,9 +66,9 @@ fun ColorPickerDialog(
     val scrollState = rememberScrollState()
     val clipboardManager = LocalClipboardManager.current
 
-    val defaultOnSurfaceColor = defaultColor()
+    val defaultColor = defaultColor()
     var selectedColor by rememberSaveable(stateSaver = colorSaver) {
-        mutableStateOf(defaultOnSurfaceColor)
+        mutableStateOf(defaultColor)
     }
     var selectedColorHexCode by rememberSaveable {
         mutableStateOf("")
@@ -85,7 +79,7 @@ fun ColorPickerDialog(
 
     val infiniteTransition = rememberInfiniteTransition(label = "iT")
     val flashingHexCodeColor by infiniteTransition.animateColor(
-        initialValue = defaultOnSurfaceColor,
+        initialValue = defaultColor,
         targetValue = selectedColor,
         animationSpec = infiniteRepeatable(
             animation = tween(
@@ -100,92 +94,84 @@ fun ColorPickerDialog(
     val screenWidthType = screenDetails.screenWidthType
     val screenHeightType = screenDetails.screenHeightType
 
-    Dialog(
+    SettingsDialog(
         onDismissRequest = onDismissRequest,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+        maxWidthFraction = COLOR_DIALOG_WIDTH
     ) {
-        Surface(
-            shape = DIALOG_SHAPE,
-            tonalElevation = DIALOG_TONAL_ELEVATION,
-            modifier = Modifier
-                .clip(DIALOG_SHAPE)
-                .background(color = MaterialTheme.colorScheme.surface)
-                .fillMaxWidth(COLOR_DIALOG_WIDTH)
-        ) {
-            Column {
-                Column(
-                    modifier = Modifier
-                        .weight(3f, fill = false)
-                        .verticalScroll(scrollState),
-                    verticalArrangement = Arrangement.Top
-                ) {
-                    when {
-                        (screenWidthType is ScreenDetails.DisplayType.Medium
-                                && screenHeightType is ScreenDetails.DisplayType.Compact)
-                                || screenWidthType is ScreenDetails.DisplayType.Expanded ->
-                            TwoColumnsColorPicker(
-                                colorPickerController = colorPickerController,
-                                initialColor = initialColor,
-                            ) { colorEnvelope ->
-                                selectedColor = colorEnvelope.color
-                                selectedColorHexCode = colorEnvelope.hexCode
-                                copyToClipboardClicked = false
-                            }
-                        else ->
-                            OneColumnColorPicker(
-                                colorPickerController = colorPickerController,
-                                initialColor = initialColor,
-                            ) { colorEnvelope ->
-                                selectedColor = colorEnvelope.color
-                                selectedColorHexCode = colorEnvelope.hexCode
-                                copyToClipboardClicked = false
-                            }
-                    }
+        Column {
+            Column(
+                modifier = Modifier
+                    .weight(3f, fill = false)
+                    .verticalScroll(scrollState),
+                verticalArrangement = Arrangement.Top
+            ) {
+                when {
+                    (screenWidthType is ScreenDetails.DisplayType.Medium
+                            && screenHeightType is ScreenDetails.DisplayType.Compact)
+                            || screenWidthType is ScreenDetails.DisplayType.Expanded ->
+                        TwoColumnsColorPicker(
+                            colorPickerController = colorPickerController,
+                            initialColor = initialColor,
+                        ) { colorEnvelope ->
+                            selectedColor = colorEnvelope.color
+                            selectedColorHexCode = colorEnvelope.hexCode
+                            copyToClipboardClicked = false
+                        }
+                    else ->
+                        OneColumnColorPicker(
+                            colorPickerController = colorPickerController,
+                            initialColor = initialColor,
+                        ) { colorEnvelope ->
+                            selectedColor = colorEnvelope.color
+                            selectedColorHexCode = colorEnvelope.hexCode
+                            copyToClipboardClicked = false
+                        }
                 }
+            }
 
-                // hexcode/dismiss-/confirm-button row
-                Column(
-                    modifier = Modifier.weight(1f, fill = false),
-                    verticalArrangement = Arrangement.Bottom
+            // hexcode/dismiss-/confirm-button row
+            Column(
+                modifier = Modifier.weight(1f, fill = false),
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(DIALOG_DEFAULT_PADDING)
+                        .padding(horizontal = DIALOG_DEFAULT_PADDING / 2),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
+                    Text(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(DIALOG_DEFAULT_PADDING)
-                            .padding(horizontal = DIALOG_DEFAULT_PADDING / 2),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .padding(start = DIALOG_DEFAULT_PADDING / 1.5f)
-                                .clickable {
-                                    clipboardManager.setText(
-                                        AnnotatedString(selectedColorHexCode)
-                                    )
-                                    copyToClipboardClicked = true
-                                },
-                            text = selectedColorHexCode,
-                            color = if (copyToClipboardClicked)
-                                selectedColor else flashingHexCodeColor,
-                            fontFamily = FontFamily.Monospace,
-                            fontStyle = FontStyle.Italic,
+                            .padding(start = DIALOG_DEFAULT_PADDING / 1.5f)
+                            .clickable {
+                                clipboardManager.setText(
+                                    AnnotatedString(selectedColorHexCode)
+                                )
+                                copyToClipboardClicked = true
+                            },
+                        text = selectedColorHexCode,
+                        color = if (copyToClipboardClicked)
+                            selectedColor else flashingHexCodeColor,
+                        fontFamily = FontFamily.Monospace,
+                        fontStyle = FontStyle.Italic,
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(
+                            COLOR_PICKER_BUTTON_SPACE, Alignment.End
                         )
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(
-                                COLOR_PICKER_BUTTON_SPACE, Alignment.End
-                            )
-                        ) {
-                            TextButton(onClick = onDismissRequest) {
-                                Text(text = stringResource(R.string.dismiss).uppercase())
-                            }
-                            TextButton(onClick = {
-                                onColorChanged(selectedColor, selectedColorHexCode)
-                                onDismissRequest.invoke()
-                            }) {
-                                Text(text = stringResource(R.string.confirm).uppercase())
-                            }
+                    ) {
+                        TextButton(onClick = onDismissRequest) {
+                            Text(text = stringResource(R.string.dismiss).uppercase())
+                        }
+                        TextButton(onClick = {
+                            onColorChanged(selectedColor, selectedColorHexCode)
+                            onDismissRequest.invoke()
+                        }) {
+                            Text(text = stringResource(R.string.confirm).uppercase())
                         }
                     }
                 }

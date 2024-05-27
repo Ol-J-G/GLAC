@@ -3,7 +3,6 @@ package de.oljg.glac.settings.clock.ui.components.character
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
@@ -121,9 +120,7 @@ fun SevenSegmentSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                     },
                     valueRange = MIN_STROKE_WIDTH..MAX_STROKE_WIDTH
                 )
-                Spacer(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(DEFAULT_VERTICAL_SPACE / 2))
+                Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
             }
         }
         Divider(

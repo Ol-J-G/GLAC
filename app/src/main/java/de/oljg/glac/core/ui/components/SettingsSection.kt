@@ -1,4 +1,4 @@
-package de.oljg.glac.settings.clock.ui.components.common
+package de.oljg.glac.core.ui.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -29,7 +29,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_BORDER_WIDTH
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_ROUNDED_CORNER_SIZE
@@ -42,13 +45,17 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.TRAILING_ICON_END_P
 @Composable
 fun SettingsSection(
     sectionTitle: String,
+    sectionTitleStyle: TextStyle = MaterialTheme.typography.titleLarge,
     expanded: Boolean,
+    horizontalPadding: Dp = 0.dp,
+    verticalPadding: Dp = DEFAULT_VERTICAL_SPACE / 2,
+    backgroundColor: Color = MaterialTheme.colorScheme.surface,
+    expandedBackgroundColor: Color = MaterialTheme.colorScheme.inverseOnSurface,
     onExpandedChange: (Boolean) -> Unit,
-    settingsContent: @Composable () -> Unit
+    sectionContent: @Composable () -> Unit
 ) {
     Surface(
-        modifier = Modifier
-            .padding(vertical = DEFAULT_VERTICAL_SPACE / 2),
+        modifier = Modifier.padding(horizontal = horizontalPadding, vertical = verticalPadding),
         shape = RoundedCornerShape(DEFAULT_ROUNDED_CORNER_SIZE),
         border = BorderStroke(
             width = DEFAULT_BORDER_WIDTH, color = if (expanded)
@@ -61,10 +68,7 @@ fun SettingsSection(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(SETTINGS_SECTION_HEIGHT)
-                    .background(
-                        if (expanded) MaterialTheme.colorScheme.inverseOnSurface
-                        else MaterialTheme.colorScheme.surface
-                    )
+                    .background(if (expanded) expandedBackgroundColor else backgroundColor)
                     .clickable(onClick = { onExpandedChange(!expanded) }),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -72,7 +76,7 @@ fun SettingsSection(
                 Text(
                     modifier = Modifier.padding(start = SETTINGS_HORIZONTAL_PADDING),
                     text = sectionTitle,
-                    style = MaterialTheme.typography.titleLarge
+                    style = sectionTitleStyle
                 )
                 SettingsSectionTrailingIcon(expanded = expanded)
             }
@@ -89,10 +93,10 @@ fun SettingsSection(
                     modifier = Modifier
                         .padding(
                             horizontal = SETTINGS_HORIZONTAL_PADDING,
-                            vertical = DEFAULT_VERTICAL_SPACE / 2
+                            vertical = verticalPadding
                         )
                 ) {
-                    settingsContent.invoke()
+                    sectionContent()
                 }
             }
         }

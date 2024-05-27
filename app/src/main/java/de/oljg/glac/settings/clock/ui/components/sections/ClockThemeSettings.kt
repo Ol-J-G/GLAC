@@ -29,10 +29,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.clock.data.ClockSettings
 import de.oljg.glac.core.clock.data.ClockTheme
+import de.oljg.glac.core.ui.components.SettingsSection
 import de.oljg.glac.core.util.CommonClockUtils.DEFAULT_THEME_NAME
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.common.DropDownSelector
-import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_ICON_BUTTON_SIZE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.MAX_THEME_NAME_LENGTH
@@ -70,11 +70,7 @@ fun ClockThemeSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             }
         }
     ) {
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(DEFAULT_VERTICAL_SPACE / 2)
-        )
+        Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
         DropDownSelector(
             label = stringResource(R.string.theme_name),
             selectedValue = textFieldValue,
@@ -150,6 +146,15 @@ fun ClockThemeSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                                      * oO), so, alternatively, build a new map without the
                                      * entry to remove...
                                      */
+
+                                    /**
+                                     * Remove theme and select default theme afterwards.
+                                     *
+                                     * Note that clockSettings.themes.remove(key) did NOT remove
+                                     * the theme entry (dunno why!??..containsKey(key) was true..
+                                     * oO), so, alternatively, build a new map without the
+                                     * entry to remove...
+                                     */
                                     themes = buildMap {
                                         clockSettings.themes.entries.forEach { (key, value) ->
                                             if (key != textFieldValue) put(key, value)
@@ -209,11 +214,7 @@ fun ClockThemeSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 }
             }
         )
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(DEFAULT_VERTICAL_SPACE / 2)
-        )
+        Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
     }
 }
 

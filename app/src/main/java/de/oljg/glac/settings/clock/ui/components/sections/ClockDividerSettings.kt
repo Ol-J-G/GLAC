@@ -6,7 +6,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
@@ -40,8 +39,8 @@ import de.oljg.glac.clock.digital.ui.utils.isNeitherNoneNorChar
 import de.oljg.glac.clock.digital.ui.utils.isRotatable
 import de.oljg.glac.core.clock.data.ClockSettings
 import de.oljg.glac.core.clock.data.ClockTheme
+import de.oljg.glac.core.ui.components.SettingsSection
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
-import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSlider
 import de.oljg.glac.settings.clock.ui.components.divider.CharDividerPortraitWarning
 import de.oljg.glac.settings.clock.ui.components.divider.CharDividerSevenSegmentWarning
@@ -83,11 +82,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             }
         }
     ) {
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(DEFAULT_VERTICAL_SPACE / 2)
-        )
+        Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
         DividerStyleSelector(
             label = stringResource(R.string.style),
             selectedDividerStyle = clockTheme.dividerStyle,
@@ -288,11 +283,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                         }
                     }
                 )
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(DEFAULT_VERTICAL_SPACE / 2)
-                )
+                Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
             }
         }
 
@@ -346,11 +337,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             Column {
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 ColonDividerOptionsSelector()
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(DEFAULT_VERTICAL_SPACE / 2)
-                )
+                Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
             }
         }
 

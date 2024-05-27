@@ -126,4 +126,5 @@
     <string name="light_alarm_duration">Light Alarm Duration</string>
     <string name="hours_shortened">H</string>
     <string name="earliest_possible_alarm_time">"Earliest Possible Alarm Time: "</string>
+    <string name="more_alarm_details">More Alarm Details</string>
 </resources>

@@ -2,6 +2,7 @@ package de.oljg.glac.alarms.ui
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -100,7 +101,7 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
             }
         }
 
-        if (showAddAlarmDialog) //TODO: replace with AnimatedVis
+        AnimatedVisibility(visible = showAddAlarmDialog) {
             AddAlarmDialog(onDismissRequest = { showAddAlarmDialog = false }) { newAlarm ->
                 coroutineScope.launch {
                     viewModel.updateAlarmSettings(
@@ -109,5 +110,6 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
                 }
 //                alarmScheduler.schedule(newAlarm) //TODO: rectivate and test when AddAlarmDialog is finished
             }
+        }
     }
 }

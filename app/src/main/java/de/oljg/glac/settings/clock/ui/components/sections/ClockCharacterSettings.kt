@@ -7,7 +7,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
@@ -23,11 +22,11 @@ import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_DIGIT_SIZ
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
 import de.oljg.glac.core.clock.data.ClockSettings
 import de.oljg.glac.core.clock.data.ClockTheme
+import de.oljg.glac.core.ui.components.SettingsSection
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.character.ClockCharTypeSelector
 import de.oljg.glac.settings.clock.ui.components.character.FontSelector
 import de.oljg.glac.settings.clock.ui.components.character.SevenSegmentSelector
-import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSlider
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.settings.clock.ui.utils.prettyPrintPercentage
@@ -59,9 +58,7 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
             }
         }
     ) {
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .height(DEFAULT_VERTICAL_SPACE))
+        Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE))
         ClockCharTypeSelector(
             selectedClockCharType = clockTheme.clockCharType,
             onClockCharTypeSelected = { newClockCharType ->
@@ -157,9 +154,6 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
                 )
             }
         }
-
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .height(DEFAULT_VERTICAL_SPACE))
+        Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE))
     }
 }

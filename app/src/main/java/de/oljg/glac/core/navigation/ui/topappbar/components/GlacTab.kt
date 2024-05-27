@@ -24,11 +24,12 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.INACTIVE_TAB_OPACITY
 import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TAB_FADE_IN_ANIMATION_DELAY
 import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TAB_FADE_IN_ANIMATION_DURATION
 import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TAB_FADE_OUT_ANIMATION_DURATION
+import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TAB_PADDING
+import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TAB_TEXT_ICON_SPACE
 import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TOP_APP_BAR_HEIGHT
 import de.oljg.glac.core.util.defaultColor
 import java.util.Locale
@@ -57,7 +58,7 @@ fun GlacTab(
     )
     Row(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(TAB_PADDING)
             .animateContentSize()
             .height(TOP_APP_BAR_HEIGHT)
             .selectable(
@@ -79,7 +80,7 @@ fun GlacTab(
                 contentDescription = tabText,
                 tint = tabTintColor
             )
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(TAB_TEXT_ICON_SPACE))
             Text(
                 text = tabText.uppercase(Locale.getDefault()),
                 color = tabTintColor

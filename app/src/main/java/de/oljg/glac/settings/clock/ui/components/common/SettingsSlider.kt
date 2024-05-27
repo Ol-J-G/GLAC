@@ -74,9 +74,7 @@ fun SettingsSlider(
         }
         Text(modifier = Modifier.padding(end = EDGE_PADDING), text = sliderValuePrettyPrintFun(sliderValue))
     }
-    Spacer(modifier = Modifier
-        .fillMaxWidth()
-        .height(DEFAULT_VERTICAL_SPACE / 2))
+    Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
     Slider(
         modifier = Modifier.padding(horizontal = EDGE_PADDING),
         value = sliderValue,

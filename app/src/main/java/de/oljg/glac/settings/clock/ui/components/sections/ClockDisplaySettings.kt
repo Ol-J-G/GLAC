@@ -3,7 +3,6 @@ package de.oljg.glac.settings.clock.ui.components.sections
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -14,8 +13,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.clock.data.ClockSettings
 import de.oljg.glac.core.clock.data.ClockTheme
+import de.oljg.glac.core.ui.components.SettingsSection
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
-import de.oljg.glac.settings.clock.ui.components.common.SettingsSection
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSwitch
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import kotlinx.coroutines.launch
@@ -46,7 +45,7 @@ fun ClockDisplaySettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             }
         }
     ) {
-        Spacer(modifier = Modifier.fillMaxWidth().height(DEFAULT_VERTICAL_SPACE / 2))
+        Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
         SettingsSwitch(
             label = stringResource(R.string.seconds),
             checked = clockTheme.showSeconds,
@@ -61,7 +60,7 @@ fun ClockDisplaySettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 }
             }
         )
-        Spacer(modifier = Modifier.fillMaxWidth().height(DEFAULT_VERTICAL_SPACE / 2))
+        Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
         SettingsSwitch(
             label = stringResource(R.string.daytime_marker),
             checked = clockTheme.showDaytimeMarker,
@@ -76,7 +75,7 @@ fun ClockDisplaySettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 }
             }
         )
-        Spacer(modifier = Modifier.fillMaxWidth().height(DEFAULT_VERTICAL_SPACE / 2))
+        Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
     }
 }
 

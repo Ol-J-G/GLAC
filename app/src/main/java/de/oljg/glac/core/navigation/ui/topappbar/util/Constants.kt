@@ -4,6 +4,9 @@ import androidx.compose.ui.unit.dp
 
 object Constants {
     val TOP_APP_BAR_HEIGHT = 56.dp
+    val TAB_TEXT_ICON_SPACE = 12.dp
+    val TAB_PADDING = 16.dp
+
     const val INACTIVE_TAB_OPACITY = 0.6f
 
     // all durations in milliseconds

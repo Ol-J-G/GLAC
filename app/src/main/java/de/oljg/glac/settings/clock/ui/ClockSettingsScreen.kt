@@ -49,11 +49,7 @@ fun ClockSettingsScreen() {
             verticalArrangement = Arrangement.Top
         ) {
             ClockPreview()
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth() //TODO: remove? each of those Spacers? => check
-                    .height(SETTINGS_SCREEN_PREVIEW_SPACE)
-            )
+            Spacer(modifier = Modifier.height(SETTINGS_SCREEN_PREVIEW_SPACE))
             when {
                 screenWidthType is ScreenDetails.DisplayType.Compact -> OneColumnLayout()
 
@@ -64,11 +60,7 @@ fun ClockSettingsScreen() {
 
                 else -> TwoColumnsLayout()
             }
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2)
-            )
+            Spacer(modifier = Modifier.height(SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2))
         }
     }
 }
