@@ -146,15 +146,6 @@ fun ClockThemeSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                                      * oO), so, alternatively, build a new map without the
                                      * entry to remove...
                                      */
-
-                                    /**
-                                     * Remove theme and select default theme afterwards.
-                                     *
-                                     * Note that clockSettings.themes.remove(key) did NOT remove
-                                     * the theme entry (dunno why!??..containsKey(key) was true..
-                                     * oO), so, alternatively, build a new map without the
-                                     * entry to remove...
-                                     */
                                     themes = buildMap {
                                         clockSettings.themes.entries.forEach { (key, value) ->
                                             if (key != textFieldValue) put(key, value)

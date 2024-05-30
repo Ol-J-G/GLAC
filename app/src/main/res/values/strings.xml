@@ -117,7 +117,7 @@
     <string name="please_enter_a_whole_number">Please Enter a Whole Positive Number!</string>
     <string name="invalid">Invalid</string>
     <string name="valid_range">Valid Range</string>
-    <string name="alarm_time_must_be_in_the_future">Alarm Time must be at least 5m in the future!</string>
+    <string name="alarm_time_must_be_in_the_future">Alarm time must be at least 5m in the future!</string>
     <string name="select">Select</string>
     <string name="select_time">Select Time</string>
     <string name="start_date">Start Date</string>
@@ -127,4 +127,13 @@
     <string name="hours_shortened">H</string>
     <string name="earliest_possible_alarm_time">"Earliest Possible Alarm Time: "</string>
     <string name="more_alarm_details">More Alarm Details</string>
+    <string name="update">Update</string>
+    <string name="alarm_time_may_not_overlap_an_existing_alarm">Alarm time may not overlap an existing alarm!</string>
+    <string name="please_select_start_date_and_time">Please SELECT start date and time!</string>
+    <string name="please_select_a_start_date">Please SELECT a start date!</string>
+    <string name="please_select_a_start_time">Please SELECT a start time!</string>
+    <string name="ready_to">"Ready to"</string>
+    <string name="update_alarm">Update Alarm</string>
+    <string name="remove_alarm">Remove Alarm</string>
+    <string name="start">Start</string>
 </resources>
