@@ -37,6 +37,7 @@ import de.oljg.glac.R
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.MAX_LIGHT_ALARM_DURATION
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.MIN_LIGHT_ALARM_DURATION
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.minutesSaver
+import de.oljg.glac.alarms.ui.utils.RepeatMode
 import de.oljg.glac.alarms.ui.utils.isSet
 import de.oljg.glac.alarms.ui.utils.toEpochMillis
 import de.oljg.glac.clock.digital.ui.utils.ScreenDetails
@@ -74,6 +75,10 @@ fun AlarmDialog(
 
     var moreAlarmDetailsIsExpanded by rememberSaveable {
         mutableStateOf(false)
+    }
+
+    var selectedRepeatMode by rememberSaveable {
+        mutableStateOf(RepeatMode.NONE)
     }
 
     var isLightAlarm by rememberSaveable {
@@ -121,10 +126,11 @@ fun AlarmDialog(
     fun buildAlarm() = Alarm(
         start = LocalDateTime.of(selectedDate, selectedTime),
         isLightAlarm = isLightAlarm,
-        lightAlarmDuration = lightAlarmDuration
+        lightAlarmDuration = lightAlarmDuration,
+        repeat = selectedRepeatMode
     )
 
-    SettingsDialog(onDismissRequest = onDismissRequest) { //TODO: care about adaptive design => row+2col for expanded screen width class...
+    SettingsDialog(onDismissRequest = onDismissRequest) { //TODO: care about adaptive design => row+2col for expanded screen width class... => when dialog is completed
         Column {
 
             // Scrollable inner section
@@ -146,14 +152,21 @@ fun AlarmDialog(
                 ) {
                     showTimePicker = true
                 }
+                RepeatModeSelector(
+                    label = stringResource(R.string.repeat),
+                    selectedRepeatMode = selectedRepeatMode,
+                    onNewRepeatModeSelected = { newRepeatMode ->
+                        selectedRepeatMode = RepeatMode.valueOf(newRepeatMode)
+                    }
+                )
+
                 Divider(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .fillMaxWidth(.9f)
-                        .padding(vertical = DEFAULT_VERTICAL_SPACE)
+                        .padding(bottom = DEFAULT_VERTICAL_SPACE)
 
                 )
-                //TODO: add "repeat mode" selector (dropdown?..!) AlarmRepeatMode, NONE, DAILY, WEEKLY, MONTHLY?
 
                 SettingsSection(
                     sectionTitle = stringResource(R.string.more_alarm_details),

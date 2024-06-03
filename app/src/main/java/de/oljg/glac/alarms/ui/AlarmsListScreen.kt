@@ -107,6 +107,7 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
                         start = alarm.start,
                         isLightAlarm = alarm.isLightAlarm,
                         lightAlarmDuration = alarm.lightAlarmDuration,
+                        repeat = alarm.repeat,
                         selected = alarm.start == selectedAlarmStart,
                         onClick = { selectedAlarmStart = alarm.start },
                         onRemoveAlarm = {

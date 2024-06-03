@@ -2,10 +2,16 @@ package de.oljg.glac.alarms.ui.utils
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.mapSaver
+import androidx.compose.ui.res.stringResource
+import com.ibm.icu.text.RuleBasedNumberFormat
+import de.oljg.glac.R
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.ALARM_START_BUFFER
+import de.oljg.glac.alarms.ui.utils.AlarmDefaults.SPACE
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.localizedShortDateTimeFormatter
+import de.oljg.glac.alarms.ui.utils.AlarmDefaults.localizedShortTimeFormatter
 import de.oljg.glac.core.alarms.data.Alarm
 import java.time.Instant
 import java.time.LocalDate
@@ -15,11 +21,18 @@ import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.time.format.TextStyle
+import java.util.Locale
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.ZERO
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
+import kotlin.time.times
 import kotlin.time.toJavaDuration
+import kotlin.time.toKotlinDuration
 
 
 enum class AlarmErrorState {
@@ -34,6 +47,13 @@ enum class AlarmErrorState {
 enum class ValidState {
     VALID,
     INVALID
+}
+
+enum class RepeatMode {
+    NONE,
+    DAILY,
+    WEEKLY,
+    MONTHLY
 }
 
 fun <T> T?.isSet() = this != null
@@ -195,24 +215,64 @@ fun LocalDateTime.interferesScheduledAlarms(
     val requestedAlarmRange = this.minus(lightAlarmDuration).rangeUntil(this)
 
     scheduledAlarms.forEach { scheduledAlarm ->
-
-        // In case an alarm is going to be updated, don't check overlap++ (must be updatable!)
+        /**
+         * In case an alarm is going to be updated, don't check itself for overlap++
+         * (must be updatable!), but, alarm to update may not interfere with any other scheduled
+         * alarms.
+         */
         if (scheduledAlarm.start == alarmToUpdate?.start) return@forEach
 
-        val invalidRange = scheduledAlarm.start
-            .minus(if (scheduledAlarm.isLightAlarm) scheduledAlarm.lightAlarmDuration else ZERO)
-            .minus(ALARM_START_BUFFER)
-            .plus(1.minutes) // to compensate 'virtually exclusive' OpenEndRange's start
-            .rangeUntil(
-                scheduledAlarm.start
-                    .plus(ALARM_START_BUFFER)
-                    .minus(1.minutes) // to compensate OpenEndRange's endExclusive
-            )
-        if (invalidRange.overlapsOrContainsCompletely(requestedAlarmRange))
-            return true
+        when(scheduledAlarm.repeat) {
+            RepeatMode.NONE -> {
+                if (rangesOverlap(requestedAlarmRange, scheduledAlarm))
+                    return true
+            }
+            RepeatMode.DAILY -> { // look 1 year in the future
+                repeat(367) { day -> // zero-based => +1, inclusive => +1 => 365 + 2
+                    val dailyRepeatingAlarm = scheduledAlarm.copy(
+                        start = scheduledAlarm.start.plus(day * 1.days))
+                    if (rangesOverlap(requestedAlarmRange, dailyRepeatingAlarm))
+                        return true
+                }
+            }
+            RepeatMode.WEEKLY -> { // look 1 year in the future
+                repeat(54) { week -> // zero-based => +1, inclusive => +1 => 52 + 2
+                    val weeklyRepeatingAlarm = scheduledAlarm.copy(
+                        start = scheduledAlarm.start.plus(week * 7.days))
+                    if (rangesOverlap(requestedAlarmRange, weeklyRepeatingAlarm))
+                        return true
+                }
+            }
+            RepeatMode.MONTHLY -> { // look 1 year in the future
+                repeat(13) { month -> // zero-based => +1 => 12 + 1
+                    val mothlyRepeatingAlarm = scheduledAlarm.copy(
+                        start = scheduledAlarm.start.plusMonths(month * 1L))
+                    if (rangesOverlap(requestedAlarmRange, mothlyRepeatingAlarm))
+                        return true
+                }
+            }
+        }
     }
     return false
 }
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun rangesOverlap(
+    requestedAlarmRange: OpenEndRange<LocalDateTime>,
+    scheduledAlarm: Alarm
+): Boolean {
+    val invalidRange = scheduledAlarm.start
+        .minus(if (scheduledAlarm.isLightAlarm) scheduledAlarm.lightAlarmDuration else ZERO)
+        .minus(ALARM_START_BUFFER)
+        .plus(1.minutes) // to compensate 'virtually exclusive' OpenEndRange's start
+        .rangeUntil(
+            scheduledAlarm.start
+                .plus(ALARM_START_BUFFER)
+                .minus(1.minutes) // to compensate OpenEndRange's endExclusive
+        )
+    return (invalidRange.overlapsOrContainsCompletely(requestedAlarmRange))
+}
+
 
 /**
  * See [de.oljg.glac.alarms.ui.utils.OverlappingRangesTest], it documents how it works and how
@@ -257,6 +317,64 @@ operator fun LocalDateTime.plus(amountToAdd: Duration): LocalDateTime =
 operator fun LocalTime.plus(amountToAdd: Duration): LocalTime =
         plus(amountToAdd.toJavaDuration())
 
+@RequiresApi(Build.VERSION_CODES.O)
+fun Duration.Companion.between(a: LocalDateTime, b: LocalDateTime): Duration {
+    if(a == b || b.isBefore(a)) return ZERO // handles positive durations only!
+    return java.time.Duration.between(a, b).toKotlinDuration()
+}
+
+
+private fun Duration.toDaysHoursMinutesSeconds() =
+        this.toComponents { days, hours, minutes, seconds, _ ->
+            buildMap {
+                put(DurationUnit.DAYS, days.days.toInt(DurationUnit.DAYS))
+                put(DurationUnit.HOURS, hours.hours.toInt(DurationUnit.HOURS))
+                put(DurationUnit.MINUTES, minutes.minutes.toInt(DurationUnit.MINUTES))
+                put(DurationUnit.SECONDS, seconds.seconds.toInt(DurationUnit.SECONDS))
+            }
+        }
+
+
+/**
+ * Mainly to omit the 'flipping' (string changes length when value is between 0..9).
+ * To prevent this, add some padding before H, M and S.
+ * Another benefit is i18n support.
+ *
+ * Note that this does not handle negative [Duration]s!
+ * Because it's used to format a countdown timer in alarm context, where alarms will be
+ * removed after being triggered, so, no need to see negative duration.
+ */
+@Composable
+fun Duration.format(separator: Char? = ' '): String {
+    if (this <= ZERO) return "0"
+
+    val components = this.toDaysHoursMinutesSeconds()
+    val daysComponent = components.getValue(DurationUnit.DAYS)
+    val hoursComponent = components.getValue(DurationUnit.HOURS)
+    val minutesComponent = components.getValue(DurationUnit.MINUTES)
+    val secondsComponent = components.getValue(DurationUnit.SECONDS)
+
+    return buildString {
+        if (daysComponent > 0) {
+            append(daysComponent)
+            append(stringResource(id = R.string.days_shortened).lowercase())
+            separator?.let { append(it) }
+        }
+        if (hoursComponent > 0) {
+            append(hoursComponent.pad())
+            append(stringResource(id = R.string.hours_shortened).lowercase())
+            separator?.let { append(it) }
+        }
+        if (minutesComponent > 0) {
+            append(minutesComponent.pad())
+            append(stringResource(id = R.string.minutes_shortened).lowercase())
+            separator?.let { append(it) }
+        }
+        append(secondsComponent.pad())
+        append(stringResource(id = R.string.seconds_shortened).lowercase())
+    }
+}
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 private fun defaultOffset(): ZoneOffset = ZoneId.systemDefault().rules.getOffset(Instant.now())
@@ -278,13 +396,83 @@ fun String.isInt() = try {
     false
 }
 
+fun Int.pad(paddingRepetitions: Int = 1, paddingCharacter: Char = SPACE) = when (this) {
+    in 0..9 -> buildString {
+        repeat(paddingRepetitions) {
+            append(paddingCharacter)
+        }
+    } + this
+
+    else -> this.toString()
+}
+
+
+/**
+ * Used to format day of month as ordinal for alarms with [RepeatMode.MONTHLY], as part of an
+ * alarm list item within alarms list screen.
+ *
+ * Example: 1 => 1st, 10 => 10th (or with most non-US Locale: 1 => 1., 10 => 10.) etc.
+ */
+fun Int.formatAsOrdinal(): String {
+    val ordinalFormatter = RuleBasedNumberFormat(Locale.getDefault(), RuleBasedNumberFormat.ORDINAL)
+    return ordinalFormatter.format(this)
+}
+
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun evaluateAlarmRepeatInfo(
+    repeatMode: RepeatMode,
+    alarmStart: LocalDateTime
+) = when (repeatMode) {
+
+    // E.g.: 'Once at 5/31/24, 5:00 PM '
+    RepeatMode.NONE -> stringResource(R.string.once) + SPACE +
+            stringResource(R.string.at) + SPACE +
+            localizedShortDateTimeFormatter.format(alarmStart)
+
+    // E.g.: 'Every day at 5:00 PM'
+    RepeatMode.DAILY -> stringResource(R.string.every) + SPACE +
+            stringResource(R.string.day) + SPACE +
+            stringResource(R.string.at) + SPACE +
+            localizedShortTimeFormatter.format(alarmStart)
+
+    // E.g.: 'Every Monday at 5:00 PM'
+    RepeatMode.WEEKLY -> stringResource(R.string.every) + SPACE +
+            alarmStart.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()) + SPACE +
+            stringResource(R.string.at) + SPACE +
+            localizedShortTimeFormatter.format(alarmStart)
+
+    // E.g.: 'Every month on 22th at 5:00 PM '
+    RepeatMode.MONTHLY -> stringResource(R.string.every) + SPACE +
+            stringResource(R.string.month) + SPACE +
+            stringResource(R.string.on_) + SPACE +
+            alarmStart.dayOfMonth.formatAsOrdinal() + SPACE +
+            stringResource(R.string.at) + SPACE +
+            localizedShortTimeFormatter.format(alarmStart)
+}
+
+
+@Composable
+fun RepeatMode.translate() = when (this) {
+    RepeatMode.NONE -> stringResource(R.string.none)
+    RepeatMode.DAILY -> stringResource(R.string.daily)
+    RepeatMode.WEEKLY -> stringResource(R.string.weekly)
+    RepeatMode.MONTHLY -> stringResource(R.string.monthly)
+}
+
+
 object AlarmDefaults {
+    const val SPACE = ' '
+
     val MIN_LIGHT_ALARM_DURATION = 1.minutes
     val MAX_LIGHT_ALARM_DURATION = 60.minutes
 
     // Users can schedule an alarm from now + ALARM_START_BUFFER
     val ALARM_START_BUFFER = 5.minutes
     val DEFAULT_LIGHT_ALARM_DURATION = 30.minutes
+
+    val REPEAT_MODES = RepeatMode.entries.map { repeatMode -> repeatMode.name }
 
     @RequiresApi(Build.VERSION_CODES.O)
     val localizedFullDateFormatter: DateTimeFormatter =

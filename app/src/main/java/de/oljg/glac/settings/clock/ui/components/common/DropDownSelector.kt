@@ -26,10 +26,13 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import de.oljg.glac.core.util.translateDropDownItemText
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_ICON_BUTTON_SIZE
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DROPDOWN_ROW_VERTICAL_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DROP_DOWN_MENU_ITEM_FONT_SIZE
-import de.oljg.glac.settings.clock.ui.utils.translateDropDownItemText
 import kotlin.reflect.KClass
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,6 +46,10 @@ fun DropDownSelector(
     type: KClass<out Any> = String::class,
     maxWidthFraction: Float = 1f,
     readOnly: Boolean = true,
+    topPadding: Dp = DROPDOWN_ROW_VERTICAL_PADDING,
+    bottomPadding: Dp = DROPDOWN_ROW_VERTICAL_PADDING,
+    startPadding: Dp = 0.dp,
+    endPadding: Dp = 0.dp,
     onTextFieldValueChanged: (String) -> Unit = {},
     supportingText: @Composable () -> Unit = {},
     resetValueComponent: @Composable () -> Unit = {},
@@ -60,7 +67,12 @@ fun DropDownSelector(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = SettingsDefaults.DROPDOWN_ROW_VERTICAL_PADDING),
+            .padding(
+                top = topPadding,
+                bottom = bottomPadding,
+                start = startPadding,
+                end = endPadding
+            ),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

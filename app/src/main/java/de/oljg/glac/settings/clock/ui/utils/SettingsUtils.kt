@@ -24,7 +24,6 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.PERCENTAGE_ONLY_2_P
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.PIXEL
 import kotlin.math.floor
 import kotlin.math.pow
-import kotlin.reflect.KClass
 
 
 /**
@@ -161,22 +160,6 @@ fun DividerStyle.translate() = when(this) {
 fun DividerLineEnd.translate() = when(this) {
     DividerLineEnd.ROUND -> stringResource(R.string.round)
     DividerLineEnd.ANGULAR -> stringResource(R.string.angular)
-}
-
-
-@Composable
-fun translateDropDownItemText(
-    type: KClass<out Any>,
-    itemValue: String,
-    defaultPrettyPrinter: (String) -> String
-) = when(type) {
-    FontStyle::class -> FontStyle.valueOf(itemValue).translate()
-    FontWeight::class -> FontWeight.valueOf(itemValue).translate()
-    SevenSegmentStyle::class -> SevenSegmentStyle.valueOf(itemValue).translate()
-    SevenSegmentWeight::class -> SevenSegmentWeight.valueOf(itemValue).translate()
-    DividerStyle::class -> DividerStyle.valueOf(itemValue).translate()
-    DividerLineEnd::class -> DividerLineEnd.valueOf(itemValue).translate()
-    else -> defaultPrettyPrinter(itemValue)
 }
 
 

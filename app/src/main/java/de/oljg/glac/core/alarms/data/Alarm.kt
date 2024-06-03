@@ -3,6 +3,7 @@ package de.oljg.glac.core.alarms.data
 import android.os.Build
 import androidx.annotation.RequiresApi
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.DEFAULT_LIGHT_ALARM_DURATION
+import de.oljg.glac.alarms.ui.utils.RepeatMode
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import kotlin.time.Duration
@@ -17,7 +18,9 @@ data class Alarm(
     val isLightAlarm: Boolean = true,
 
     @Serializable(with = DurationSerializer::class)
-    val lightAlarmDuration: Duration = DEFAULT_LIGHT_ALARM_DURATION
+    val lightAlarmDuration: Duration = DEFAULT_LIGHT_ALARM_DURATION,
+
+    val repeat: RepeatMode = RepeatMode.NONE
 ) {
     override fun toString(): String { //TODO: remove after testing
         return start.toString()

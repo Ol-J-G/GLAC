@@ -27,13 +27,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
+import de.oljg.glac.alarms.ui.utils.AlarmDefaults.SPACE
+import de.oljg.glac.alarms.ui.utils.AlarmDefaults.localizedShortDateTimeFormatter
+import de.oljg.glac.alarms.ui.utils.RepeatMode
+import de.oljg.glac.alarms.ui.utils.evaluateAlarmRepeatInfo
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_BORDER_WIDTH
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_ROUNDED_CORNER_SIZE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
@@ -43,12 +45,12 @@ fun AlarmListItem(
     start: LocalDateTime,
     isLightAlarm: Boolean,
     lightAlarmDuration: Duration,
+    repeat: RepeatMode,
     selected: Boolean,
     onClick: () -> Unit,
     onRemoveAlarm: () -> Unit,
     onUpdateAlarm: () -> Unit
 ) {
-    val dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
     val borderColorUnselected = MaterialTheme.colorScheme.outlineVariant
     val borderColorSelected = MaterialTheme.colorScheme.surfaceTint
 
@@ -72,7 +74,7 @@ fun AlarmListItem(
             .clickable { onClick() }
     ) {
         Column(modifier = Modifier.padding(DEFAULT_VERTICAL_SPACE / 2)) {
-            Row(
+            Row( // Actions
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(SettingsDefaults.SETTINGS_SECTION_HEIGHT),
@@ -86,7 +88,8 @@ fun AlarmListItem(
                     )
                 }
 
-                Text(text = stringResource(R.string.start) + ": ${dateTimeFormatter.format(start)}")
+                Text(text = stringResource(R.string.start)
+                        + ": ${localizedShortDateTimeFormatter.format(start)}")
 
                 IconButton(onClick = { onRemoveAlarm() }) {
                     Icon(
@@ -95,21 +98,36 @@ fun AlarmListItem(
                     )
                 }
             }
+            Row( // Repeat info
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(SettingsDefaults.SETTINGS_SECTION_HEIGHT),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(evaluateAlarmRepeatInfo(repeatMode = repeat, alarmStart = start))
+            }
+
+            // When alarm is a light alarm, show light alarm duration
             AnimatedVisibility(visible = isLightAlarm) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(SettingsDefaults.SETTINGS_SECTION_HEIGHT),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        modifier = Modifier.padding(start = SettingsDefaults.EDGE_PADDING / 2),
-                        text = stringResource(R.string.light_alarm_duration) + ": "
+                    Text(stringResource(R.string.light_alarm_duration) + ":" + SPACE
                                 + lightAlarmDuration.toString(unit = DurationUnit.MINUTES)
                     )
                 }
             }
+
+            /**
+             * Show time until next alarm (light alarm will start at this time minus light alarm
+             * duration)
+             */
+            AlarmCountdown(alarmStart = start)
         }
     }
 }

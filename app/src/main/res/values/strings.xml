@@ -125,6 +125,7 @@
     <string name="light_alarm">Light Alarm</string>
     <string name="light_alarm_duration">Light Alarm Duration</string>
     <string name="hours_shortened">H</string>
+    <string name="days_shortened">D</string>
     <string name="earliest_possible_alarm_time">"Earliest Possible Alarm Time: "</string>
     <string name="more_alarm_details">More Alarm Details</string>
     <string name="update">Update</string>
@@ -136,4 +137,15 @@
     <string name="update_alarm">Update Alarm</string>
     <string name="remove_alarm">Remove Alarm</string>
     <string name="start">Start</string>
+    <string name="daily">Daily</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="repeat">Repeat</string>
+    <string name="once">Once</string>
+    <string name="at">at</string>
+    <string name="every">Every</string>
+    <string name="day">day</string>
+    <string name="on_">on</string>
+    <string name="month">month</string>
+    <string name="remaining_time">Remaining time</string>
 </resources>
