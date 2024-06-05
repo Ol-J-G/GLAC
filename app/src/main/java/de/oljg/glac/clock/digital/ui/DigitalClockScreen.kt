@@ -2,6 +2,12 @@ package de.oljg.glac.clock.digital.ui
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.Animatable
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector4D
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -10,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -24,6 +31,7 @@ import de.oljg.glac.clock.digital.ui.utils.evaluateDividerRotateAngle
 import de.oljg.glac.clock.digital.ui.utils.evaluateFont
 import de.oljg.glac.clock.digital.ui.utils.pxToDp
 import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
+import de.oljg.glac.core.alarms.data.Alarm
 import de.oljg.glac.core.clock.data.ClockSettings
 import de.oljg.glac.core.clock.data.ClockTheme
 import de.oljg.glac.core.util.defaultColor
@@ -39,6 +47,8 @@ fun DigitalClockScreen(
     viewModel: ClockSettingsViewModel = hiltViewModel(),
     fullScreen: Boolean = false,
     previewMode: Boolean = false,
+    alarmMode: Boolean = false,
+    alarmToBeLaunched: Alarm? = null,
     onClick: () -> Unit = {}
 ) {
     if (fullScreen)
@@ -72,7 +82,7 @@ fun DigitalClockScreen(
             /**
              * Actually no need to rotate dividers with ClockCharType.FONT, but in case of italic
              * fonts, they have unknown/different italic angles, so, let user set it up, just
-             * according to some imported font.
+             * according to some imported font's angle.
              */
             else clockTheme.dividerRotateAngle
 
@@ -85,12 +95,12 @@ fun DigitalClockScreen(
      * < clockPartColors (one color per clock part, e.g. minutes (tens and/or ones) will be red)
      * (< segmentColors) (one color for each of the 7-segments)
      *
-     * This means, it can be mixed in some way. e.g you can configure a clock with
+     * This means, it can be mixed in some way. e.g it's possible to configure a clock with
      * * all chars gray
      * * hours red
      * * minutes yellow
      * * different green toned colors for 0-9, where seconds will cycle those colors
-     * * while AM/PM will be gray, because they're unset, so default all chars grey will be drawn
+     * * while AM/PM will be gray, because they're unset => by default all chars will be drawn grey
      * ...
      */
     val charColor = clockTheme.charColor ?: defaultColor()
@@ -103,6 +113,45 @@ fun DigitalClockScreen(
 
     val segmentColors = if (clockTheme.setSegmentColors)
         clockTheme.segmentColors else emptyMap()
+
+    var lightAlarmAnimatedColor: Animatable<Color, AnimationVector4D>? = remember { null }
+
+    if(alarmMode && alarmToBeLaunched != null && alarmToBeLaunched.isLightAlarm) { //TODO: "else", only play alarm sound ...
+
+        val lightAlarmColors = alarmToBeLaunched.lightAlarmColors
+        lightAlarmAnimatedColor = remember { Animatable(initialValue = lightAlarmColors.first()) }
+
+        LaunchedEffect(Unit) {
+            /**
+             * Example (with default (sunrise) settings)
+             *
+             * lightAlarmColors.size   = 6
+             * lightAlarmDuration      = 30m
+             * colorTransitionDuration = 30m / (6-1) = 6m (in millis) from color to color
+             *
+             *               lightAlarmStart                              actual alarmStart(sound)
+             *                     |<                         30m                        >|
+             *                     |                                                      |
+             *                initialValue
+             * lightAlarmA.C. => Black       Blue    LightBlue    Orange   Goldenrod    White
+             *                     |          |          |          |          |          |
+             *                     |<   6m   >|<   6m   >|<   6m   >|<   6m   >|<   6m   >|
+             */
+            val colorTransitionDuration = (alarmToBeLaunched.lightAlarmDuration.inWholeMilliseconds
+                    / (lightAlarmColors.size - 1)).toInt()
+
+            // drop(1) => first() already consumed as initial color
+            lightAlarmColors.drop(1).forEach { color ->
+                lightAlarmAnimatedColor.animateTo(
+                    color,
+                    animationSpec = tween(
+                        durationMillis = colorTransitionDuration,
+                        easing = LinearEasing
+                    )
+                )
+            }
+        }
+    }
 
     val dividerAttributes = DividerAttributes(
         dividerStyle = clockTheme.dividerStyle,
@@ -198,6 +247,7 @@ fun DigitalClockScreen(
         fontStyle = finalFontStyle, // for measurement
         charColors = finalCharColors,
         clockPartsColors = finalClockPartsColors,
+        backgroundColor = lightAlarmAnimatedColor?.value ?: MaterialTheme.colorScheme.surface,
         dividerAttributes = dividerAttributes,
         currentTimeFormatted = currentTimeFormatted,
         clockCharType = clockCharType,

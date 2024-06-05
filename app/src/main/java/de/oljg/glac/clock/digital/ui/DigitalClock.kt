@@ -53,6 +53,7 @@ fun DigitalClock(
     clockCharType: ClockCharType = ClockCharType.FONT,
     charColors: Map<Char, Color> = defaultClockCharColors(defaultColor()),
     clockPartsColors: ClockPartsColors = ClockPartsColors(),
+    backgroundColor: Color = MaterialTheme.colorScheme.surface,
     digitSizeFactor: Float = DEFAULT_CLOCK_DIGIT_SIZE_FACTOR,
     daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
     clockChar: @Composable (Char, TextUnit, Color, DpSize) -> Unit
@@ -64,7 +65,7 @@ fun DigitalClock(
         modifier = Modifier
             .padding(DEFAULT_CLOCK_PADDING)
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface)
+            .background(backgroundColor)
             .border(
                 width = if (previewMode) 2.dp else 0.dp,
                 color = MaterialTheme.colorScheme.inverseOnSurface

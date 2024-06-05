@@ -49,7 +49,7 @@ enum class ValidState {
     INVALID
 }
 
-enum class RepeatMode {
+enum class Repetition {
     NONE,
     DAILY,
     WEEKLY,
@@ -222,12 +222,12 @@ fun LocalDateTime.interferesScheduledAlarms(
          */
         if (scheduledAlarm.start == alarmToUpdate?.start) return@forEach
 
-        when(scheduledAlarm.repeat) {
-            RepeatMode.NONE -> {
+        when(scheduledAlarm.repetition) {
+            Repetition.NONE -> {
                 if (rangesOverlap(requestedAlarmRange, scheduledAlarm))
                     return true
             }
-            RepeatMode.DAILY -> { // look 1 year in the future
+            Repetition.DAILY -> { // look 1 year in the future
                 repeat(367) { day -> // zero-based => +1, inclusive => +1 => 365 + 2
                     val dailyRepeatingAlarm = scheduledAlarm.copy(
                         start = scheduledAlarm.start.plus(day * 1.days))
@@ -235,7 +235,7 @@ fun LocalDateTime.interferesScheduledAlarms(
                         return true
                 }
             }
-            RepeatMode.WEEKLY -> { // look 1 year in the future
+            Repetition.WEEKLY -> { // look 1 year in the future
                 repeat(54) { week -> // zero-based => +1, inclusive => +1 => 52 + 2
                     val weeklyRepeatingAlarm = scheduledAlarm.copy(
                         start = scheduledAlarm.start.plus(week * 7.days))
@@ -243,7 +243,7 @@ fun LocalDateTime.interferesScheduledAlarms(
                         return true
                 }
             }
-            RepeatMode.MONTHLY -> { // look 1 year in the future
+            Repetition.MONTHLY -> { // look 1 year in the future
                 repeat(13) { month -> // zero-based => +1 => 12 + 1
                     val mothlyRepeatingAlarm = scheduledAlarm.copy(
                         start = scheduledAlarm.start.plusMonths(month * 1L))
@@ -383,6 +383,9 @@ private fun defaultOffset(): ZoneOffset = ZoneId.systemDefault().rules.getOffset
 @RequiresApi(Build.VERSION_CODES.O)
 fun LocalDateTime?.toEpochMillis() = this?.toEpochSecond(defaultOffset())?.times(1000L)
 
+@RequiresApi(Build.VERSION_CODES.O)
+fun LocalDateTime.toMillis() = this.toEpochMillis()!!
+
 
 fun String.isIntIn(range: IntRange) = when {
     !this.isInt() -> false
@@ -408,7 +411,7 @@ fun Int.pad(paddingRepetitions: Int = 1, paddingCharacter: Char = SPACE) = when 
 
 
 /**
- * Used to format day of month as ordinal for alarms with [RepeatMode.MONTHLY], as part of an
+ * Used to format day of month as ordinal for alarms with [Repetition.MONTHLY], as part of an
  * alarm list item within alarms list screen.
  *
  * Example: 1 => 1st, 10 => 10th (or with most non-US Locale: 1 => 1., 10 => 10.) etc.
@@ -421,30 +424,30 @@ fun Int.formatAsOrdinal(): String {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun evaluateAlarmRepeatInfo(
-    repeatMode: RepeatMode,
+fun evaluateAlarmRepetitionInfo(
+    repetition: Repetition,
     alarmStart: LocalDateTime
-) = when (repeatMode) {
+) = when (repetition) {
 
     // E.g.: 'Once at 5/31/24, 5:00 PM '
-    RepeatMode.NONE -> stringResource(R.string.once) + SPACE +
+    Repetition.NONE -> stringResource(R.string.once) + SPACE +
             stringResource(R.string.at) + SPACE +
             localizedShortDateTimeFormatter.format(alarmStart)
 
     // E.g.: 'Every day at 5:00 PM'
-    RepeatMode.DAILY -> stringResource(R.string.every) + SPACE +
+    Repetition.DAILY -> stringResource(R.string.every) + SPACE +
             stringResource(R.string.day) + SPACE +
             stringResource(R.string.at) + SPACE +
             localizedShortTimeFormatter.format(alarmStart)
 
     // E.g.: 'Every Monday at 5:00 PM'
-    RepeatMode.WEEKLY -> stringResource(R.string.every) + SPACE +
+    Repetition.WEEKLY -> stringResource(R.string.every) + SPACE +
             alarmStart.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()) + SPACE +
             stringResource(R.string.at) + SPACE +
             localizedShortTimeFormatter.format(alarmStart)
 
     // E.g.: 'Every month on 22th at 5:00 PM '
-    RepeatMode.MONTHLY -> stringResource(R.string.every) + SPACE +
+    Repetition.MONTHLY -> stringResource(R.string.every) + SPACE +
             stringResource(R.string.month) + SPACE +
             stringResource(R.string.on_) + SPACE +
             alarmStart.dayOfMonth.formatAsOrdinal() + SPACE +
@@ -454,11 +457,11 @@ fun evaluateAlarmRepeatInfo(
 
 
 @Composable
-fun RepeatMode.translate() = when (this) {
-    RepeatMode.NONE -> stringResource(R.string.none)
-    RepeatMode.DAILY -> stringResource(R.string.daily)
-    RepeatMode.WEEKLY -> stringResource(R.string.weekly)
-    RepeatMode.MONTHLY -> stringResource(R.string.monthly)
+fun Repetition.translate() = when (this) {
+    Repetition.NONE -> stringResource(R.string.none)
+    Repetition.DAILY -> stringResource(R.string.daily)
+    Repetition.WEEKLY -> stringResource(R.string.weekly)
+    Repetition.MONTHLY -> stringResource(R.string.monthly)
 }
 
 
@@ -469,10 +472,10 @@ object AlarmDefaults {
     val MAX_LIGHT_ALARM_DURATION = 60.minutes
 
     // Users can schedule an alarm from now + ALARM_START_BUFFER
-    val ALARM_START_BUFFER = 5.minutes
+    val ALARM_START_BUFFER = 1.minutes //TODO: change back to 5 after testing
     val DEFAULT_LIGHT_ALARM_DURATION = 30.minutes
 
-    val REPEAT_MODES = RepeatMode.entries.map { repeatMode -> repeatMode.name }
+    val REPEAT_MODES = Repetition.entries.map { repeatMode -> repeatMode.name }
 
     @RequiresApi(Build.VERSION_CODES.O)
     val localizedFullDateFormatter: DateTimeFormatter =

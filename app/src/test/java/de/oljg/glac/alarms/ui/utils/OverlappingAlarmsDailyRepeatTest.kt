@@ -44,7 +44,7 @@ class OverlappingAlarmsDailyRepeatTest {
                 start = startTime(dayOfMonth = 10, hour = 5, minute = 0),
                 isLightAlarm = true,
                 lightAlarmDuration = 30.minutes,
-                repeat = RepeatMode.DAILY
+                repetition = Repetition.DAILY
             )
         )
     }

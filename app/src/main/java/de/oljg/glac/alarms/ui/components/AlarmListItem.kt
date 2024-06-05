@@ -29,8 +29,8 @@ import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.SPACE
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.localizedShortDateTimeFormatter
-import de.oljg.glac.alarms.ui.utils.RepeatMode
-import de.oljg.glac.alarms.ui.utils.evaluateAlarmRepeatInfo
+import de.oljg.glac.alarms.ui.utils.Repetition
+import de.oljg.glac.alarms.ui.utils.evaluateAlarmRepetitionInfo
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_BORDER_WIDTH
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_ROUNDED_CORNER_SIZE
@@ -42,10 +42,10 @@ import kotlin.time.DurationUnit
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AlarmListItem(
-    start: LocalDateTime,
+    alarmStart: LocalDateTime,
     isLightAlarm: Boolean,
     lightAlarmDuration: Duration,
-    repeat: RepeatMode,
+    repetition: Repetition,
     selected: Boolean,
     onClick: () -> Unit,
     onRemoveAlarm: () -> Unit,
@@ -89,7 +89,7 @@ fun AlarmListItem(
                 }
 
                 Text(text = stringResource(R.string.start)
-                        + ": ${localizedShortDateTimeFormatter.format(start)}")
+                        + ": ${localizedShortDateTimeFormatter.format(alarmStart)}")
 
                 IconButton(onClick = { onRemoveAlarm() }) {
                     Icon(
@@ -105,7 +105,7 @@ fun AlarmListItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text(evaluateAlarmRepeatInfo(repeatMode = repeat, alarmStart = start))
+                Text(evaluateAlarmRepetitionInfo(repetition = repetition, alarmStart = alarmStart))
             }
 
             // When alarm is a light alarm, show light alarm duration
@@ -127,7 +127,7 @@ fun AlarmListItem(
              * Show time until next alarm (light alarm will start at this time minus light alarm
              * duration)
              */
-            AlarmCountdown(alarmStart = start)
+            AlarmCountdown(alarmStart = alarmStart)
         }
     }
 }

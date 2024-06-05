@@ -3,6 +3,9 @@ package de.oljg.glac.alarms.ui.components
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -37,7 +40,7 @@ import de.oljg.glac.R
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.MAX_LIGHT_ALARM_DURATION
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.MIN_LIGHT_ALARM_DURATION
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.minutesSaver
-import de.oljg.glac.alarms.ui.utils.RepeatMode
+import de.oljg.glac.alarms.ui.utils.Repetition
 import de.oljg.glac.alarms.ui.utils.isSet
 import de.oljg.glac.alarms.ui.utils.toEpochMillis
 import de.oljg.glac.clock.digital.ui.utils.ScreenDetails
@@ -63,7 +66,7 @@ import kotlin.time.Duration.Companion.ZERO
 @Composable
 fun AlarmDialog(
     viewModel: AlarmSettingsViewModel = hiltViewModel(),
-    alarmToUpdate: Alarm? = null,
+    alarmToBeUpdated: Alarm? = null,
     onDismissRequest: () -> Unit,
     onAlarmUpdated: (Alarm) -> Unit,
     onNewAlarmAdded: (Alarm) -> Unit
@@ -77,15 +80,15 @@ fun AlarmDialog(
         mutableStateOf(false)
     }
 
-    var selectedRepeatMode by rememberSaveable {
-        mutableStateOf(RepeatMode.NONE)
+    var selectedRepetition by rememberSaveable {
+        mutableStateOf(Repetition.NONE)
     }
 
     var isLightAlarm by rememberSaveable {
-        mutableStateOf(alarmToUpdate?.isLightAlarm ?: alarmSettings.isLightAlarm)
+        mutableStateOf(alarmToBeUpdated?.isLightAlarm ?: alarmSettings.isLightAlarm)
     }
     var lightAlarmDuration: Duration by rememberSaveable(stateSaver = minutesSaver) {
-        mutableStateOf(alarmToUpdate?.lightAlarmDuration ?: alarmSettings.lightAlarmDuration)
+        mutableStateOf(alarmToBeUpdated?.lightAlarmDuration ?: alarmSettings.lightAlarmDuration)
     }
     fun lightAlarmDuration() = if (isLightAlarm) lightAlarmDuration else ZERO
     var isValidLightAlarmDuration by rememberSaveable {
@@ -93,7 +96,7 @@ fun AlarmDialog(
     }
 
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = alarmToUpdate?.start?.toEpochMillis()
+        initialSelectedDateMillis = alarmToBeUpdated?.start?.toEpochMillis()
             ?: LocalDateTime.now().toEpochMillis(),
         yearRange = LocalDateTime.now().year..LocalDateTime.now().year + 1,
 
@@ -103,21 +106,31 @@ fun AlarmDialog(
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
 
     val timePickerState = rememberTimePickerState(
-        initialHour = alarmToUpdate?.start?.toLocalTime()?.hour ?: 0,
-        initialMinute = alarmToUpdate?.start?.toLocalTime()?.minute ?: 0,
+        initialHour = alarmToBeUpdated?.start?.toLocalTime()?.hour ?: 0,
+        initialMinute = alarmToBeUpdated?.start?.toLocalTime()?.minute ?: 0,
     )
     var showTimePicker by rememberSaveable { mutableStateOf(false) }
 
     var selectedDate: LocalDate? by rememberSaveable {
-        mutableStateOf(alarmToUpdate?.start?.toLocalDate())
+        mutableStateOf(alarmToBeUpdated?.start?.toLocalDate())
     }
     var selectedTime: LocalTime? by rememberSaveable {
-        mutableStateOf(alarmToUpdate?.start?.toLocalTime())
+        mutableStateOf(alarmToBeUpdated?.start?.toLocalTime())
     }
 
+    // Just a shortcut to improve readability a tiny bit^^ (there must be a better solution oO)
     fun checkIfReadyToScheduleAlarm() = de.oljg.glac.alarms.ui.utils.checkIfReadyToScheduleAlarm(
-        selectedDate, selectedTime, lightAlarmDuration(), alarmSettings.alarms, alarmToUpdate,
-        isLightAlarm, isValidLightAlarmDuration || alarmToUpdate.isSet()
+        selectedDate, selectedTime, lightAlarmDuration(), alarmSettings.alarms, alarmToBeUpdated,
+        isLightAlarm, isValidLightAlarmDuration
+                /**
+                 * Must be valid (has been persisted as valid alarm already)
+                 * => ready to update, even if some user would hit update without changing
+                 *    something => will be "overwritten" => should be a rare case
+                 *
+                 * Actually, just to prevent UPDATE button disabling, which could lead someone
+                 * to think something must be changed to be able to use UPDATE...
+                 */
+                || alarmToBeUpdated.isSet()
     )
     var isReadyToScheduleAlarm by rememberSaveable {
         mutableStateOf(checkIfReadyToScheduleAlarm())
@@ -127,7 +140,7 @@ fun AlarmDialog(
         start = LocalDateTime.of(selectedDate, selectedTime),
         isLightAlarm = isLightAlarm,
         lightAlarmDuration = lightAlarmDuration,
-        repeat = selectedRepeatMode
+        repetition = selectedRepetition
     )
 
     SettingsDialog(onDismissRequest = onDismissRequest) { //TODO: care about adaptive design => row+2col for expanded screen width class... => when dialog is completed
@@ -154,9 +167,9 @@ fun AlarmDialog(
                 }
                 RepeatModeSelector(
                     label = stringResource(R.string.repeat),
-                    selectedRepeatMode = selectedRepeatMode,
+                    selectedRepetition = selectedRepetition,
                     onNewRepeatModeSelected = { newRepeatMode ->
-                        selectedRepeatMode = RepeatMode.valueOf(newRepeatMode)
+                        selectedRepetition = Repetition.valueOf(newRepeatMode)
                     }
                 )
 
@@ -225,15 +238,15 @@ fun AlarmDialog(
                     time = selectedTime,
                     lightAlarmDuration = lightAlarmDuration(),
                     scheduledAlarms = alarmSettings.alarms,
-                    alarmToUpdate = alarmToUpdate
+                    alarmToBeUpdated = alarmToBeUpdated
                 )
                 AlarmDialogActions( // Dismiss/Schedule/Update
                     enabled = isReadyToScheduleAlarm,
-                    isUpdateAlarmAction = alarmToUpdate.isSet(),
+                    isUpdateAlarmAction = alarmToBeUpdated.isSet(),
                     onDissmiss = onDismissRequest
                 ) {
                     when {
-                        alarmToUpdate.isSet() -> onAlarmUpdated(buildAlarm())
+                        alarmToBeUpdated.isSet() -> onAlarmUpdated(buildAlarm())
                         else -> onNewAlarmAdded(buildAlarm())
                     }
                 }
@@ -241,7 +254,11 @@ fun AlarmDialog(
         }
     }
 
-    AnimatedVisibility(visible = showDatePicker) {
+    AnimatedVisibility(
+        visible = showDatePicker,
+        enter = fadeIn(TweenSpec(durationMillis = 100)),
+        exit = fadeOut(TweenSpec(durationMillis = 100))
+    ) {
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },
             confirmButton = {
@@ -267,7 +284,7 @@ fun AlarmDialog(
             DatePicker(
                 state = datePickerState,
 
-                // Disable all days of the past, excluding today
+                // Disable days in the past, excluding today
                 dateValidator = { millis ->
                     Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate()
                         .isAfter(LocalDate.now().minusDays(1L))
@@ -276,7 +293,11 @@ fun AlarmDialog(
         }
     }
 
-    AnimatedVisibility(visible = showTimePicker) {
+    AnimatedVisibility(
+        visible = showTimePicker,
+        enter = fadeIn(TweenSpec(durationMillis = 100)),
+        exit = fadeOut(TweenSpec(durationMillis = 100))
+    ) {
         TimePickerDialog(
             displayMode = when (screenDetails().screenHeightType) {
                 ScreenDetails.DisplayType.Compact -> DisplayMode.Input

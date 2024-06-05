@@ -32,17 +32,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.alarms.ui.components.AlarmDialog
 import de.oljg.glac.alarms.ui.components.AlarmListItem
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.localDateTimeSaver
 import de.oljg.glac.core.alarms.data.AlarmSettings
-import de.oljg.glac.core.alarms.data.manager.AndroidAlarmScheduler
 import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -55,13 +52,11 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
         initial = AlarmSettings()
     ).value
 
-    val alarmScheduler = AndroidAlarmScheduler(LocalContext.current)
-
     var showAlarmDialog by rememberSaveable {
         mutableStateOf(false)
     }
 
-    var alarmToUpdateStart: LocalDateTime? by rememberSaveable(stateSaver = localDateTimeSaver) {
+    var alarmToBeUpdatedStart: LocalDateTime? by rememberSaveable(stateSaver = localDateTimeSaver) {
         mutableStateOf(null)
     }
 
@@ -88,6 +83,16 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
                     FloatingActionButton(onClick = {
                         showAlarmDialog = true
                         selectedAlarmStart = null
+
+                        // quick manual test
+//                        val testAlarm = Alarm(
+//                            start = LocalDateTime.now().plusSeconds(20),
+//                            isLightAlarm = true,
+//                            repetition = Repetition.MONTHLY
+//                        )
+//                        viewModel.addAlarm(alarmSettings, testAlarm)
+//                        selectedAlarmStart = testAlarm.start
+
                     }) {
                         Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Alarm")
                     }
@@ -102,24 +107,19 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
                     .padding(horizontal = SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2)
                     .verticalScroll(scrollState)
             ) {
-                alarmSettings.alarms.sortedByDescending { alarm -> alarm.start }.forEach { alarm ->
+                alarmSettings.alarms.sortedBy { alarm -> alarm.start }.forEach { alarm ->
                     AlarmListItem(
-                        start = alarm.start,
+                        alarmStart = alarm.start,
                         isLightAlarm = alarm.isLightAlarm,
                         lightAlarmDuration = alarm.lightAlarmDuration,
-                        repeat = alarm.repeat,
+                        repetition = alarm.repetition,
                         selected = alarm.start == selectedAlarmStart,
                         onClick = { selectedAlarmStart = alarm.start },
                         onRemoveAlarm = {
-                            coroutineScope.launch {
-                                viewModel.updateAlarmSettings(
-                                    alarmSettings.copy(alarms = alarmSettings.alarms.remove(alarm))
-                                )
-                            }
-//                            alarmScheduler.cancel(alarm) //TODO: rectivate and test when AddAlarmDialog is finished
+                            viewModel.removeAlarm(alarmSettings, alarm)
                         },
                         onUpdateAlarm = {
-                            alarmToUpdateStart = alarm.start
+                            alarmToBeUpdatedStart = alarm.start
                             selectedAlarmStart = alarm.start
                             showAlarmDialog = true
                         }
@@ -133,50 +133,26 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
             enter = fadeIn(TweenSpec(durationMillis = 100)),
             exit = fadeOut(TweenSpec(durationMillis = 100))
         ) {
+            /**
+             * Can not be null => is set in onUpdateAlarm (when a user clicks on update button
+             * of an existing alarm)
+             */
+            val alarmToBeUpdated = alarmSettings.alarms.find { it.start == alarmToBeUpdatedStart }
             AlarmDialog(
-                alarmToUpdate = alarmSettings.alarms.find { it.start == alarmToUpdateStart },
+                alarmToBeUpdated = alarmToBeUpdated,
                 onDismissRequest = {
                     coroutineScope.launch {
                         delay(500L) // hide button re-labeling from users eyes
-                        alarmToUpdateStart = null
+                        alarmToBeUpdatedStart = null
                     }
                     showAlarmDialog = false
                 },
                 onAlarmUpdated = { updatedAlarm ->
-
-                    //TODO: cancel alarm that will be edited before removal
-
-
-                    coroutineScope.launch {
-                        viewModel.updateAlarmSettings(
-                            /**
-                             * Build new list without originally, unedited alarm, and updated alarm
-                             * with (maybe) new values as a new alarm.
-                             */
-                            alarmSettings.copy(
-                                alarms = buildList {
-                                    addAll(
-                                        alarmSettings.alarms.filter { alarm ->
-                                            alarm.start != alarmToUpdateStart
-                                        }
-                                    )
-                                    add(updatedAlarm)
-                                }.toPersistentList()
-                            )
-                        )
-                    }
-
-                    //TODO: schedule edited alarm
-
+                    alarmToBeUpdated?.let { viewModel.updateAlarm(alarmSettings, it, updatedAlarm) }
                     selectedAlarmStart = updatedAlarm.start
                 },
                 onNewAlarmAdded = { newAlarm ->
-                    coroutineScope.launch {
-                        viewModel.updateAlarmSettings(
-                            alarmSettings.copy(alarms = alarmSettings.alarms.add(newAlarm))
-                        )
-                    }
-//                alarmScheduler.schedule(newAlarm) //TODO: rectivate and test when AddAlarmDialog is finished
+                    viewModel.addAlarm(alarmSettings, newAlarm)
                     selectedAlarmStart = newAlarm.start
                 }
             )

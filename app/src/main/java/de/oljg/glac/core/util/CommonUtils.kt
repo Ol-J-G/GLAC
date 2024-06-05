@@ -1,7 +1,7 @@
 package de.oljg.glac.core.util
 
 import androidx.compose.runtime.Composable
-import de.oljg.glac.alarms.ui.utils.RepeatMode
+import de.oljg.glac.alarms.ui.utils.Repetition
 import de.oljg.glac.alarms.ui.utils.translate
 import de.oljg.glac.clock.digital.ui.utils.DividerLineEnd
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
@@ -22,6 +22,6 @@ fun translateDropDownItemText(
     SevenSegmentWeight::class -> SevenSegmentWeight.valueOf(itemValue).translate()
     DividerStyle::class -> DividerStyle.valueOf(itemValue).translate()
     DividerLineEnd::class -> DividerLineEnd.valueOf(itemValue).translate()
-    RepeatMode::class -> RepeatMode.valueOf(itemValue).translate()
+    Repetition::class -> Repetition.valueOf(itemValue).translate()
     else -> defaultPrettyPrinter(itemValue)
 }
