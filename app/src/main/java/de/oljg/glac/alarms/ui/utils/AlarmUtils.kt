@@ -1,18 +1,37 @@
 package de.oljg.glac.alarms.ui.utils
 
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector4D
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.mapSaver
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ibm.icu.text.RuleBasedNumberFormat
 import de.oljg.glac.R
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.ALARM_START_BUFFER
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.SPACE
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.localizedShortDateTimeFormatter
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.localizedShortTimeFormatter
+import de.oljg.glac.clock.digital.ui.utils.findActivity
 import de.oljg.glac.core.alarms.data.Alarm
+import de.oljg.glac.core.alarms.data.AlarmSettings
+import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -456,6 +475,146 @@ fun evaluateAlarmRepetitionInfo(
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun handleAlarmToBeLaunched(viewModel: AlarmSettingsViewModel = hiltViewModel()): Alarm? {
+    val alarmSettings = viewModel.alarmSettingsFlow.collectAsState(
+        initial = AlarmSettings()
+    ).value
+    var alarmToBeLaunched: Alarm? by remember {
+        mutableStateOf(null)
+    }
+
+    /**
+     * Modify alarms is only possible when flow collection is completed (which is not the case
+     * directly after 1st composition of AlarmActivity), and then, when it's completed,
+     * alarmSettings.alarms.size turns to a value > 0 (guaranteed => AlarmActivity is
+     * going to be created only when an alarm is present in alarmSettings.alarms) and finally,
+     * run next block only once in the background, currentlyLaunchedAlarm will be handled and
+     * returned to e.g. use lightAlarmColors in DigitalClockScreen's alarm mode.
+     */
+    if (alarmSettings.alarms.size != 0 && alarmToBeLaunched == null) {
+        LaunchedEffect(Unit) {
+
+            // Can't be null => alarmSettings.alarms.size != 0 => following call with !! is save
+            alarmToBeLaunched = alarmSettings.alarms.minByOrNull { it.start }
+            val alarmtoBeUpdated = alarmToBeLaunched!!
+
+            when (alarmtoBeUpdated.repetition) {
+
+                // No repetition => remove, it's not needed anymore
+                Repetition.NONE -> {
+                    viewModel.removeAlarm(alarmSettings, alarmtoBeUpdated)
+                }
+
+                // Daily => remove current, add and schedule new repetition one day later
+                Repetition.DAILY -> {
+                    viewModel.updateAlarm(
+                        alarmSettings,
+                        alarmtoBeUpdated,
+                        updatedAlarm = alarmtoBeUpdated.copy(
+                            start = alarmtoBeUpdated.start.plus(1.days))
+                    )
+                }
+
+                // Weekly => remove current, add and schedule new repetition one week(7d) later
+                Repetition.WEEKLY -> {
+                    viewModel.updateAlarm(
+                        alarmSettings,
+                        alarmtoBeUpdated,
+                        updatedAlarm = alarmtoBeUpdated.copy(
+                            start = alarmtoBeUpdated.start.plus(7.days))
+                    )
+                }
+
+                // Monthly => remove current, add and schedule new repetition one month later
+                Repetition.MONTHLY -> {
+                    viewModel.updateAlarm(
+                        alarmSettings,
+                        alarmtoBeUpdated,
+                        updatedAlarm = alarmtoBeUpdated.copy(
+                            start = alarmtoBeUpdated.start.plusMonths(1L))
+                    )
+                }
+            }
+        }
+    }
+    return alarmToBeLaunched
+}
+
+@Composable
+fun LightAlarm(
+    alarmToBeLaunched: Alarm,
+    lightAlarmColors: List<Color>,
+    lightAlarmAnimatedColor: Animatable<Color, AnimationVector4D>
+) {
+    /**
+     * Lock current screen orientation (user cannot rotate) until light alarm animation has ended.
+     * Otherwise, when a user would rotate device during light alarm animation, the animation
+     * would be restarted, which would bring the alarm process timeline in an inconsistent state!
+     *
+     * Of course, nevertheless this is unfortunately a 'dirty' workaround.
+     *
+     * But, assuming this is a rare case, it's not worth to take care about pause/continue animation
+     * on screen rotation, because it's way too complicated imho (write a Savable for
+     * Animatable<Color, AnimationVector4D> to use rememberSavable? => uh-oh..uhm, dunno
+     * how to do this yet...maybe trying it sometimes).
+     *
+     * And, usually, a user snoozes or stops the alarm, rather than grap and rotate the device
+     * beforehand (at least when user is about to wake up and still tired => don't move too
+     * much then, right? :>).
+     */
+    val currentOrientation = LocalConfiguration.current.orientation
+    val activity = LocalContext.current.findActivity()
+    activity?.let {
+        it.requestedOrientation = when(currentOrientation) {
+            Configuration.ORIENTATION_PORTRAIT -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            else -> ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        /**
+         * Example (with default (sunrise) settings)
+         *
+         * lightAlarmColors.size   = 6
+         * lightAlarmDuration      = 30m
+         * colorTransitionDuration = 30m / (6-1) = 6m (in millis) from color to color
+         *
+         *               lightAlarmStart                              actual alarmStart(sound)
+         *                     |<                         30m                        >|
+         *                     |                                                      |
+         *                initialValue
+         * lightAlarmA.C. => Black       Blue    LightBlue    Orange   Goldenrod    White
+         *                     |          |          |          |          |          |
+         *                     |<   6m   >|<   6m   >|<   6m   >|<   6m   >|<   6m   >|
+         */
+        val colorTransitionDuration = (alarmToBeLaunched.lightAlarmDuration.inWholeMilliseconds
+                / (lightAlarmColors.size - 1)).toInt()
+
+        // drop(1) => first() already consumed as initial color
+        lightAlarmColors.drop(1).forEach { nextColor ->
+            lightAlarmAnimatedColor.animateTo(
+                nextColor,
+                animationSpec = tween(
+                    durationMillis = colorTransitionDuration,
+                    easing = LinearEasing
+                )
+            )
+        }
+
+        // Light alarm is finished => Unlock screen orientation => let user rotate again
+        activity?.let {
+            it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED // -1
+        }
+        // TODO: play alarm sound => actual alarm time is reached
+    }
+}
+
+fun Alarm?.isSetAndLightAlarm() = this != null && this.isLightAlarm
+
+fun Alarm?.isSetAndNoLightAlarm() = this != null && !this.isLightAlarm
+
 @Composable
 fun Repetition.translate() = when (this) {
     Repetition.NONE -> stringResource(R.string.none)
@@ -467,6 +626,8 @@ fun Repetition.translate() = when (this) {
 
 object AlarmDefaults {
     const val SPACE = ' '
+    const val ALARM_REACTION_DIALOG_BUTTON_WEIGHT = 1.7f
+    const val ALARM_REACTION_DIALOG_DISMISS_BUTTON_WEIGHT = 1f
 
     val MIN_LIGHT_ALARM_DURATION = 1.minutes
     val MAX_LIGHT_ALARM_DURATION = 60.minutes

@@ -148,4 +148,6 @@
     <string name="on_">on</string>
     <string name="month">month</string>
     <string name="remaining_time">Remaining time</string>
+    <string name="stop">Stop</string>
+    <string name="snooze">Snooze</string>
 </resources>
