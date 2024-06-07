@@ -19,6 +19,7 @@ import de.oljg.glac.alarms.ui.utils.Repetition
 import de.oljg.glac.alarms.ui.utils.handleAlarmToBeLaunched
 import de.oljg.glac.alarms.ui.utils.isSnoozeAlarmBeforeNextAlarm
 import de.oljg.glac.alarms.ui.utils.plus
+import de.oljg.glac.alarms.ui.utils.resetScreenBrightness
 import de.oljg.glac.clock.digital.ui.DigitalClockScreen
 import de.oljg.glac.clock.digital.ui.utils.findActivity
 import de.oljg.glac.core.alarms.data.Alarm
@@ -77,6 +78,7 @@ class AlarmActivity : ComponentActivity() {
                             scheduledAlarms = alarmSettings.alarms
                         ),
                         onSnoozeAlarm = {
+                            resetScreenBrightness(alarmActivity)
                             viewModel.addAlarm(
                                 alarmSettings,
                                 Alarm(
@@ -89,7 +91,10 @@ class AlarmActivity : ComponentActivity() {
                             alarmActivity.finish()
                         },
                         onDismiss = { showAlarmReactionDialog = false },
-                        onStopAlarm = { alarmActivity.finish() }
+                        onStopAlarm = {
+                            resetScreenBrightness(alarmActivity)
+                            alarmActivity.finish()
+                        }
                     )
                 }
             }

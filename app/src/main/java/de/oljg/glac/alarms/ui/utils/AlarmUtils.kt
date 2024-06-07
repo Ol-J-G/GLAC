@@ -1,8 +1,12 @@
 package de.oljg.glac.alarms.ui.utils
 
+import android.app.Activity
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Build
+import android.provider.Settings
+import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector4D
@@ -611,6 +615,9 @@ fun LightAlarm(
         }
     }
 
+    val lightAlarmDurationMillis = alarmToBeLaunched.lightAlarmDuration.inWholeMilliseconds
+    FadeBrightnessFromCurrentToFull(totalDurationMillis = lightAlarmDurationMillis.toInt())
+
     LaunchedEffect(Unit) {
         /**
          * Example (with default (sunrise) settings)
@@ -627,8 +634,8 @@ fun LightAlarm(
          *                     |          |          |          |          |          |
          *                     |<   6m   >|<   6m   >|<   6m   >|<   6m   >|<   6m   >|
          */
-        val colorTransitionDuration = (alarmToBeLaunched.lightAlarmDuration.inWholeMilliseconds
-                / (lightAlarmColors.size - 1)).toInt()
+        val colorTransitionDuration =
+                (lightAlarmDurationMillis / (lightAlarmColors.size - 1)).toInt()
 
         // drop(1) => first() already consumed as initial color
         lightAlarmColors.drop(1).forEach { nextColor ->
@@ -645,15 +652,96 @@ fun LightAlarm(
         activity?.let {
             it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED // -1
         }
-        // TODO: play alarm sound => actual alarm time is reached
+        // TODO: play alarm sound => actual alarm time is reached exactly here
     }
 }
+
+
+/**
+ * activity.window.attributes.screenBrightness returns by default
+ * WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE (-1) => what user set up.
+ *
+ * To get the device's actual screen brightness a user has been set, it seems to be necessary to
+ * use Settings.System.SCREEN_BRIGHTNESS.
+ *
+ * To use this value (int, 0..255 / dark..bright) as input for [setScreenBrightness] it needs
+ * to be converted to Float (0f..1f / dark..bright).
+ */
+fun getScreenBrightness(context: Context) = Settings.System.getInt(
+    context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, -1) / 255f
+
+
+fun setScreenBrightness(activity: Activity, brightness: Float) {
+    activity.window.attributes = activity.window.attributes.apply {
+        screenBrightness = brightness
+    }
+}
+
+
+fun resetScreenBrightness(activity: Activity) {
+    setScreenBrightness(activity, WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE) // -1f
+}
+
+
+@Composable
+fun FadeBrightnessFromCurrentToFull(
+    totalDurationMillis: Int,
+    clockBrightness: Float? = null,
+    maxSteps: Int = 100
+) {
+    require(maxSteps in 1..100)
+    val context = LocalContext.current
+    val activity = context.findActivity() ?: return
+
+    // Fade animation initial value, by default device's current screen brightness
+    val initialBrightness = clockBrightness ?: getScreenBrightness(context)
+
+    /**
+     * In case screen is (almost) on full brightness => no need to fade
+     * Furthermore, step calculation below would lead to a division by zero!
+     * E.g.:
+     * * OK  => 1f - .99f  = .01f  * 100 = 1f  toInt() => 1
+     * * dbz => 1f - .991f = .009f * 100 = .9f toInt() => 0 !!! => BÄM :>
+     */
+    if(initialBrightness > .99f) return
+
+    /**
+     * 1f => Full brightness is the goal for default sunrise light alarm => "simulates" bright sun.
+     *
+     * But, whatever color the user chooses as the last color of the light alarm, the room in which
+     * the alarm went off will definitely be a little brighter than without fading brightness at
+     * all, except for very dark tones ofc (and, .. OLEDs!), ... hmm, don't really like
+     * this flaw :/.
+     * TODO_LATER: Think about introducing a setting to disable fading brightness during light alarm
+     */
+    val targetBrightness = 1f
+
+    // 1..[maxSteps] steps (between brightness of 0f..0.99f / fulldark..almost_fullbright)
+    val steps = ((targetBrightness - initialBrightness) * maxSteps).toInt()
+    val step = targetBrightness / maxSteps
+    var nextBrightness = initialBrightness + step
+    val durationPerStep = totalDurationMillis / steps
+
+    val brightness = remember { Animatable(initialBrightness) }
+    LaunchedEffect(Unit) {
+        repeat(steps) {
+            brightness.animateTo(
+                targetValue = nextBrightness,
+                animationSpec = tween(durationMillis = durationPerStep, easing = LinearEasing)
+            )
+            setScreenBrightness(activity, brightness.value)
+            nextBrightness += step
+        }
+    }
+}
+
 
 fun Alarm?.isSetAndLightAlarm() = this != null && this.isLightAlarm
 
 fun Alarm?.isSetAndSnoozeAlarm() = this != null && this.isSnoozeAlarm
 
 fun Alarm?.isSetAndSoundAlarm() = this != null && !this.isLightAlarm && !this.isSnoozeAlarm
+
 
 @Composable
 fun Repetition.translate() = when (this) {
@@ -716,3 +804,4 @@ object AlarmDefaults {
         )
     }
 }
+// TODO: <=== look at this line nr: 803, => split up this monster file (How could it have come to this .OO.)

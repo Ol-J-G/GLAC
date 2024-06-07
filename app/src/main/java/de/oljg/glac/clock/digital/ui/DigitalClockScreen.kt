@@ -53,8 +53,8 @@ fun DigitalClockScreen(
     alarmMode: Boolean = false,
     alarmToBeLaunched: Alarm? = null,
     onClick: () -> Unit = {}
-) {
-    if (fullScreen)
+) { //TODO: introduce BG color => current M3 ones as default (+ think to respect 7-seg off segment colors!)
+    if (fullScreen) //TODO: introduce clock brightness setting and set it during clock is in fullscreen(independently from the rest of the system) + fade from this value to full b. on light alarm => take initial value from settings then
         HideSystemBars()
 
     val clockSettings = viewModel.clockSettingsFlow.collectAsState(
@@ -131,6 +131,8 @@ fun DigitalClockScreen(
                 lightAlarmColors = lightAlarmColors!!, // default is set in every Alarm => save
                 lightAlarmAnimatedColor = lightAlarmAnimatedColor
             )
+            // TODO: add clockChar color anim (cloud-like?)
+            // TODO: play alarm sound when light alarm is finished
         }
 
         alarmMode && alarmToBeLaunched.isSetAndSnoozeAlarm() ->

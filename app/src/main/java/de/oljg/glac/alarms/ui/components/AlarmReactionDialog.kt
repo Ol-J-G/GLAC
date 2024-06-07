@@ -50,11 +50,7 @@ private fun PortraitLayout(
     Column(modifier = Modifier.fillMaxHeight()) {
         AlarmReactionDialogButton( // SNOOZE
             modifier = Modifier
-                .padding(
-                    start = DIALOG_DEFAULT_PADDING,
-                    end = DIALOG_DEFAULT_PADDING,
-                    bottom = DIALOG_DEFAULT_PADDING
-                )
+                .padding(DIALOG_DEFAULT_PADDING)
                 .fillMaxWidth()
                 .weight(ALARM_REACTION_DIALOG_BUTTON_WEIGHT),
             label = stringResource(R.string.snooze).uppercase(),
@@ -75,11 +71,7 @@ private fun PortraitLayout(
         )
         AlarmReactionDialogButton( // STOP
             modifier = Modifier
-                .padding(
-                    start = DIALOG_DEFAULT_PADDING,
-                    end = DIALOG_DEFAULT_PADDING,
-                    top = DIALOG_DEFAULT_PADDING
-                )
+                .padding(DIALOG_DEFAULT_PADDING)
                 .fillMaxWidth()
                 .weight(ALARM_REACTION_DIALOG_BUTTON_WEIGHT),
             label = stringResource(R.string.stop).uppercase(),
