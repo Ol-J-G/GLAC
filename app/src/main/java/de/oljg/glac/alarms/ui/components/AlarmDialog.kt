@@ -38,7 +38,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.MAX_LIGHT_ALARM_DURATION
+import de.oljg.glac.alarms.ui.utils.AlarmDefaults.MAX_SNOOZE_DURATION
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.MIN_LIGHT_ALARM_DURATION
+import de.oljg.glac.alarms.ui.utils.AlarmDefaults.MIN_SNOOZE_DURATION
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.minutesSaver
 import de.oljg.glac.alarms.ui.utils.Repetition
 import de.oljg.glac.alarms.ui.utils.isSet
@@ -95,6 +97,13 @@ fun AlarmDialog(
         mutableStateOf(true) // default value is valid
     }
 
+    var snoozeDuration: Duration by rememberSaveable(stateSaver = minutesSaver) {
+        mutableStateOf(alarmToBeUpdated?.snoozeDuration ?: alarmSettings.snoozeDuration)
+    }
+    var isValidSnoozeDuration by rememberSaveable {
+        mutableStateOf(true) // default value is valid
+    }
+
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = alarmToBeUpdated?.start?.toEpochMillis()
             ?: LocalDateTime.now().toEpochMillis(),
@@ -121,17 +130,9 @@ fun AlarmDialog(
     // Just a shortcut to improve readability a tiny bit^^ (there must be a better solution oO)
     fun checkIfReadyToScheduleAlarm() = de.oljg.glac.alarms.ui.utils.checkIfReadyToScheduleAlarm(
         selectedDate, selectedTime, lightAlarmDuration(), alarmSettings.alarms, alarmToBeUpdated,
-        isLightAlarm, isValidLightAlarmDuration
-                /**
-                 * Must be valid (has been persisted as valid alarm already)
-                 * => ready to update, even if some user would hit update without changing
-                 *    something => will be "overwritten" => should be a rare case
-                 *
-                 * Actually, just to prevent UPDATE button disabling, which could lead someone
-                 * to think something must be changed to be able to use UPDATE...
-                 */
-                || alarmToBeUpdated.isSet()
+        isLightAlarm, isValidLightAlarmDuration, isValidSnoozeDuration
     )
+
     var isReadyToScheduleAlarm by rememberSaveable {
         mutableStateOf(checkIfReadyToScheduleAlarm())
     }
@@ -140,7 +141,8 @@ fun AlarmDialog(
         start = LocalDateTime.of(selectedDate, selectedTime),
         isLightAlarm = isLightAlarm,
         lightAlarmDuration = lightAlarmDuration,
-        repetition = selectedRepetition
+        repetition = selectedRepetition,
+        snoozeDuration = snoozeDuration
     )
 
     SettingsDialog(onDismissRequest = onDismissRequest) { //TODO: care about adaptive design => row+2col for expanded screen width class... => when dialog is completed
@@ -165,8 +167,8 @@ fun AlarmDialog(
                 ) {
                     showTimePicker = true
                 }
-                RepeatModeSelector(
-                    label = stringResource(R.string.repeat),
+                RepetitionSelector(
+                    label = stringResource(R.string.repetition),
                     selectedRepetition = selectedRepetition,
                     onNewRepeatModeSelected = { newRepeatMode ->
                         selectedRepetition = Repetition.valueOf(newRepeatMode)
@@ -227,6 +229,22 @@ fun AlarmDialog(
                             }
                         )
                     }
+                    MinutesDurationSelector(
+                        modifier = Modifier
+                            .padding(DIALOG_DEFAULT_PADDING / 2)
+                            .fillMaxWidth(),
+                        label = stringResource(R.string.snooze_duration),
+                        duration = snoozeDuration,
+                        minDuration = MIN_SNOOZE_DURATION,
+                        maxDuration = MAX_SNOOZE_DURATION,
+                        onValueChanged = { isValidDuration ->
+                            isValidSnoozeDuration = isValidDuration
+                            isReadyToScheduleAlarm = checkIfReadyToScheduleAlarm()
+                        },
+                        onDurationChanged = { newSnoozeDuration ->
+                            snoozeDuration = newSnoozeDuration
+                        }
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE))
@@ -237,6 +255,8 @@ fun AlarmDialog(
                     date = selectedDate,
                     time = selectedTime,
                     lightAlarmDuration = lightAlarmDuration(),
+                    isValidLightAlarmDuration = isValidLightAlarmDuration,
+                    isValidSnoozeDuration = isValidSnoozeDuration,
                     scheduledAlarms = alarmSettings.alarms,
                     alarmToBeUpdated = alarmToBeUpdated
                 )

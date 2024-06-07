@@ -7,7 +7,7 @@ import de.oljg.glac.settings.clock.ui.components.common.DropDownSelector
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DIALOG_DEFAULT_PADDING
 
 @Composable
-fun RepeatModeSelector(
+fun RepetitionSelector(
     label: String,
     selectedRepetition: Repetition,
     onNewRepeatModeSelected: (String) -> Unit

@@ -6,17 +6,26 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import de.oljg.glac.alarms.ui.components.AlarmReactionDialog
+import de.oljg.glac.alarms.ui.utils.Repetition
 import de.oljg.glac.alarms.ui.utils.handleAlarmToBeLaunched
+import de.oljg.glac.alarms.ui.utils.isSnoozeAlarmBeforeNextAlarm
+import de.oljg.glac.alarms.ui.utils.plus
 import de.oljg.glac.clock.digital.ui.DigitalClockScreen
 import de.oljg.glac.clock.digital.ui.utils.findActivity
+import de.oljg.glac.core.alarms.data.Alarm
+import de.oljg.glac.core.alarms.data.AlarmSettings
+import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
 import de.oljg.glac.ui.theme.GLACTheme
+import java.time.LocalDateTime
 
 @AndroidEntryPoint
 class AlarmActivity : ComponentActivity() {
@@ -29,6 +38,10 @@ class AlarmActivity : ComponentActivity() {
          * is below ...
          */
         setContent {
+            val viewModel: AlarmSettingsViewModel = hiltViewModel()
+            val alarmSettings = viewModel.alarmSettingsFlow.collectAsState(
+                initial = AlarmSettings()
+            ).value
             var showAlarmReactionDialog by rememberSaveable {
                 mutableStateOf(false)
             }
@@ -53,10 +66,30 @@ class AlarmActivity : ComponentActivity() {
 
                 AnimatedVisibility(visible = showAlarmReactionDialog) {
                     val alarmActivity = LocalContext.current.findActivity()
+                        ?: return@AnimatedVisibility // Should actually not happen!
+
+                    val snoozeAlarmStart = LocalDateTime.now()
+                        .plus(alarmToBeLaunched!!.snoozeDuration) // !! is save
+
                     AlarmReactionDialog(
-                        onSnoozeAlarm = { /* TODO */ },
+                        snoozeEnabled = isSnoozeAlarmBeforeNextAlarm(
+                            snoozeAlarmStart = snoozeAlarmStart,
+                            scheduledAlarms = alarmSettings.alarms
+                        ),
+                        onSnoozeAlarm = {
+                            viewModel.addAlarm(
+                                alarmSettings,
+                                Alarm(
+                                    start = snoozeAlarmStart,
+                                    isSnoozeAlarm = true,
+                                    isLightAlarm = false,
+                                    repetition = Repetition.NONE
+                                )
+                            )
+                            alarmActivity.finish()
+                        },
                         onDismiss = { showAlarmReactionDialog = false },
-                        onStopAlarm = { alarmActivity?.finish() }
+                        onStopAlarm = { alarmActivity.finish() }
                     )
                 }
             }

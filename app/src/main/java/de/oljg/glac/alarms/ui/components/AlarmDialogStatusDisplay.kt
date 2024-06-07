@@ -60,6 +60,24 @@ fun ColumnScope.AlarmDialogStatusDisplay(
                 message = stringResource(R.string.please_select_a_start_time)
             )
 
+            AlarmErrorState.INVALID_LIGHT_ALARM_DURATION -> DialogMessage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2)
+                    .weight(1f, fill = false),
+                isErrorMessage = true,
+                message = stringResource(R.string.invalid_light_alarm_duration)
+            )
+
+            AlarmErrorState.INVALID_SNOOZE_DURATION -> DialogMessage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2)
+                    .weight(1f, fill = false),
+                isErrorMessage = true,
+                message = stringResource(R.string.invalid_snooze_duration)
+            )
+
             AlarmErrorState.NO_ERROR -> DialogMessage(
                 modifier = Modifier
                     .fillMaxWidth()

@@ -13,6 +13,7 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
 fun AlarmReactionDialogButton(
     modifier: Modifier = Modifier,
     label: String,
+    enabled: Boolean = true,
     buttonColors: ButtonColors = ButtonDefaults.buttonColors(
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
         contentColor = MaterialTheme.colorScheme.onSecondaryContainer
@@ -23,6 +24,7 @@ fun AlarmReactionDialogButton(
         modifier = modifier,
         shape = SettingsDefaults.DIALOG_SHAPE,
         colors = buttonColors,
+        enabled = enabled,
         onClick = onClick
     ) {
         Text(

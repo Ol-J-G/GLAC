@@ -86,9 +86,10 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
 
                         // quick manual test
 //                        val testAlarm = Alarm(
-//                            start = LocalDateTime.now().plusSeconds(20),
+//                            start = LocalDateTime.now().plusSeconds(10),
 //                            isLightAlarm = true,
-//                            repetition = Repetition.MONTHLY
+//                            repetition = Repetition.WEEKLY,
+//                            snoozeDuration = 10.seconds
 //                        )
 //                        viewModel.addAlarm(alarmSettings, testAlarm)
 //                        selectedAlarmStart = testAlarm.start
@@ -107,12 +108,16 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
                     .padding(horizontal = SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2)
                     .verticalScroll(scrollState)
             ) {
-                alarmSettings.alarms.sortedBy { alarm -> alarm.start }.forEach { alarm ->
+                alarmSettings.alarms
+                    .filter { alarm -> !alarm.isSnoozeAlarm } // Keep snooze alarms under the hood
+                    .sortedBy { alarm -> alarm.start } // ASC => next alarm is always on top
+                    .forEach { alarm ->
                     AlarmListItem(
                         alarmStart = alarm.start,
                         isLightAlarm = alarm.isLightAlarm,
                         lightAlarmDuration = alarm.lightAlarmDuration,
                         repetition = alarm.repetition,
+                        snoozeDuration = alarm.snoozeDuration,
                         selected = alarm.start == selectedAlarmStart,
                         onClick = { selectedAlarmStart = alarm.start },
                         onRemoveAlarm = {
@@ -142,7 +147,7 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
                 alarmToBeUpdated = alarmToBeUpdated,
                 onDismissRequest = {
                     coroutineScope.launch {
-                        delay(500L) // hide button re-labeling from users eyes
+                        delay(800L) // hide button re-labeling from users eyes
                         alarmToBeUpdatedStart = null
                     }
                     showAlarmDialog = false

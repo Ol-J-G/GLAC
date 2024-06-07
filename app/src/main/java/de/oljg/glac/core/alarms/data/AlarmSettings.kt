@@ -18,7 +18,7 @@ data class AlarmSettings(
     @Serializable(with = AlarmsSerializer::class)
     val alarms: PersistentList<Alarm> = persistentListOf(),
 
-    // everything below are common alarm settings as default for each alarm in alarms
+    // Everything below are common alarm settings as default for each alarm in alarms
     val isLightAlarm: Boolean = true,
 
     @Serializable(with = DurationSerializer::class)
@@ -26,5 +26,8 @@ data class AlarmSettings(
 
     @Serializable(with = ColorsSerializer::class)
     val lightAlarmColors: PersistentList<@Serializable(with = ColorSerializer::class) Color> =
-            persistentListOf(Color.Black, darkBlue, lightBlue, orange, goldenrod, Color.White)
+            persistentListOf(Color.Black, darkBlue, lightBlue, orange, goldenrod, Color.White),
+
+    @Serializable(with = DurationSerializer::class)
+    val snoozeDuration: Duration = 30.minutes
 )

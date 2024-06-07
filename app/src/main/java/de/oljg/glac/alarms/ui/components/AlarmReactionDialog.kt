@@ -22,6 +22,7 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DIALOG_DEFAULT_PADD
 
 @Composable
 fun AlarmReactionDialog(
+    snoozeEnabled: Boolean,
     onSnoozeAlarm: () -> Unit,
     onDismiss: () -> Unit,
     onStopAlarm: () -> Unit
@@ -33,14 +34,15 @@ fun AlarmReactionDialog(
     ) {
         when(LocalConfiguration.current.orientation) {
             Configuration.ORIENTATION_PORTRAIT ->
-                PortraitLayout(onSnoozeAlarm, onDismiss, onStopAlarm)
-            else -> LandscapeLayout(onSnoozeAlarm, onDismiss, onStopAlarm)
+                PortraitLayout(snoozeEnabled, onSnoozeAlarm, onDismiss, onStopAlarm)
+            else -> LandscapeLayout(snoozeEnabled, onSnoozeAlarm, onDismiss, onStopAlarm)
         }
     }
 }
 
 @Composable
 private fun PortraitLayout(
+    snoozeEnabled: Boolean,
     onSnoozeAlarm: () -> Unit,
     onDismiss: () -> Unit,
     onStopAlarm: () -> Unit
@@ -56,6 +58,7 @@ private fun PortraitLayout(
                 .fillMaxWidth()
                 .weight(ALARM_REACTION_DIALOG_BUTTON_WEIGHT),
             label = stringResource(R.string.snooze).uppercase(),
+            enabled = snoozeEnabled,
             onClick = onSnoozeAlarm
         )
         AlarmReactionDialogButton( // DISMISS
@@ -88,6 +91,7 @@ private fun PortraitLayout(
 
 @Composable
 private fun LandscapeLayout(
+    snoozeEnabled: Boolean,
     onSnoozeAlarm: () -> Unit,
     onDismiss: () -> Unit,
     onStopAlarm: () -> Unit
@@ -99,6 +103,7 @@ private fun LandscapeLayout(
                 .fillMaxHeight()
                 .weight(ALARM_REACTION_DIALOG_BUTTON_WEIGHT),
             label = stringResource(R.string.snooze).uppercase(),
+            enabled = snoozeEnabled,
             onClick = onSnoozeAlarm
         )
         AlarmReactionDialogButton( // DISMISS

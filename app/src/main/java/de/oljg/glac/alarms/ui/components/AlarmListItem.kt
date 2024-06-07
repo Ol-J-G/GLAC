@@ -46,6 +46,7 @@ fun AlarmListItem(
     isLightAlarm: Boolean,
     lightAlarmDuration: Duration,
     repetition: Repetition,
+    snoozeDuration: Duration,
     selected: Boolean,
     onClick: () -> Unit,
     onRemoveAlarm: () -> Unit,
@@ -106,6 +107,16 @@ fun AlarmListItem(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(evaluateAlarmRepetitionInfo(repetition = repetition, alarmStart = alarmStart))
+            }
+
+            Row( // Snooze duration
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(SettingsDefaults.SETTINGS_SECTION_HEIGHT),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(stringResource(R.string.snooze_duration) + ":" + SPACE + snoozeDuration)
             }
 
             // When alarm is a light alarm, show light alarm duration

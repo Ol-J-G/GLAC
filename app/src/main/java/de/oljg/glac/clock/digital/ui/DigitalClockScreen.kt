@@ -1,6 +1,7 @@
 package de.oljg.glac.clock.digital.ui
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.Animatable
@@ -20,7 +21,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.alarms.ui.utils.LightAlarm
 import de.oljg.glac.alarms.ui.utils.isSetAndLightAlarm
-import de.oljg.glac.alarms.ui.utils.isSetAndNoLightAlarm
+import de.oljg.glac.alarms.ui.utils.isSetAndSnoozeAlarm
+import de.oljg.glac.alarms.ui.utils.isSetAndSoundAlarm
 import de.oljg.glac.clock.digital.ui.components.SevenSegmentChar
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
@@ -120,17 +122,26 @@ fun DigitalClockScreen(
     val lightAlarmAnimatedColor: Animatable<Color, AnimationVector4D> = remember {
         Animatable(initialValue)
     }
-    if(alarmMode && alarmToBeLaunched.isSetAndLightAlarm()) {
-        LightAlarm(
-            alarmToBeLaunched = alarmToBeLaunched!!, // is set => save
-            lightAlarmColors = lightAlarmColors!!, // default is always set in every Alarm => save
-            lightAlarmAnimatedColor = lightAlarmAnimatedColor
-        )
-    }
-    if(alarmMode && alarmToBeLaunched.isSetAndNoLightAlarm()) {
-        // TODO: play alarm sound only
-    }
 
+    when {
+        alarmMode && alarmToBeLaunched.isSetAndLightAlarm() -> {
+            Log.d("TAG", "DigitalClockScreen, light alarm")
+            LightAlarm(
+                alarmToBeLaunched = alarmToBeLaunched!!, // is set => save
+                lightAlarmColors = lightAlarmColors!!, // default is set in every Alarm => save
+                lightAlarmAnimatedColor = lightAlarmAnimatedColor
+            )
+        }
+
+        alarmMode && alarmToBeLaunched.isSetAndSnoozeAlarm() ->
+            Log.d("TAG", "DigitalClockScreen, snooze alarm")
+
+        alarmMode && alarmToBeLaunched.isSetAndSoundAlarm() ->
+            Log.d("TAG", "DigitalClockScreen, sound alarm") // TODO: play alarm sound
+
+        else ->
+            Log.d("TAG", "DigitalClockScreen, NO alarm")
+    }
 
     val dividerAttributes = DividerAttributes(
         dividerStyle = clockTheme.dividerStyle,
@@ -226,7 +237,7 @@ fun DigitalClockScreen(
         fontStyle = finalFontStyle, // for measurement
         charColors = finalCharColors,
         clockPartsColors = finalClockPartsColors,
-        backgroundColor = if(alarmMode && alarmToBeLaunched.isSetAndLightAlarm())
+        backgroundColor = if (alarmMode && alarmToBeLaunched.isSetAndLightAlarm())
             lightAlarmAnimatedColor.value else MaterialTheme.colorScheme.surface,
         dividerAttributes = dividerAttributes,
         currentTimeFormatted = currentTimeFormatted,
@@ -243,6 +254,7 @@ fun DigitalClockScreen(
                 fontStyle = finalFontStyle,
                 color = clockCharColor,
             )
+
             else -> SevenSegmentChar(
                 char = clockChar,
                 charSize = clockCharSize,

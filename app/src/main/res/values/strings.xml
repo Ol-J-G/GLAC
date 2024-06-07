@@ -140,7 +140,7 @@
     <string name="daily">Daily</string>
     <string name="weekly">Weekly</string>
     <string name="monthly">Monthly</string>
-    <string name="repeat">Repeat</string>
+    <string name="repetition">Repetition</string>
     <string name="once">Once</string>
     <string name="at">at</string>
     <string name="every">Every</string>
@@ -150,4 +150,7 @@
     <string name="remaining_time">Remaining time</string>
     <string name="stop">Stop</string>
     <string name="snooze">Snooze</string>
+    <string name="snooze_duration">Snooze Duration</string>
+    <string name="invalid_light_alarm_duration">Invalid Light Alarm Duration!</string>
+    <string name="invalid_snooze_duration">Invalid Snooze Duration!</string>
 </resources>

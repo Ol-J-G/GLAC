@@ -14,6 +14,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -32,7 +33,12 @@ data class Alarm(
 
     @Serializable(with = ColorsSerializer::class)
     val lightAlarmColors: PersistentList<@Serializable(with = ColorSerializer::class) Color> =
-        persistentListOf(Color.Black, darkBlue, lightBlue, orange, goldenrod, Color.White)
+        persistentListOf(Color.Black, darkBlue, lightBlue, orange, goldenrod, Color.White),
+
+    val isSnoozeAlarm: Boolean = false,
+
+    @Serializable(with = DurationSerializer::class)
+    val snoozeDuration: Duration = 30.minutes
 ) {
     override fun toString(): String { //TODO: remove after testing
         return start.toString() + " | " + this.hashCode()

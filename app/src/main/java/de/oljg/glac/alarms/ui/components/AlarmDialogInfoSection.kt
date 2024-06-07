@@ -27,7 +27,9 @@ fun ColumnScope.AlarmDialogInfoSection(
     time: LocalTime?,
     lightAlarmDuration: Duration,
     scheduledAlarms: List<Alarm>,
-    alarmToBeUpdated: Alarm?
+    alarmToBeUpdated: Alarm?,
+    isValidLightAlarmDuration: Boolean,
+    isValidSnoozeDuration: Boolean
 ) {
     Divider(
         modifier = Modifier.fillMaxWidth(),
@@ -47,6 +49,8 @@ fun ColumnScope.AlarmDialogInfoSection(
             date,
             time,
             lightAlarmDuration,
+            isValidLightAlarmDuration,
+            isValidSnoozeDuration,
             scheduledAlarms,
             alarmToBeUpdated
         ),

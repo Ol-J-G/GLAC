@@ -60,7 +60,9 @@ enum class AlarmErrorState {
     DATE_NOT_SET,
     TIME_NOT_SET,
     TIME_IS_NOT_IN_FUTURE,
-    ALARM_OVERLAPS_EXISTING_ALARM
+    ALARM_OVERLAPS_EXISTING_ALARM,
+    INVALID_LIGHT_ALARM_DURATION,
+    INVALID_SNOOZE_DURATION
 }
 
 enum class ValidState {
@@ -85,12 +87,17 @@ fun evaluateAlarmErrorState(
     date: LocalDate?,
     time: LocalTime?,
     lightAlarmDuration: Duration,
+    isValidLightAlarmDuration: Boolean,
+    isValidSnoozeDuration: Boolean,
     scheduledAlarms: List<Alarm>,
     alarmToUpdate: Alarm? = null
 ) = when {
     !date.isSet() && !time.isSet() -> AlarmErrorState.DATE_AND_TIME_NOT_SET
     !date.isSet() -> AlarmErrorState.DATE_NOT_SET
     !time.isSet() -> AlarmErrorState.TIME_NOT_SET
+
+    !isValidLightAlarmDuration -> AlarmErrorState.INVALID_LIGHT_ALARM_DURATION
+    !isValidSnoozeDuration -> AlarmErrorState.INVALID_SNOOZE_DURATION
 
     isAlarmStart(ValidState.INVALID, date, time, lightAlarmDuration) ->
         AlarmErrorState.TIME_IS_NOT_IN_FUTURE
@@ -116,7 +123,8 @@ fun checkIfReadyToScheduleAlarm(
     scheduledAlarms: List<Alarm>,
     alarmToUpdate: Alarm? = null,
     isLightAlarm: Boolean,
-    isValidLightAlarmDuration: Boolean
+    isValidLightAlarmDuration: Boolean,
+    isValidSnoozeDuration: Boolean
 ) = isAlarmStart(
     validState = ValidState.VALID, // >= now
     date = date,
@@ -129,7 +137,8 @@ fun checkIfReadyToScheduleAlarm(
     lightAlarmDuration,
     scheduledAlarms,
     alarmToUpdate // keep this out of overlap calculation in case of update (null otherwise)
-) && if (isLightAlarm) isValidLightAlarmDuration else true
+) && isValidSnoozeDuration
+        && if (isLightAlarm) isValidLightAlarmDuration else true
 
 
 // Nice to have as tiny hint for users
@@ -241,31 +250,37 @@ fun LocalDateTime.interferesScheduledAlarms(
          */
         if (scheduledAlarm.start == alarmToUpdate?.start) return@forEach
 
-        when(scheduledAlarm.repetition) {
+        when (scheduledAlarm.repetition) {
             Repetition.NONE -> {
                 if (rangesOverlap(requestedAlarmRange, scheduledAlarm))
                     return true
             }
+
             Repetition.DAILY -> { // look 1 year in the future
                 repeat(367) { day -> // zero-based => +1, inclusive => +1 => 365 + 2
                     val dailyRepeatingAlarm = scheduledAlarm.copy(
-                        start = scheduledAlarm.start.plus(day * 1.days))
+                        start = scheduledAlarm.start.plus(day * 1.days)
+                    )
                     if (rangesOverlap(requestedAlarmRange, dailyRepeatingAlarm))
                         return true
                 }
             }
+
             Repetition.WEEKLY -> { // look 1 year in the future
                 repeat(54) { week -> // zero-based => +1, inclusive => +1 => 52 + 2
                     val weeklyRepeatingAlarm = scheduledAlarm.copy(
-                        start = scheduledAlarm.start.plus(week * 7.days))
+                        start = scheduledAlarm.start.plus(week * 7.days)
+                    )
                     if (rangesOverlap(requestedAlarmRange, weeklyRepeatingAlarm))
                         return true
                 }
             }
+
             Repetition.MONTHLY -> { // look 1 year in the future
                 repeat(13) { month -> // zero-based => +1 => 12 + 1
                     val mothlyRepeatingAlarm = scheduledAlarm.copy(
-                        start = scheduledAlarm.start.plusMonths(month * 1L))
+                        start = scheduledAlarm.start.plusMonths(month * 1L)
+                    )
                     if (rangesOverlap(requestedAlarmRange, mothlyRepeatingAlarm))
                         return true
                 }
@@ -317,6 +332,25 @@ fun OpenEndRange<LocalDateTime>.overlapsOrContainsCompletely(
 
 
 /**
+ * Let user max. ALARM_START_BUFFER.minutes to react on snooze alarm, before the next scheduled
+ * alarm is going to be launched.
+ *
+ *        |<     ALARM_START_BUFFER     >|
+ *        |                              |-----Next-Alarm-----|
+ *        |                              |
+ *  snoozeAlarmStart                 nextAlarmStart
+ */
+@RequiresApi(Build.VERSION_CODES.O)
+fun isSnoozeAlarmBeforeNextAlarm(
+    snoozeAlarmStart: LocalDateTime,
+    scheduledAlarms: List<Alarm>
+): Boolean {
+    val nextAlarmStart = scheduledAlarms.minByOrNull { it.start }?.start ?: return true
+    return snoozeAlarmStart.isBefore((nextAlarmStart).minus(ALARM_START_BUFFER))
+}
+
+
+/**
  * Use [kotlin.time.Duration] together with [java.time.LocalDateTime] to
  * substract a duration from a local date time object.
  * (better for now to use [kotlin.time.Duration.toJavaDuration] just once, here in this fun ...
@@ -336,9 +370,10 @@ operator fun LocalDateTime.plus(amountToAdd: Duration): LocalDateTime =
 operator fun LocalTime.plus(amountToAdd: Duration): LocalTime =
         plus(amountToAdd.toJavaDuration())
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 fun Duration.Companion.between(a: LocalDateTime, b: LocalDateTime): Duration {
-    if(a == b || b.isBefore(a)) return ZERO // handles positive durations only!
+    if (a == b || b.isBefore(a)) return ZERO // handles positive durations only!
     return java.time.Duration.between(a, b).toKotlinDuration()
 }
 
@@ -502,7 +537,7 @@ fun handleAlarmToBeLaunched(viewModel: AlarmSettingsViewModel = hiltViewModel())
 
             when (alarmtoBeUpdated.repetition) {
 
-                // No repetition => remove, it's not needed anymore
+                // No repetition => remove, it's not needed anymore (can also be a snooze alarm)
                 Repetition.NONE -> {
                     viewModel.removeAlarm(alarmSettings, alarmtoBeUpdated)
                 }
@@ -513,7 +548,8 @@ fun handleAlarmToBeLaunched(viewModel: AlarmSettingsViewModel = hiltViewModel())
                         alarmSettings,
                         alarmtoBeUpdated,
                         updatedAlarm = alarmtoBeUpdated.copy(
-                            start = alarmtoBeUpdated.start.plus(1.days))
+                            start = alarmtoBeUpdated.start.plus(1.days)
+                        )
                     )
                 }
 
@@ -523,7 +559,8 @@ fun handleAlarmToBeLaunched(viewModel: AlarmSettingsViewModel = hiltViewModel())
                         alarmSettings,
                         alarmtoBeUpdated,
                         updatedAlarm = alarmtoBeUpdated.copy(
-                            start = alarmtoBeUpdated.start.plus(7.days))
+                            start = alarmtoBeUpdated.start.plus(7.days)
+                        )
                     )
                 }
 
@@ -533,7 +570,8 @@ fun handleAlarmToBeLaunched(viewModel: AlarmSettingsViewModel = hiltViewModel())
                         alarmSettings,
                         alarmtoBeUpdated,
                         updatedAlarm = alarmtoBeUpdated.copy(
-                            start = alarmtoBeUpdated.start.plusMonths(1L))
+                            start = alarmtoBeUpdated.start.plusMonths(1L)
+                        )
                     )
                 }
             }
@@ -567,7 +605,7 @@ fun LightAlarm(
     val currentOrientation = LocalConfiguration.current.orientation
     val activity = LocalContext.current.findActivity()
     activity?.let {
-        it.requestedOrientation = when(currentOrientation) {
+        it.requestedOrientation = when (currentOrientation) {
             Configuration.ORIENTATION_PORTRAIT -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             else -> ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
@@ -613,7 +651,9 @@ fun LightAlarm(
 
 fun Alarm?.isSetAndLightAlarm() = this != null && this.isLightAlarm
 
-fun Alarm?.isSetAndNoLightAlarm() = this != null && !this.isLightAlarm
+fun Alarm?.isSetAndSnoozeAlarm() = this != null && this.isSnoozeAlarm
+
+fun Alarm?.isSetAndSoundAlarm() = this != null && !this.isLightAlarm && !this.isSnoozeAlarm
 
 @Composable
 fun Repetition.translate() = when (this) {
@@ -631,6 +671,9 @@ object AlarmDefaults {
 
     val MIN_LIGHT_ALARM_DURATION = 1.minutes
     val MAX_LIGHT_ALARM_DURATION = 60.minutes
+
+    val MIN_SNOOZE_DURATION = 5.minutes
+    val MAX_SNOOZE_DURATION = 60.minutes
 
     // Users can schedule an alarm from now + ALARM_START_BUFFER
     val ALARM_START_BUFFER = 1.minutes //TODO: change back to 5 after testing
