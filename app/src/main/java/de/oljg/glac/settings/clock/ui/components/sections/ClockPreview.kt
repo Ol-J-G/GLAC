@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,7 +19,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.DigitalClockScreen
 import de.oljg.glac.clock.digital.ui.utils.screenDetails
-import de.oljg.glac.core.clock.data.ClockSettings
 import de.oljg.glac.core.ui.components.SettingsSection
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.PREVIEW_SIZE_FACTOR
@@ -28,9 +28,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ClockPreview(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val coroutineScope = rememberCoroutineScope()
-    val clockSettings = viewModel.clockSettingsFlow.collectAsState(
-        initial = ClockSettings()
-    ).value
+    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
     SettingsSection(
         sectionTitle = stringResource(R.string.clock_preview),
         expanded = clockSettings.clockSettingsSectionPreviewIsExpanded,

@@ -14,6 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import de.oljg.glac.alarms.ui.utils.resetScreenBrightness
+import de.oljg.glac.alarms.ui.utils.setScreenBrightness
 import de.oljg.glac.clock.digital.ui.utils.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_HEIGHT_COMPACT
 import de.oljg.glac.clock.digital.ui.utils.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_HEIGHT_MEDIUM
 import de.oljg.glac.clock.digital.ui.utils.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_WIDTH_COMPACT
@@ -99,6 +101,19 @@ object ScreenSizeDefaults {
     val MAX_SCREEN_WIDTH_SMALL_DEVICE_LANDSCAPE = 640.dp
     val MAX_SCREEN_WIDTH_MEDIUM_DEVICE_LANDSCAPE = 914.dp
 
+}
+
+
+@Composable
+fun OverrideSystemBrightness(clockBrightness: Float) {
+    val context = LocalContext.current
+    DisposableEffect(Unit) {
+        val activity = context.findActivity() ?: return@DisposableEffect onDispose {}
+        setScreenBrightness(activity, clockBrightness)
+        onDispose {
+            resetScreenBrightness(activity)
+        }
+    }
 }
 
 

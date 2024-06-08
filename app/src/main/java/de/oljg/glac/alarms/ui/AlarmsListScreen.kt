@@ -37,7 +37,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.alarms.ui.components.AlarmDialog
 import de.oljg.glac.alarms.ui.components.AlarmListItem
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.localDateTimeSaver
-import de.oljg.glac.core.alarms.data.AlarmSettings
 import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
 import kotlinx.coroutines.delay
@@ -48,9 +47,7 @@ import java.time.LocalDateTime
 @Composable
 fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
     val coroutineScope = rememberCoroutineScope()
-    val alarmSettings = viewModel.alarmSettingsFlow.collectAsState(
-        initial = AlarmSettings()
-    ).value
+    val alarmSettings by viewModel.alarmSettingsStateFlow.collectAsState()
 
     var showAlarmDialog by rememberSaveable {
         mutableStateOf(false)
@@ -86,8 +83,9 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
 
                         // quick manual test
 //                        val testAlarm = Alarm(
-//                            start = LocalDateTime.now().plusSeconds(10),
+//                            start = LocalDateTime.now().plusSeconds(15),
 //                            isLightAlarm = true,
+//                            lightAlarmDuration = 10.seconds,
 //                            repetition = Repetition.WEEKLY,
 //                            snoozeDuration = 10.seconds
 //                        )

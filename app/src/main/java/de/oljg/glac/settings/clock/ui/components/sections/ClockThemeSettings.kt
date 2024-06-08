@@ -27,7 +27,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
-import de.oljg.glac.core.clock.data.ClockSettings
 import de.oljg.glac.core.clock.data.ClockTheme
 import de.oljg.glac.core.ui.components.SettingsSection
 import de.oljg.glac.core.util.CommonClockUtils.DEFAULT_THEME_NAME
@@ -46,9 +45,7 @@ import kotlinx.coroutines.launch
 fun ClockThemeSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val coroutineScope = rememberCoroutineScope()
-    val clockSettings = viewModel.clockSettingsFlow.collectAsState(
-        initial = ClockSettings()
-    ).value
+    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
 
     var textFieldValue by remember(clockSettings.clockThemeName) {
         mutableStateOf(clockSettings.clockThemeName)

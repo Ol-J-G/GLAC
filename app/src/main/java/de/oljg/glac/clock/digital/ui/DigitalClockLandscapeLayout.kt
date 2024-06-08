@@ -51,7 +51,6 @@ import de.oljg.glac.clock.digital.ui.utils.dividerCount
 import de.oljg.glac.clock.digital.ui.utils.evaluateFontSizeShrinkFactor
 import de.oljg.glac.clock.digital.ui.utils.evaluateStartFontSize
 import de.oljg.glac.clock.digital.ui.utils.isDaytimeMarkerChar
-import de.oljg.glac.core.clock.data.ClockSettings
 import de.oljg.glac.core.clock.data.ClockTheme
 import de.oljg.glac.core.util.ClockPartsTestTags
 import de.oljg.glac.core.util.TestTags
@@ -114,9 +113,7 @@ fun DigitalClockLandscapeLayout(
         mutableStateOf(IntSize(0, 0))
     }
 
-    val clockSettings = viewModel.clockSettingsFlow.collectAsState(
-        initial = ClockSettings()
-    ).value
+    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
     val clockTheme = clockSettings.themes.getOrDefault(
         key = clockSettings.clockThemeName,
         defaultValue = ClockTheme()

@@ -1,16 +1,33 @@
 package de.oljg.glac.settings.clock.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.oljg.glac.core.clock.data.ClockSettings
 import de.oljg.glac.core.clock.data.ClockSettingsRepository
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
 class ClockSettingsViewModel @Inject constructor (
    private val clockSettingsRepository: ClockSettingsRepository
 ) : ViewModel() {
-    val clockSettingsFlow = clockSettingsRepository.getClockSettingsFlow()
+    private val _clockSettingsFlow = clockSettingsRepository.getClockSettingsFlow()
+
+    val clockSettingsStateFlow = _clockSettingsFlow.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(),
+
+        /**
+         * Unfortunately, I didn't find another way to get guaranteed the real first emission,
+         * in case setting are read from disk (e.g. directly at 1st composition of a composable),
+         * than using runBlocking :/
+         */
+        runBlocking { _clockSettingsFlow.first() }
+    )
 
     suspend fun updateClockSettings(updatedClockSettings: ClockSettings) {
         clockSettingsRepository.updateClockSettings(updatedClockSettings)

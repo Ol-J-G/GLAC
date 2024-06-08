@@ -10,7 +10,11 @@ import de.oljg.glac.core.alarms.data.AlarmSettings
 import de.oljg.glac.core.alarms.data.AlarmSettingsRepository
 import de.oljg.glac.core.alarms.data.manager.AndroidAlarmScheduler
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,7 +22,19 @@ class AlarmSettingsViewModel @Inject constructor(
     private val alarmSettingsRepository: AlarmSettingsRepository,
     private val alarmScheduler: AndroidAlarmScheduler
 ) : ViewModel() {
-    val alarmSettingsFlow = alarmSettingsRepository.getAlarmSettingsFlow()
+    private val _alarmSettingsFlow = alarmSettingsRepository.getAlarmSettingsFlow()
+
+    val alarmSettingsStateFlow = _alarmSettingsFlow.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(),
+
+        /**
+         * Unfortunately, I didn't find another way to get guaranteed the real first emission,
+         * in case setting are read from disk (e.g. directly at 1st composition of a composable),
+         * than using runBlocking :/
+         */
+        runBlocking { _alarmSettingsFlow.first() }
+    )
 
     private suspend fun updateAlarmSettings(updatedAlarmSettings: AlarmSettings) {
         alarmSettingsRepository.updateAlarmSettings(updatedAlarmSettings)

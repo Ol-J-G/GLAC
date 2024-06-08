@@ -6,12 +6,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
-import de.oljg.glac.core.clock.data.ClockSettings
 import de.oljg.glac.core.clock.data.ClockTheme
 import de.oljg.glac.core.ui.components.SettingsSection
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
@@ -23,9 +23,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ClockDisplaySettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val coroutineScope = rememberCoroutineScope()
-    val clockSettings = viewModel.clockSettingsFlow.collectAsState(
-        initial = ClockSettings()
-    ).value
+    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
     val clockThemeName = clockSettings.clockThemeName
     val clockTheme = clockSettings.themes.getOrDefault(
         key = clockThemeName,

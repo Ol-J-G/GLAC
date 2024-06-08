@@ -34,7 +34,6 @@ import de.oljg.glac.alarms.ui.utils.AlarmDefaults.localizedShortDateTimeFormatte
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.localizedShortTimeFormatter
 import de.oljg.glac.clock.digital.ui.utils.findActivity
 import de.oljg.glac.core.alarms.data.Alarm
-import de.oljg.glac.core.alarms.data.AlarmSettings
 import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
 import java.time.Instant
 import java.time.LocalDate
@@ -517,67 +516,53 @@ fun evaluateAlarmRepetitionInfo(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun handleAlarmToBeLaunched(viewModel: AlarmSettingsViewModel = hiltViewModel()): Alarm? {
-    val alarmSettings = viewModel.alarmSettingsFlow.collectAsState(
-        initial = AlarmSettings()
-    ).value
+    val alarmSettings by viewModel.alarmSettingsStateFlow.collectAsState()
     var alarmToBeLaunched: Alarm? by remember {
         mutableStateOf(null)
     }
+    LaunchedEffect(alarmToBeLaunched == null) {
+        // Can't be null => alarms.size must be > 0 => following calls with !! are save
+        alarmToBeLaunched = alarmSettings.alarms.minByOrNull { it.start }
+        val alarmtoBeUpdated = alarmToBeLaunched!!
 
-    /**
-     * Modify alarms is only possible when flow collection is completed (which is not the case
-     * directly after 1st composition of AlarmActivity), and then, when it's completed,
-     * alarmSettings.alarms.size turns to a value > 0 (guaranteed => AlarmActivity is
-     * going to be created only when an alarm is present in alarmSettings.alarms) and finally,
-     * run next block only once in the background, currentlyLaunchedAlarm will be handled and
-     * returned to e.g. use lightAlarmColors in DigitalClockScreen's alarm mode.
-     */
-    if (alarmSettings.alarms.size != 0 && alarmToBeLaunched == null) {
-        LaunchedEffect(Unit) {
+        when (alarmtoBeUpdated.repetition) {
 
-            // Can't be null => alarmSettings.alarms.size != 0 => following call with !! is save
-            alarmToBeLaunched = alarmSettings.alarms.minByOrNull { it.start }
-            val alarmtoBeUpdated = alarmToBeLaunched!!
+            // No repetition => remove, it's not needed anymore (can also be a snooze alarm)
+            Repetition.NONE -> {
+                viewModel.removeAlarm(alarmSettings, alarmtoBeUpdated)
+            }
 
-            when (alarmtoBeUpdated.repetition) {
-
-                // No repetition => remove, it's not needed anymore (can also be a snooze alarm)
-                Repetition.NONE -> {
-                    viewModel.removeAlarm(alarmSettings, alarmtoBeUpdated)
-                }
-
-                // Daily => remove current, add and schedule new repetition one day later
-                Repetition.DAILY -> {
-                    viewModel.updateAlarm(
-                        alarmSettings,
-                        alarmtoBeUpdated,
-                        updatedAlarm = alarmtoBeUpdated.copy(
-                            start = alarmtoBeUpdated.start.plus(1.days)
-                        )
+            // Daily => remove current, add and schedule new repetition one day later
+            Repetition.DAILY -> {
+                viewModel.updateAlarm(
+                    alarmSettings,
+                    alarmtoBeUpdated,
+                    updatedAlarm = alarmtoBeUpdated.copy(
+                        start = alarmtoBeUpdated.start.plus(1.days)
                     )
-                }
+                )
+            }
 
-                // Weekly => remove current, add and schedule new repetition one week(7d) later
-                Repetition.WEEKLY -> {
-                    viewModel.updateAlarm(
-                        alarmSettings,
-                        alarmtoBeUpdated,
-                        updatedAlarm = alarmtoBeUpdated.copy(
-                            start = alarmtoBeUpdated.start.plus(7.days)
-                        )
+            // Weekly => remove current, add and schedule new repetition one week(7d) later
+            Repetition.WEEKLY -> {
+                viewModel.updateAlarm(
+                    alarmSettings,
+                    alarmtoBeUpdated,
+                    updatedAlarm = alarmtoBeUpdated.copy(
+                        start = alarmtoBeUpdated.start.plus(7.days)
                     )
-                }
+                )
+            }
 
-                // Monthly => remove current, add and schedule new repetition one month later
-                Repetition.MONTHLY -> {
-                    viewModel.updateAlarm(
-                        alarmSettings,
-                        alarmtoBeUpdated,
-                        updatedAlarm = alarmtoBeUpdated.copy(
-                            start = alarmtoBeUpdated.start.plusMonths(1L)
-                        )
+            // Monthly => remove current, add and schedule new repetition one month later
+            Repetition.MONTHLY -> {
+                viewModel.updateAlarm(
+                    alarmSettings,
+                    alarmtoBeUpdated,
+                    updatedAlarm = alarmtoBeUpdated.copy(
+                        start = alarmtoBeUpdated.start.plusMonths(1L)
                     )
-                }
+                )
             }
         }
     }
@@ -588,7 +573,8 @@ fun handleAlarmToBeLaunched(viewModel: AlarmSettingsViewModel = hiltViewModel())
 fun LightAlarm(
     alarmToBeLaunched: Alarm,
     lightAlarmColors: List<Color>,
-    lightAlarmAnimatedColor: Animatable<Color, AnimationVector4D>
+    lightAlarmAnimatedColor: Animatable<Color, AnimationVector4D>,
+    clockBrightness: Float?,
 ) {
     /**
      * Lock current screen orientation (user cannot rotate) until light alarm animation has ended.
@@ -616,7 +602,10 @@ fun LightAlarm(
     }
 
     val lightAlarmDurationMillis = alarmToBeLaunched.lightAlarmDuration.inWholeMilliseconds
-    FadeBrightnessFromCurrentToFull(totalDurationMillis = lightAlarmDurationMillis.toInt())
+    FadeBrightnessFromCurrentToFull(
+        clockBrightness = clockBrightness,
+        totalDurationMillis = lightAlarmDurationMillis.toInt()
+    )
 
     LaunchedEffect(Unit) {
         /**
@@ -668,7 +657,8 @@ fun LightAlarm(
  * to be converted to Float (0f..1f / dark..bright).
  */
 fun getScreenBrightness(context: Context) = Settings.System.getInt(
-    context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, -1) / 255f
+    context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, -1
+) / 255f
 
 
 fun setScreenBrightness(activity: Activity, brightness: Float) {
@@ -703,7 +693,7 @@ fun FadeBrightnessFromCurrentToFull(
      * * OK  => 1f - .99f  = .01f  * 100 = 1f  toInt() => 1
      * * dbz => 1f - .991f = .009f * 100 = .9f toInt() => 0 !!! => BÄM :>
      */
-    if(initialBrightness > .99f) return
+    if (initialBrightness > .99f) return
 
     /**
      * 1f => Full brightness is the goal for default sunrise light alarm => "simulates" bright sun.

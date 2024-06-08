@@ -23,7 +23,6 @@ import de.oljg.glac.alarms.ui.utils.resetScreenBrightness
 import de.oljg.glac.clock.digital.ui.DigitalClockScreen
 import de.oljg.glac.clock.digital.ui.utils.findActivity
 import de.oljg.glac.core.alarms.data.Alarm
-import de.oljg.glac.core.alarms.data.AlarmSettings
 import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
 import de.oljg.glac.ui.theme.GLACTheme
 import java.time.LocalDateTime
@@ -40,22 +39,15 @@ class AlarmActivity : ComponentActivity() {
          */
         setContent {
             val viewModel: AlarmSettingsViewModel = hiltViewModel()
-            val alarmSettings = viewModel.alarmSettingsFlow.collectAsState(
-                initial = AlarmSettings()
-            ).value
+            val alarmSettings by viewModel.alarmSettingsStateFlow.collectAsState()
+
             var showAlarmReactionDialog by rememberSaveable {
                 mutableStateOf(false)
             }
+
             val alarmToBeLaunched = handleAlarmToBeLaunched()
 
             GLACTheme {
-                /**
-                 * "Wait until the one re-composition", where alarmToBeLaunched turns != null;
-                 * this seems (at my current knowledge) the "best" way to have data from viewmodel
-                 * ready to use (e.g. to get light alarm colors from yet to launch alarm, to use
-                 * it in DigitalClockScreen's alarm mode (without to use 2 viewmodels in
-                 * DigitalClockScreen, instead passing it via param below))
-                 */
                 if (alarmToBeLaunched != null) {
                     DigitalClockScreen(
                         fullScreen = true,
@@ -70,7 +62,7 @@ class AlarmActivity : ComponentActivity() {
                         ?: return@AnimatedVisibility // Should actually not happen!
 
                     val snoozeAlarmStart = LocalDateTime.now()
-                        .plus(alarmToBeLaunched!!.snoozeDuration) // !! is save
+                        .plus(alarmToBeLaunched!!.snoozeDuration)
 
                     AlarmReactionDialog(
                         snoozeEnabled = isSnoozeAlarmBeforeNextAlarm(

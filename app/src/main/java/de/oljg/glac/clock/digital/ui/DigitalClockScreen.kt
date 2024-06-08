@@ -29,13 +29,13 @@ import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
 import de.oljg.glac.clock.digital.ui.utils.DividerLineEnd
 import de.oljg.glac.clock.digital.ui.utils.HideSystemBars
+import de.oljg.glac.clock.digital.ui.utils.OverrideSystemBrightness
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
 import de.oljg.glac.clock.digital.ui.utils.evaluateDividerRotateAngle
 import de.oljg.glac.clock.digital.ui.utils.evaluateFont
 import de.oljg.glac.clock.digital.ui.utils.pxToDp
 import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
 import de.oljg.glac.core.alarms.data.Alarm
-import de.oljg.glac.core.clock.data.ClockSettings
 import de.oljg.glac.core.clock.data.ClockTheme
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
@@ -54,17 +54,17 @@ fun DigitalClockScreen(
     alarmToBeLaunched: Alarm? = null,
     onClick: () -> Unit = {}
 ) { //TODO: introduce BG color => current M3 ones as default (+ think to respect 7-seg off segment colors!)
-    if (fullScreen) //TODO: introduce clock brightness setting and set it during clock is in fullscreen(independently from the rest of the system) + fade from this value to full b. on light alarm => take initial value from settings then
-        HideSystemBars()
-
-    val clockSettings = viewModel.clockSettingsFlow.collectAsState(
-        initial = ClockSettings()
-    ).value
-
+    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
     val clockTheme = clockSettings.themes.getOrDefault(
         key = clockSettings.clockThemeName,
         defaultValue = ClockTheme()
     )
+
+    if (fullScreen) { //TODO: keep display on in fullscreen, nevertheless what a user has been set
+        HideSystemBars()
+        if (clockSettings.overrideSystemBrightness)
+            OverrideSystemBrightness(clockBrightness = clockSettings.clockBrightness)
+    }
 
     val clockCharType = clockTheme.clockCharType
 
@@ -129,7 +129,10 @@ fun DigitalClockScreen(
             LightAlarm(
                 alarmToBeLaunched = alarmToBeLaunched!!, // is set => save
                 lightAlarmColors = lightAlarmColors!!, // default is set in every Alarm => save
-                lightAlarmAnimatedColor = lightAlarmAnimatedColor
+                lightAlarmAnimatedColor = lightAlarmAnimatedColor,
+                clockBrightness = if(clockSettings.overrideSystemBrightness)
+                    clockSettings.clockBrightness else null
+
             )
             // TODO: add clockChar color anim (cloud-like?)
             // TODO: play alarm sound when light alarm is finished

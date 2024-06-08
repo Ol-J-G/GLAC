@@ -175,6 +175,8 @@ fun isSevenSegmentItalicOrReverseItalic(
 
 
 object SettingsDefaults {
+    const val DEFAULT_CLOCK_BRIGHTNESS = .2f
+
     const val MIN_THEME_NAME_LENGTH = 1
     const val MAX_THEME_NAME_LENGTH = 30
 

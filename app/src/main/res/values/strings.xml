@@ -153,4 +153,7 @@
     <string name="snooze_duration">Snooze Duration</string>
     <string name="invalid_light_alarm_duration">Invalid Light Alarm Duration!</string>
     <string name="invalid_snooze_duration">Invalid Snooze Duration!</string>
+    <string name="override_system_brightness">Override System Brightness</string>
+    <string name="clock_fullscreen_brightness">Clock Fullscreen Brightness</string>
+    <string name="brightness">Brightness</string>
 </resources>

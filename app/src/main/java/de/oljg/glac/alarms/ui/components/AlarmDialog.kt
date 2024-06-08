@@ -48,7 +48,6 @@ import de.oljg.glac.alarms.ui.utils.toEpochMillis
 import de.oljg.glac.clock.digital.ui.utils.ScreenDetails
 import de.oljg.glac.clock.digital.ui.utils.screenDetails
 import de.oljg.glac.core.alarms.data.Alarm
-import de.oljg.glac.core.alarms.data.AlarmSettings
 import de.oljg.glac.core.ui.components.SettingsDialog
 import de.oljg.glac.core.ui.components.SettingsSection
 import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
@@ -74,9 +73,7 @@ fun AlarmDialog(
     onNewAlarmAdded: (Alarm) -> Unit
 ) {
     val scrollState = rememberScrollState()
-    val alarmSettings = viewModel.alarmSettingsFlow.collectAsState(
-        initial = AlarmSettings()
-    ).value
+    val alarmSettings by viewModel.alarmSettingsStateFlow.collectAsState()
 
     var moreAlarmDetailsIsExpanded by rememberSaveable {
         mutableStateOf(false)
