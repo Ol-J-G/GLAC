@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -33,11 +32,9 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SP
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.EDGE_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.MULTI_COLOR_SELECTOR_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SECTION_HEIGHT
-import kotlinx.coroutines.launch
 
 @Composable
 fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
-    val coroutineScope = rememberCoroutineScope()
     val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
     val clockThemeName = clockSettings.clockThemeName
     val clockTheme = clockSettings.themes.getOrDefault(
@@ -71,15 +68,10 @@ fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 Switch(
                     checked = clockTheme.setColorsPerChar,
                     onCheckedChange = {
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    themes = clockSettings.themes.put(
-                                        clockThemeName, clockTheme.copy(
-                                            setColorsPerChar = !clockTheme.setColorsPerChar))
-                                )
-                            )
-                        }
+                        viewModel.updateClockTheme(
+                            clockSettings, clockThemeName,
+                            clockTheme.copy(setColorsPerChar = !clockTheme.setColorsPerChar)
+                        )
                     }
                 )
             }
@@ -96,35 +88,20 @@ fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                             ),
                             defaultColor = clockTheme.charColor ?: defaultCharColor,
                             onResetColor = {
-                                coroutineScope.launch {
-                                    viewModel.updateClockSettings(
-                                        clockSettings.copy(
-                                            themes = clockSettings.themes.put(
-                                                clockThemeName, clockTheme.copy(
-                                                    charColors = clockTheme.charColors.remove(
-                                                        clockChar
-                                                    )
-                                                )
-                                            )
-                                        )
-                                    )
-                                }
-                            }
-                        ) { selectedColor ->
-                            coroutineScope.launch {
-                                viewModel.updateClockSettings(
-                                    clockSettings.copy(
-                                        themes = clockSettings.themes.put(
-                                            clockThemeName, clockTheme.copy(
-                                                charColors = clockTheme.charColors.put(
-                                                    clockChar,
-                                                    selectedColor
-                                                )
-                                            )
-                                        )
+                                viewModel.updateClockTheme(
+                                    clockSettings, clockThemeName,
+                                    clockTheme.copy(
+                                        charColors = clockTheme.charColors.remove(clockChar)
                                     )
                                 )
                             }
+                        ) { selectedColor ->
+                            viewModel.updateClockTheme(
+                                clockSettings, clockThemeName,
+                                clockTheme.copy(
+                                    charColors = clockTheme.charColors.put(clockChar, selectedColor)
+                                )
+                            )
                         }
                     }
                 }

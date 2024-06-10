@@ -29,6 +29,7 @@ import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
 import de.oljg.glac.clock.digital.ui.utils.DividerLineEnd
 import de.oljg.glac.clock.digital.ui.utils.HideSystemBars
+import de.oljg.glac.clock.digital.ui.utils.KeepScreenOn
 import de.oljg.glac.clock.digital.ui.utils.OverrideSystemBrightness
 import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
 import de.oljg.glac.clock.digital.ui.utils.evaluateDividerRotateAngle
@@ -37,6 +38,7 @@ import de.oljg.glac.clock.digital.ui.utils.pxToDp
 import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
 import de.oljg.glac.core.alarms.data.Alarm
 import de.oljg.glac.core.clock.data.ClockTheme
+import de.oljg.glac.core.util.defaultBackgroundColor
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.utils.isSevenSegmentItalicOrReverseItalic
@@ -60,8 +62,9 @@ fun DigitalClockScreen(
         defaultValue = ClockTheme()
     )
 
-    if (fullScreen) { //TODO: keep display on in fullscreen, nevertheless what a user has been set
+    if (fullScreen) {
         HideSystemBars()
+        KeepScreenOn()
         if (clockSettings.overrideSystemBrightness)
             OverrideSystemBrightness(clockBrightness = clockSettings.clockBrightness)
     }
@@ -130,7 +133,7 @@ fun DigitalClockScreen(
                 alarmToBeLaunched = alarmToBeLaunched!!, // is set => save
                 lightAlarmColors = lightAlarmColors!!, // default is set in every Alarm => save
                 lightAlarmAnimatedColor = lightAlarmAnimatedColor,
-                clockBrightness = if(clockSettings.overrideSystemBrightness)
+                clockBrightness = if (clockSettings.overrideSystemBrightness)
                     clockSettings.clockBrightness else null
 
             )
@@ -243,7 +246,8 @@ fun DigitalClockScreen(
         charColors = finalCharColors,
         clockPartsColors = finalClockPartsColors,
         backgroundColor = if (alarmMode && alarmToBeLaunched.isSetAndLightAlarm())
-            lightAlarmAnimatedColor.value else MaterialTheme.colorScheme.surface,
+            lightAlarmAnimatedColor.value else
+                clockTheme.backgroundColor ?: defaultBackgroundColor(),
         dividerAttributes = dividerAttributes,
         currentTimeFormatted = currentTimeFormatted,
         clockCharType = clockCharType,
@@ -268,7 +272,8 @@ fun DigitalClockScreen(
                 style = clockTheme.sevenSegmentStyle,
                 weight = clockTheme.sevenSegmentWeight,
                 outlineSize = clockTheme.sevenSegmentOutlineSize,
-                drawOffSegments = clockTheme.drawOffSegments
+                drawOffSegments = clockTheme.drawOffSegments,
+                clockBackgroundColor = clockTheme.backgroundColor ?: defaultBackgroundColor()
             )
         }
     }

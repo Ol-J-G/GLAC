@@ -3,10 +3,9 @@ package de.oljg.glac.settings.clock.ui.components.color
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.TweenSpec
-import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,7 +35,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
+import de.oljg.glac.core.util.defaultBackgroundColor
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_SELECTOR_COLOR_SWATCH_SIZE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.COLOR_SELECTOR_HEIGHT
@@ -174,16 +176,23 @@ fun ColorSelector(
             )
 
             // Current selected color
-            Box(modifier = Modifier
-                .padding(end = edgePadding)
-                .clip(CircleShape)
-                .size(COLOR_SELECTOR_COLOR_SWATCH_SIZE)
-                .background(color)
-                .clickable {
-                    initialColor = color
-                    showColorPicker = true
-                }
-            )
+            Surface(
+                shape = CircleShape,
+                border = BorderStroke(
+                    // 0.dp will draw a very thin border, for whatever reason, -1 solves the problem
+                    width = if (color == defaultBackgroundColor()) 1.dp else (-1).dp,
+                    color = MaterialTheme.colorScheme.outline
+                ),
+                color = color,
+                modifier = Modifier
+                    .padding(end = edgePadding)
+                    .clip(CircleShape)
+                    .size(COLOR_SELECTOR_COLOR_SWATCH_SIZE)
+                    .clickable {
+                        initialColor = color
+                        showColorPicker = true
+                    }
+            ) {} // no content
         }
     }
     AnimatedVisibility(visible = showColorPicker) {

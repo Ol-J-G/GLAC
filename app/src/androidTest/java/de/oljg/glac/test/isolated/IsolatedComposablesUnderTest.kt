@@ -2,6 +2,7 @@
 
 package de.oljg.glac.test.isolated
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
@@ -93,13 +94,14 @@ fun DigitalClockLandscapeLayoutIsolatedSevenSegment(
     ) { char, _, clockCharColor, clockCharSize ->
         SevenSegmentChar(
             char = char,
-            charSize = DpSize(clockCharSize.width, clockCharSize.height),
             charColor = clockCharColor,
             segmentColors = emptyMap(),
             style = SevenSegmentStyle.REGULAR,
             weight = SevenSegmentWeight.REGULAR,
             outlineSize = SevenSegmentDefaults.DEFAULT_OUTLINE_SIZE,
-            drawOffSegments = false
+            charSize = DpSize(clockCharSize.width, clockCharSize.height),
+            drawOffSegments = false,
+            clockBackgroundColor = MaterialTheme.colorScheme.surface
         )
     }
 }
@@ -123,13 +125,14 @@ fun DigitalClockPortraitLayoutIsolatedSevenSegment(
     ) { char, _, clockCharColor, clockCharSize ->
         SevenSegmentChar(
             char = char,
-            charSize = DpSize(clockCharSize.width, clockCharSize.height),
             charColor = clockCharColor,
             segmentColors = emptyMap(),
             style = SevenSegmentStyle.REGULAR,
             weight = SevenSegmentWeight.REGULAR,
             outlineSize = SevenSegmentDefaults.DEFAULT_OUTLINE_SIZE,
-            drawOffSegments = false
+            charSize = DpSize(clockCharSize.width, clockCharSize.height),
+            drawOffSegments = false,
+            clockBackgroundColor = MaterialTheme.colorScheme.surface
         )
     }
 }

@@ -3,6 +3,7 @@ package de.oljg.glac.clock.digital.ui.utils
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.view.WindowManager
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalConfiguration
@@ -101,6 +102,21 @@ object ScreenSizeDefaults {
     val MAX_SCREEN_WIDTH_SMALL_DEVICE_LANDSCAPE = 640.dp
     val MAX_SCREEN_WIDTH_MEDIUM_DEVICE_LANDSCAPE = 914.dp
 
+}
+
+/**
+ * https://stackoverflow.com/questions/69039723/is-there-a-jetpack-compose-equivalent-for-androidkeepscreenon-to-keep-screen-al
+ */
+@Composable
+fun KeepScreenOn() {
+    val context = LocalContext.current
+    DisposableEffect(Unit) {
+        val window = context.findActivity()?.window
+        window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        onDispose {
+            window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
 }
 
 

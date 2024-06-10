@@ -66,5 +66,8 @@ data class ClockTheme(
     @Serializable(with = SegmentColorsSerializer::class)
     val segmentColors: PersistentMap<Segment, @Serializable(with = ColorSerializer::class) Color> =
             persistentMapOf(),
-    val setSegmentColors: Boolean = false
+    val setSegmentColors: Boolean = false,
+
+    @Serializable(with = ColorSerializer::class)
+    val backgroundColor: Color? = null
 )

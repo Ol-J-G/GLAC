@@ -5,3 +5,6 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun defaultColor() = MaterialTheme.colorScheme.onSurface
+
+@Composable
+fun defaultBackgroundColor() = MaterialTheme.colorScheme.surface

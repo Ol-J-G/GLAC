@@ -5,9 +5,11 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.oljg.glac.core.clock.data.ClockSettings
 import de.oljg.glac.core.clock.data.ClockSettingsRepository
+import de.oljg.glac.core.clock.data.ClockTheme
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -31,5 +33,17 @@ class ClockSettingsViewModel @Inject constructor (
 
     suspend fun updateClockSettings(updatedClockSettings: ClockSettings) {
         clockSettingsRepository.updateClockSettings(updatedClockSettings)
+    }
+
+    fun updateClockTheme(
+        clockSettings: ClockSettings,
+        clockThemeName: String,
+        clockTheme: ClockTheme
+    ) {
+        viewModelScope.launch {
+            updateClockSettings(
+                clockSettings.copy(themes = clockSettings.themes.put(clockThemeName, clockTheme))
+            )
+        }
     }
 }

@@ -222,8 +222,11 @@ object SevenSegmentDefaults {
      * * Added in dark mode (brighter)
      * * Substracted in light mode (darker)
      */
-    const val OFFCOLOR_LIGHTNESS_DELTA = .02f
+    const val OFFCOLOR_LIGHTNESS_DELTA = .01f
     const val OFFSEGMENT_OUTLINE_STROKE_WIDTH = 1f
+
+    // Below this threshold an off color can become lighter, above darker
+    const val DEFAULT_LIGHTNESS_THRESHOLD = .1f
 
     const val CORNER_FACTOR = .3f
     const val VERTICAL_SEGMENT_INNER_CORNER_FACTOR = 1.4f

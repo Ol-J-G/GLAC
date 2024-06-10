@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -33,11 +32,9 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SP
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.EDGE_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.MULTI_COLOR_SELECTOR_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SECTION_HEIGHT
-import kotlinx.coroutines.launch
 
 @Composable
 fun SegmentColorsSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
-    val coroutineScope = rememberCoroutineScope()
     val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
     val clockThemeName = clockSettings.clockThemeName
     val clockTheme = clockSettings.themes.getOrDefault(
@@ -70,17 +67,10 @@ fun SegmentColorsSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 Switch(
                     checked = clockTheme.setSegmentColors,
                     onCheckedChange = {
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    themes = clockSettings.themes.put(
-                                        clockThemeName, clockTheme.copy(
-                                            setSegmentColors = !clockTheme.setSegmentColors
-                                        )
-                                    )
-                                )
-                            )
-                        }
+                        viewModel.updateClockTheme(
+                            clockSettings, clockThemeName,
+                            clockTheme.copy(setSegmentColors = !clockTheme.setSegmentColors)
+                        )
                     }
                 )
             }
@@ -105,35 +95,23 @@ fun SegmentColorsSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                             ),
                             defaultColor = clockTheme.charColor ?: defaultCharColor,
                             onResetColor = {
-                                coroutineScope.launch {
-                                    viewModel.updateClockSettings(
-                                        clockSettings.copy(
-                                            themes = clockSettings.themes.put(
-                                                clockThemeName, clockTheme.copy(
-                                                    segmentColors = clockTheme.segmentColors.remove(
-                                                        segment
-                                                    )
-                                                )
-                                            )
-                                        )
-                                    )
-                                }
-                            }
-                        ) { selectedColor ->
-                            coroutineScope.launch {
-                                viewModel.updateClockSettings(
-                                    clockSettings.copy(
-                                        themes = clockSettings.themes.put(
-                                            clockThemeName, clockTheme.copy(
-                                                segmentColors = clockTheme.segmentColors.put(
-                                                    segment,
-                                                    selectedColor
-                                                )
-                                            )
-                                        )
+                                viewModel.updateClockTheme(
+                                    clockSettings, clockThemeName,
+                                    clockTheme.copy(
+                                        segmentColors = clockTheme.segmentColors.remove(segment)
                                     )
                                 )
                             }
+                        ) { selectedColor ->
+                            viewModel.updateClockTheme(
+                                clockSettings, clockThemeName,
+                                clockTheme.copy(
+                                    segmentColors = clockTheme.segmentColors.put(
+                                        segment,
+                                        selectedColor
+                                    )
+                                )
+                            )
                         }
                     }
                 }

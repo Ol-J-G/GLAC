@@ -3,6 +3,8 @@ package de.oljg.glac.clock.digital.ui.utils
 import androidx.compose.ui.graphics.Color
 import com.smarttoolfactory.extendedcolors.model.ColorItem
 import com.smarttoolfactory.extendedcolors.util.HSLUtil
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_LIGHTNESS_THRESHOLD
+import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.OFFCOLOR_LIGHTNESS_DELTA
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.SEVEN_SEGMENT_CHARS
 import de.oljg.glac.core.clock.data.ColorSerializer
 import de.oljg.glac.core.util.CommonClockUtils.CLOCK_CHARS
@@ -86,6 +88,7 @@ fun <T> setSpecifiedColors(colors: Map<T, Color>, defaultColors: Map<T, Color>):
     return mutatedColors.toMap()
 }
 
+
 /**
  * Uses the superb lib Compose-Extented-Colors to add percentage (.01f == 1%) lighntess to a
  * compose color, to make the color brighter (positive percentage) or darker (negative percentage).
@@ -98,11 +101,20 @@ fun <T> setSpecifiedColors(colors: Map<T, Color>, defaultColors: Map<T, Color>):
  */
 private fun Color.addLightness(percentage: Float) =
     Color(HSLUtil.hslToColorInt(
-        ColorItem(this).hslArray.apply {
-            this[2] += percentage
-        })
+        ColorItem(this).hslArray.apply { this[2] += percentage } )
     )
 
-fun Color.lighten(percentage: Float) = addLightness(percentage)
-fun Color.darken(percentage: Float) = addLightness(-percentage)
 
+private fun Color.lighten(percentage: Float) = addLightness(percentage)
+private fun Color.darken(percentage: Float) = addLightness(-percentage)
+
+private val Color.lightness: Float get() = ColorItem(this).hslArray[2]
+
+
+fun Color.lightenOrDarken(
+    threshold: Float = DEFAULT_LIGHTNESS_THRESHOLD,
+    amount: Float = OFFCOLOR_LIGHTNESS_DELTA
+) = when {
+    this.lightness < threshold -> this.lighten(amount)
+    else -> this.darken(amount)
+}

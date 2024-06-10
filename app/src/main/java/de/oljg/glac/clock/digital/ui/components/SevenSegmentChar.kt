@@ -3,7 +3,6 @@ package de.oljg.glac.clock.digital.ui.components
 import android.content.res.Configuration
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -50,12 +49,11 @@ import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.WEIGHT_FACTOR_TH
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.clock.digital.ui.utils.contains
-import de.oljg.glac.clock.digital.ui.utils.darken
 import de.oljg.glac.clock.digital.ui.utils.defaultSegmentColors
 import de.oljg.glac.clock.digital.ui.utils.evaluateTransformationMatrix
 import de.oljg.glac.clock.digital.ui.utils.isOutline
 import de.oljg.glac.clock.digital.ui.utils.isSevenSegmentChar
-import de.oljg.glac.clock.digital.ui.utils.lighten
+import de.oljg.glac.clock.digital.ui.utils.lightenOrDarken
 import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.ui.theme.GLACTheme
@@ -76,7 +74,8 @@ fun PreviewDigit() {
                     char = '8',
                     charColor = Color.Yellow,
                     style = SevenSegmentStyle.REGULAR,
-                    drawOffSegments = false
+                    drawOffSegments = false,
+                    clockBackgroundColor = MaterialTheme.colorScheme.surface
                 )
             }
         }
@@ -104,7 +103,8 @@ fun PreviewDigits() {
                     char = char,
                     charColor = Color.Yellow,
                     style = SevenSegmentStyle.ITALIC,
-                    drawOffSegments = false
+                    drawOffSegments = false,
+                    clockBackgroundColor = MaterialTheme.colorScheme.surface
                 )
             }
         }
@@ -122,7 +122,8 @@ fun SevenSegmentChar(
     weight: SevenSegmentWeight = SevenSegmentWeight.REGULAR,
     outlineSize: Float? = null,
     charSize: DpSize? = null,
-    drawOffSegments: Boolean
+    drawOffSegments: Boolean,
+    clockBackgroundColor: Color
 ) {
     val screenOrientation = LocalConfiguration.current.orientation
 
@@ -155,14 +156,20 @@ fun SevenSegmentChar(
     val finalSegmentColors =
             setSpecifiedColors(segmentColors, defaultSegmentColors(charColor))
 
-    // "Simulate" the "background" of real 7-Segments built in some real display
-    val offColor =
-        if (isSystemInDarkTheme())//TODO_LATER: don't forget to replace material theme bg color here, when start thinking about clock BG color(then, consider clock BG color here..)!
-            MaterialTheme.colorScheme.background.lighten(OFFCOLOR_LIGHTNESS_DELTA)
-        else MaterialTheme.colorScheme.background.darken(OFFCOLOR_LIGHTNESS_DELTA)
+    /**
+     * "Simulate" the "background" of real 7-Segments built in some real display, where it is
+     * commonly rather dark. In this common case, off segements would be lighten for
+     * [OFFCOLOR_LIGHTNESS_DELTA] percent.
+     *
+     * In general, it depends on
+     * [de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_LIGHTNESS_THRESHOLD],
+     * if [clockBackgroundColor] will become a bit lighter or darker, to serve as offColor.
+     */
+    val offColor = clockBackgroundColor.lightenOrDarken()
+
+    // Lighten or darken the outline of an off segment a bit more that offColor
     val offOutlineColor =
-        if (isSystemInDarkTheme()) offColor.lighten(OFFCOLOR_LIGHTNESS_DELTA * 8)
-        else offColor.darken(OFFCOLOR_LIGHTNESS_DELTA * 8)
+            clockBackgroundColor.lightenOrDarken(amount = OFFCOLOR_LIGHTNESS_DELTA * 8)
 
     Canvas(
         modifier =

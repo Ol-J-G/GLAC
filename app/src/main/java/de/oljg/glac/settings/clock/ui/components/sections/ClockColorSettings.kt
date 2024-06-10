@@ -17,6 +17,7 @@ import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.core.clock.data.ClockTheme
 import de.oljg.glac.core.ui.components.SettingsSection
+import de.oljg.glac.core.util.defaultBackgroundColor
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.color.ColorSelector
@@ -37,6 +38,7 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
         defaultValue = ClockTheme()
     )
     val defaultCharColor = defaultColor()
+    val defaultBackgroundColor = defaultBackgroundColor()
 
     SettingsSection(
         sectionTitle = stringResource(R.string.colors),
@@ -57,24 +59,29 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             color = clockTheme.charColor ?: defaultCharColor,
             defaultColor = defaultCharColor,
             onResetColor = {
-                coroutineScope.launch {
-                    viewModel.updateClockSettings(
-                        clockSettings.copy(
-                            themes = clockSettings.themes.put(
-                                clockThemeName, clockTheme.copy(charColor = null))
-                        )
-                    )
-                }
-            }
-        ) { selectedColor ->
-            coroutineScope.launch {
-                viewModel.updateClockSettings(
-                    clockSettings.copy(
-                        themes = clockSettings.themes.put(
-                            clockThemeName, clockTheme.copy(charColor = selectedColor))
-                    )
+                viewModel.updateClockTheme(
+                    clockSettings, clockThemeName, clockTheme.copy(charColor = null)
                 )
             }
+        ) { selectedColor ->
+            viewModel.updateClockTheme(
+                clockSettings, clockThemeName, clockTheme.copy(charColor = selectedColor)
+            )
+        }
+        Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
+        ColorSelector(
+            title = stringResource(R.string.background),
+            color = clockTheme.backgroundColor ?: defaultBackgroundColor,
+            defaultColor = defaultBackgroundColor,
+            onResetColor = {
+                viewModel.updateClockTheme(
+                    clockSettings, clockThemeName, clockTheme.copy(backgroundColor = null)
+                )
+            },
+        ) { selectedColor ->
+            viewModel.updateClockTheme(
+                clockSettings, clockThemeName, clockTheme.copy(backgroundColor = selectedColor)
+            )
         }
         Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
         ColorSelector(
@@ -82,24 +89,14 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             color = clockTheme.dividerColor ?: clockTheme.charColor ?: defaultCharColor,
             defaultColor = clockTheme.charColor ?: defaultCharColor,
             onResetColor = {
-                coroutineScope.launch {
-                    viewModel.updateClockSettings(
-                        clockSettings.copy(
-                            themes = clockSettings.themes.put(
-                                clockThemeName, clockTheme.copy(dividerColor = null))
-                        )
-                    )
-                }
+                viewModel.updateClockTheme(
+                    clockSettings, clockThemeName, clockTheme.copy(dividerColor = null)
+                )
             },
         ) { selectedColor ->
-            coroutineScope.launch {
-                viewModel.updateClockSettings(
-                    clockSettings.copy(
-                        themes = clockSettings.themes.put(
-                            clockThemeName, clockTheme.copy(dividerColor = selectedColor))
-                    )
-                )
-            }
+            viewModel.updateClockTheme(
+                clockSettings, clockThemeName, clockTheme.copy(dividerColor = selectedColor)
+            )
         }
         Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE))
         ColorsPerCharSelector()
