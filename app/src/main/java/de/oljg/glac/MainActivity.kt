@@ -13,12 +13,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,6 +40,7 @@ import de.oljg.glac.core.navigation.ui.topappbar.GlacTabBar
 import de.oljg.glac.core.util.CommonLayoutDefaults.DEFAULT_NAVIGATION_RAIL_WIDTH
 import de.oljg.glac.core.util.ScreenDetails
 import de.oljg.glac.core.util.screenDetails
+import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
 import de.oljg.glac.ui.theme.GLACTheme
 
 @AndroidEntryPoint
@@ -46,6 +49,30 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            /**
+             * Re-schedule all alarms once on app start (instead of on device boot completed).
+             *
+             * Note that I tried to re-schedule after device boot phase, with BroadcastReceiver
+             * (see: https://github.com/philipplackner/AutoStartAndroid), but no chance to
+             * get list of alarms out of a Flow, outside of a Composable, and there seems to be
+             * no other way to get the data from datastore (also, the naive idea to read the
+             * JSON file from inside BroadcastReceiver will end in a SecurityException ..:D).
+             *
+             * Alternatively, introducing Room DB just for a couple of alarms (I assume, the
+             * majority of users will not schedule more than 10 alarms!), seems too much
+             * effort for too little benefit imho (but however, accessing viewmodel from
+             * BroadcastReceiver and call a DB-repo-reScheduleAll fun should work at all...)
+             */
+            var alarmsHaveRecentlyBeenRescheduled by rememberSaveable {
+                mutableStateOf(false)
+            }
+            val viewModel: AlarmSettingsViewModel = hiltViewModel()
+            val alarmSettings by viewModel.alarmSettingsStateFlow.collectAsState()
+
+            if (!alarmsHaveRecentlyBeenRescheduled) {
+                viewModel.reScheduleAllAlarms(alarmSettings.alarms)
+                alarmsHaveRecentlyBeenRescheduled = true
+            }
             GlacApp()
         }
     }
@@ -130,10 +157,14 @@ fun GlacApp() {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(if(currentScreen is ClockFullScreen)
-                            PaddingValues(0.dp) else scaffoldInnerPadding)
-                        .padding(start = if (showNavigationRail && currentScreen.isSettingsScreen())
-                            DEFAULT_NAVIGATION_RAIL_WIDTH else 0.dp)
+                        .padding(
+                            if (currentScreen is ClockFullScreen)
+                                PaddingValues(0.dp) else scaffoldInnerPadding
+                        )
+                        .padding(
+                            start = if (showNavigationRail && currentScreen.isSettingsScreen())
+                                DEFAULT_NAVIGATION_RAIL_WIDTH else 0.dp
+                        )
                 ) {
                     GlacNavHost(navController = navController)
                 }

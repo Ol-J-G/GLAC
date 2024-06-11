@@ -3,6 +3,7 @@ package de.oljg.glac
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
@@ -38,6 +39,12 @@ class AlarmActivity : ComponentActivity() {
          * is below ...
          */
         setContent {
+            /**
+             * Disable system's back button => user must react on alarm by snooze or stop!
+             * (back button would lead to misunderstandings imho => is alarm snoozed or stopped,
+             * when user clicks on back button?!?...)
+             */
+            BackHandler {}
             val viewModel: AlarmSettingsViewModel = hiltViewModel()
             val alarmSettings by viewModel.alarmSettingsStateFlow.collectAsState()
 

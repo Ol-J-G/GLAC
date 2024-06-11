@@ -29,7 +29,11 @@ fun AlarmReactionDialog(
 ) {
     SettingsDialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false),
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false
+        ),
         backgroundColor = Color.Transparent // Let animated colors in the background shine through
     ) {
         when(LocalConfiguration.current.orientation) {

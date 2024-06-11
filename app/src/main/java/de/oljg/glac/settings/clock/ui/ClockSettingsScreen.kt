@@ -108,7 +108,7 @@ private fun TwoColumnsLayout() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun OneColumnLayout() {
-    val scrollState = rememberScrollState()
+    val scrollState = rememberScrollState() //TODO: try to remember state (annoying to lose it anytime leaving this screen..)
     Column( // inner scrollable column
         modifier = Modifier
             .fillMaxWidth()

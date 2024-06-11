@@ -86,4 +86,14 @@ class AlarmSettingsViewModel @Inject constructor(
             alarmScheduler.schedule(updatedAlarm)
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun reScheduleAllAlarms(alarms: List<Alarm>) {
+        viewModelScope.launch {
+            alarms.forEach { alarm ->
+                alarmScheduler.cancel(alarm)
+                alarmScheduler.schedule(alarm)
+            }
+        }
+    }
 }
