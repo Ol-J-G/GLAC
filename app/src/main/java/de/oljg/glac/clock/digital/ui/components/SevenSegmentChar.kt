@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.center
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -29,6 +30,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import de.oljg.glac.clock.digital.ui.utils.Segment
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_ASPECT_RATIO
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults.DEFAULT_ITALIC_FACTOR
@@ -75,7 +77,8 @@ fun PreviewDigit() {
                     charColor = Color.Yellow,
                     style = SevenSegmentStyle.REGULAR,
                     drawOffSegments = false,
-                    clockBackgroundColor = MaterialTheme.colorScheme.surface
+                    clockBackgroundColor = MaterialTheme.colorScheme.surface,
+                    charSize = DpSize(350.dp, 700.dp)
                 )
             }
         }
@@ -104,7 +107,8 @@ fun PreviewDigits() {
                     charColor = Color.Yellow,
                     style = SevenSegmentStyle.ITALIC,
                     drawOffSegments = false,
-                    clockBackgroundColor = MaterialTheme.colorScheme.surface
+                    clockBackgroundColor = MaterialTheme.colorScheme.surface,
+                    charSize = DpSize(50.dp, 100.dp)
                 )
             }
         }
@@ -121,9 +125,10 @@ fun SevenSegmentChar(
     style: SevenSegmentStyle = SevenSegmentStyle.REGULAR,
     weight: SevenSegmentWeight = SevenSegmentWeight.REGULAR,
     outlineSize: Float? = null,
-    charSize: DpSize? = null,
+    charSize: DpSize,
     drawOffSegments: Boolean,
-    clockBackgroundColor: Color
+    clockBackgroundColor: Color,
+    brush: Brush? = null
 ) {
     val screenOrientation = LocalConfiguration.current.orientation
 
@@ -172,23 +177,13 @@ fun SevenSegmentChar(
             clockBackgroundColor.lightenOrDarken(amount = OFFCOLOR_LIGHTNESS_DELTA * 8)
 
     Canvas(
-        modifier =
-        if (charSize != null)
-            modifier
-                .padding(DEFAULT_SEVEN_SEGMENT_CHAR_PADDING)
-                .size(charSize.width, charSize.height)
-                .aspectRatio(aspectRatio)
-                .background(Color.Transparent)
-                .semantics { contentDescription = char.toString() }
-        else
-            modifier
-                .padding(DEFAULT_SEVEN_SEGMENT_CHAR_PADDING)
-                .fillMaxSize()
-                .aspectRatio(aspectRatio)
-                .background(Color.Transparent)
-                .semantics { contentDescription = char.toString() }
+        modifier = modifier
+            .padding(DEFAULT_SEVEN_SEGMENT_CHAR_PADDING)
+            .size(charSize.width, charSize.height)
+            .aspectRatio(aspectRatio)
+            .background(Color.Transparent)
+            .semantics { contentDescription = char.toString() }
     ) {
-
         val (canvasWidth, canvasHeight) = Pair(size.width, size.height)
         val sizeConditions = Triple(canvasWidth, canvasHeight, weightFactor)
         val transformationMatrix = evaluateTransformationMatrix(style, canvasWidth)
@@ -211,31 +206,38 @@ fun SevenSegmentChar(
 
             if(finalChar.contains(Segment.TOP))
                 draw(topSegment(sizeConditions),
-                    finalSegmentColors.getValue(Segment.TOP), style, finalOutlineSize)
+                    finalSegmentColors.getValue(Segment.TOP),
+                    style, finalOutlineSize, brush = brush)
 
             if(finalChar.contains(Segment.CENTER))
                 draw(centerSegment(sizeConditions),
-                    finalSegmentColors.getValue(Segment.CENTER), style, finalOutlineSize)
+                    finalSegmentColors.getValue(Segment.CENTER),
+                    style, finalOutlineSize, brush = brush)
 
             if(finalChar.contains(Segment.BOTTOM))
                 draw(bottomSegment(sizeConditions),
-                    finalSegmentColors.getValue(Segment.BOTTOM),style, finalOutlineSize)
+                    finalSegmentColors.getValue(Segment.BOTTOM),
+                    style, finalOutlineSize, brush = brush)
 
             if(finalChar.contains(Segment.TOP_LEFT))
                 draw(topLeftSegment(sizeConditions),
-                    finalSegmentColors.getValue(Segment.TOP_LEFT), style, finalOutlineSize)
+                    finalSegmentColors.getValue(Segment.TOP_LEFT),
+                    style, finalOutlineSize, brush = brush)
 
             if(finalChar.contains(Segment.TOP_RIGHT))
                 draw(topRightSegment(sizeConditions),
-                    finalSegmentColors.getValue(Segment.TOP_RIGHT), style, finalOutlineSize)
+                    finalSegmentColors.getValue(Segment.TOP_RIGHT),
+                    style, finalOutlineSize, brush = brush)
 
             if(finalChar.contains(Segment.BOTTOM_LEFT))
                 draw(bottomLeftSegment(sizeConditions),
-                    finalSegmentColors.getValue(Segment.BOTTOM_LEFT), style, finalOutlineSize)
+                    finalSegmentColors.getValue(Segment.BOTTOM_LEFT),
+                    style, finalOutlineSize, brush = brush)
 
             if(finalChar.contains(Segment.BOTTOM_RIGHT))
                 draw(bottomRightSegment(sizeConditions),
-                    finalSegmentColors.getValue(Segment.BOTTOM_RIGHT), style, finalOutlineSize)
+                    finalSegmentColors.getValue(Segment.BOTTOM_RIGHT),
+                    style, finalOutlineSize, brush = brush)
             // @formatter:on
         }
     }
@@ -247,18 +249,32 @@ private fun DrawScope.draw(
     color: Color,
     style: SevenSegmentStyle,
     strokeWidth: Float? = null,
-    drawOffSegmentOutline: Boolean = false
+    drawOffSegmentOutline: Boolean = false,
+    brush: Brush? = null // when given, draw path with brush, otherwise draw path with color
 ) {
-    drawPath(
-        path = segment,
-        color = color,
-        style =
+    when {
+        brush != null -> drawPath(
+            path = segment,
+            brush = brush,
+            style =
             when {
                 drawOffSegmentOutline -> Stroke(OFFSEGMENT_OUTLINE_STROKE_WIDTH)
                 strokeWidth != null && style.isOutline() -> Stroke(strokeWidth)
                 else -> Fill
             }
-    )
+        )
+
+        else -> drawPath(
+            path = segment,
+            color = color,
+            style =
+            when {
+                drawOffSegmentOutline -> Stroke(OFFSEGMENT_OUTLINE_STROKE_WIDTH)
+                strokeWidth != null && style.isOutline() -> Stroke(strokeWidth)
+                else -> Fill
+            }
+        )
+    }
 }
 
 

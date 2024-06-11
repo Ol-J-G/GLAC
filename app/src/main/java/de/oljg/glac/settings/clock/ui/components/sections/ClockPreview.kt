@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.DpSize
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.DigitalClockScreen
-import de.oljg.glac.clock.digital.ui.utils.screenDetails
 import de.oljg.glac.core.ui.components.SettingsSection
+import de.oljg.glac.core.util.screenDetails
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.PREVIEW_SIZE_FACTOR
 import kotlinx.coroutines.launch

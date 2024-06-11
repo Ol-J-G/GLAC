@@ -45,11 +45,11 @@ import de.oljg.glac.alarms.ui.utils.AlarmDefaults.minutesSaver
 import de.oljg.glac.alarms.ui.utils.Repetition
 import de.oljg.glac.alarms.ui.utils.isSet
 import de.oljg.glac.alarms.ui.utils.toEpochMillis
-import de.oljg.glac.clock.digital.ui.utils.ScreenDetails
-import de.oljg.glac.clock.digital.ui.utils.screenDetails
 import de.oljg.glac.core.alarms.data.Alarm
 import de.oljg.glac.core.ui.components.SettingsDialog
 import de.oljg.glac.core.ui.components.SettingsSection
+import de.oljg.glac.core.util.ScreenDetails
+import de.oljg.glac.core.util.screenDetails
 import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSwitch
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE

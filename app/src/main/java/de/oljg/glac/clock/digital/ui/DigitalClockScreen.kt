@@ -6,6 +6,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector4D
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,9 +22,13 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.alarms.ui.utils.LightAlarm
-import de.oljg.glac.alarms.ui.utils.isSetAndLightAlarm
-import de.oljg.glac.alarms.ui.utils.isSetAndSnoozeAlarm
-import de.oljg.glac.alarms.ui.utils.isSetAndSoundAlarm
+import de.oljg.glac.alarms.ui.utils.alarmBrush
+import de.oljg.glac.alarms.ui.utils.animateAlarmBrushOffset
+import de.oljg.glac.alarms.ui.utils.animateAlarmColor
+import de.oljg.glac.alarms.ui.utils.isLightAlarm
+import de.oljg.glac.alarms.ui.utils.isSnoozeAlarm
+import de.oljg.glac.alarms.ui.utils.isSnoozeOrSoundAlarm
+import de.oljg.glac.alarms.ui.utils.isSoundAlarm
 import de.oljg.glac.clock.digital.ui.components.SevenSegmentChar
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
@@ -55,7 +61,7 @@ fun DigitalClockScreen(
     alarmMode: Boolean = false,
     alarmToBeLaunched: Alarm? = null,
     onClick: () -> Unit = {}
-) { //TODO: introduce BG color => current M3 ones as default (+ think to respect 7-seg off segment colors!)
+) {
     val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
     val clockTheme = clockSettings.themes.getOrDefault(
         key = clockSettings.clockThemeName,
@@ -120,35 +126,50 @@ fun DigitalClockScreen(
     val segmentColors = if (clockTheme.setSegmentColors)
         clockTheme.segmentColors else emptyMap()
 
+    /**
+     * Animated alarm colors (background, clock chars)
+     */
     val lightAlarmColors = alarmToBeLaunched?.lightAlarmColors
-    val initialValue = lightAlarmColors?.first() ?: MaterialTheme.colorScheme.surface
+    val lightAlarmInitialColor = lightAlarmColors?.first() ?: MaterialTheme.colorScheme.surface
     val lightAlarmAnimatedColor: Animatable<Color, AnimationVector4D> = remember {
-        Animatable(initialValue)
+        Animatable(lightAlarmInitialColor)
+    }
+
+    val animatedAlarmBrushOffset by animateAlarmBrushOffset(
+        rememberInfiniteTransition(label = "aBt")
+    )
+    // Used for clock chars during light alarm (cloud-like)
+    val alarmBrush = remember(animatedAlarmBrushOffset) {
+        alarmBrush(animatedAlarmBrushOffset)
+    }
+    // Used for clock chars when light alarm is finished or at snooze/sound alarm (flashing)
+    val alarmColor by animateAlarmColor(rememberInfiniteTransition(label = "aCt"))
+
+    var lightAlarmIsFinished by remember {
+        mutableStateOf(false)
     }
 
     when {
-        alarmMode && alarmToBeLaunched.isSetAndLightAlarm() -> {
+        alarmMode && alarmToBeLaunched.isLightAlarm() -> {
             Log.d("TAG", "DigitalClockScreen, light alarm")
             LightAlarm(
-                alarmToBeLaunched = alarmToBeLaunched!!, // is set => save
+                alarmToBeLaunched = alarmToBeLaunched!!, // is set in alarmMode => save
                 lightAlarmColors = lightAlarmColors!!, // default is set in every Alarm => save
                 lightAlarmAnimatedColor = lightAlarmAnimatedColor,
                 clockBrightness = if (clockSettings.overrideSystemBrightness)
-                    clockSettings.clockBrightness else null
-
+                    clockSettings.clockBrightness else null,
+                onFinished = {
+                    lightAlarmIsFinished = true
+                }
             )
-            // TODO: add clockChar color anim (cloud-like?)
             // TODO: play alarm sound when light alarm is finished
         }
 
-        alarmMode && alarmToBeLaunched.isSetAndSnoozeAlarm() ->
-            Log.d("TAG", "DigitalClockScreen, snooze alarm")
+        alarmMode && alarmToBeLaunched.isSnoozeAlarm() ->
+            Log.d("TAG", "DigitalClockScreen, snooze alarm") // TODO: play alarm sound
 
-        alarmMode && alarmToBeLaunched.isSetAndSoundAlarm() ->
+        alarmMode && alarmToBeLaunched.isSoundAlarm() ->
             Log.d("TAG", "DigitalClockScreen, sound alarm") // TODO: play alarm sound
-
-        else ->
-            Log.d("TAG", "DigitalClockScreen, NO alarm")
     }
 
     val dividerAttributes = DividerAttributes(
@@ -234,6 +255,13 @@ fun DigitalClockScreen(
 //        )
     }
 
+    // In case of "normal" alarms or after light alarm, use flashing alarm color
+    fun useAlarmColor() = (alarmMode && alarmToBeLaunched.isSnoozeOrSoundAlarm())
+            || lightAlarmIsFinished
+
+    // In case of light alarm in ongoing, use cloud-like brush
+    fun useAlarmBrush() = alarmMode && alarmToBeLaunched.isLightAlarm() && !lightAlarmIsFinished
+
     DigitalClock(
         previewMode = previewMode,
         onClick = onClick,
@@ -245,9 +273,9 @@ fun DigitalClockScreen(
         fontStyle = finalFontStyle, // for measurement
         charColors = finalCharColors,
         clockPartsColors = finalClockPartsColors,
-        backgroundColor = if (alarmMode && alarmToBeLaunched.isSetAndLightAlarm())
+        backgroundColor = if (alarmMode && alarmToBeLaunched.isLightAlarm())
             lightAlarmAnimatedColor.value else
-                clockTheme.backgroundColor ?: defaultBackgroundColor(),
+            clockTheme.backgroundColor ?: defaultBackgroundColor(),
         dividerAttributes = dividerAttributes,
         currentTimeFormatted = currentTimeFormatted,
         clockCharType = clockCharType,
@@ -261,19 +289,25 @@ fun DigitalClockScreen(
                 fontFamily = finalFontFamily,
                 fontWeight = finalFontWeight,
                 fontStyle = finalFontStyle,
-                color = clockCharColor,
+                color = if (useAlarmColor()) alarmColor else clockCharColor,
+                style = if (useAlarmBrush()) LocalTextStyle.current.copy(
+                    brush = alarmBrush
+                ) else LocalTextStyle.current
             )
 
             else -> SevenSegmentChar(
                 char = clockChar,
                 charSize = clockCharSize,
-                charColor = clockCharColor,
+                charColor = if (useAlarmColor()) alarmColor else clockCharColor,
                 segmentColors = segmentColors,
                 style = clockTheme.sevenSegmentStyle,
                 weight = clockTheme.sevenSegmentWeight,
                 outlineSize = clockTheme.sevenSegmentOutlineSize,
-                drawOffSegments = clockTheme.drawOffSegments,
-                clockBackgroundColor = clockTheme.backgroundColor ?: defaultBackgroundColor()
+                drawOffSegments = if (useAlarmBrush()) false else clockTheme.drawOffSegments,
+                clockBackgroundColor = if (alarmMode && lightAlarmIsFinished)
+                    lightAlarmColors!!.last() else
+                        clockTheme.backgroundColor ?: defaultBackgroundColor(),
+                brush = if (useAlarmBrush()) alarmBrush else null
             )
         }
     }

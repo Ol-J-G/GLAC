@@ -22,8 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import de.oljg.glac.clock.digital.ui.utils.ScreenDetails
-import de.oljg.glac.clock.digital.ui.utils.screenDetails
 import de.oljg.glac.core.navigation.GlacNavHost
 import de.oljg.glac.core.navigation.common.ClockFullScreen
 import de.oljg.glac.core.navigation.common.ClockSettingsSubScreen
@@ -38,6 +36,8 @@ import de.oljg.glac.core.navigation.ui.bottombar.GlacBottomNavigationBar
 import de.oljg.glac.core.navigation.ui.navigationrail.GlacNavigationRail
 import de.oljg.glac.core.navigation.ui.topappbar.GlacTabBar
 import de.oljg.glac.core.util.CommonLayoutDefaults.DEFAULT_NAVIGATION_RAIL_WIDTH
+import de.oljg.glac.core.util.ScreenDetails
+import de.oljg.glac.core.util.screenDetails
 import de.oljg.glac.ui.theme.GLACTheme
 
 @AndroidEntryPoint

@@ -29,7 +29,9 @@ import de.oljg.glac.clock.digital.ui.utils.FontDefaults.DEFAULT_MONOSPACE
 import de.oljg.glac.clock.digital.ui.utils.FontDefaults.DEFAULT_SANS_SERIF
 import de.oljg.glac.clock.digital.ui.utils.FontDefaults.DEFAULT_SERIF
 import de.oljg.glac.clock.digital.ui.utils.FontDefaults.FONT_BASENAME_DELIMITER
+import de.oljg.glac.core.util.ScreenSizeDefaults
 import de.oljg.glac.core.util.TestTags
+import de.oljg.glac.core.util.screenDetails
 import de.oljg.glac.settings.clock.ui.utils.FileUtilDefaults.FONT_ASSETS_DIRECTORY
 import de.oljg.glac.settings.clock.ui.utils.FileUtilDefaults.PATH_SEPARATOR
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.PREVIEW_SIZE_FACTOR

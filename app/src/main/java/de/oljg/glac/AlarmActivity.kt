@@ -19,10 +19,10 @@ import de.oljg.glac.alarms.ui.utils.Repetition
 import de.oljg.glac.alarms.ui.utils.handleAlarmToBeLaunched
 import de.oljg.glac.alarms.ui.utils.isSnoozeAlarmBeforeNextAlarm
 import de.oljg.glac.alarms.ui.utils.plus
-import de.oljg.glac.alarms.ui.utils.resetScreenBrightness
 import de.oljg.glac.clock.digital.ui.DigitalClockScreen
-import de.oljg.glac.clock.digital.ui.utils.findActivity
 import de.oljg.glac.core.alarms.data.Alarm
+import de.oljg.glac.core.util.findActivity
+import de.oljg.glac.core.util.resetScreenBrightness
 import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
 import de.oljg.glac.ui.theme.GLACTheme
 import java.time.LocalDateTime

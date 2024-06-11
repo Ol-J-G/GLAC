@@ -20,8 +20,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import de.oljg.glac.clock.digital.ui.utils.ScreenDetails
-import de.oljg.glac.clock.digital.ui.utils.screenDetails
+import de.oljg.glac.core.util.ScreenDetails
+import de.oljg.glac.core.util.screenDetails
 import de.oljg.glac.settings.clock.ui.components.sections.ClockBrightnessSettings
 import de.oljg.glac.settings.clock.ui.components.sections.ClockCharacterSettings
 import de.oljg.glac.settings.clock.ui.components.sections.ClockColorSettings
