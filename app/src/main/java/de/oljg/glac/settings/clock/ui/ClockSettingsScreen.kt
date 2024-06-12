@@ -19,7 +19,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.core.util.ScreenDetails
 import de.oljg.glac.core.util.screenDetails
 import de.oljg.glac.settings.clock.ui.components.sections.ClockBrightnessSettings
@@ -30,9 +35,13 @@ import de.oljg.glac.settings.clock.ui.components.sections.ClockDividerSettings
 import de.oljg.glac.settings.clock.ui.components.sections.ClockPreview
 import de.oljg.glac.settings.clock.ui.components.sections.ClockThemeSettings
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
+import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_DEBOUNCE_TIMEOUT
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_HORIZONTAL_SPACE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SCREEN_HORIZONTAL_OUTER_PADDING
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SCREEN_PREVIEW_SPACE
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -57,7 +66,7 @@ fun ClockSettingsScreen() {
                 // E.g. small phones are Medium, but two columns are too much, content is too big
                 screenWidthType is ScreenDetails.DisplayType.Medium
                         && screenHeightType is ScreenDetails.DisplayType.Compact ->
-                            OneColumnLayout()
+                    OneColumnLayout()
 
                 else -> TwoColumnsLayout()
             }
@@ -66,11 +75,71 @@ fun ClockSettingsScreen() {
     }
 }
 
+
+@OptIn(FlowPreview::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-private fun TwoColumnsLayout() {
-    val scrollStateStartColumn = rememberScrollState()
-    val scrollStateEndColumn = rememberScrollState()
+private fun OneColumnLayout(viewModel: ClockSettingsViewModel = hiltViewModel()) {
+    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
+    val scrollState = rememberScrollState(initial = clockSettings.columnScrollPosition)
+
+    /**
+     * Persist column scroll position DEFAULT_DEBOUNCE_TIMEOUT millis after the column is scrolled.
+     * This way, users can close the app (or even reboot device), and then continue, where they
+     * left off.
+     *
+     * Soucre/Idea:
+     * https://github.com/philipplackner/PersistentScrollPositionCompose/tree/master
+     */
+    LaunchedEffect(scrollState) {
+        snapshotFlow { scrollState.value }
+            .debounce(DEFAULT_DEBOUNCE_TIMEOUT)
+            .collectLatest { scrollValue ->
+                viewModel.updateColumnScrollPosition(clockSettings, scrollValue)
+            }
+    }
+
+    Column( // inner scrollable column
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(scrollState)
+    ) {
+        ClockThemeSettings()
+        ClockDisplaySettings()
+        ClockCharacterSettings()
+        ClockDividerSettings()
+        ClockColorSettings()
+        ClockBrightnessSettings()
+    }
+}
+
+
+@OptIn(FlowPreview::class)
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+private fun TwoColumnsLayout(viewModel: ClockSettingsViewModel = hiltViewModel()) {
+    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
+    val scrollStateStartColumn = rememberScrollState(
+        initial = clockSettings.startColumnScrollPosition
+    )
+    val scrollStateEndColumn = rememberScrollState(initial = clockSettings.endColumnScrollPosition)
+
+    LaunchedEffect(scrollStateStartColumn) {
+        snapshotFlow { scrollStateStartColumn.value }
+            .debounce(DEFAULT_DEBOUNCE_TIMEOUT)
+            .collectLatest { scrollValue ->
+                viewModel.updateStartColumnScrollPosition(clockSettings, scrollValue)
+            }
+    }
+
+    LaunchedEffect(scrollStateEndColumn) {
+        snapshotFlow { scrollStateEndColumn.value }
+            .debounce(DEFAULT_DEBOUNCE_TIMEOUT)
+            .collectLatest { scrollValue ->
+                viewModel.updateEndColumnScrollPosition(clockSettings, scrollValue)
+            }
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -102,23 +171,5 @@ private fun TwoColumnsLayout() {
             ClockColorSettings()
             ClockBrightnessSettings()
         }
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-private fun OneColumnLayout() {
-    val scrollState = rememberScrollState() //TODO: try to remember state (annoying to lose it anytime leaving this screen..)
-    Column( // inner scrollable column
-        modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(scrollState)
-    ) {
-        ClockThemeSettings()
-        ClockDisplaySettings()
-        ClockCharacterSettings()
-        ClockDividerSettings()
-        ClockColorSettings()
-        ClockBrightnessSettings()
     }
 }

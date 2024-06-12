@@ -25,6 +25,13 @@ data class ClockSettings(
     val clockSettingsSectionClockCharIsExpanded: Boolean = false,
     val clockSettingsSectionDividerIsExpanded: Boolean = false,
     val clockSettingsSectionColorsIsExpanded: Boolean = false,
-    val clockSettingsSectionBrigntnessIsExpanded: Boolean = false
+    val clockSettingsSectionBrigntnessIsExpanded: Boolean = false,
+
+    // One column layout
+    val columnScrollPosition: Int = 0,
+
+    // Two column layout
+    val startColumnScrollPosition: Int = 0,
+    val endColumnScrollPosition: Int = 0
 )
 

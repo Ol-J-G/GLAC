@@ -14,8 +14,8 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
-class ClockSettingsViewModel @Inject constructor (
-   private val clockSettingsRepository: ClockSettingsRepository
+class ClockSettingsViewModel @Inject constructor(
+    private val clockSettingsRepository: ClockSettingsRepository
 ) : ViewModel() {
     private val _clockSettingsFlow = clockSettingsRepository.getClockSettingsFlow()
 
@@ -45,5 +45,23 @@ class ClockSettingsViewModel @Inject constructor (
                 clockSettings.copy(themes = clockSettings.themes.put(clockThemeName, clockTheme))
             )
         }
+    }
+
+    suspend fun updateColumnScrollPosition(clockSettings: ClockSettings, scrollValue: Int) {
+        updateClockSettings(
+            clockSettings.copy(columnScrollPosition = scrollValue)
+        )
+    }
+
+    suspend fun updateStartColumnScrollPosition(clockSettings: ClockSettings, scrollValue: Int) {
+        updateClockSettings(
+            clockSettings.copy(startColumnScrollPosition = scrollValue)
+        )
+    }
+
+    suspend fun updateEndColumnScrollPosition(clockSettings: ClockSettings, scrollValue: Int) {
+        updateClockSettings(
+            clockSettings.copy(endColumnScrollPosition = scrollValue)
+        )
     }
 }
