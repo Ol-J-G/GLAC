@@ -41,7 +41,7 @@ import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.drawColorIndicator
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import de.oljg.glac.R
-import de.oljg.glac.core.ui.components.SettingsDialog
+import de.oljg.glac.core.ui.components.GlacDialog
 import de.oljg.glac.core.util.ScreenDetails
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.core.util.screenDetails
@@ -94,7 +94,7 @@ fun ColorPickerDialog(
     val screenWidthType = screenDetails.screenWidthType
     val screenHeightType = screenDetails.screenHeightType
 
-    SettingsDialog(
+    GlacDialog(
         onDismissRequest = onDismissRequest,
         properties = DialogProperties(usePlatformDefaultWidth = false),
         maxWidthFraction = COLOR_DIALOG_WIDTH

@@ -21,11 +21,10 @@ import de.oljg.glac.core.ui.components.GlacDialog
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DIALOG_DEFAULT_PADDING
 
 @Composable
-fun AlarmReactionDialog(
-    snoozeEnabled: Boolean,
-    onSnoozeAlarm: () -> Unit,
+fun CancelSnoozeAlarmDialog(
+    onCancelSnoozeAlarm: () -> Unit,
     onDismiss: () -> Unit,
-    onStopAlarm: () -> Unit
+    onCloseFullscreenClock: () -> Unit
 ) {
     GlacDialog(
         onDismissRequest = onDismiss,
@@ -38,28 +37,26 @@ fun AlarmReactionDialog(
     ) {
         when(LocalConfiguration.current.orientation) {
             Configuration.ORIENTATION_PORTRAIT ->
-                PortraitLayout(snoozeEnabled, onSnoozeAlarm, onDismiss, onStopAlarm)
-            else -> LandscapeLayout(snoozeEnabled, onSnoozeAlarm, onDismiss, onStopAlarm)
+                PortraitLayout(onCancelSnoozeAlarm, onDismiss, onCloseFullscreenClock)
+            else -> LandscapeLayout(onCancelSnoozeAlarm, onDismiss, onCloseFullscreenClock)
         }
     }
 }
 
 @Composable
 private fun PortraitLayout(
-    snoozeEnabled: Boolean,
-    onSnoozeAlarm: () -> Unit,
+    onCancelSnoozeAlarm: () -> Unit,
     onDismiss: () -> Unit,
-    onStopAlarm: () -> Unit
+    onCloseFullscreenClock: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxHeight()) {
-        AlarmReactionDialogButton( // SNOOZE
+        AlarmReactionDialogButton( // CANCEL SNOOZE
             modifier = Modifier
                 .padding(DIALOG_DEFAULT_PADDING)
                 .fillMaxWidth()
                 .weight(ALARM_REACTION_DIALOG_BUTTON_WEIGHT),
-            label = stringResource(R.string.snooze).uppercase(),
-            enabled = snoozeEnabled,
-            onClick = onSnoozeAlarm
+            label = stringResource(R.string.cancel_snooze).uppercase(),
+            onClick = onCancelSnoozeAlarm
         )
         AlarmReactionDialogButton( // DISMISS
             modifier = Modifier
@@ -73,13 +70,13 @@ private fun PortraitLayout(
             ),
             onClick = onDismiss
         )
-        AlarmReactionDialogButton( // STOP
+        AlarmReactionDialogButton( // CLOSE FULLSCREEN CLOCK
             modifier = Modifier
                 .padding(DIALOG_DEFAULT_PADDING)
                 .fillMaxWidth()
                 .weight(ALARM_REACTION_DIALOG_BUTTON_WEIGHT),
-            label = stringResource(R.string.stop).uppercase(),
-            onClick = onStopAlarm
+            label = stringResource(R.string.close_clock).uppercase(),
+            onClick = onCloseFullscreenClock
         )
     }
 }
@@ -87,20 +84,18 @@ private fun PortraitLayout(
 
 @Composable
 private fun LandscapeLayout(
-    snoozeEnabled: Boolean,
-    onSnoozeAlarm: () -> Unit,
+    onCancelSnoozeAlarm: () -> Unit,
     onDismiss: () -> Unit,
-    onStopAlarm: () -> Unit
+    onCloseFullscreenClock: () -> Unit
 ) {
     Row(modifier = Modifier.fillMaxWidth()) {
-        AlarmReactionDialogButton( // SNOOZE
+        AlarmReactionDialogButton( // CANCEL SNOOZE
             modifier = Modifier
                 .padding(DIALOG_DEFAULT_PADDING)
                 .fillMaxHeight()
                 .weight(ALARM_REACTION_DIALOG_BUTTON_WEIGHT),
-            label = stringResource(R.string.snooze).uppercase(),
-            enabled = snoozeEnabled,
-            onClick = onSnoozeAlarm
+            label = stringResource(R.string.cancel_snooze).uppercase(),
+            onClick = onCancelSnoozeAlarm
         )
         AlarmReactionDialogButton( // DISMISS
             modifier = Modifier
@@ -114,13 +109,13 @@ private fun LandscapeLayout(
             ),
             onClick = onDismiss
         )
-        AlarmReactionDialogButton( // STOP
+        AlarmReactionDialogButton( // CLOSE FULLSCREEN CLOCK
             modifier = Modifier
                 .padding(DIALOG_DEFAULT_PADDING)
                 .fillMaxHeight()
                 .weight(ALARM_REACTION_DIALOG_BUTTON_WEIGHT),
-            label = stringResource(R.string.stop).uppercase(),
-            onClick = onStopAlarm
+            label = stringResource(R.string.close_clock).uppercase(),
+            onClick = onCloseFullscreenClock
         )
     }
 }

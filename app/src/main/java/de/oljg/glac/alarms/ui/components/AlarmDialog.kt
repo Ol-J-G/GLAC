@@ -46,7 +46,7 @@ import de.oljg.glac.alarms.ui.utils.Repetition
 import de.oljg.glac.alarms.ui.utils.isSet
 import de.oljg.glac.alarms.ui.utils.toEpochMillis
 import de.oljg.glac.core.alarms.data.Alarm
-import de.oljg.glac.core.ui.components.SettingsDialog
+import de.oljg.glac.core.ui.components.GlacDialog
 import de.oljg.glac.core.ui.components.SettingsSection
 import de.oljg.glac.core.util.ScreenDetails
 import de.oljg.glac.core.util.screenDetails
@@ -142,7 +142,7 @@ fun AlarmDialog(
         snoozeDuration = snoozeDuration
     )
 
-    SettingsDialog(onDismissRequest = onDismissRequest) { //TODO: care about adaptive design => row+2col for expanded screen width class... => when dialog is completed
+    GlacDialog(onDismissRequest = onDismissRequest) { //TODO: care about adaptive design => row+2col for expanded screen width class... => when dialog is completed
         Column {
 
             // Scrollable inner section

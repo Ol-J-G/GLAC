@@ -2,24 +2,33 @@ package de.oljg.glac.core.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import de.oljg.glac.alarms.ui.AlarmsListScreen
-import de.oljg.glac.clock.digital.ui.DigitalClockScreen
+import de.oljg.glac.alarms.ui.components.CancelSnoozeAlarmDialog
+import de.oljg.glac.clock.digital.ui.DigitalAlarmClockScreen
 import de.oljg.glac.core.navigation.common.AboutScreen
+import de.oljg.glac.core.navigation.common.AlarmClockFullScreen
+import de.oljg.glac.core.navigation.common.AlarmClockScreen
 import de.oljg.glac.core.navigation.common.AlarmSettingsSubScreen
 import de.oljg.glac.core.navigation.common.AlarmsScreen
-import de.oljg.glac.core.navigation.common.ClockFullScreen
-import de.oljg.glac.core.navigation.common.ClockScreen
 import de.oljg.glac.core.navigation.common.ClockSettingsSubScreen
 import de.oljg.glac.core.navigation.common.CommonSettingsSubScreen
 import de.oljg.glac.core.navigation.common.SettingsScreen
 import de.oljg.glac.core.temp.DummyScreen
+import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
 import de.oljg.glac.settings.clock.ui.ClockSettingsScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -30,18 +39,47 @@ fun GlacNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = ClockFullScreen.route,
+        startDestination = AlarmClockFullScreen.route,
         modifier = modifier
     ) {
-        composable(route = ClockFullScreen.route) {
-            DigitalClockScreen(
-                onClick = { navController.navigateSingleTopTo(ClockScreen.route) },
-                fullScreen = true,
+        composable(route = AlarmClockFullScreen.route) {
+            val viewModel: AlarmSettingsViewModel = hiltViewModel()
+            val alarms = viewModel.alarmSettingsStateFlow.collectAsState().value.alarms
+            val snoozeAlarm = alarms.find { it.isSnoozeAlarm }
+
+            var showCancelSnoozeAlarmDialog by rememberSaveable {
+                mutableStateOf(false)
+            }
+
+            AnimatedVisibility(visible = showCancelSnoozeAlarmDialog) {
+                val alarmViewModel: AlarmSettingsViewModel = hiltViewModel()
+                val alarmSettings by alarmViewModel.alarmSettingsStateFlow.collectAsState()
+                CancelSnoozeAlarmDialog(
+                    onCancelSnoozeAlarm = {
+                        snoozeAlarm?.let { alarmViewModel.removeAlarm(alarmSettings, it) }
+                        showCancelSnoozeAlarmDialog = false
+                    },
+                    onDismiss = { showCancelSnoozeAlarmDialog = false },
+                    onCloseFullscreenClock = {
+                        navController.navigateSingleTopTo(AlarmClockScreen.route)
+                    }
+                )
+            }
+
+            DigitalAlarmClockScreen(
+                isSnoozeAlarmActive = snoozeAlarm != null,
+                onClick = {
+                    when (snoozeAlarm) {
+                        null -> navController.navigateSingleTopTo(AlarmClockScreen.route)
+                        else -> showCancelSnoozeAlarmDialog = true
+                    }
+                },
+                fullScreen = true
             )
         }
-        composable(route = ClockScreen.route) {
-            DigitalClockScreen(
-                onClick = { navController.navigateSingleTopTo(ClockFullScreen.route) },
+        composable(route = AlarmClockScreen.route) {
+            DigitalAlarmClockScreen(
+                onClick = { navController.navigateSingleTopTo(AlarmClockFullScreen.route) }
             )
         }
         composable(route = AlarmsScreen.route) {

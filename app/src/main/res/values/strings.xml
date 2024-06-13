@@ -157,4 +157,7 @@
     <string name="clock_fullscreen_brightness">Clock Fullscreen Brightness</string>
     <string name="brightness">Brightness</string>
     <string name="background">Background</string>
+    <string name="cancel_snooze">Cancel Snooze</string>
+    <string name="close_clock">Close Clock</string>
+    <string name="snooze_alarm_is_active">Snooze alarm is active</string>
 </resources>

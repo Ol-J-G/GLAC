@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpSize
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
-import de.oljg.glac.clock.digital.ui.DigitalClockScreen
+import de.oljg.glac.clock.digital.ui.DigitalAlarmClockScreen
 import de.oljg.glac.core.ui.components.SettingsSection
 import de.oljg.glac.core.util.screenDetails
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
@@ -56,7 +56,7 @@ fun ClockPreview(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                     ),
                 contentAlignment = Alignment.TopCenter
             ) {
-                DigitalClockScreen(previewMode = true)
+                DigitalAlarmClockScreen(previewMode = true)
             }
         }
     }

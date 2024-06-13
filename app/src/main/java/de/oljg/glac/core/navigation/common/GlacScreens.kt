@@ -33,14 +33,14 @@ fun GlacScreen.isSettingsSubScreen() = this is ClockSettingsSubScreen
 fun GlacScreen.isSettingsScreen() = this is SettingsScreen || this.isSettingsSubScreen()
 
 
-object ClockScreen : GlacScreen {
+object AlarmClockScreen : GlacScreen {
     override val route = GlacRoute.CLOCK.name
     override val tabIconSelected = Icons.Filled.AccessTime
     override val tabIconUnselected = Icons.Outlined.AccessTime
 }
 
 // used for routing only (not part of tab bar)
-object ClockFullScreen : GlacScreen {
+object AlarmClockFullScreen : GlacScreen {
     override val route = GlacRoute.FULLSCREEN_CLOCK.name
 }
 
@@ -82,7 +82,7 @@ object AboutScreen : GlacScreen {
 }
 
 
-val glacTabScreens = listOf(ClockScreen, AlarmsScreen, SettingsScreen, AboutScreen)
+val glacTabScreens = listOf(AlarmClockScreen, AlarmsScreen, SettingsScreen, AboutScreen)
 val glacSettingsSubScreens =
         listOf(ClockSettingsSubScreen, AlarmSettingsSubScreen, CommonSettingsSubScreen)
 val allGlacScreens = glacTabScreens + glacSettingsSubScreens

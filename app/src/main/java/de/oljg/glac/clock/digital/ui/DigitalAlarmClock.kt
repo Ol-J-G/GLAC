@@ -1,6 +1,7 @@
 package de.oljg.glac.clock.digital.ui
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -25,6 +28,8 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import de.oljg.glac.R
+import de.oljg.glac.alarms.ui.utils.SnoozeAlarmIndicator
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_DIGIT_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_PADDING
@@ -38,7 +43,8 @@ import de.oljg.glac.clock.digital.ui.utils.defaultClockCharColors
 import de.oljg.glac.core.util.defaultColor
 
 @Composable
-fun DigitalClock(
+fun DigitalAlarmClock(
+    isSnoozeAlarmActive: Boolean,
     previewMode: Boolean = false,
     onClick: () -> Unit = {},
     hoursMinutesDividerChar: Char = DEFAULT_HOURS_MINUTES_DIVIDER_CHAR,
@@ -48,7 +54,7 @@ fun DigitalClock(
     fontWeight: FontWeight = FontWeight.Normal,
     fontStyle: FontStyle = FontStyle.Normal,
     dividerAttributes: DividerAttributes =
-        DividerAttributes(dividerColor = defaultColor()),
+            DividerAttributes(dividerColor = defaultColor()),
     currentTimeFormatted: String,
     clockCharType: ClockCharType = ClockCharType.FONT,
     charColors: Map<Char, Color> = defaultClockCharColors(defaultColor()),
@@ -73,11 +79,11 @@ fun DigitalClock(
             .onGloballyPositioned { layoutCoordinates ->
                 clockBoxSize = layoutCoordinates.size
             }
-            .clickable(enabled = true, onClick = onClick),
+            .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         if (currentDisplayOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-            DigitalClockLandscapeLayout(
+            DigitalAlarmClockLandscapeLayout(
                 previewMode = previewMode,
                 clockBoxSize = clockBoxSize,
                 hoursMinutesDividerChar = hoursMinutesDividerChar,
@@ -95,8 +101,8 @@ fun DigitalClock(
                 clockCharType = clockCharType,
                 clockChar = clockChar
             )
-        } else { //TODO_LATER: maybe introduce a landscapeInPortraitMode (maybe it's big/readable enough with just 'hh:mm'?(or whatever a user might want to have here :>)
-            DigitalClockPortraitLayout(
+        } else {
+            DigitalAlarmClockPortraitLayout(
                 previewMode = previewMode,
                 clockBoxSize = clockBoxSize,
                 fontFamily = fontFamily,
@@ -126,5 +132,11 @@ fun DigitalClock(
             )
         }
     }
+    if(isSnoozeAlarmActive) {
+        val context = LocalContext.current
+        val toastText = stringResource(R.string.snooze_alarm_is_active) + "!"
+        SnoozeAlarmIndicator(onClick = {
+            Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
+        })
+    }
 }
-

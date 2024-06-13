@@ -54,12 +54,13 @@ import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DigitalClockScreen(
+fun DigitalAlarmClockScreen(
     viewModel: ClockSettingsViewModel = hiltViewModel(),
     fullScreen: Boolean = false,
     previewMode: Boolean = false,
     alarmMode: Boolean = false,
     alarmToBeLaunched: Alarm? = null,
+    isSnoozeAlarmActive: Boolean = false,
     onClick: () -> Unit = {}
 ) {
     val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
@@ -262,7 +263,8 @@ fun DigitalClockScreen(
     // In case of light alarm in ongoing, use cloud-like brush
     fun useAlarmBrush() = alarmMode && alarmToBeLaunched.isLightAlarm() && !lightAlarmIsFinished
 
-    DigitalClock(
+    DigitalAlarmClock(
+        isSnoozeAlarmActive = isSnoozeAlarmActive,
         previewMode = previewMode,
         onClick = onClick,
         hoursMinutesDividerChar = clockTheme.hoursMinutesDividerChar,

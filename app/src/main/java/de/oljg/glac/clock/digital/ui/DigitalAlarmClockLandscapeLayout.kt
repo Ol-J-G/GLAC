@@ -59,7 +59,7 @@ import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.PREVIEW_SIZE_FACTOR
 
 @Composable
-fun DigitalClockLandscapeLayout(
+fun DigitalAlarmClockLandscapeLayout(
     viewModel: ClockSettingsViewModel = hiltViewModel(),
     previewMode: Boolean = false,
     currentTimeFormatted: String,

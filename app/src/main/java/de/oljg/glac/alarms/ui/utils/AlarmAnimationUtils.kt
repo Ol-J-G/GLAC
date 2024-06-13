@@ -80,6 +80,22 @@ fun animateAlarmColor(transition: InfiniteTransition) = transition.animateColor(
 
 
 @Composable
+fun animateSnoozeAlarmIndicatorColor(
+    transition: InfiniteTransition,
+    initialColor: Color,
+    targetColor: Color
+) = transition.animateColor(
+    initialValue = initialColor,
+    targetValue = targetColor,
+    animationSpec = infiniteRepeatable(
+        animation = tween(5000, easing = LinearEasing),
+        repeatMode = RepeatMode.Reverse
+    ),
+    label = "aSaIc"
+)
+
+
+@Composable
 private fun FadeBrightnessFromCurrentToFull(
     totalDurationMillis: Int,
     clockBrightness: Float? = null,

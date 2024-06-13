@@ -25,7 +25,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import de.oljg.glac.core.navigation.GlacNavHost
-import de.oljg.glac.core.navigation.common.ClockFullScreen
+import de.oljg.glac.core.navigation.common.AlarmClockFullScreen
 import de.oljg.glac.core.navigation.common.ClockSettingsSubScreen
 import de.oljg.glac.core.navigation.common.SettingsScreen
 import de.oljg.glac.core.navigation.common.allGlacScreens
@@ -90,7 +90,7 @@ fun GlacApp() {
         // Default / Start screen is fullscreen clock
         val currentScreen = allGlacScreens.find { glacScreen ->
             glacScreen.route == currentDestination?.route
-        } ?: ClockFullScreen
+        } ?: AlarmClockFullScreen
 
         var currentSubSettingsScreenRoute by rememberSaveable {
             mutableStateOf(ClockSettingsSubScreen.route)
@@ -108,7 +108,7 @@ fun GlacApp() {
                 topBar = {
 
                     // Don't show topBar when fullscreen clock is displayed
-                    if (currentScreen !is ClockFullScreen) {
+                    if (currentScreen !is AlarmClockFullScreen) {
                         GlacTabBar(
                             tabBarScreens = glacTabScreens,
                             onTabSelected = { tabBarScreen ->
@@ -158,7 +158,7 @@ fun GlacApp() {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(
-                            if (currentScreen is ClockFullScreen)
+                            if (currentScreen is AlarmClockFullScreen)
                                 PaddingValues(0.dp) else scaffoldInnerPadding
                         )
                         .padding(

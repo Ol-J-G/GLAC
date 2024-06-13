@@ -13,7 +13,7 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DIALOG_SHAPE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DIALOG_TONAL_ELEVATION
 
 @Composable
-fun SettingsDialog(
+fun GlacDialog(
     onDismissRequest: () -> Unit,
     properties: DialogProperties = DialogProperties(),
     maxWidthFraction: Float = 1f,

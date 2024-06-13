@@ -20,7 +20,7 @@ import de.oljg.glac.alarms.ui.utils.Repetition
 import de.oljg.glac.alarms.ui.utils.handleAlarmToBeLaunched
 import de.oljg.glac.alarms.ui.utils.isSnoozeAlarmBeforeNextAlarm
 import de.oljg.glac.alarms.ui.utils.plus
-import de.oljg.glac.clock.digital.ui.DigitalClockScreen
+import de.oljg.glac.clock.digital.ui.DigitalAlarmClockScreen
 import de.oljg.glac.core.alarms.data.Alarm
 import de.oljg.glac.core.util.findActivity
 import de.oljg.glac.core.util.resetScreenBrightness
@@ -56,7 +56,7 @@ class AlarmActivity : ComponentActivity() {
 
             GLACTheme {
                 if (alarmToBeLaunched != null) {
-                    DigitalClockScreen(
+                    DigitalAlarmClockScreen(
                         fullScreen = true,
                         alarmMode = true,
                         alarmToBeLaunched = alarmToBeLaunched,
@@ -83,6 +83,7 @@ class AlarmActivity : ComponentActivity() {
                                 Alarm(
                                     start = snoozeAlarmStart,
                                     isSnoozeAlarm = true,
+                                    snoozeDuration = alarmToBeLaunched.snoozeDuration,
                                     isLightAlarm = false,
                                     repetition = Repetition.NONE
                                 )

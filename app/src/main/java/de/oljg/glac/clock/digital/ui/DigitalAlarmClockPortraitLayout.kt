@@ -56,7 +56,7 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.PREVIEW_SIZE_FACTOR
 
 
 @Composable
-fun DigitalClockPortraitLayout(
+fun DigitalAlarmClockPortraitLayout(
     viewModel: ClockSettingsViewModel = hiltViewModel(),
     previewMode: Boolean = false,
     currentTimeWithoutSeparators: String,

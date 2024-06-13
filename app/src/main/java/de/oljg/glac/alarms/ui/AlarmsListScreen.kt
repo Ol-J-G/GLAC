@@ -87,7 +87,7 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
 //                            isLightAlarm = true,
 //                            lightAlarmDuration = 10.seconds,
 //                            repetition = Repetition.WEEKLY,
-//                            snoozeDuration = 10.seconds
+//                            snoozeDuration = 30.seconds
 //                        )
 //                        viewModel.addAlarm(alarmSettings, testAlarm)
 //                        selectedAlarmStart = testAlarm.start
