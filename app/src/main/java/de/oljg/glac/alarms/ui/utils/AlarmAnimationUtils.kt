@@ -222,6 +222,5 @@ fun LightAlarm(
             it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED // -1
         }
         onFinished()
-        // TODO: play alarm sound => actual alarm time is reached exactly here
     }
 }

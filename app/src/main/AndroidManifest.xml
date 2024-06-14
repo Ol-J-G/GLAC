@@ -33,6 +33,8 @@
         </activity>
 
         <receiver android:name=".core.alarms.data.manager.AlarmReceiver" />
+
+        <service android:name=".core.alarms.media.service.AlarmSoundService" />
     </application>
 
 </manifest>

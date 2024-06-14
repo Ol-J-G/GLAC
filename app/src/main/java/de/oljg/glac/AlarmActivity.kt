@@ -22,6 +22,7 @@ import de.oljg.glac.alarms.ui.utils.isSnoozeAlarmBeforeNextAlarm
 import de.oljg.glac.alarms.ui.utils.plus
 import de.oljg.glac.clock.digital.ui.DigitalAlarmClockScreen
 import de.oljg.glac.core.alarms.data.Alarm
+import de.oljg.glac.core.alarms.media.AlarmSoundPlayer
 import de.oljg.glac.core.util.findActivity
 import de.oljg.glac.core.util.resetScreenBrightness
 import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
@@ -55,11 +56,13 @@ class AlarmActivity : ComponentActivity() {
             val alarmToBeLaunched = handleAlarmToBeLaunched()
 
             GLACTheme {
+                val alarmSoundPlayer = AlarmSoundPlayer(LocalContext.current)
                 if (alarmToBeLaunched != null) {
                     DigitalAlarmClockScreen(
                         fullScreen = true,
                         alarmMode = true,
                         alarmToBeLaunched = alarmToBeLaunched,
+                        alarmSoundPlayer = alarmSoundPlayer,
                         onClick = { showAlarmReactionDialog = true }
                     )
                 }
@@ -78,6 +81,17 @@ class AlarmActivity : ComponentActivity() {
                         ),
                         onSnoozeAlarm = {
                             resetScreenBrightness(alarmActivity)
+                            /**
+                             * Schedule snooze alarm with settings "inherited" from the "original"
+                             * alarm that has been snoozed by a user, but, snooze alarms:
+                             * - must not be a light alarm!
+                             * - must not have a repetition!
+                             *
+                             * Note that this way a snooze alarm can be snoozed theoretically
+                             * unlimited times with inherited duration and alarm sound.
+                             * (But everyone will wake up at some point, some sooner, some later,
+                             * right? :>)
+                             */
                             viewModel.addAlarm(
                                 alarmSettings,
                                 Alarm(
@@ -85,14 +99,17 @@ class AlarmActivity : ComponentActivity() {
                                     isSnoozeAlarm = true,
                                     snoozeDuration = alarmToBeLaunched.snoozeDuration,
                                     isLightAlarm = false,
-                                    repetition = Repetition.NONE
+                                    repetition = Repetition.NONE,
+                                    alarmSoundUri = alarmToBeLaunched.alarmSoundUri
                                 )
                             )
+                            alarmSoundPlayer.stop()
                             alarmActivity.finish()
                         },
                         onDismiss = { showAlarmReactionDialog = false },
                         onStopAlarm = {
                             resetScreenBrightness(alarmActivity)
+                            alarmSoundPlayer.stop()
                             alarmActivity.finish()
                         }
                     )

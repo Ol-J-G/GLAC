@@ -1,5 +1,6 @@
 package de.oljg.glac.alarms.ui.utils
 
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.saveable.Saver
@@ -401,11 +402,7 @@ fun Int.formatAsOrdinal(): String {
 
 fun Alarm?.isLightAlarm() = this != null && this.isLightAlarm
 
-fun Alarm?.isSnoozeAlarm() = this != null && this.isSnoozeAlarm
-
-fun Alarm?.isSoundAlarm() = this != null && !this.isLightAlarm && !this.isSnoozeAlarm
-
-fun Alarm?.isSnoozeOrSoundAlarm() = this.isSnoozeAlarm() || this.isSoundAlarm()
+fun Alarm?.isNotLightAlarm() = this != null && !this.isLightAlarm
 
 
 object AlarmDefaults {
@@ -442,6 +439,14 @@ object AlarmDefaults {
         mapSaver(
             save = { duration -> mapOf(minutes to duration.toInt(DurationUnit.MINUTES)) },
             restore = { minutesMap -> (minutesMap[minutes] as Int).minutes }
+        )
+    }
+
+    val uriSaver: Saver<Uri, Any> = run {
+        val uriKey = "uri"
+        mapSaver(
+            save = { uri -> mapOf(uriKey to uri.toString()) },
+            restore = { uriMap -> Uri.parse(uriMap[uriKey].toString()) }
         )
     }
 

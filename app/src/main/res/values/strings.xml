@@ -160,4 +160,8 @@
     <string name="cancel_snooze">Cancel Snooze</string>
     <string name="close_clock">Close Clock</string>
     <string name="snooze_alarm_is_active">Snooze alarm is active</string>
+    <string name="please_select_alarm_sound">Please select alarm sound</string>
+    <string name="select_ringtone">Select Ringtone</string>
+    <string name="_default">Default</string>
+    <string name="no_title">No Title</string> <!-- 'default' is reserved keyword-->
 </resources>

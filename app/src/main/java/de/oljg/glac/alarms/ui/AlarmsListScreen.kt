@@ -84,10 +84,11 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
                         // quick manual test
 //                        val testAlarm = Alarm(
 //                            start = LocalDateTime.now().plusSeconds(15),
-//                            isLightAlarm = true,
+//                            isLightAlarm = false,
 //                            lightAlarmDuration = 10.seconds,
 //                            repetition = Repetition.WEEKLY,
-//                            snoozeDuration = 30.seconds
+//                            snoozeDuration = 10.seconds,
+//                            alarmSoundUri = Uri.parse("content://media/internal/audio/media/8?title=Coin&canonical=1")
 //                        )
 //                        viewModel.addAlarm(alarmSettings, testAlarm)
 //                        selectedAlarmStart = testAlarm.start

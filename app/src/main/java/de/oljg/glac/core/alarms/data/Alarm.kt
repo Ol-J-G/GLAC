@@ -1,6 +1,8 @@
 package de.oljg.glac.core.alarms.data
 
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.graphics.Color
 import de.oljg.glac.alarms.ui.utils.Repetition
@@ -38,7 +40,10 @@ data class Alarm(
     val isSnoozeAlarm: Boolean = false,
 
     @Serializable(with = DurationSerializer::class)
-    val snoozeDuration: Duration = 30.minutes
+    val snoozeDuration: Duration = 30.minutes,
+
+    @Serializable(with = UriSerializer::class)
+    val alarmSoundUri: Uri = Settings.System.DEFAULT_RINGTONE_URI
 ) {
     override fun toString(): String { //TODO: remove after testing
         return start.toString() + " | " + this.hashCode()

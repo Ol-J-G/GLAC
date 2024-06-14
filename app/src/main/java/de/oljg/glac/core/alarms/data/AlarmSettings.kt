@@ -1,5 +1,7 @@
 package de.oljg.glac.core.alarms.data
 
+import android.net.Uri
+import android.provider.Settings
 import androidx.compose.ui.graphics.Color
 import de.oljg.glac.core.clock.data.ColorSerializer
 import de.oljg.glac.ui.theme.darkBlue
@@ -29,5 +31,8 @@ data class AlarmSettings(
             persistentListOf(Color.Black, darkBlue, lightBlue, orange, goldenrod, Color.White),
 
     @Serializable(with = DurationSerializer::class)
-    val snoozeDuration: Duration = 30.minutes
+    val snoozeDuration: Duration = 30.minutes,
+
+    @Serializable(with = UriSerializer::class)
+    val alarmSoundUri: Uri = Settings.System.DEFAULT_RINGTONE_URI
 )

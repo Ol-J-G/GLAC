@@ -1,7 +1,6 @@
 package de.oljg.glac.clock.digital.ui
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.Animatable
@@ -11,6 +10,7 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -26,9 +26,7 @@ import de.oljg.glac.alarms.ui.utils.alarmBrush
 import de.oljg.glac.alarms.ui.utils.animateAlarmBrushOffset
 import de.oljg.glac.alarms.ui.utils.animateAlarmColor
 import de.oljg.glac.alarms.ui.utils.isLightAlarm
-import de.oljg.glac.alarms.ui.utils.isSnoozeAlarm
-import de.oljg.glac.alarms.ui.utils.isSnoozeOrSoundAlarm
-import de.oljg.glac.alarms.ui.utils.isSoundAlarm
+import de.oljg.glac.alarms.ui.utils.isNotLightAlarm
 import de.oljg.glac.clock.digital.ui.components.SevenSegmentChar
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
@@ -43,6 +41,7 @@ import de.oljg.glac.clock.digital.ui.utils.evaluateFont
 import de.oljg.glac.clock.digital.ui.utils.pxToDp
 import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
 import de.oljg.glac.core.alarms.data.Alarm
+import de.oljg.glac.core.alarms.media.AlarmSoundPlayer
 import de.oljg.glac.core.clock.data.ClockTheme
 import de.oljg.glac.core.util.defaultBackgroundColor
 import de.oljg.glac.core.util.defaultColor
@@ -61,6 +60,7 @@ fun DigitalAlarmClockScreen(
     alarmMode: Boolean = false,
     alarmToBeLaunched: Alarm? = null,
     isSnoozeAlarmActive: Boolean = false,
+    alarmSoundPlayer: AlarmSoundPlayer? = null,
     onClick: () -> Unit = {}
 ) {
     val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
@@ -152,7 +152,6 @@ fun DigitalAlarmClockScreen(
 
     when {
         alarmMode && alarmToBeLaunched.isLightAlarm() -> {
-            Log.d("TAG", "DigitalClockScreen, light alarm")
             LightAlarm(
                 alarmToBeLaunched = alarmToBeLaunched!!, // is set in alarmMode => save
                 lightAlarmColors = lightAlarmColors!!, // default is set in every Alarm => save
@@ -161,16 +160,17 @@ fun DigitalAlarmClockScreen(
                     clockSettings.clockBrightness else null,
                 onFinished = {
                     lightAlarmIsFinished = true
+                    alarmSoundPlayer?.play(alarmToBeLaunched.alarmSoundUri)
                 }
             )
-            // TODO: play alarm sound when light alarm is finished
         }
 
-        alarmMode && alarmToBeLaunched.isSnoozeAlarm() ->
-            Log.d("TAG", "DigitalClockScreen, snooze alarm") // TODO: play alarm sound
-
-        alarmMode && alarmToBeLaunched.isSoundAlarm() ->
-            Log.d("TAG", "DigitalClockScreen, sound alarm") // TODO: play alarm sound
+        alarmMode && alarmToBeLaunched.isNotLightAlarm() -> {
+            DisposableEffect(Unit) {
+                alarmToBeLaunched?.alarmSoundUri?.let { alarmSoundPlayer?.play(it) }
+                onDispose { alarmSoundPlayer?.stop() }
+            }
+        }
     }
 
     val dividerAttributes = DividerAttributes(
@@ -210,7 +210,6 @@ fun DigitalAlarmClockScreen(
     }
 
     val currentTimeFormatted =
-
             /**
              * Just show 'A' or 'P' instead of "AM"/"PM" in case of 7-segment.
              * => cut off 'M', which is always the last char...
@@ -256,8 +255,8 @@ fun DigitalAlarmClockScreen(
 //        )
     }
 
-    // In case of "normal" alarms or after light alarm, use flashing alarm color
-    fun useAlarmColor() = (alarmMode && alarmToBeLaunched.isSnoozeOrSoundAlarm())
+    // In case of "sound only" / snooze alarms or after light alarm, use flashing alarm color
+    fun useAlarmColor() = (alarmMode && alarmToBeLaunched.isNotLightAlarm())
             || lightAlarmIsFinished
 
     // In case of light alarm in ongoing, use cloud-like brush

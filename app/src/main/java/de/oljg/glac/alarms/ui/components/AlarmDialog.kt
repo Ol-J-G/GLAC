@@ -1,5 +1,6 @@
 package de.oljg.glac.alarms.ui.components
 
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
@@ -8,6 +9,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.MAX_LIGHT_ALARM_DURATION
@@ -42,10 +45,12 @@ import de.oljg.glac.alarms.ui.utils.AlarmDefaults.MAX_SNOOZE_DURATION
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.MIN_LIGHT_ALARM_DURATION
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.MIN_SNOOZE_DURATION
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.minutesSaver
+import de.oljg.glac.alarms.ui.utils.AlarmDefaults.uriSaver
 import de.oljg.glac.alarms.ui.utils.Repetition
 import de.oljg.glac.alarms.ui.utils.isSet
 import de.oljg.glac.alarms.ui.utils.toEpochMillis
 import de.oljg.glac.core.alarms.data.Alarm
+import de.oljg.glac.core.alarms.media.utils.prettyPrintRingtone
 import de.oljg.glac.core.ui.components.GlacDialog
 import de.oljg.glac.core.ui.components.SettingsSection
 import de.oljg.glac.core.util.ScreenDetails
@@ -124,6 +129,10 @@ fun AlarmDialog(
         mutableStateOf(alarmToBeUpdated?.start?.toLocalTime())
     }
 
+    var selectedAlarmSoundUri: Uri by rememberSaveable(stateSaver = uriSaver) {
+        mutableStateOf(alarmToBeUpdated?.alarmSoundUri ?: alarmSettings.alarmSoundUri)
+    }
+
     // Just a shortcut to improve readability a tiny bit^^ (there must be a better solution oO)
     fun checkIfReadyToScheduleAlarm() = de.oljg.glac.alarms.ui.utils.checkIfReadyToScheduleAlarm(
         selectedDate, selectedTime, lightAlarmDuration(), alarmSettings.alarms, alarmToBeUpdated,
@@ -139,7 +148,8 @@ fun AlarmDialog(
         isLightAlarm = isLightAlarm,
         lightAlarmDuration = lightAlarmDuration,
         repetition = selectedRepetition,
-        snoozeDuration = snoozeDuration
+        snoozeDuration = snoozeDuration,
+        alarmSoundUri = selectedAlarmSoundUri
     )
 
     GlacDialog(onDismissRequest = onDismissRequest) { //TODO: care about adaptive design => row+2col for expanded screen width class... => when dialog is completed
@@ -164,6 +174,48 @@ fun AlarmDialog(
                 ) {
                     showTimePicker = true
                 }
+
+                Divider(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .fillMaxWidth(.9f)
+                        .padding(vertical = DEFAULT_VERTICAL_SPACE)
+                )
+
+                Row( //TODO: extract comp.
+                    modifier = Modifier
+                        .padding(horizontal = DIALOG_DEFAULT_PADDING)
+//                        .padding(top = DEFAULT_VERTICAL_SPACE)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Alarm Sound")
+                    RingtoneSelector(onRingtoneSelected = { uri ->
+                        selectedAlarmSoundUri = uri
+                    })
+                }
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = DIALOG_DEFAULT_PADDING)
+                        .padding(top = DEFAULT_VERTICAL_SPACE)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = selectedAlarmSoundUri.prettyPrintRingtone(),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
+                }
+
+                Divider(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .fillMaxWidth(.9f)
+                        .padding(top = DEFAULT_VERTICAL_SPACE)
+                )
+
                 RepetitionSelector(
                     label = stringResource(R.string.repetition),
                     selectedRepetition = selectedRepetition,
@@ -177,7 +229,6 @@ fun AlarmDialog(
                         .align(Alignment.CenterHorizontally)
                         .fillMaxWidth(.9f)
                         .padding(bottom = DEFAULT_VERTICAL_SPACE)
-
                 )
 
                 SettingsSection(
