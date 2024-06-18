@@ -58,7 +58,7 @@ fun String.cutOffFileNameExtension(): String = this.substringBeforeLast(FILE_EXT
 fun String.cutOffPathFromUri(): String = this.substringAfterLast(PATH_SEPARATOR)
 
 object CommonFileDefaults {
-    const val PATH_SEPARATOR = '/'
+    val PATH_SEPARATOR = File.separator.toString()
     const val FILE_EXTENSION_DELIMITER = '.'
     const val FILE_PROTOCOL = "file://"
 }
