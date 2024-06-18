@@ -9,7 +9,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,7 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.MAX_LIGHT_ALARM_DURATION
@@ -50,7 +48,6 @@ import de.oljg.glac.alarms.ui.utils.Repetition
 import de.oljg.glac.alarms.ui.utils.isSet
 import de.oljg.glac.alarms.ui.utils.toEpochMillis
 import de.oljg.glac.core.alarms.data.Alarm
-import de.oljg.glac.core.alarms.media.utils.prettyPrintRingtone
 import de.oljg.glac.core.ui.components.GlacDialog
 import de.oljg.glac.core.ui.components.SettingsSection
 import de.oljg.glac.core.util.ScreenDetails
@@ -85,7 +82,7 @@ fun AlarmDialog(
     }
 
     var selectedRepetition by rememberSaveable {
-        mutableStateOf(Repetition.NONE)
+        mutableStateOf(alarmSettings.repetition)
     }
 
     var isLightAlarm by rememberSaveable {
@@ -182,32 +179,15 @@ fun AlarmDialog(
                         .padding(vertical = DEFAULT_VERTICAL_SPACE)
                 )
 
-                Row( //TODO: extract comp.
-                    modifier = Modifier
-                        .padding(horizontal = DIALOG_DEFAULT_PADDING)
-//                        .padding(top = DEFAULT_VERTICAL_SPACE)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("Alarm Sound")
-                    RingtoneSelector(onRingtoneSelected = { uri ->
-                        selectedAlarmSoundUri = uri
-                    })
-                }
-                Row(
-                    modifier = Modifier
-                        .padding(horizontal = DIALOG_DEFAULT_PADDING)
-                        .padding(top = DEFAULT_VERTICAL_SPACE)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = selectedAlarmSoundUri.prettyPrintRingtone(),
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
-                    )
-                }
+                AlarmSoundSelector(
+                    label = stringResource(R.string.alarm_sound),
+                    startPadding = DIALOG_DEFAULT_PADDING / 3,
+                    endPadding = DIALOG_DEFAULT_PADDING,
+                    selectedAlarmSound = selectedAlarmSoundUri.toString(),
+                    onNewAlarmSoundSelected = { newAlarmSound ->
+                        selectedAlarmSoundUri = Uri.parse(newAlarmSound)
+                    }
+                )
 
                 Divider(
                     modifier = Modifier
@@ -218,6 +198,8 @@ fun AlarmDialog(
 
                 RepetitionSelector(
                     label = stringResource(R.string.repetition),
+                    startPadding = DIALOG_DEFAULT_PADDING,
+                    endPadding =  DIALOG_DEFAULT_PADDING,
                     selectedRepetition = selectedRepetition,
                     onNewRepeatModeSelected = { newRepeatMode ->
                         selectedRepetition = Repetition.valueOf(newRepeatMode)

@@ -2,6 +2,8 @@ package de.oljg.glac.core.alarms.media.service
 
 import android.app.Service
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.AudioAttributes.USAGE_ALARM
 import android.media.MediaPlayer
 import android.net.Uri
 import de.oljg.glac.core.alarms.media.utils.AlarmSoundDefaults.ALARM_SOUND_URI_KEY
@@ -19,7 +21,11 @@ class AlarmSoundService : Service() {
         val alarmSoundUri = Uri.parse(alarmSoundUriString)
 
         mediaPlayer = MediaPlayer.create(this, alarmSoundUri)
-        mediaPlayer.isLooping = true // alarm sound must be looped
+        val audioAttributes = AudioAttributes.Builder()
+            .setUsage(USAGE_ALARM)
+            .build()
+        mediaPlayer.setAudioAttributes(audioAttributes)
+        mediaPlayer.isLooping = true // Alarm sounds must be looped
         mediaPlayer.start()
         return super.onStartCommand(intent, flags, startId)
     }

@@ -3,6 +3,7 @@ package de.oljg.glac.core.util
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.net.Uri
 import android.provider.Settings
 import android.view.WindowManager
 import androidx.compose.runtime.Composable
@@ -16,6 +17,7 @@ import de.oljg.glac.clock.digital.ui.utils.DividerLineEnd
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
+import de.oljg.glac.core.alarms.media.utils.prettyPrintRingtone
 import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_HEIGHT_COMPACT
 import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_HEIGHT_MEDIUM
 import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_WIDTH_COMPACT
@@ -36,7 +38,13 @@ fun translateDropDownItemText(
     DividerStyle::class -> DividerStyle.valueOf(itemValue).translate()
     DividerLineEnd::class -> DividerLineEnd.valueOf(itemValue).translate()
     Repetition::class -> Repetition.valueOf(itemValue).translate()
-    else -> defaultPrettyPrinter(itemValue)
+    else -> {
+        if (itemValue == Settings.System.DEFAULT_RINGTONE_URI.toString())
+            Uri.parse(itemValue).prettyPrintRingtone()
+        else
+            defaultPrettyPrinter(itemValue)
+
+    }
 }
 
 

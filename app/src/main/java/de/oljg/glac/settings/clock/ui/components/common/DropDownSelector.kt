@@ -52,9 +52,9 @@ fun DropDownSelector(
     endPadding: Dp = 0.dp,
     onTextFieldValueChanged: (String) -> Unit = {},
     supportingText: @Composable () -> Unit = {},
-    resetValueComponent: @Composable () -> Unit = {},
-    removeValueComponent: @Composable () -> Unit = {},
-    addValueComponent: @Composable () -> Unit = {}
+    resetValueComponent: @Composable (() -> Unit)? = null,
+    removeValueComponent: @Composable (() -> Unit)? = null,
+    addValueComponent: @Composable (() -> Unit)? = null
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     var dropDownIsExpanded by remember {
@@ -80,19 +80,24 @@ fun DropDownSelector(
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier
-                    .padding(end = SettingsDefaults.DROPDOWN_END_PADDING * 3),
-                horizontalArrangement = Arrangement.spacedBy(
-                    DEFAULT_ICON_BUTTON_SIZE / 8,
-                    alignment = Alignment.Start
-                ),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                resetValueComponent.invoke()
-                removeValueComponent.invoke()
-                addValueComponent.invoke()
+            if(addValueComponent != null
+                || removeValueComponent != null
+                || resetValueComponent != null) {
+                Row(
+                    modifier = Modifier
+                        .padding(end = SettingsDefaults.DROPDOWN_END_PADDING * 3),
+                    horizontalArrangement = Arrangement.spacedBy(
+                        DEFAULT_ICON_BUTTON_SIZE / 8,
+                        alignment = Alignment.Start
+                    ),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    resetValueComponent?.invoke()
+                    removeValueComponent?.invoke()
+                    addValueComponent?.invoke()
+                }
             }
+
             ExposedDropdownMenuBox(
                 modifier = Modifier
                     .padding(end = SettingsDefaults.DROPDOWN_END_PADDING),

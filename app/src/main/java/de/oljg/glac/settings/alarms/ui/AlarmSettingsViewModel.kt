@@ -1,10 +1,12 @@
 package de.oljg.glac.settings.alarms.ui
 
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import de.oljg.glac.alarms.ui.utils.Repetition
 import de.oljg.glac.core.alarms.data.Alarm
 import de.oljg.glac.core.alarms.data.AlarmSettings
 import de.oljg.glac.core.alarms.data.AlarmSettingsRepository
@@ -16,6 +18,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
+import kotlin.time.Duration
 
 @HiltViewModel
 class AlarmSettingsViewModel @Inject constructor(
@@ -38,6 +41,42 @@ class AlarmSettingsViewModel @Inject constructor(
 
     private suspend fun updateAlarmSettings(updatedAlarmSettings: AlarmSettings) {
         alarmSettingsRepository.updateAlarmSettings(updatedAlarmSettings)
+    }
+
+    fun updateAlarmDefaultsSectionIsExpanded(alarmSettings: AlarmSettings, newValue: Boolean) {
+        viewModelScope.launch {
+            updateAlarmSettings(alarmSettings.copy(alarmDefaultsSectionIsExpanded = newValue))
+        }
+    }
+
+    fun updateIsLightAlarm(alarmSettings: AlarmSettings, newValue: Boolean) {
+        viewModelScope.launch {
+            updateAlarmSettings(alarmSettings.copy(isLightAlarm = newValue))
+        }
+    }
+
+    fun updateLightAlarmDuration(alarmSettings: AlarmSettings, newValue: Duration) {
+        viewModelScope.launch {
+            updateAlarmSettings(alarmSettings.copy(lightAlarmDuration = newValue))
+        }
+    }
+
+    fun updateSnoozeDuration(alarmSettings: AlarmSettings, newValue: Duration) {
+        viewModelScope.launch {
+            updateAlarmSettings(alarmSettings.copy(snoozeDuration = newValue))
+        }
+    }
+
+    fun updateRepetition(alarmSettings: AlarmSettings, newValue: Repetition) {
+        viewModelScope.launch {
+            updateAlarmSettings(alarmSettings.copy(repetition = newValue))
+        }
+    }
+
+    fun updateAlarmSoundUri(alarmSettings: AlarmSettings, newValue: Uri) {
+        viewModelScope.launch {
+            updateAlarmSettings(alarmSettings.copy(alarmSoundUri = newValue))
+        }
     }
 
     fun removeAlarm(alarmSettings: AlarmSettings, alarm: Alarm) {

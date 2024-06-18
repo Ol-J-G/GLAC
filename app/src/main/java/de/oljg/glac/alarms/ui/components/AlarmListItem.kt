@@ -1,5 +1,6 @@
 package de.oljg.glac.alarms.ui.components
 
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
@@ -31,6 +32,7 @@ import de.oljg.glac.alarms.ui.utils.AlarmDefaults.SPACE
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.localizedShortDateTimeFormatter
 import de.oljg.glac.alarms.ui.utils.Repetition
 import de.oljg.glac.alarms.ui.utils.evaluateAlarmRepetitionInfo
+import de.oljg.glac.core.alarms.media.utils.prettyPrintRingtone
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_BORDER_WIDTH
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_ROUNDED_CORNER_SIZE
@@ -47,6 +49,7 @@ fun AlarmListItem(
     lightAlarmDuration: Duration,
     repetition: Repetition,
     snoozeDuration: Duration,
+    alarmSound: Uri,
     selected: Boolean,
     onClick: () -> Unit,
     onRemoveAlarm: () -> Unit,
@@ -107,6 +110,16 @@ fun AlarmListItem(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(evaluateAlarmRepetitionInfo(repetition = repetition, alarmStart = alarmStart))
+            }
+
+            Row( // Alarm Sound
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(SettingsDefaults.SETTINGS_SECTION_HEIGHT),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(stringResource(R.string.alarm_sound) + ":" + alarmSound.prettyPrintRingtone())
             }
 
             Row( // Snooze duration

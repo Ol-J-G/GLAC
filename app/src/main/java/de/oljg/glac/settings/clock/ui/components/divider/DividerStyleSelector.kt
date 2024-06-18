@@ -15,6 +15,7 @@ fun DividerStyleSelector(
 ) {
     DropDownSelector(
         type = DividerStyle::class,
+        startPadding = SettingsDefaults.DIALOG_DEFAULT_PADDING / 3,
         label = label,
         selectedValue = selectedDividerStyle.name,
         onNewValueSelected = onNewDividerStyleSelected,

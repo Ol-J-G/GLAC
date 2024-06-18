@@ -40,7 +40,7 @@ fun SevenSegmentSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
 
     Column {
         SevenSegmentWeightSelector(
-            label = "${stringResource(id = R.string.weight)}:",
+            label = stringResource(id = R.string.weight),
             selectedSevenSegmentWeight = clockTheme.sevenSegmentWeight,
             onNewSevenSegmentWeightSelected = { newSevenSegmentWeight ->
                 coroutineScope.launch {
@@ -59,7 +59,7 @@ fun SevenSegmentSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             }
         )
         SevenSegmentStyleSelector(
-            label = "${stringResource(id = R.string.style)}:    ",
+            label = stringResource(id = R.string.style),
             selectedSevenSegmentStyle = clockTheme.sevenSegmentStyle,
             onNewSevenSegmentStyleSelected = { newSevenSegmentStyle ->
                 coroutineScope.launch {

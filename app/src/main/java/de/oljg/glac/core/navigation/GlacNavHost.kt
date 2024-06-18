@@ -28,6 +28,7 @@ import de.oljg.glac.core.navigation.common.ClockSettingsSubScreen
 import de.oljg.glac.core.navigation.common.CommonSettingsSubScreen
 import de.oljg.glac.core.navigation.common.SettingsScreen
 import de.oljg.glac.core.temp.DummyScreen
+import de.oljg.glac.settings.alarms.ui.AlarmSettingsScreen
 import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
 import de.oljg.glac.settings.clock.ui.ClockSettingsScreen
 
@@ -93,10 +94,7 @@ fun GlacNavHost(
                 ClockSettingsScreen()
             }
             composable(route = AlarmSettingsSubScreen.route) {
-                DummyScreen(
-                    text = AlarmSettingsSubScreen.route,
-                    color = Color.Green.copy(alpha = .7f)
-                )
+                AlarmSettingsScreen()
             }
             composable(route = CommonSettingsSubScreen.route) {
                 DummyScreen(

@@ -35,7 +35,7 @@ fun MinutesDurationSelector(
     minDuration: Duration,
     maxDuration: Duration,
     onDurationChanged: (Duration) -> Unit,
-    onValueChanged: (Boolean) -> Unit
+    onValueChanged: (Boolean) -> Unit = {}
 ) {
     var durationValue by remember {
         mutableStateOf(duration.toInt(unit = DurationUnit.MINUTES).toString())

@@ -13,6 +13,7 @@ fun DividerLineEndSelector(
 ) {
     DropDownSelector(
         type = DividerLineEnd::class,
+        startPadding = SettingsDefaults.DIALOG_DEFAULT_PADDING / 3,
         label = label,
         selectedValue = selectedDividerLineEnd.name,
         onNewValueSelected = onNewDividerLineEndSelected,
