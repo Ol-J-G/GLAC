@@ -1,7 +1,5 @@
 package de.oljg.glac.settings.clock.ui.components.sections
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,7 +38,6 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.RESET_BUTTON_SIZE
 import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.launch
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ClockThemeSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val keyboardController = LocalSoftwareKeyboardController.current

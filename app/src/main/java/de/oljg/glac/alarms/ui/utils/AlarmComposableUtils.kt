@@ -1,7 +1,5 @@
 package de.oljg.glac.alarms.ui.utils
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,7 +43,6 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun handleAlarmToBeLaunched(viewModel: AlarmSettingsViewModel = hiltViewModel()): Alarm? {
     val alarmSettings by viewModel.alarmSettingsStateFlow.collectAsState()
@@ -56,7 +53,6 @@ fun handleAlarmToBeLaunched(viewModel: AlarmSettingsViewModel = hiltViewModel())
         // Can't be null => alarms.size must be > 0 => following calls with !! are save
         alarmToBeLaunched = alarmSettings.alarms.minByOrNull { it.start }
         val alarmtoBeUpdated = alarmToBeLaunched!!
-
         when (alarmtoBeUpdated.repetition) {
 
             // No repetition => remove, it's not needed anymore (can also be a snooze alarm)
@@ -102,7 +98,6 @@ fun handleAlarmToBeLaunched(viewModel: AlarmSettingsViewModel = hiltViewModel())
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun evaluateAlarmRepetitionInfo(
     repetition: Repetition,
@@ -147,6 +142,17 @@ fun Repetition.translate() = when (this) {
     Repetition.MONTHLY -> stringResource(R.string.monthly)
 }
 
+
+@Composable
+fun translateDuration(unit: DurationUnit) = when(unit) {
+    DurationUnit.NANOSECONDS -> stringResource(R.string.nanoseconds)
+    DurationUnit.MICROSECONDS -> stringResource(R.string.microseconds)
+    DurationUnit.MILLISECONDS -> stringResource(R.string.milliseconds)
+    DurationUnit.SECONDS -> stringResource(R.string.seconds)
+    DurationUnit.MINUTES -> stringResource(R.string.minutes)
+    DurationUnit.HOURS -> stringResource(R.string.hours)
+    DurationUnit.DAYS -> stringResource(R.string.days)
+}
 
 /**
  * Mainly to omit the 'flipping' (string changes length when value is between 0..9).

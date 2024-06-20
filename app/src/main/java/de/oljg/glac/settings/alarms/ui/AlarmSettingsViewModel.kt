@@ -1,8 +1,6 @@
 package de.oljg.glac.settings.alarms.ui
 
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -79,6 +77,12 @@ class AlarmSettingsViewModel @Inject constructor(
         }
     }
 
+    fun updateAlarmSoundFadeDuration(alarmSettings: AlarmSettings, newValue: Duration) {
+        viewModelScope.launch {
+            updateAlarmSettings(alarmSettings.copy(alarmSoundFadeDuration = newValue))
+        }
+    }
+
     fun removeAlarm(alarmSettings: AlarmSettings, alarm: Alarm) {
         viewModelScope.launch {
             updateAlarmSettings(
@@ -90,7 +94,6 @@ class AlarmSettingsViewModel @Inject constructor(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun addAlarm(alarmSettings: AlarmSettings, alarm: Alarm) {
         viewModelScope.launch {
             updateAlarmSettings(
@@ -102,7 +105,6 @@ class AlarmSettingsViewModel @Inject constructor(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun updateAlarm(alarmSettings: AlarmSettings, alarmtoBeUpdated: Alarm, updatedAlarm: Alarm) {
         viewModelScope.launch {
             alarmScheduler.cancel(alarmtoBeUpdated)
@@ -126,7 +128,6 @@ class AlarmSettingsViewModel @Inject constructor(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun reScheduleAllAlarms(alarms: List<Alarm>) {
         viewModelScope.launch {
             alarms.forEach { alarm ->

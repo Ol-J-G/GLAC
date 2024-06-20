@@ -1,8 +1,6 @@
 package de.oljg.glac.settings.clock.ui.components.sections
 
 import android.content.res.Configuration
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -56,7 +54,6 @@ import de.oljg.glac.settings.clock.ui.utils.prettyPrintPercentage
 import de.oljg.glac.settings.clock.ui.utils.prettyPrintPixel
 import kotlinx.coroutines.launch
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val coroutineScope = rememberCoroutineScope()

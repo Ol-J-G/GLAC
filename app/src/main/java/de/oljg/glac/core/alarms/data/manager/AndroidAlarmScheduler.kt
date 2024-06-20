@@ -4,8 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import androidx.annotation.RequiresApi
 import de.oljg.glac.alarms.ui.utils.minus
 import de.oljg.glac.alarms.ui.utils.toMillis
 import de.oljg.glac.core.alarms.data.Alarm
@@ -20,7 +18,6 @@ class AndroidAlarmScheduler(
 ): AlarmScheduler {
     private val alarmManager: AlarmManager = context.getSystemService(AlarmManager::class.java)
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun schedule(alarm: Alarm) {
         val actualAlarmStart = if(alarm.isLightAlarm)
             alarm.start.minus(alarm.lightAlarmDuration) else alarm.start

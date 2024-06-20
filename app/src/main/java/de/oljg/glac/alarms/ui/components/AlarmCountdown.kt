@@ -1,7 +1,5 @@
 package de.oljg.glac.alarms.ui.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,7 +25,6 @@ import kotlinx.coroutines.delay
 import java.time.LocalDateTime
 import kotlin.time.Duration
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AlarmCountdown(alarmStart: LocalDateTime) {
     var currentTime by remember {

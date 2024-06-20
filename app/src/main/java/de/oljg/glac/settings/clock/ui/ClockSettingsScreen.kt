@@ -1,8 +1,6 @@
 package de.oljg.glac.settings.clock.ui
 
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -43,7 +41,6 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ClockSettingsScreen() {
     val screenDetails = screenDetails()
@@ -77,7 +74,6 @@ fun ClockSettingsScreen() {
 
 
 @OptIn(FlowPreview::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun OneColumnLayout(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
@@ -115,7 +111,6 @@ private fun OneColumnLayout(viewModel: ClockSettingsViewModel = hiltViewModel())
 
 
 @OptIn(FlowPreview::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun TwoColumnsLayout(viewModel: ClockSettingsViewModel = hiltViewModel()) {
     val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()

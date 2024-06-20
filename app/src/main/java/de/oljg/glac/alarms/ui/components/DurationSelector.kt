@@ -23,22 +23,24 @@ import androidx.compose.ui.text.input.KeyboardType
 import de.oljg.glac.R
 import de.oljg.glac.alarms.ui.utils.isInt
 import de.oljg.glac.alarms.ui.utils.isIntIn
+import de.oljg.glac.alarms.ui.utils.translateDuration
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 @Composable
-fun MinutesDurationSelector(
+fun DurationSelector(
     modifier: Modifier = Modifier,
     label: String,
     duration: Duration,
+    durationUnit: DurationUnit,
     minDuration: Duration,
     maxDuration: Duration,
     onDurationChanged: (Duration) -> Unit,
     onValueChanged: (Boolean) -> Unit = {}
 ) {
     var durationValue by remember {
-        mutableStateOf(duration.toInt(unit = DurationUnit.MINUTES).toString())
+        mutableStateOf(duration.toInt(unit = durationUnit).toString())
     }
     var isValidDuration by remember {
         mutableStateOf(true)
@@ -51,17 +53,16 @@ fun MinutesDurationSelector(
         OutlinedTextField(
             modifier = modifier,
             value = durationValue,
-            label = { Text(text = label + " [" + stringResource(R.string.minutes) + "]") },
+            label = { Text(text = label + " [" + translateDuration(unit = durationUnit) + "]") },
             onValueChange = { newTextValue ->
                 durationValue = newTextValue.trim()
                 isValidDuration = durationValue.isIntIn(
-                    range = minDuration.toInt(DurationUnit.MINUTES)
-                            ..maxDuration.toInt(DurationUnit.MINUTES)
+                    range = minDuration.toInt(durationUnit)..maxDuration.toInt(durationUnit)
                 )
                 onValueChanged(isValidDuration)
 
                 if (isValidDuration)
-                    onDurationChanged(durationValue.toInt().minutes)
+                    onDurationChanged(durationValue.toInt().toDuration(durationUnit))
             },
             singleLine = true,
             supportingText = {
@@ -71,12 +72,13 @@ fun MinutesDurationSelector(
                             durationValue.isBlank() -> stringResource(R.string.please_enter_a_number)
                             !durationValue.isInt() -> stringResource(R.string.please_enter_a_whole_number)
                             durationValue.toInt() !in
-                                    minDuration.toInt(DurationUnit.MINUTES)
-                                    ..maxDuration.toInt(DurationUnit.MINUTES) ->
+                                    minDuration.toInt(durationUnit)
+                                    ..maxDuration.toInt(durationUnit) ->
                                 stringResource(R.string.valid_range) + ": $minDuration - $maxDuration"
 
                             else -> ""
-                        }, color = MaterialTheme.colorScheme.error
+                        },
+                        color = MaterialTheme.colorScheme.error
                     )
                 }
             },

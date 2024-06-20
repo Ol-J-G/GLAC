@@ -1,15 +1,16 @@
 package de.oljg.glac
 
-import android.os.Build
+import android.media.AudioManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
@@ -18,20 +19,19 @@ import dagger.hilt.android.AndroidEntryPoint
 import de.oljg.glac.alarms.ui.components.AlarmReactionDialog
 import de.oljg.glac.alarms.ui.utils.Repetition
 import de.oljg.glac.alarms.ui.utils.handleAlarmToBeLaunched
-import de.oljg.glac.alarms.ui.utils.isSnoozeAlarmBeforeNextAlarm
 import de.oljg.glac.alarms.ui.utils.plus
 import de.oljg.glac.clock.digital.ui.DigitalAlarmClockScreen
 import de.oljg.glac.core.alarms.data.Alarm
 import de.oljg.glac.core.alarms.media.AlarmSoundPlayer
 import de.oljg.glac.core.util.findActivity
 import de.oljg.glac.core.util.resetScreenBrightness
+import de.oljg.glac.core.util.unlockScreenOrientation
 import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
 import de.oljg.glac.ui.theme.GLACTheme
 import java.time.LocalDateTime
 
 @AndroidEntryPoint
 class AlarmActivity : ComponentActivity() {
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -49,38 +49,61 @@ class AlarmActivity : ComponentActivity() {
             val viewModel: AlarmSettingsViewModel = hiltViewModel()
             val alarmSettings by viewModel.alarmSettingsStateFlow.collectAsState()
 
+            val context = LocalContext.current
+            val alarmActivity = context.findActivity()
+                ?: return@setContent // Should actually not happen!
+
+            val alarmSoundPlayer by remember {
+                mutableStateOf(AlarmSoundPlayer(context))
+            }
+
+            val audioManager by remember {
+                mutableStateOf(context.getSystemService(AUDIO_SERVICE) as AudioManager)
+            }
+
             var showAlarmReactionDialog by rememberSaveable {
                 mutableStateOf(false)
+            }
+
+            /**
+             * Rememeber user's volume setting (volume will be reset to this value after alarm is
+             * stopped/snoozed).
+             */
+            val streamAlarmVolumeSetByUser by rememberSaveable {
+                mutableIntStateOf(audioManager.getStreamVolume(AudioManager.STREAM_ALARM))
+            }
+
+            fun handleAlarmStop() {
+                unlockScreenOrientation(alarmActivity)
+                resetScreenBrightness(alarmActivity)
+                alarmSoundPlayer.stop()
+
+                // Reset volume
+                audioManager.setStreamVolume(
+                    AudioManager.STREAM_ALARM, streamAlarmVolumeSetByUser, 0
+                )
+                alarmActivity.finish()
             }
 
             val alarmToBeLaunched = handleAlarmToBeLaunched()
 
             GLACTheme {
-                val alarmSoundPlayer = AlarmSoundPlayer(LocalContext.current)
                 if (alarmToBeLaunched != null) {
                     DigitalAlarmClockScreen(
                         fullScreen = true,
                         alarmMode = true,
                         alarmToBeLaunched = alarmToBeLaunched,
                         alarmSoundPlayer = alarmSoundPlayer,
+                        alarmSoundFadeDuration = alarmSettings.alarmSoundFadeDuration,
                         onClick = { showAlarmReactionDialog = true }
                     )
                 }
 
                 AnimatedVisibility(visible = showAlarmReactionDialog) {
-                    val alarmActivity = LocalContext.current.findActivity()
-                        ?: return@AnimatedVisibility // Should actually not happen!
-
-                    val snoozeAlarmStart = LocalDateTime.now()
-                        .plus(alarmToBeLaunched!!.snoozeDuration)
-
                     AlarmReactionDialog(
-                        snoozeEnabled = isSnoozeAlarmBeforeNextAlarm(
-                            snoozeAlarmStart = snoozeAlarmStart,
-                            scheduledAlarms = alarmSettings.alarms
-                        ),
+                        alarmToBeLaunched = alarmToBeLaunched!!,
+                        scheduledAlarms = alarmSettings.alarms,
                         onSnoozeAlarm = {
-                            resetScreenBrightness(alarmActivity)
                             /**
                              * Schedule snooze alarm with settings "inherited" from the "original"
                              * alarm that has been snoozed by a user, but, snooze alarms:
@@ -95,23 +118,20 @@ class AlarmActivity : ComponentActivity() {
                             viewModel.addAlarm(
                                 alarmSettings,
                                 Alarm(
-                                    start = snoozeAlarmStart,
+                                    start = LocalDateTime.now().plus(
+                                        alarmToBeLaunched.snoozeDuration
+                                    ),
+                                    alarmSoundUri = alarmToBeLaunched.alarmSoundUri,
                                     isSnoozeAlarm = true,
                                     snoozeDuration = alarmToBeLaunched.snoozeDuration,
                                     isLightAlarm = false,
-                                    repetition = Repetition.NONE,
-                                    alarmSoundUri = alarmToBeLaunched.alarmSoundUri
+                                    repetition = Repetition.NONE
                                 )
                             )
-                            alarmSoundPlayer.stop()
-                            alarmActivity.finish()
+                            handleAlarmStop()
                         },
                         onDismiss = { showAlarmReactionDialog = false },
-                        onStopAlarm = {
-                            resetScreenBrightness(alarmActivity)
-                            alarmSoundPlayer.stop()
-                            alarmActivity.finish()
-                        }
+                        onStopAlarm = { handleAlarmStop() }
                     )
                 }
             }

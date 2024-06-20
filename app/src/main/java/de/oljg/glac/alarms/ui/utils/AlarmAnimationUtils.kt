@@ -1,7 +1,7 @@
 package de.oljg.glac.alarms.ui.utils
 
-import android.content.pm.ActivityInfo
-import android.content.res.Configuration
+import android.content.Context.AUDIO_SERVICE
+import android.media.AudioManager
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector4D
@@ -14,7 +14,11 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -22,7 +26,6 @@ import androidx.compose.ui.graphics.RadialGradientShader
 import androidx.compose.ui.graphics.Shader
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import de.oljg.glac.core.alarms.data.Alarm
 import de.oljg.glac.core.util.findActivity
@@ -96,6 +99,54 @@ fun animateSnoozeAlarmIndicatorColor(
 
 
 @Composable
+fun FadeSoundVolume(fadeDurationMillis: Int) {
+    if(fadeDurationMillis == 0) return
+
+    val context = LocalContext.current
+    val audioManager by remember {
+        mutableStateOf(context.getSystemService(AUDIO_SERVICE) as AudioManager)
+    }
+
+    val initialAlarmVolume = 0f
+    val maxAlarmVolume by remember {
+        mutableIntStateOf(audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM))
+    }
+
+    var currentVolumeInt by remember {
+        mutableIntStateOf(initialAlarmVolume.toInt())
+    }
+
+    val volume = remember { Animatable(initialAlarmVolume) }
+    LaunchedEffect(Unit) {
+        volume.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(durationMillis = fadeDurationMillis, easing = LinearEasing)
+        ) {
+            when {
+                /**
+                 * Set volume initially once to lowest level, to ensure the alarm sound starts
+                 * playing with this low volume, otherwise alarm sound would be played with
+                 * alarm volume set by user (most probably not lowest level!) until animation
+                 * value reaches next integer, which would be not intended and odd^^ ...
+                 */
+                this.value == initialAlarmVolume -> {
+                    audioManager.setStreamVolume(AudioManager.STREAM_ALARM, currentVolumeInt, 0)
+                }
+                /**
+                 * Set volume only when next integer is reached, to prevent setting volume
+                 * multiple times to the same value (e.g.: 1.1f => 1, 1.2f => 1, etc.)
+                 */
+                currentVolumeInt != (maxAlarmVolume * this.value).toInt() -> {
+                    audioManager.setStreamVolume(AudioManager.STREAM_ALARM, currentVolumeInt, 0)
+                    currentVolumeInt = (maxAlarmVolume * this.value).toInt()
+                }
+            }
+        }
+    }
+}
+
+
+@Composable
 private fun FadeBrightnessFromCurrentToFull(
     totalDurationMillis: Int,
     clockBrightness: Float? = null,
@@ -156,31 +207,6 @@ fun LightAlarm(
     clockBrightness: Float?,
     onFinished: () -> Unit
 ) {
-    /**
-     * Lock current screen orientation (user cannot rotate) until light alarm animation has ended.
-     * Otherwise, when a user would rotate device during light alarm animation, the animation
-     * would be restarted, which would bring the alarm process timeline in an inconsistent state!
-     *
-     * Of course, nevertheless this is unfortunately a 'dirty' workaround.
-     *
-     * But, assuming this is a rare case, it's not worth to take care about pause/continue animation
-     * on screen rotation, because it's way too complicated imho (write a Savable for
-     * Animatable<Color, AnimationVector4D> to use rememberSavable? => uh-oh..uhm, dunno
-     * how to do this yet...maybe trying it sometimes).
-     *
-     * And, usually, a user snoozes or stops the alarm, rather than grap and rotate the device
-     * beforehand (at least when user is about to wake up and still tired => don't move too
-     * much then, right? :>).
-     */
-    val currentOrientation = LocalConfiguration.current.orientation
-    val activity = LocalContext.current.findActivity()
-    activity?.let {
-        it.requestedOrientation = when (currentOrientation) {
-            Configuration.ORIENTATION_PORTRAIT -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            else -> ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        }
-    }
-
     val lightAlarmDurationMillis = alarmToBeLaunched.lightAlarmDuration.inWholeMilliseconds
     FadeBrightnessFromCurrentToFull(
         clockBrightness = clockBrightness,
@@ -215,11 +241,6 @@ fun LightAlarm(
                     easing = LinearEasing
                 )
             )
-        }
-
-        // Light alarm is finished => Unlock screen orientation => let user rotate again
-        activity?.let {
-            it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED // -1
         }
         onFinished()
     }

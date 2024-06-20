@@ -1,8 +1,6 @@
 package de.oljg.glac.alarms.ui.components
 
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -41,7 +39,6 @@ import java.time.LocalDateTime
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AlarmListItem(
     alarmStart: LocalDateTime,

@@ -1,7 +1,5 @@
 package de.oljg.glac.alarms.ui
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.fadeIn
@@ -43,7 +41,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
     val coroutineScope = rememberCoroutineScope()
@@ -83,12 +80,12 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
 
                         // quick manual test
 //                        val testAlarm = Alarm(
-//                            start = LocalDateTime.now().plusSeconds(15),
+//                            start = LocalDateTime.now().plusSeconds(5),
 //                            isLightAlarm = false,
-//                            lightAlarmDuration = 10.seconds,
+//                            lightAlarmDuration = 20.seconds,
 //                            repetition = Repetition.WEEKLY,
 //                            snoozeDuration = 10.seconds,
-//                            alarmSoundUri = Uri.parse("content://media/internal/audio/media/8?title=Coin&canonical=1")
+////                            alarmSoundUri = Uri.parse("content://media/internal/audio/media/8?title=Coin&canonical=1")
 //                        )
 //                        viewModel.addAlarm(alarmSettings, testAlarm)
 //                        selectedAlarmStart = testAlarm.start

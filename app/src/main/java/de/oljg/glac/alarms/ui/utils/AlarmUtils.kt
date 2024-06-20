@@ -1,8 +1,6 @@
 package de.oljg.glac.alarms.ui.utils
 
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.mapSaver
 import com.ibm.icu.text.RuleBasedNumberFormat
@@ -23,6 +21,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 import kotlin.time.times
 import kotlin.time.toJavaDuration
@@ -57,7 +56,6 @@ fun <T> T?.isSet() = this != null
 fun dateAndTimeAreSet(date: LocalDate?, time: LocalTime?) = date.isSet() && time.isSet()
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun evaluateAlarmErrorState(
     date: LocalDate?,
     time: LocalTime?,
@@ -90,7 +88,6 @@ fun evaluateAlarmErrorState(
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun checkIfReadyToScheduleAlarm(
     date: LocalDate?,
     time: LocalTime?,
@@ -117,7 +114,6 @@ fun checkIfReadyToScheduleAlarm(
 
 
 // Nice to have as tiny hint for users
-@RequiresApi(Build.VERSION_CODES.O)
 fun earliestPossibleAlarmTime(lightAlarmDuration: Duration): String =
         localizedShortDateTimeFormatter.format(
             LocalDateTime.now()
@@ -127,7 +123,6 @@ fun earliestPossibleAlarmTime(lightAlarmDuration: Duration): String =
         )
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun isAlarmStart(
     validState: ValidState,
     date: LocalDate?,
@@ -145,7 +140,6 @@ fun isAlarmStart(
         }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun overlapsExistingAlarm(
     validState: ValidState,
     date: LocalDate?,
@@ -181,7 +175,6 @@ fun overlapsExistingAlarm(
  *     |<    5min     >|                      |
  *                     |<   'sunrise' anim   >|< alarmSound
  */
-@RequiresApi(Build.VERSION_CODES.O)
 fun LocalDateTime.isInFuture(lightAlarmDuration: Duration): Boolean {
     val now = LocalDateTime.now()
     val alarmTime = this.minus(ALARM_START_BUFFER)
@@ -209,7 +202,6 @@ fun LocalDateTime.isInFuture(lightAlarmDuration: Duration): Boolean {
  * @see de.oljg.glac.alarms.ui.utils.OverlappingAlarmsAdvancedTest
  * @see de.oljg.glac.alarms.ui.utils.OverlappingAlarmsUpdateTest
  */
-@RequiresApi(Build.VERSION_CODES.O)
 fun LocalDateTime.interferesScheduledAlarms(
     lightAlarmDuration: Duration,
     scheduledAlarms: List<Alarm>,
@@ -266,7 +258,6 @@ fun LocalDateTime.interferesScheduledAlarms(
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 private fun rangesOverlap(
     requestedAlarmRange: OpenEndRange<LocalDateTime>,
     scheduledAlarm: Alarm
@@ -288,7 +279,6 @@ private fun rangesOverlap(
  * See [de.oljg.glac.alarms.ui.utils.OverlappingRangesTest], it documents how it works and how
  * to use.
  */
-@RequiresApi(Build.VERSION_CODES.O)
 fun OpenEndRange<LocalDateTime>.overlapsOrContainsCompletely(
     otherRange: OpenEndRange<LocalDateTime>
 ): Boolean {
@@ -316,7 +306,6 @@ fun OpenEndRange<LocalDateTime>.overlapsOrContainsCompletely(
  *        |                              |
  *  snoozeAlarmStart                 nextAlarmStart
  */
-@RequiresApi(Build.VERSION_CODES.O)
 fun isSnoozeAlarmBeforeNextAlarm(
     snoozeAlarmStart: LocalDateTime,
     scheduledAlarms: List<Alarm>
@@ -332,36 +321,29 @@ fun isSnoozeAlarmBeforeNextAlarm(
  * (better for now to use [kotlin.time.Duration.toJavaDuration] just once, here in this fun ...
  * (sadly, kotlin time lib is still experimental (today=2024-05-21), so relying on Java here :>))
  */
-@RequiresApi(Build.VERSION_CODES.O)
 operator fun LocalDateTime.minus(amountToSubstract: Duration): LocalDateTime =
         minus(amountToSubstract.toJavaDuration())
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 operator fun LocalDateTime.plus(amountToAdd: Duration): LocalDateTime =
         plus(amountToAdd.toJavaDuration())
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 operator fun LocalTime.plus(amountToAdd: Duration): LocalTime =
         plus(amountToAdd.toJavaDuration())
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun Duration.Companion.between(a: LocalDateTime, b: LocalDateTime): Duration {
     if (a == b || b.isBefore(a)) return ZERO // handles positive durations only!
     return java.time.Duration.between(a, b).toKotlinDuration()
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 private fun defaultOffset(): ZoneOffset = ZoneId.systemDefault().rules.getOffset(Instant.now())
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun LocalDateTime?.toEpochMillis() = this?.toEpochSecond(defaultOffset())?.times(1000L)
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun LocalDateTime.toMillis() = this.toEpochMillis()!!
 
 
@@ -416,21 +398,20 @@ object AlarmDefaults {
     val MIN_SNOOZE_DURATION = 5.minutes
     val MAX_SNOOZE_DURATION = 60.minutes
 
+    val MIN_ALARM_SOUND_FADE_DUARTION = ZERO
+    val MAX_ALARM_SOUND_FADE_DUARTION = 60.seconds
+
     // Users can schedule an alarm from now + ALARM_START_BUFFER
     val ALARM_START_BUFFER = 1.minutes //TODO: change back to 5 after testing
-    val DEFAULT_LIGHT_ALARM_DURATION = 30.minutes
 
     val REPEAT_MODES = Repetition.entries.map { repeatMode -> repeatMode.name }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     val localizedFullDateFormatter: DateTimeFormatter =
             DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
 
-    @RequiresApi(Build.VERSION_CODES.O)
     val localizedShortTimeFormatter: DateTimeFormatter =
             DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
 
-    @RequiresApi(Build.VERSION_CODES.O)
     val localizedShortDateTimeFormatter: DateTimeFormatter =
             DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
 
@@ -450,7 +431,6 @@ object AlarmDefaults {
         )
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     val localDateTimeSaver: Saver<LocalDateTime?, Any> = run {
         val localDateTimeKey = "localDateTime"
         mapSaver(

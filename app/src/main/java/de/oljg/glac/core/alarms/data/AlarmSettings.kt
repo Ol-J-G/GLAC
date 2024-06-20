@@ -1,19 +1,20 @@
 package de.oljg.glac.core.alarms.data
 
 import android.net.Uri
-import android.provider.Settings
 import androidx.compose.ui.graphics.Color
 import de.oljg.glac.alarms.ui.utils.Repetition
+import de.oljg.glac.core.alarms.data.utils.AlarmDefaults.DEFAULT_ALARM_SOUND_FADE_DURATION
+import de.oljg.glac.core.alarms.data.utils.AlarmDefaults.DEFAULT_ALARM_SOUND_URI
+import de.oljg.glac.core.alarms.data.utils.AlarmDefaults.DEFAULT_IS_LIGHT_ALARM
+import de.oljg.glac.core.alarms.data.utils.AlarmDefaults.DEFAULT_LIGHT_ALARM_COLORS
+import de.oljg.glac.core.alarms.data.utils.AlarmDefaults.DEFAULT_LIGHT_ALARM_DURATION
+import de.oljg.glac.core.alarms.data.utils.AlarmDefaults.DEFAULT_REPETITION
+import de.oljg.glac.core.alarms.data.utils.AlarmDefaults.DEFAULT_SNOOZE_DURATION
 import de.oljg.glac.core.clock.data.ColorSerializer
-import de.oljg.glac.ui.theme.darkBlue
-import de.oljg.glac.ui.theme.goldenrod
-import de.oljg.glac.ui.theme.lightBlue
-import de.oljg.glac.ui.theme.orange
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.serialization.Serializable
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.minutes
 
 @Serializable
 data class AlarmSettings(
@@ -21,23 +22,27 @@ data class AlarmSettings(
     @Serializable(with = AlarmsSerializer::class)
     val alarms: PersistentList<Alarm> = persistentListOf(),
 
+    val alarmDefaultsSectionIsExpanded: Boolean = true, // Expanded by default => just one section
+
+    // Same for all alarms
+    @Serializable(with = DurationSerializer::class)
+    val alarmSoundFadeDuration: Duration = DEFAULT_ALARM_SOUND_FADE_DURATION,
+
     // Everything below are common alarm settings as default for each alarm in alarms
-    val isLightAlarm: Boolean = true,
+    @Serializable(with = UriSerializer::class)
+    val alarmSoundUri: Uri = DEFAULT_ALARM_SOUND_URI,
+
+    val repetition: Repetition = DEFAULT_REPETITION,
+
+    val isLightAlarm: Boolean = DEFAULT_IS_LIGHT_ALARM,
 
     @Serializable(with = DurationSerializer::class)
-    val lightAlarmDuration: Duration = 30.minutes,
+    val lightAlarmDuration: Duration = DEFAULT_LIGHT_ALARM_DURATION,
 
     @Serializable(with = ColorsSerializer::class)
     val lightAlarmColors: PersistentList<@Serializable(with = ColorSerializer::class) Color> =
-            persistentListOf(Color.Black, darkBlue, lightBlue, orange, goldenrod, Color.White),
+            DEFAULT_LIGHT_ALARM_COLORS,
 
     @Serializable(with = DurationSerializer::class)
-    val snoozeDuration: Duration = 30.minutes,
-
-    val repetition: Repetition = Repetition.NONE,
-
-    @Serializable(with = UriSerializer::class)
-    val alarmSoundUri: Uri = Settings.System.DEFAULT_RINGTONE_URI,
-
-    val alarmDefaultsSectionIsExpanded: Boolean = true // Expanded by default => just one section
+    val snoozeDuration: Duration = DEFAULT_SNOOZE_DURATION
 )

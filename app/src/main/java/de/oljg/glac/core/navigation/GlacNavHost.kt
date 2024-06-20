@@ -1,7 +1,5 @@
 package de.oljg.glac.core.navigation
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -32,7 +30,6 @@ import de.oljg.glac.settings.alarms.ui.AlarmSettingsScreen
 import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
 import de.oljg.glac.settings.clock.ui.ClockSettingsScreen
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun GlacNavHost(
     navController: NavHostController,

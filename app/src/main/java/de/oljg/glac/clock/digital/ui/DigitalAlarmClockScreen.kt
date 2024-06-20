@@ -1,7 +1,5 @@
 package de.oljg.glac.clock.digital.ui
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector4D
@@ -19,8 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import de.oljg.glac.alarms.ui.utils.FadeSoundVolume
 import de.oljg.glac.alarms.ui.utils.LightAlarm
 import de.oljg.glac.alarms.ui.utils.alarmBrush
 import de.oljg.glac.alarms.ui.utils.animateAlarmBrushOffset
@@ -45,13 +45,16 @@ import de.oljg.glac.core.alarms.media.AlarmSoundPlayer
 import de.oljg.glac.core.clock.data.ClockTheme
 import de.oljg.glac.core.util.defaultBackgroundColor
 import de.oljg.glac.core.util.defaultColor
+import de.oljg.glac.core.util.lockScreenOrientation
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
 import de.oljg.glac.settings.clock.ui.utils.isSevenSegmentItalicOrReverseItalic
 import kotlinx.coroutines.delay
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun DigitalAlarmClockScreen(
     viewModel: ClockSettingsViewModel = hiltViewModel(),
@@ -61,6 +64,7 @@ fun DigitalAlarmClockScreen(
     alarmToBeLaunched: Alarm? = null,
     isSnoozeAlarmActive: Boolean = false,
     alarmSoundPlayer: AlarmSoundPlayer? = null,
+    alarmSoundFadeDuration: Duration = Duration.ZERO,
     onClick: () -> Unit = {}
 ) {
     val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
@@ -152,20 +156,31 @@ fun DigitalAlarmClockScreen(
 
     when {
         alarmMode && alarmToBeLaunched.isLightAlarm() -> {
+            lockScreenOrientation(context, LocalConfiguration.current.orientation)
             LightAlarm(
                 alarmToBeLaunched = alarmToBeLaunched!!, // is set in alarmMode => save
                 lightAlarmColors = lightAlarmColors!!, // default is set in every Alarm => save
                 lightAlarmAnimatedColor = lightAlarmAnimatedColor,
                 clockBrightness = if (clockSettings.overrideSystemBrightness)
                     clockSettings.clockBrightness else null,
-                onFinished = {
-                    lightAlarmIsFinished = true
-                    alarmSoundPlayer?.play(alarmToBeLaunched.alarmSoundUri)
-                }
+                onFinished = { lightAlarmIsFinished = true }
             )
+            if (lightAlarmIsFinished) {
+                FadeSoundVolume(
+                    fadeDurationMillis = alarmSoundFadeDuration.toInt(DurationUnit.MILLISECONDS)
+                )
+                DisposableEffect(Unit) {
+                    alarmSoundPlayer?.play(alarmToBeLaunched.alarmSoundUri)
+                    onDispose { alarmSoundPlayer?.stop() }
+                }
+            }
         }
 
         alarmMode && alarmToBeLaunched.isNotLightAlarm() -> {
+            lockScreenOrientation(context, LocalConfiguration.current.orientation)
+            FadeSoundVolume(
+                fadeDurationMillis = alarmSoundFadeDuration.toInt(DurationUnit.MILLISECONDS)
+            )
             DisposableEffect(Unit) {
                 alarmToBeLaunched?.alarmSoundUri?.let { alarmSoundPlayer?.play(it) }
                 onDispose { alarmSoundPlayer?.stop() }
@@ -307,7 +322,7 @@ fun DigitalAlarmClockScreen(
                 drawOffSegments = if (useAlarmBrush()) false else clockTheme.drawOffSegments,
                 clockBackgroundColor = if (alarmMode && lightAlarmIsFinished)
                     lightAlarmColors!!.last() else
-                        clockTheme.backgroundColor ?: defaultBackgroundColor(),
+                    clockTheme.backgroundColor ?: defaultBackgroundColor(),
                 brush = if (useAlarmBrush()) alarmBrush else null
             )
         }

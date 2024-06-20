@@ -3,6 +3,8 @@ package de.oljg.glac.core.util
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.net.Uri
 import android.provider.Settings
 import android.view.WindowManager
@@ -147,3 +149,36 @@ fun resetScreenBrightness(activity: Activity) {
     setScreenBrightness(activity, WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE) // -1f
 }
 
+
+/**
+ * Lock current screen orientation (user cannot rotate) until alarm is stopped/snoozed.
+ * Otherwise, when a user would rotate device during alarm process, animations
+ * would be restarted, which would bring the alarm process timeline in an inconsistent state!
+ *
+ * Of course, nevertheless this is unfortunately a 'dirty' workaround.
+ *
+ * But, assuming this is a rare case, it's not worth to take care about pause/continue animation
+ * on screen rotation, because it's way too complicated imho (write a Savable for
+ * Animatable<Color, AnimationVector4D> to use rememberSavable? => uh-oh..uhm, dunno
+ * how to do this yet...maybe trying it sometimes).
+ *
+ * And, usually, a user snoozes or stops the alarm, rather than grap and rotate the device
+ * beforehand (at least when user is about to wake up and still tired => don't move too
+ * much then, right? :>).
+ */
+fun lockScreenOrientation(context: Context, currentOrientation: Int) {
+    val activity = context.findActivity()
+    activity?.let {
+        it.requestedOrientation = when (currentOrientation) {
+            Configuration.ORIENTATION_PORTRAIT -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            else -> ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        }
+    }
+}
+
+// Alarm is stopped/snoozed => Unlock screen orientation => let user rotate again
+fun unlockScreenOrientation(activity: Activity?) {
+    activity?.let {
+        it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED // -1
+    }
+}

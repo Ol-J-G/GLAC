@@ -1,7 +1,5 @@
 package de.oljg.glac.core.ui.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -41,7 +39,7 @@ import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_HORIZONTAL
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.SETTINGS_SECTION_HEIGHT
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.TRAILING_ICON_END_PADDING
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun SettingsSection(
     sectionTitle: String,

@@ -1,8 +1,6 @@
 package de.oljg.glac.settings.alarms.ui
 
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,21 +18,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.alarms.ui.components.AlarmSoundSelector
-import de.oljg.glac.alarms.ui.components.MinutesDurationSelector
+import de.oljg.glac.alarms.ui.components.DurationSelector
 import de.oljg.glac.alarms.ui.components.RepetitionSelector
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults
 import de.oljg.glac.alarms.ui.utils.Repetition
 import de.oljg.glac.core.ui.components.SettingsSection
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSwitch
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DIALOG_DEFAULT_PADDING
+import kotlin.time.DurationUnit
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AlarmSettingsScreen(
     viewModel: AlarmSettingsViewModel = hiltViewModel()
 ) {
     val alarmSettings by viewModel.alarmSettingsStateFlow.collectAsState()
-    val scrollState = rememberScrollState() //TODO: save scroll pos, similar to ClockSettingsScreen
+    val scrollState = rememberScrollState()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -45,7 +43,7 @@ fun AlarmSettingsScreen(
                 .fillMaxWidth()
                 .verticalScroll(scrollState)
         ) {
-            SettingsSection(
+            SettingsSection( // TODO: is this really needed => remove?
                 sectionTitle = stringResource(R.string.default_alarm_settings),
                 sectionTitleStyle = MaterialTheme.typography.titleMedium,
                 expanded = alarmSettings.alarmDefaultsSectionIsExpanded,
@@ -87,7 +85,7 @@ fun AlarmSettingsScreen(
                 )
 
                 AnimatedVisibility(visible = alarmSettings.isLightAlarm) {
-                    MinutesDurationSelector(
+                    DurationSelector(
                         modifier = Modifier
                             .padding(
                                 vertical = DIALOG_DEFAULT_PADDING / 2,
@@ -96,6 +94,7 @@ fun AlarmSettingsScreen(
                             .fillMaxWidth(),
                         label = stringResource(R.string.light_alarm_duration),
                         duration = alarmSettings.lightAlarmDuration,
+                        durationUnit = DurationUnit.MINUTES,
                         minDuration = AlarmDefaults.MIN_LIGHT_ALARM_DURATION,
                         maxDuration = AlarmDefaults.MAX_LIGHT_ALARM_DURATION,
                         onDurationChanged = { newLightAlarmDuration ->
@@ -103,7 +102,7 @@ fun AlarmSettingsScreen(
                         }
                     )
                 }
-                MinutesDurationSelector(
+                DurationSelector(
                     modifier = Modifier
                         .padding(
                             vertical = DIALOG_DEFAULT_PADDING / 2,
@@ -112,10 +111,29 @@ fun AlarmSettingsScreen(
                         .fillMaxWidth(),
                     label = stringResource(R.string.snooze_duration),
                     duration = alarmSettings.snoozeDuration,
+                    durationUnit = DurationUnit.MINUTES,
                     minDuration = AlarmDefaults.MIN_SNOOZE_DURATION,
                     maxDuration = AlarmDefaults.MAX_SNOOZE_DURATION,
                     onDurationChanged = { newSnoozeDuration ->
                         viewModel.updateSnoozeDuration(alarmSettings, newSnoozeDuration)
+                    }
+                )
+                DurationSelector(
+                    modifier = Modifier
+                        .padding(
+                            vertical = DIALOG_DEFAULT_PADDING / 2,
+                            horizontal = DIALOG_DEFAULT_PADDING / 3
+                        )
+                        .fillMaxWidth(),
+                    label = stringResource(R.string.alarm_sound_fade_duration),
+                    duration = alarmSettings.alarmSoundFadeDuration,
+                    durationUnit = DurationUnit.SECONDS,
+                    minDuration = AlarmDefaults.MIN_ALARM_SOUND_FADE_DUARTION,
+                    maxDuration = AlarmDefaults.MAX_ALARM_SOUND_FADE_DUARTION,
+                    onDurationChanged = { newAlarmSoundFadeDuration ->
+                        viewModel.updateAlarmSoundFadeDuration(
+                            alarmSettings, newAlarmSoundFadeDuration
+                        )
                     }
                 )
             }

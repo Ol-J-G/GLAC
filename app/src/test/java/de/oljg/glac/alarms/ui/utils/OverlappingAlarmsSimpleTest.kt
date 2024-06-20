@@ -2,8 +2,8 @@ package de.oljg.glac.alarms.ui.utils
 
 import com.google.common.truth.Truth.assertThat
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.ALARM_START_BUFFER
-import de.oljg.glac.alarms.ui.utils.AlarmDefaults.DEFAULT_LIGHT_ALARM_DURATION
 import de.oljg.glac.core.alarms.data.Alarm
+import de.oljg.glac.core.alarms.data.utils.AlarmDefaults.DEFAULT_LIGHT_ALARM_DURATION
 import org.junit.Before
 import org.junit.Test
 import java.time.LocalDateTime

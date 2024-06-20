@@ -1,7 +1,5 @@
 package de.oljg.glac.alarms.ui.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,7 +18,6 @@ import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.time.Duration
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ColumnScope.AlarmDialogInfoSection(
     date: LocalDate?,

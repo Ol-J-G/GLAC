@@ -169,5 +169,10 @@
     <string name="play_alarm_sound_preview">Play Alarm Sound Preview</string>
     <string name="stop_alarm_sound_preview">Stop Alarm Sound Preview</string>
     <string name="import_sound_file">Import Sound File</string>
-    <string name="remove_imported_sound_file">Remove Imported Sound File</string> <!-- 'default' is reserved keyword-->
+    <string name="remove_imported_sound_file">Remove Imported Sound File</string>
+    <string name="nanoseconds">Nanoseconds</string>
+    <string name="microseconds">Microseconds</string>
+    <string name="milliseconds">Milliseconds</string>
+    <string name="days">Days</string>
+    <string name="alarm_sound_fade_duration">Alarm Sound Fade Duration</string> <!-- 'default' is reserved keyword-->
 </resources>

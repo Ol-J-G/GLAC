@@ -1,8 +1,6 @@
 package de.oljg.glac.alarms.ui.components
 
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.fadeIn
@@ -63,8 +61,8 @@ import java.time.LocalTime
 import java.time.ZoneId
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.ZERO
+import kotlin.time.DurationUnit
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlarmDialog(
@@ -113,9 +111,10 @@ fun AlarmDialog(
     )
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
 
+    val initialTime = LocalTime.now()
     val timePickerState = rememberTimePickerState(
-        initialHour = alarmToBeUpdated?.start?.toLocalTime()?.hour ?: 0,
-        initialMinute = alarmToBeUpdated?.start?.toLocalTime()?.minute ?: 0,
+        initialHour = alarmToBeUpdated?.start?.toLocalTime()?.hour ?: initialTime.hour,
+        initialMinute = alarmToBeUpdated?.start?.toLocalTime()?.minute ?: initialTime.minute,
     )
     var showTimePicker by rememberSaveable { mutableStateOf(false) }
 
@@ -242,12 +241,13 @@ fun AlarmDialog(
                     )
 
                     AnimatedVisibility(visible = isLightAlarm) {
-                        MinutesDurationSelector(
+                        DurationSelector(
                             modifier = Modifier
                                 .padding(DIALOG_DEFAULT_PADDING / 2)
                                 .fillMaxWidth(),
                             label = stringResource(R.string.light_alarm_duration),
                             duration = lightAlarmDuration,
+                            durationUnit = DurationUnit.MINUTES,
                             minDuration = MIN_LIGHT_ALARM_DURATION,
                             maxDuration = MAX_LIGHT_ALARM_DURATION,
                             onValueChanged = { isValidDuration ->
@@ -259,12 +259,13 @@ fun AlarmDialog(
                             }
                         )
                     }
-                    MinutesDurationSelector(
+                    DurationSelector(
                         modifier = Modifier
                             .padding(DIALOG_DEFAULT_PADDING / 2)
                             .fillMaxWidth(),
                         label = stringResource(R.string.snooze_duration),
                         duration = snoozeDuration,
+                        durationUnit = DurationUnit.MINUTES,
                         minDuration = MIN_SNOOZE_DURATION,
                         maxDuration = MAX_SNOOZE_DURATION,
                         onValueChanged = { isValidDuration ->
