@@ -17,8 +17,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
-import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_DIGIT_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DIGIT_SIZE_FACTOR
 import de.oljg.glac.core.clock.data.ClockTheme
 import de.oljg.glac.core.ui.components.SettingsSection
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
@@ -88,7 +88,7 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
             label =  "${stringResource(id = R.string.digit)} " +
                     stringResource(id = R.string.size),
             value = clockTheme.digitSizeFactor,
-            defaultValue = DEFAULT_CLOCK_DIGIT_SIZE_FACTOR,
+            defaultValue = DEFAULT_DIGIT_SIZE_FACTOR,
             sliderValuePrettyPrintFun = Float::prettyPrintPercentage,
             onValueChangeFinished = { newSizeFactor ->
                 coroutineScope.launch {
@@ -104,7 +104,7 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
                     viewModel.updateClockSettings(
                         clockSettings.copy(themes = clockSettings.themes.put(
                             clockThemeName, clockTheme.copy(
-                                digitSizeFactor = DEFAULT_CLOCK_DIGIT_SIZE_FACTOR))
+                                digitSizeFactor = DEFAULT_DIGIT_SIZE_FACTOR))
                         )
                     )
                 }

@@ -2,15 +2,39 @@ package de.oljg.glac.core.clock.data
 
 import androidx.compose.ui.graphics.Color
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
-import de.oljg.glac.clock.digital.ui.utils.ClockDefaults
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults
 import de.oljg.glac.clock.digital.ui.utils.DividerLineEnd
 import de.oljg.glac.clock.digital.ui.utils.DividerStyle
 import de.oljg.glac.clock.digital.ui.utils.Segment
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
 import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_CLOCK_CHAR_TYPE
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_COLON_FIRST_CIRCLE_POSITION
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_COLON_SECOND_CIRCLE_POSITION
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_DIGIT_SIZE_FACTOR
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_DIVIDER_DASH_COUNT
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_DIVIDER_DASH_DOTTED_PART_COUNT
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_DIVIDER_LENGTH_PERCENTAGE
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_DIVIDER_LINE_END
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_DIVIDER_ROTATE_ANGLE
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_DIVIDER_STYLE
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_DIVIDER_THICKNESS
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_DRAW_OFF_SEGMENTS
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_FONT_NAME
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_FONT_STYLE
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_FONT_WEIGHT
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_SET_COLORS_PER_CHAR
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_SET_COLORS_PER_CLOCK_PART
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_SET_SEGMENT_COLORS
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_SEVEN_SEGMENT_OUTLINE_SIZE
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_SEVEN_SEGMENT_STYLE
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_SEVEN_SEGMENT_WEIGHT
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_SHOW_DAYTIME_MARKER
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls.DEFAULT_SHOW_SECONDS
 import de.oljg.glac.core.util.FontStyle
 import de.oljg.glac.core.util.FontWeight
 import kotlinx.collections.immutable.PersistentMap
@@ -19,35 +43,35 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ClockTheme(
-    val showSeconds: Boolean = true,
-    val showDaytimeMarker: Boolean = false,
+    val showSeconds: Boolean = DEFAULT_SHOW_SECONDS,
+    val showDaytimeMarker: Boolean = DEFAULT_SHOW_DAYTIME_MARKER,
 
-    val clockCharType: ClockCharType = ClockCharType.FONT,
+    val clockCharType: ClockCharType = DEFAULT_CLOCK_CHAR_TYPE,
 
-    val fontName: String = "D_Din_Regular.ttf",
-    val fontWeight: FontWeight = FontWeight.NORMAL,
-    val fontStyle: FontStyle = FontStyle.NORMAL,
+    val fontName: String = DEFAULT_FONT_NAME,
+    val fontWeight: FontWeight = DEFAULT_FONT_WEIGHT,
+    val fontStyle: FontStyle = DEFAULT_FONT_STYLE,
 
-    val sevenSegmentWeight: SevenSegmentWeight = SevenSegmentWeight.REGULAR,
-    val sevenSegmentStyle: SevenSegmentStyle = SevenSegmentStyle.REGULAR,
-    val sevenSegmentOutlineSize: Float = SevenSegmentDefaults.DEFAULT_OUTLINE_SIZE,
-    val drawOffSegments: Boolean = true,
+    val sevenSegmentWeight: SevenSegmentWeight = DEFAULT_SEVEN_SEGMENT_WEIGHT,
+    val sevenSegmentStyle: SevenSegmentStyle = DEFAULT_SEVEN_SEGMENT_STYLE,
+    val sevenSegmentOutlineSize: Float = DEFAULT_SEVEN_SEGMENT_OUTLINE_SIZE,
+    val drawOffSegments: Boolean = DEFAULT_DRAW_OFF_SEGMENTS,
 
-    val digitSizeFactor: Float = ClockDefaults.DEFAULT_CLOCK_DIGIT_SIZE_FACTOR,
-    val daytimeMarkerSizeFactor: Float = ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
+    val digitSizeFactor: Float = DEFAULT_DIGIT_SIZE_FACTOR,
+    val daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
 
-    val dividerStyle: DividerStyle = DividerStyle.LINE,
-    val dividerThickness: Int = DividerDefaults.DEFAULT_DIVIDER_THICKNESS,
-    val dividerLengthPercentage: Float = DividerDefaults.DEFAULT_DIVIDER_LENGTH_FACTOR,
-    val dividerDashCount: Int = DividerDefaults.DEFAULT_DASH_COUNT,
-    val dividerDashDottedPartCount: Int = DividerDefaults.DEFAULT_DASH_DOTTED_PART_COUNT,
-    val dividerLineEnd: DividerLineEnd = DividerLineEnd.ROUND,
-    val dividerRotateAngle: Float = DividerDefaults.DEFAULT_DIVIDER_ROTATE_ANGLE,
-    val colonFirstCirclePosition: Float = DividerDefaults.DEFAULT_COLON_FIRST_CIRCLE_POSITION,
-    val colonSecondCirclePosition: Float = DividerDefaults.DEFAULT_COLON_SECOND_CIRCLE_POSITION,
-    val hoursMinutesDividerChar: Char = DividerDefaults.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR,
-    val minutesSecondsDividerChar: Char = DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR,
-    val daytimeMarkerDividerChar: Char = DividerDefaults.DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR,
+    val dividerStyle: DividerStyle = DEFAULT_DIVIDER_STYLE,
+    val dividerThickness: Int = DEFAULT_DIVIDER_THICKNESS,
+    val dividerLengthPercentage: Float = DEFAULT_DIVIDER_LENGTH_PERCENTAGE,
+    val dividerDashCount: Int = DEFAULT_DIVIDER_DASH_COUNT,
+    val dividerDashDottedPartCount: Int = DEFAULT_DIVIDER_DASH_DOTTED_PART_COUNT,
+    val dividerLineEnd: DividerLineEnd = DEFAULT_DIVIDER_LINE_END,
+    val dividerRotateAngle: Float = DEFAULT_DIVIDER_ROTATE_ANGLE,
+    val colonFirstCirclePosition: Float = DEFAULT_COLON_FIRST_CIRCLE_POSITION,
+    val colonSecondCirclePosition: Float = DEFAULT_COLON_SECOND_CIRCLE_POSITION,
+    val hoursMinutesDividerChar: Char = DEFAULT_HOURS_MINUTES_DIVIDER_CHAR,
+    val minutesSecondsDividerChar: Char = DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR,
+    val daytimeMarkerDividerChar: Char = DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR,
 
     @Serializable(with = ColorSerializer::class)
     val charColor: Color? = null,
@@ -58,15 +82,15 @@ data class ClockTheme(
     @Serializable(with = CharColorsSerializer::class)
     val charColors: PersistentMap<Char, @Serializable(with = ColorSerializer::class) Color> =
             persistentMapOf(),
-    val setColorsPerChar: Boolean = false,
+    val setColorsPerChar: Boolean = DEFAULT_SET_COLORS_PER_CHAR,
 
-    val setColorsPerClockPart: Boolean = false,
     val clockPartsColors: ClockPartsColors = ClockPartsColors(),
+    val setColorsPerClockPart: Boolean = DEFAULT_SET_COLORS_PER_CLOCK_PART,
 
     @Serializable(with = SegmentColorsSerializer::class)
     val segmentColors: PersistentMap<Segment, @Serializable(with = ColorSerializer::class) Color> =
             persistentMapOf(),
-    val setSegmentColors: Boolean = false,
+    val setSegmentColors: Boolean = DEFAULT_SET_SEGMENT_COLORS,
 
     @Serializable(with = ColorSerializer::class)
     val backgroundColor: Color? = null

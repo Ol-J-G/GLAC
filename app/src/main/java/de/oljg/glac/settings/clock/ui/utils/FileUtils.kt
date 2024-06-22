@@ -44,7 +44,7 @@ fun String.prettyPrintFontName(): String {
         .cutOffFileNameExtension()
         .replaceLastWithBlank('_')
         .replaceLastWithBlank('-')
-        .replace(regex = Regex(" ?[Rr]egular"), "")
+        .replace(regex = Regex("(%20| )?[Rr]egular"), "")
 }
 
 

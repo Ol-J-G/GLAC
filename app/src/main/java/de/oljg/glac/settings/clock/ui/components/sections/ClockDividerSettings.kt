@@ -19,9 +19,9 @@ import de.oljg.glac.R
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_DOTTED_PART_COUNT
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_LENGTH_FACTOR
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_ROTATE_ANGLE
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_THICKNESS
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_LENGTH_PERCENTAGE
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_ROTATE_ANGLE
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_THICKNESS
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.MAX_DASH_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.MAX_DASH_DOTTED_PART_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.MAX_DIVIDER_ROTATE_ANGLE
@@ -107,7 +107,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 SettingsSlider(
                     label = stringResource(R.string.thickness),
                     value = clockTheme.dividerThickness.toFloat(),
-                    defaultValue = DEFAULT_DIVIDER_THICKNESS.toFloat(),
+                    defaultValue = DEFAULT_THICKNESS.toFloat(),
                     sliderValuePrettyPrintFun = Float::prettyPrintPixel,
                     valueRange = MIN_DIVIDER_THICKNESS.toFloat()..MAX_DIVIDER_THICKNESS.toFloat(),
                     onValueChangeFinished = { newSizeFactor ->
@@ -129,7 +129,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                                 clockSettings.copy(
                                     themes = clockSettings.themes.put(
                                         clockThemeName, clockTheme.copy(
-                                            dividerThickness = DEFAULT_DIVIDER_THICKNESS
+                                            dividerThickness = DEFAULT_THICKNESS
                                         )
                                     )
                                 )
@@ -146,7 +146,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 SettingsSlider(
                     label = stringResource(R.string.length),
                     value = clockTheme.dividerLengthPercentage,
-                    defaultValue = DEFAULT_DIVIDER_LENGTH_FACTOR,
+                    defaultValue = DEFAULT_LENGTH_PERCENTAGE,
                     sliderValuePrettyPrintFun = Float::prettyPrintPercentage,
                     onValueChangeFinished = { newLength ->
                         coroutineScope.launch {
@@ -167,7 +167,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                                 clockSettings.copy(
                                     themes = clockSettings.themes.put(
                                         clockThemeName, clockTheme.copy(
-                                            dividerLengthPercentage = DEFAULT_DIVIDER_LENGTH_FACTOR
+                                            dividerLengthPercentage = DEFAULT_LENGTH_PERCENTAGE
                                         )
                                     )
                                 )
@@ -295,7 +295,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                 SettingsSlider(
                     label = stringResource(R.string.angle),
                     value = clockTheme.dividerRotateAngle,
-                    defaultValue = DEFAULT_DIVIDER_ROTATE_ANGLE,
+                    defaultValue = DEFAULT_ROTATE_ANGLE,
                     sliderValuePrettyPrintFun = Float::prettyPrintAngle,
                     valueRange = MIN_DIVIDER_ROTATE_ANGLE..MAX_DIVIDER_ROTATE_ANGLE,
                     onValueChangeFinished = { newAngle ->
@@ -317,7 +317,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                                 clockSettings.copy(
                                     themes = clockSettings.themes.put(
                                         clockThemeName, clockTheme.copy(
-                                            dividerRotateAngle = DEFAULT_DIVIDER_ROTATE_ANGLE
+                                            dividerRotateAngle = DEFAULT_ROTATE_ANGLE
                                         )
                                     )
                                 )

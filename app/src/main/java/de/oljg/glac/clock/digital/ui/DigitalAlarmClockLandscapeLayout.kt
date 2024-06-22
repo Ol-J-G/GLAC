@@ -31,8 +31,8 @@ import de.oljg.glac.clock.digital.ui.components.ClockCharColumn
 import de.oljg.glac.clock.digital.ui.components.ColonDivider
 import de.oljg.glac.clock.digital.ui.components.LineDivider
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
-import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_DIGIT_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DIGIT_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.WIDEST_DIGIT
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.WIDEST_LETTER
 import de.oljg.glac.clock.digital.ui.utils.ClockParts
@@ -78,7 +78,7 @@ fun DigitalAlarmClockLandscapeLayout(
         previewMode
     ),
     clockCharType: ClockCharType = ClockCharType.FONT,
-    digitSizeFactor: Float = DEFAULT_CLOCK_DIGIT_SIZE_FACTOR,
+    digitSizeFactor: Float = DEFAULT_DIGIT_SIZE_FACTOR,
     daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
     clockChar: @Composable (Char, TextUnit, Color, DpSize) -> Unit
 ) {

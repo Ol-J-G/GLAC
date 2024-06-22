@@ -1,5 +1,6 @@
 package de.oljg.glac.clock.digital.ui
 
+import android.net.Uri
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector4D
@@ -19,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.net.toFile
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.alarms.ui.utils.FadeSoundVolume
 import de.oljg.glac.alarms.ui.utils.LightAlarm
@@ -43,10 +45,12 @@ import de.oljg.glac.clock.digital.ui.utils.setSpecifiedColors
 import de.oljg.glac.core.alarms.data.Alarm
 import de.oljg.glac.core.alarms.media.AlarmSoundPlayer
 import de.oljg.glac.core.clock.data.ClockTheme
+import de.oljg.glac.core.clock.data.utils.ClockThemeDefauls
 import de.oljg.glac.core.util.defaultBackgroundColor
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.core.util.lockScreenOrientation
 import de.oljg.glac.settings.clock.ui.ClockSettingsViewModel
+import de.oljg.glac.settings.clock.ui.utils.isFileUri
 import de.oljg.glac.settings.clock.ui.utils.isSevenSegmentItalicOrReverseItalic
 import kotlinx.coroutines.delay
 import java.time.LocalTime
@@ -82,10 +86,32 @@ fun DigitalAlarmClockScreen(
 
     val clockCharType = clockTheme.clockCharType
 
+    /**
+     * Dirty hack! I admit it .. Mea Culpa .|
+     * The 'curse' to have a clock preview in clock settings and the option to remove imported fonts
+     * leads to a situation where sometimes (not always) the font file is deleted faster than
+     * the default value is written to settings and collected as state again :/ *sigh*
+     * Then, the app ofc crashes with "could not load font file..."
+     *
+     * Simple but dirty workaround is to check if the file does not exist (but is still persisted in
+     * settings at the same time!) => set default value at this point (where a little later it's
+     * persisted as well)
+     *
+     * I've spend so much time to look for supposedly better solutions, but unfortunately I
+     * haven't found any yet, so I'm afraid I'll have to give up for now...:/
+     */
+    fun importedFontExists() = when {
+            previewMode && clockTheme.fontName.isFileUri() ->
+                Uri.parse(clockTheme.fontName).toFile().exists()
+
+            else -> true
+        }
+
     val context = LocalContext.current
     val (finalFontFamily, finalFontWeight, finalFontStyle) = evaluateFont(
         context,
-        clockTheme.fontName,
+        if (previewMode && !importedFontExists()) // Prevent app crash in ClockPreview()
+            ClockThemeDefauls.DEFAULT_FONT_NAME else clockTheme.fontName,
         clockTheme.fontWeight.name,
         clockTheme.fontStyle.name
     )

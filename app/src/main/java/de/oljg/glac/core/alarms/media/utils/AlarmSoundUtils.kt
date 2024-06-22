@@ -3,6 +3,7 @@ package de.oljg.glac.core.alarms.media.utils
 import android.content.Context
 import android.net.Uri
 import androidx.core.net.toUri
+import de.oljg.glac.core.alarms.media.utils.AlarmSoundDefaults.FLAC_FILE_EXTENSION
 import de.oljg.glac.core.alarms.media.utils.AlarmSoundDefaults.MP3_FILE_EXTENSION
 import de.oljg.glac.core.alarms.media.utils.AlarmSoundDefaults.OGG_FILE_EXTENSION
 import de.oljg.glac.core.alarms.media.utils.AlarmSoundDefaults.SOUNDS_ASSETS_DIRECTORY
@@ -97,7 +98,8 @@ fun File.isValidSoundFile(): Boolean {
     return this.canRead() && this.isFile &&
             (this.name.hasMp3Extension()
                     || this.name.hasWavExtension()
-                    || this.name.hasOggExtension())
+                    || this.name.hasOggExtension()
+                    || this.name.hasFlacExtension())
 }
 
 
@@ -112,18 +114,48 @@ fun String.hasWavExtension(): Boolean =
 fun String.hasOggExtension(): Boolean =
         this.endsWith("${FILE_EXTENSION_DELIMITER}${OGG_FILE_EXTENSION}", ignoreCase = true)
 
+fun String.hasFlacExtension(): Boolean =
+        this.endsWith("${FILE_EXTENSION_DELIMITER}${FLAC_FILE_EXTENSION}", ignoreCase = true)
+
+
 
 object AlarmSoundDefaults {
     const val ALARM_SOUND_URI_KEY = "alarm_sound_uri"
 
     private const val MIMETYPE_MP3 = "audio/mpeg"
-    private const val MIMETYPE_WAV = "audio/wav"
     private const val MIMETYPE_OGG = "audio/ogg"
-    val SOUND_MIMETYPES = arrayOf(MIMETYPE_MP3, MIMETYPE_WAV, MIMETYPE_OGG)
+    private const val MIMETYPE_FLAC = "audio/flac"
+
+    /**
+     * Curiously, just "audio/wav" is not enough to use in
+     * ManagedActivityResultLauncher.launch(SOUND_MIMETYPES), to select some waveform sound files
+     * (greyed-out, unselectable)!
+     * So, tried all different mime types I found, and now it seems to be OK ... oO :>
+     * @see de.oljg.glac.alarms.ui.components.ImportAlarmSoundButton
+     */
+    private const val MIMETYPE_WAV = "audio/wav"
+    private const val MIMETYPE_X_WAV = "audio/x-wav"
+    private const val MIMETYPE_VND_WAV = "audio/vnd.wav"
+    private const val MIMETYPE_VND_WAVE = "audio/vnd.wave"
+    private const val MIMETYPE_WAVE = "audio/wave"
+    private const val MIMETYPE_X_PN_WAV = "audio/x-pn-wav"
+
+    val SOUND_MIMETYPES = arrayOf(
+        MIMETYPE_MP3,
+        MIMETYPE_OGG,
+        MIMETYPE_FLAC,
+        MIMETYPE_WAV,
+        MIMETYPE_X_WAV,
+        MIMETYPE_VND_WAV,
+        MIMETYPE_VND_WAVE,
+        MIMETYPE_WAVE,
+        MIMETYPE_X_PN_WAV
+    )
 
     const val MP3_FILE_EXTENSION = "mp3"
     const val OGG_FILE_EXTENSION = "ogg"
     const val WAV_FILE_EXTENSION = "wav"
+    const val FLAC_FILE_EXTENSION = "flac"
 
     const val SOUNDS_ASSETS_DIRECTORY = "sounds"
     const val GLAC_PREFIX = "GLAC_" // used as filename prefix (built-in alarm sounds in assets)

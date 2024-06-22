@@ -1,4 +1,4 @@
-package de.oljg.glac.alarms.ui.components
+package de.oljg.glac.core.ui.components
 
 import android.net.Uri
 import androidx.compose.foundation.layout.size
@@ -18,27 +18,32 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun RemoveImportedAlarmSoundButton(
-    importedAlarmSoundToRemove: String,
+fun RemoveImportedFileButton(
+    importedFileUriStringToRemove: String,
     enabled: Boolean,
-    onImportedAlarmSoundRemoved: (String) -> Unit
+    removeDirectly: Boolean = true,
+    onImportedFileRemoved: (String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
     IconButton(
         enabled = enabled,
         onClick = {
-            coroutineScope.launch {
-                removeLocalFile(Uri.parse(importedAlarmSoundToRemove))
+            if(removeDirectly) {
+                coroutineScope.launch {
+                    onImportedFileRemoved(importedFileUriStringToRemove)
+                    removeLocalFile(Uri.parse(importedFileUriStringToRemove))
+                }
+            } else {
+                onImportedFileRemoved(importedFileUriStringToRemove)
             }
-            onImportedAlarmSoundRemoved(importedAlarmSoundToRemove)
         },
         colors = defaultIconButtonColors(),
     ) {
         Icon(
             modifier = Modifier.size(DEFAULT_ICON_BUTTON_SIZE),
             imageVector = Icons.Filled.RemoveCircleOutline,
-            contentDescription = stringResource(R.string.remove_imported_sound_file)
+            contentDescription = stringResource(R.string.remove_imported_file)
         )
     }
 }

@@ -31,9 +31,9 @@ import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
 import de.oljg.glac.alarms.ui.utils.SnoozeAlarmIndicator
 import de.oljg.glac.clock.digital.ui.utils.ClockCharType
-import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_DIGIT_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_CLOCK_PADDING
 import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
+import de.oljg.glac.clock.digital.ui.utils.ClockDefaults.DEFAULT_DIGIT_SIZE_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.ClockPartsColors
 import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR
@@ -60,7 +60,7 @@ fun DigitalAlarmClock(
     charColors: Map<Char, Color> = defaultClockCharColors(defaultColor()),
     clockPartsColors: ClockPartsColors = ClockPartsColors(),
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
-    digitSizeFactor: Float = DEFAULT_CLOCK_DIGIT_SIZE_FACTOR,
+    digitSizeFactor: Float = DEFAULT_DIGIT_SIZE_FACTOR,
     daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
     clockChar: @Composable (Char, TextUnit, Color, DpSize) -> Unit
 ) {

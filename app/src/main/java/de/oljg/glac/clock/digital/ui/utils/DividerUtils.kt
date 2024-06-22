@@ -10,8 +10,8 @@ import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_COLON_SECOND_
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DASH_DOTTED_PART_COUNT
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR
-import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_DIVIDER_LENGTH_FACTOR
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
+import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_LENGTH_PERCENTAGE
 import de.oljg.glac.clock.digital.ui.utils.DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
 
 
@@ -51,7 +51,7 @@ data class DividerAttributes(
     val dividerThickness: Dp = Dp.Unspecified,
     val dividerColor: Color, // must be set in a composable (no access here to MaterialTheme...)
     val dividerLineCap: StrokeCap = StrokeCap.Round,
-    val dividerLengthPercentage: Float = DEFAULT_DIVIDER_LENGTH_FACTOR,
+    val dividerLengthPercentage: Float = DEFAULT_LENGTH_PERCENTAGE,
     val dividerDashCount: Int = DEFAULT_DASH_COUNT,
     val dividerDashDottedPartCount: Int = DEFAULT_DASH_DOTTED_PART_COUNT,
     val dividerRotateAngle: Float = 0f,
@@ -105,9 +105,9 @@ object DividerDefaults {
 
     const val MIN_DIVIDER_THICKNESS = 1
     const val MAX_DIVIDER_THICKNESS = 128
-    const val DEFAULT_DIVIDER_THICKNESS = 2
+    const val DEFAULT_THICKNESS = 2
 
-    const val DEFAULT_DIVIDER_LENGTH_FACTOR = .90f
+    const val DEFAULT_LENGTH_PERCENTAGE = .90f
 
     const val MIN_DASH_COUNT = 2
     const val MAX_DASH_COUNT = 40
@@ -119,7 +119,7 @@ object DividerDefaults {
 
     const val MIN_DIVIDER_ROTATE_ANGLE = -45f
     const val MAX_DIVIDER_ROTATE_ANGLE = 45f
-    const val DEFAULT_DIVIDER_ROTATE_ANGLE = 0f
+    const val DEFAULT_ROTATE_ANGLE = 0f
 
     const val DEFAULT_COLON_FIRST_CIRCLE_POSITION = .45f
     const val DEFAULT_COLON_SECOND_CIRCLE_POSITION = .55f

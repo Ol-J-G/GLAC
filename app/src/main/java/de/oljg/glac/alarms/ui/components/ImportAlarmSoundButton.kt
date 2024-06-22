@@ -27,7 +27,8 @@ fun ImportAlarmSoundButton(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val documentPicker = rememberLauncherForActivityResult(
-        ActivityResultContracts.OpenDocument()) { pickedDocumentUri ->
+        ActivityResultContracts.OpenDocument()
+    ) { pickedDocumentUri ->
         pickedDocumentUri?.let { uri ->
             coroutineScope.launch {
                 /**
@@ -39,7 +40,7 @@ fun ImportAlarmSoundButton(
                  * but only when picked document is valid and local copy is created.
                  */
                 val importedSoundFile = openDocumentAndSaveLocalCopy(context, uri)
-                if(importedSoundFile != null) onNewAlarmSoundImported(
+                if (importedSoundFile != null) onNewAlarmSoundImported(
                     importedSoundFile.toUri().toString()
                 )
             }
@@ -57,5 +58,3 @@ fun ImportAlarmSoundButton(
         )
     }
 }
-
-
