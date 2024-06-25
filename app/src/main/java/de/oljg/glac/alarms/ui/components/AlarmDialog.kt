@@ -26,7 +26,6 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -34,7 +33,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.MAX_LIGHT_ALARM_DURATION
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.MAX_SNOOZE_DURATION
@@ -46,11 +44,11 @@ import de.oljg.glac.alarms.ui.utils.Repetition
 import de.oljg.glac.alarms.ui.utils.isSet
 import de.oljg.glac.alarms.ui.utils.toEpochMillis
 import de.oljg.glac.core.alarms.data.Alarm
+import de.oljg.glac.core.alarms.data.AlarmSettings
 import de.oljg.glac.core.ui.components.GlacDialog
 import de.oljg.glac.core.ui.components.SettingsSection
 import de.oljg.glac.core.util.ScreenDetails
 import de.oljg.glac.core.util.screenDetails
-import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSwitch
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DIALOG_DEFAULT_PADDING
@@ -66,14 +64,13 @@ import kotlin.time.DurationUnit
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlarmDialog(
-    viewModel: AlarmSettingsViewModel = hiltViewModel(),
+    alarmSettings: AlarmSettings,
     alarmToBeUpdated: Alarm? = null,
     onDismissRequest: () -> Unit,
     onAlarmUpdated: (Alarm) -> Unit,
     onNewAlarmAdded: (Alarm) -> Unit
 ) {
     val scrollState = rememberScrollState()
-    val alarmSettings by viewModel.alarmSettingsStateFlow.collectAsState()
 
     var moreAlarmDetailsIsExpanded by rememberSaveable {
         mutableStateOf(false)

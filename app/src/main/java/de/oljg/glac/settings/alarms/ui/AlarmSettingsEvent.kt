@@ -19,4 +19,6 @@ sealed class AlarmSettingsEvent {
         val alarmtoBeUpdated: Alarm,
         val updatedAlarm: Alarm
     ): AlarmSettingsEvent()
+
+    data object ReScheduleAllAlarms: AlarmSettingsEvent()
 }

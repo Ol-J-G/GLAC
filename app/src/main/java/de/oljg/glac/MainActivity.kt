@@ -11,7 +11,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -38,6 +37,7 @@ import de.oljg.glac.core.navigation.ui.topappbar.GlacTabBar
 import de.oljg.glac.core.util.CommonLayoutDefaults.DEFAULT_NAVIGATION_RAIL_WIDTH
 import de.oljg.glac.core.util.ScreenDetails
 import de.oljg.glac.core.util.screenDetails
+import de.oljg.glac.settings.alarms.ui.AlarmSettingsEvent
 import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
 import de.oljg.glac.ui.theme.GLACTheme
 
@@ -64,10 +64,9 @@ class MainActivity : ComponentActivity() {
                 mutableStateOf(false)
             }
             val viewModel: AlarmSettingsViewModel = hiltViewModel()
-            val alarmSettings by viewModel.alarmSettingsStateFlow.collectAsState()
 
             if (!alarmsHaveRecentlyBeenRescheduled) {
-                viewModel.reScheduleAllAlarms(alarmSettings.alarms)
+                viewModel.onEvent(AlarmSettingsEvent.ReScheduleAllAlarms)
                 alarmsHaveRecentlyBeenRescheduled = true
             }
             GlacApp()

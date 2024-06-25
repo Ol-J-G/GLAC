@@ -141,6 +141,7 @@ fun AlarmsListScreen(
              */
             val alarmToBeUpdated = alarmSettings.alarms.find { it.start == alarmToBeUpdatedStart }
             AlarmDialog(
+                alarmSettings = alarmSettings,
                 alarmToBeUpdated = alarmToBeUpdated,
                 onDismissRequest = {
                     coroutineScope.launch {

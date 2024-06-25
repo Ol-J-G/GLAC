@@ -1,4 +1,4 @@
-package de.oljg.glac.core.alarms.data.manager
+package de.oljg.glac.core.alarms.manager
 
 import android.app.AlarmManager
 import android.app.PendingIntent

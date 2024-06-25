@@ -116,7 +116,7 @@ fun AlarmListItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text(stringResource(R.string.alarm_sound) + ":" + alarmSound.prettyPrintRingtone())
+                Text(stringResource(R.string.alarm_sound) + ":" + SPACE + alarmSound.prettyPrintRingtone())
             }
 
             Row( // Snooze duration

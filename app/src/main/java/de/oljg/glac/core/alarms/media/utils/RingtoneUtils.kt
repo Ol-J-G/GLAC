@@ -29,19 +29,21 @@ fun getAvailableRingtoneUris(context: Context): List<String> {
 
 
 @Composable
-fun Uri.prettyPrintRingtone(): String {
+fun Uri.prettyPrintRingtone() = when {
+    this.toString().isFileUri() -> this.toString().cutOffFileNameExtension().cutOffPathFromUri()
     // Default ringtone seems to have no title!? => calling it simply "Default Ringtone"
-    if (this == Settings.System.DEFAULT_RINGTONE_URI)
-        return stringResource(R.string._default_ringtone)
-    return this.getQueryParameter(RINGTONE_TITLE_KEY)
+    this == Settings.System.DEFAULT_RINGTONE_URI -> stringResource(R.string._default_ringtone)
+    else -> this.getQueryParameter(RINGTONE_TITLE_KEY)
         ?: (stringResource(R.string.no_title) + SPACE + Random.nextInt().toString())
 }
+
 
 private fun String.prettyPrintRingtoneUriString(): String {
     val uri = Uri.parse(this)
     // Can actually not be null => no translation necessary yet //TODO: test on other devices
     return uri.getQueryParameter(RINGTONE_TITLE_KEY) ?: "No Title"
 }
+
 
 /**
  * Just to use in one "special case".
