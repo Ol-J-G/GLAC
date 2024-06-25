@@ -11,9 +11,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
-import de.oljg.glac.alarms.ui.utils.defaultIconButtonColors
 import de.oljg.glac.core.util.removeLocalFile
-import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DEFAULT_ICON_BUTTON_SIZE
+import de.oljg.glac.feature_alarm.ui.utils.defaultIconButtonColors
+import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_ICON_BUTTON_SIZE
 import kotlinx.coroutines.launch
 
 

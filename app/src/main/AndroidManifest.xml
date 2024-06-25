@@ -32,9 +32,9 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".core.alarms.manager.AlarmReceiver" />
+        <receiver android:name=".feature_alarm.domain.manager.AlarmReceiver" />
 
-        <service android:name=".core.alarms.media.service.AlarmSoundService" />
+        <service android:name=".feature_alarm.domain.media.service.AlarmSoundService" />
     </application>
 
 </manifest>

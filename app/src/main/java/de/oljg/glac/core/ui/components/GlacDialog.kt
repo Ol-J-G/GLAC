@@ -9,8 +9,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DIALOG_SHAPE
-import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DIALOG_TONAL_ELEVATION
+import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DIALOG_SHAPE
+import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DIALOG_TONAL_ELEVATION
 
 @Composable
 fun GlacDialog(

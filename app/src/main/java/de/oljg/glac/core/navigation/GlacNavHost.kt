@@ -14,9 +14,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import de.oljg.glac.alarms.ui.AlarmsListScreen
-import de.oljg.glac.alarms.ui.components.CancelSnoozeAlarmDialog
-import de.oljg.glac.clock.digital.ui.DigitalAlarmClockScreen
 import de.oljg.glac.core.navigation.common.AboutScreen
 import de.oljg.glac.core.navigation.common.AlarmClockFullScreen
 import de.oljg.glac.core.navigation.common.AlarmClockScreen
@@ -26,10 +23,13 @@ import de.oljg.glac.core.navigation.common.ClockSettingsSubScreen
 import de.oljg.glac.core.navigation.common.CommonSettingsSubScreen
 import de.oljg.glac.core.navigation.common.SettingsScreen
 import de.oljg.glac.core.temp.DummyScreen
-import de.oljg.glac.settings.alarms.ui.AlarmSettingsEvent
-import de.oljg.glac.settings.alarms.ui.AlarmSettingsScreen
-import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
-import de.oljg.glac.settings.clock.ui.ClockSettingsScreen
+import de.oljg.glac.feature_alarm.ui.AlarmSettingsEvent
+import de.oljg.glac.feature_alarm.ui.AlarmSettingsViewModel
+import de.oljg.glac.feature_alarm.ui.alarms.AlarmsListScreen
+import de.oljg.glac.feature_alarm.ui.components.CancelSnoozeAlarmDialog
+import de.oljg.glac.feature_alarm.ui.settings.AlarmSettingsScreen
+import de.oljg.glac.feature_clock.ui.clock.DigitalAlarmClockScreen
+import de.oljg.glac.feature_clock.ui.settings.ClockSettingsScreen
 
 @Composable
 fun GlacNavHost(

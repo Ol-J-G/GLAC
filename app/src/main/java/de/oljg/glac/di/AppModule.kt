@@ -1,31 +1,41 @@
 package de.oljg.glac.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.DataStoreFactory
+import androidx.datastore.dataStoreFile
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import de.oljg.glac.core.alarms.data.repository.AlarmSettingsRepositoryImpl
-import de.oljg.glac.core.alarms.domain.repository.AlarmSettingsRepository
-import de.oljg.glac.core.alarms.domain.use_case.AddAlarm
-import de.oljg.glac.core.alarms.domain.use_case.AlarmUseCases
-import de.oljg.glac.core.alarms.domain.use_case.GetAlarmSettingsFlow
-import de.oljg.glac.core.alarms.domain.use_case.GetAlarms
-import de.oljg.glac.core.alarms.domain.use_case.ReScheduleAllAlarms
-import de.oljg.glac.core.alarms.domain.use_case.RemoveAlarm
-import de.oljg.glac.core.alarms.domain.use_case.UpdateAlarm
-import de.oljg.glac.core.alarms.domain.use_case.UpdateAlarmDefaultsSectionIsExpanded
-import de.oljg.glac.core.alarms.domain.use_case.UpdateAlarmSoundFadeDuration
-import de.oljg.glac.core.alarms.domain.use_case.UpdateAlarmSoundUri
-import de.oljg.glac.core.alarms.domain.use_case.UpdateIsLightAlarm
-import de.oljg.glac.core.alarms.domain.use_case.UpdateLightAlarmDuration
-import de.oljg.glac.core.alarms.domain.use_case.UpdateRepetition
-import de.oljg.glac.core.alarms.domain.use_case.UpdateSnoozeDuration
-import de.oljg.glac.core.alarms.manager.AlarmScheduler
-import de.oljg.glac.core.alarms.manager.AndroidAlarmScheduler
-import de.oljg.glac.core.clock.data.ClockSettingsRepository
+import de.oljg.glac.feature_alarm.data.repository.AlarmSettingsRepositoryImpl
+import de.oljg.glac.feature_alarm.domain.manager.AlarmScheduler
+import de.oljg.glac.feature_alarm.domain.manager.AndroidAlarmScheduler
+import de.oljg.glac.feature_alarm.domain.model.AlarmSettings
+import de.oljg.glac.feature_alarm.domain.model.serializer.AlarmSettingsSerializer
+import de.oljg.glac.feature_alarm.domain.model.utils.AlarmDefaults.DATASTORE_FILE_NAME
+import de.oljg.glac.feature_alarm.domain.repository.AlarmSettingsRepository
+import de.oljg.glac.feature_alarm.domain.use_case.AddAlarm
+import de.oljg.glac.feature_alarm.domain.use_case.AlarmUseCases
+import de.oljg.glac.feature_alarm.domain.use_case.GetAlarmSettingsFlow
+import de.oljg.glac.feature_alarm.domain.use_case.GetAlarms
+import de.oljg.glac.feature_alarm.domain.use_case.ReScheduleAllAlarms
+import de.oljg.glac.feature_alarm.domain.use_case.RemoveAlarm
+import de.oljg.glac.feature_alarm.domain.use_case.UpdateAlarm
+import de.oljg.glac.feature_alarm.domain.use_case.UpdateAlarmDefaultsSectionIsExpanded
+import de.oljg.glac.feature_alarm.domain.use_case.UpdateAlarmSoundFadeDuration
+import de.oljg.glac.feature_alarm.domain.use_case.UpdateAlarmSoundUri
+import de.oljg.glac.feature_alarm.domain.use_case.UpdateIsLightAlarm
+import de.oljg.glac.feature_alarm.domain.use_case.UpdateLightAlarmDuration
+import de.oljg.glac.feature_alarm.domain.use_case.UpdateRepetition
+import de.oljg.glac.feature_alarm.domain.use_case.UpdateSnoozeDuration
+import de.oljg.glac.feature_clock.data.repository.ClockSettingsRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -41,10 +51,22 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAlarmSettingsRepository(
+    fun provideAlarmSettingsDataStore(
         @ApplicationContext context: Context
+    ): DataStore<AlarmSettings> {
+        return DataStoreFactory.create(
+            serializer = AlarmSettingsSerializer,
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            produceFile = { context.dataStoreFile(DATASTORE_FILE_NAME) }
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideAlarmSettingsRepository(
+        dataStore: DataStore<AlarmSettings>
     ): AlarmSettingsRepository {
-        return AlarmSettingsRepositoryImpl(context)
+        return AlarmSettingsRepositoryImpl(dataStore)
     }
 
     @Provides

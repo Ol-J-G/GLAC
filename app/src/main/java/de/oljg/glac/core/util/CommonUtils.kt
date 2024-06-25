@@ -13,18 +13,18 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import de.oljg.glac.alarms.ui.utils.Repetition
-import de.oljg.glac.alarms.ui.utils.translate
-import de.oljg.glac.clock.digital.ui.utils.DividerLineEnd
-import de.oljg.glac.clock.digital.ui.utils.DividerStyle
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
-import de.oljg.glac.core.alarms.media.utils.prettyPrintRingtone
 import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_HEIGHT_COMPACT
 import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_HEIGHT_MEDIUM
 import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_WIDTH_COMPACT
 import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_WIDTH_MEDIUM
-import de.oljg.glac.settings.clock.ui.utils.translate
+import de.oljg.glac.feature_alarm.domain.media.utils.prettyPrintRingtone
+import de.oljg.glac.feature_alarm.ui.utils.Repetition
+import de.oljg.glac.feature_alarm.ui.utils.translate
+import de.oljg.glac.feature_clock.ui.clock.utils.DividerLineEnd
+import de.oljg.glac.feature_clock.ui.clock.utils.DividerStyle
+import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentStyle
+import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentWeight
+import de.oljg.glac.feature_clock.ui.settings.utils.translate
 import kotlin.reflect.KClass
 
 @Composable

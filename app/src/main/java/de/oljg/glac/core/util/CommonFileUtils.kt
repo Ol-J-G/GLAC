@@ -7,9 +7,9 @@ import androidx.core.net.toFile
 import androidx.documentfile.provider.DocumentFile
 import de.oljg.glac.core.util.CommonFileDefaults.FILE_EXTENSION_DELIMITER
 import de.oljg.glac.core.util.CommonFileDefaults.PATH_SEPARATOR
-import de.oljg.glac.settings.clock.ui.utils.FileUtilDefaults.LOG_TAG
-import de.oljg.glac.settings.clock.ui.utils.FileUtilDefaults.UNKNOWN_FILENAME
-import de.oljg.glac.settings.clock.ui.utils.isFileUri
+import de.oljg.glac.feature_clock.ui.settings.utils.FileUtilDefaults.LOG_TAG
+import de.oljg.glac.feature_clock.ui.settings.utils.FileUtilDefaults.UNKNOWN_FILENAME
+import de.oljg.glac.feature_clock.ui.settings.utils.isFileUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File

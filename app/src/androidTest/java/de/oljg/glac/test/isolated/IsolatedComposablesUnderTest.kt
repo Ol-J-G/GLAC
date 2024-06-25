@@ -10,17 +10,17 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import de.oljg.glac.clock.digital.ui.DigitalAlarmClockLandscapeLayout
-import de.oljg.glac.clock.digital.ui.DigitalAlarmClockPortraitLayout
-import de.oljg.glac.clock.digital.ui.components.SevenSegmentChar
-import de.oljg.glac.clock.digital.ui.utils.ClockCharType
-import de.oljg.glac.clock.digital.ui.utils.DividerAttributes
-import de.oljg.glac.clock.digital.ui.utils.DividerStyle
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentDefaults
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentStyle
-import de.oljg.glac.clock.digital.ui.utils.SevenSegmentWeight
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.core.util.screenDetails
+import de.oljg.glac.feature_clock.ui.clock.DigitalAlarmClockLandscapeLayout
+import de.oljg.glac.feature_clock.ui.clock.DigitalAlarmClockPortraitLayout
+import de.oljg.glac.feature_clock.ui.clock.components.SevenSegmentChar
+import de.oljg.glac.feature_clock.ui.clock.utils.ClockCharType
+import de.oljg.glac.feature_clock.ui.clock.utils.DividerAttributes
+import de.oljg.glac.feature_clock.ui.clock.utils.DividerStyle
+import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentDefaults
+import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentStyle
+import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentWeight
 
 /**
  * "Parameterized" DigitalClockLandscapeLayout where test device's screen size is used as

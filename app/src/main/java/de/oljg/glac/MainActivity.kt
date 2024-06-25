@@ -37,8 +37,8 @@ import de.oljg.glac.core.navigation.ui.topappbar.GlacTabBar
 import de.oljg.glac.core.util.CommonLayoutDefaults.DEFAULT_NAVIGATION_RAIL_WIDTH
 import de.oljg.glac.core.util.ScreenDetails
 import de.oljg.glac.core.util.screenDetails
-import de.oljg.glac.settings.alarms.ui.AlarmSettingsEvent
-import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
+import de.oljg.glac.feature_alarm.ui.AlarmSettingsEvent
+import de.oljg.glac.feature_alarm.ui.AlarmSettingsViewModel
 import de.oljg.glac.ui.theme.GLACTheme
 
 @AndroidEntryPoint
