@@ -15,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,10 +27,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.alarms.data.Alarm
-import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
+import de.oljg.glac.core.alarms.data.AlarmSettings
+import de.oljg.glac.settings.alarms.ui.AlarmSettingsEvent
 import java.time.LocalDateTime
 import java.time.format.TextStyle
 import java.util.Locale
@@ -44,54 +43,74 @@ import kotlin.time.DurationUnit
 
 
 @Composable
-fun handleAlarmToBeLaunched(viewModel: AlarmSettingsViewModel = hiltViewModel()): Alarm? {
-    val alarmSettings by viewModel.alarmSettingsStateFlow.collectAsState()
+fun handleAlarmToBeLaunched(
+    alarmSettings: AlarmSettings,
+    onEvent: (AlarmSettingsEvent) -> Unit
+): Alarm? {
     var alarmToBeLaunched: Alarm? by remember {
         mutableStateOf(null)
     }
-    LaunchedEffect(alarmToBeLaunched == null) {
-        // Can't be null => alarms.size must be > 0 => following calls with !! are save
-        alarmToBeLaunched = alarmSettings.alarms.minByOrNull { it.start }
-        val alarmtoBeUpdated = alarmToBeLaunched!!
-        when (alarmtoBeUpdated.repetition) {
 
-            // No repetition => remove, it's not needed anymore (can also be a snooze alarm)
-            Repetition.NONE -> {
-                viewModel.removeAlarm(alarmSettings, alarmtoBeUpdated)
-            }
+    var ishandling by remember {
+        mutableStateOf(true)
+    }
 
-            // Daily => remove current, add and schedule new repetition one day later
-            Repetition.DAILY -> {
-                viewModel.updateAlarm(
-                    alarmSettings,
-                    alarmtoBeUpdated,
-                    updatedAlarm = alarmtoBeUpdated.copy(
-                        start = alarmtoBeUpdated.start.plus(1.days)
+    LaunchedEffect(ishandling) {
+        if (ishandling) { // Handle alarmToBeLaunched exactly one time (per onCreate)
+
+            /**
+             * Can't be null => alarms.size must be > 0
+             * => Will be called in AlarmActivity where an alarm will be triggerd (all alarm are
+             *    stored in alarmSettings.alarms ...
+             * => Following call with !! is save
+             */
+            alarmToBeLaunched = alarmSettings.alarms.minByOrNull { it.start }
+            val alarmtoBeUpdated = alarmToBeLaunched!!
+
+            when (alarmtoBeUpdated.repetition) {
+
+                // No repetition => remove, it's not needed anymore (can also be a snooze alarm)
+                Repetition.NONE -> {
+                    onEvent(AlarmSettingsEvent.RemoveAlarm(alarmtoBeUpdated))
+                }
+
+                // Daily => remove current, add and schedule new repetition one day later
+                Repetition.DAILY -> {
+                    onEvent(
+                        AlarmSettingsEvent.UpdateAlarm(
+                            alarmtoBeUpdated = alarmtoBeUpdated,
+                            updatedAlarm = alarmtoBeUpdated.copy(
+                                start = alarmtoBeUpdated.start.plus(1.days)
+                            )
+                        )
                     )
-                )
-            }
+                }
 
-            // Weekly => remove current, add and schedule new repetition one week(7d) later
-            Repetition.WEEKLY -> {
-                viewModel.updateAlarm(
-                    alarmSettings,
-                    alarmtoBeUpdated,
-                    updatedAlarm = alarmtoBeUpdated.copy(
-                        start = alarmtoBeUpdated.start.plus(7.days)
+                // Weekly => remove current, add and schedule new repetition one week(7d) later
+                Repetition.WEEKLY -> {
+                    onEvent(
+                        AlarmSettingsEvent.UpdateAlarm(
+                            alarmtoBeUpdated = alarmtoBeUpdated,
+                            updatedAlarm = alarmtoBeUpdated.copy(
+                                start = alarmtoBeUpdated.start.plus(7.days)
+                            )
+                        )
                     )
-                )
-            }
+                }
 
-            // Monthly => remove current, add and schedule new repetition one month later
-            Repetition.MONTHLY -> {
-                viewModel.updateAlarm(
-                    alarmSettings,
-                    alarmtoBeUpdated,
-                    updatedAlarm = alarmtoBeUpdated.copy(
-                        start = alarmtoBeUpdated.start.plusMonths(1L)
+                // Monthly => remove current, add and schedule new repetition one month later
+                Repetition.MONTHLY -> {
+                    onEvent(
+                        AlarmSettingsEvent.UpdateAlarm(
+                            alarmtoBeUpdated = alarmtoBeUpdated,
+                            updatedAlarm = alarmtoBeUpdated.copy(
+                                start = alarmtoBeUpdated.start.plusMonths(1L)
+                            )
+                        )
                     )
-                )
+                }
             }
+            ishandling = false
         }
     }
     return alarmToBeLaunched
@@ -144,7 +163,7 @@ fun Repetition.translate() = when (this) {
 
 
 @Composable
-fun translateDuration(unit: DurationUnit) = when(unit) {
+fun translateDuration(unit: DurationUnit) = when (unit) {
     DurationUnit.NANOSECONDS -> stringResource(R.string.nanoseconds)
     DurationUnit.MICROSECONDS -> stringResource(R.string.microseconds)
     DurationUnit.MILLISECONDS -> stringResource(R.string.milliseconds)

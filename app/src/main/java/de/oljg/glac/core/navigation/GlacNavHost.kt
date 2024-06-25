@@ -26,6 +26,7 @@ import de.oljg.glac.core.navigation.common.ClockSettingsSubScreen
 import de.oljg.glac.core.navigation.common.CommonSettingsSubScreen
 import de.oljg.glac.core.navigation.common.SettingsScreen
 import de.oljg.glac.core.temp.DummyScreen
+import de.oljg.glac.settings.alarms.ui.AlarmSettingsEvent
 import de.oljg.glac.settings.alarms.ui.AlarmSettingsScreen
 import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
 import de.oljg.glac.settings.clock.ui.ClockSettingsScreen
@@ -50,11 +51,9 @@ fun GlacNavHost(
             }
 
             AnimatedVisibility(visible = showCancelSnoozeAlarmDialog) {
-                val alarmViewModel: AlarmSettingsViewModel = hiltViewModel()
-                val alarmSettings by alarmViewModel.alarmSettingsStateFlow.collectAsState()
                 CancelSnoozeAlarmDialog(
                     onCancelSnoozeAlarm = {
-                        snoozeAlarm?.let { alarmViewModel.removeAlarm(alarmSettings, it) }
+                        snoozeAlarm?.let { viewModel.onEvent(AlarmSettingsEvent.RemoveAlarm(it)) }
                         showCancelSnoozeAlarmDialog = false
                     },
                     onDismiss = { showCancelSnoozeAlarmDialog = false },
@@ -81,7 +80,9 @@ fun GlacNavHost(
             )
         }
         composable(route = AlarmsScreen.route) {
-            AlarmsListScreen()
+            val viewModel: AlarmSettingsViewModel = hiltViewModel()
+            val alarmSettings by viewModel.alarmSettingsStateFlow.collectAsState()
+            AlarmsListScreen(alarmSettings, onEvent = viewModel::onEvent)
         }
         navigation(
             route = SettingsScreen.route,
@@ -91,7 +92,9 @@ fun GlacNavHost(
                 ClockSettingsScreen()
             }
             composable(route = AlarmSettingsSubScreen.route) {
-                AlarmSettingsScreen()
+                val viewModel: AlarmSettingsViewModel = hiltViewModel()
+                val alarmSettings by viewModel.alarmSettingsStateFlow.collectAsState()
+                AlarmSettingsScreen(alarmSettings, viewModel::onEvent)
             }
             composable(route = CommonSettingsSubScreen.route) {
                 DummyScreen(

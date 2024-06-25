@@ -6,10 +6,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.oljg.glac.alarms.ui.utils.Repetition
 import de.oljg.glac.core.alarms.data.Alarm
-import de.oljg.glac.core.alarms.data.AlarmSettings
 import de.oljg.glac.core.alarms.data.AlarmSettingsRepository
 import de.oljg.glac.core.alarms.data.manager.AndroidAlarmScheduler
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
@@ -37,93 +35,111 @@ class AlarmSettingsViewModel @Inject constructor(
         runBlocking { _alarmSettingsFlow.first() }
     )
 
-    private suspend fun updateAlarmSettings(updatedAlarmSettings: AlarmSettings) {
-        alarmSettingsRepository.updateAlarmSettings(updatedAlarmSettings)
-    }
-
-    fun updateAlarmDefaultsSectionIsExpanded(alarmSettings: AlarmSettings, newValue: Boolean) {
-        viewModelScope.launch {
-            updateAlarmSettings(alarmSettings.copy(alarmDefaultsSectionIsExpanded = newValue))
+    fun onEvent(event: AlarmSettingsEvent) = when (event) {
+        is AlarmSettingsEvent.UpdateAlarmDefaultsSectionIsExpanded -> {
+            updateAlarmDefaultsSectionIsExpanded(event.expanded)
         }
-    }
 
-    fun updateIsLightAlarm(alarmSettings: AlarmSettings, newValue: Boolean) {
-        viewModelScope.launch {
-            updateAlarmSettings(alarmSettings.copy(isLightAlarm = newValue))
+        is AlarmSettingsEvent.UpdateAlarmSoundUri -> {
+            updateAlarmSoundUri(event.uri)
         }
-    }
 
-    fun updateLightAlarmDuration(alarmSettings: AlarmSettings, newValue: Duration) {
-        viewModelScope.launch {
-            updateAlarmSettings(alarmSettings.copy(lightAlarmDuration = newValue))
+        is AlarmSettingsEvent.UpdateRepetition -> {
+            updateRepetition(event.repetition)
         }
-    }
 
-    fun updateSnoozeDuration(alarmSettings: AlarmSettings, newValue: Duration) {
-        viewModelScope.launch {
-            updateAlarmSettings(alarmSettings.copy(snoozeDuration = newValue))
+        is AlarmSettingsEvent.UpdateIsLightAlarm -> {
+            updateIsLightAlarm(event.isLightAlarm)
         }
-    }
 
-    fun updateRepetition(alarmSettings: AlarmSettings, newValue: Repetition) {
-        viewModelScope.launch {
-            updateAlarmSettings(alarmSettings.copy(repetition = newValue))
+        is AlarmSettingsEvent.UpdateLightAlarmDuration -> {
+            updateLightAlarmDuration(event.duration)
         }
-    }
 
-    fun updateAlarmSoundUri(alarmSettings: AlarmSettings, newValue: Uri) {
-        viewModelScope.launch {
-            updateAlarmSettings(alarmSettings.copy(alarmSoundUri = newValue))
+        is AlarmSettingsEvent.UpdateSnoozeDuration -> {
+            updateSnoozeDuration(event.duration)
         }
-    }
 
-    fun updateAlarmSoundFadeDuration(alarmSettings: AlarmSettings, newValue: Duration) {
-        viewModelScope.launch {
-            updateAlarmSettings(alarmSettings.copy(alarmSoundFadeDuration = newValue))
+        is AlarmSettingsEvent.UpdateAlarmSoundFadeDuration -> {
+           updateAlarmSoundFadeDuration(event.duration)
         }
-    }
 
-    fun removeAlarm(alarmSettings: AlarmSettings, alarm: Alarm) {
-        viewModelScope.launch {
-            updateAlarmSettings(
-                alarmSettings.copy(
-                    alarms = alarmSettings.alarms.remove(alarm)
-                )
+        is AlarmSettingsEvent.AddAlarm -> {
+            addAlarm(event.alarm)
+        }
+
+        is AlarmSettingsEvent.RemoveAlarm -> {
+            removeAlarm(event.alarm)
+        }
+
+        is AlarmSettingsEvent.UpdateAlarm -> {
+            updateAlarm(
+                alarmtoBeUpdated = event.alarmtoBeUpdated,
+                updatedAlarm = event.updatedAlarm
             )
+        }
+    }
+
+    private fun updateAlarmDefaultsSectionIsExpanded(newValue: Boolean) {
+        viewModelScope.launch {
+            alarmSettingsRepository.updateAlarmDefaultsSectionIsExpanded(newValue)
+        }
+    }
+
+    private fun updateIsLightAlarm(newValue: Boolean) {
+        viewModelScope.launch {
+            alarmSettingsRepository.updateIsLightAlarm(newValue)
+        }
+    }
+
+    private fun updateLightAlarmDuration(newValue: Duration) {
+        viewModelScope.launch {
+            alarmSettingsRepository.updateLightAlarmDuration(newValue)
+        }
+    }
+
+    private fun updateSnoozeDuration( newValue: Duration) {
+        viewModelScope.launch {
+            alarmSettingsRepository.updateSnoozeDuration(newValue)
+        }
+    }
+
+    private fun updateRepetition(newValue: Repetition) {
+        viewModelScope.launch {
+            alarmSettingsRepository.updateRepetition(newValue)
+        }
+    }
+
+    private fun updateAlarmSoundUri(newValue: Uri) {
+        viewModelScope.launch {
+            alarmSettingsRepository.updateAlarmSoundUri(newValue)
+        }
+    }
+
+    private fun updateAlarmSoundFadeDuration(newValue: Duration) {
+        viewModelScope.launch {
+            alarmSettingsRepository.updateAlarmSoundFadeDuration(newValue)
+        }
+    }
+
+    private fun removeAlarm(alarm: Alarm) {
+        viewModelScope.launch {
+            alarmSettingsRepository.removeAlarm(alarm)
             alarmScheduler.cancel(alarm)
         }
     }
 
-    fun addAlarm(alarmSettings: AlarmSettings, alarm: Alarm) {
+    private fun addAlarm(alarm: Alarm) {
         viewModelScope.launch {
-            updateAlarmSettings(
-                alarmSettings.copy(
-                    alarms = alarmSettings.alarms.add(alarm)
-                )
-            )
+            alarmSettingsRepository.addAlarm(alarm)
             alarmScheduler.schedule(alarm)
         }
     }
 
-    fun updateAlarm(alarmSettings: AlarmSettings, alarmtoBeUpdated: Alarm, updatedAlarm: Alarm) {
+    private fun updateAlarm(alarmtoBeUpdated: Alarm, updatedAlarm: Alarm) {
         viewModelScope.launch {
             alarmScheduler.cancel(alarmtoBeUpdated)
-            /**
-             * Build new list without originally, unedited alarm, and updated alarm
-             * with (maybe) new values as a new alarm.
-             *
-             * Note that simply call removeAlarm and addAlarm does not do the job!
-             * (I guess it must be kinda atomic; or one scope will be interruped and canceled!??
-             * => just add worked, remove not... => more coroutine/datastore knowledge needed^^)
-             */
-            updateAlarmSettings(
-                alarmSettings.copy(
-                    alarms = buildList {
-                        addAll(alarmSettings.alarms.filter { alarm -> alarm != alarmtoBeUpdated })
-                        add(updatedAlarm)
-                    }.toPersistentList()
-                )
-            )
+            alarmSettingsRepository.updateAlarm(alarmtoBeUpdated, updatedAlarm)
             alarmScheduler.schedule(updatedAlarm)
         }
     }

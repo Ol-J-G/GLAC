@@ -42,6 +42,6 @@ data class Alarm(
     val snoozeDuration: Duration = DEFAULT_SNOOZE_DURATION
 ) {
     override fun toString(): String { //TODO: remove after testing
-        return this.hashCode().toString() + " | " + start.toString() + " | " + this.repetition
+        return "isSnooze: "+ this.isSnoozeAlarm + " | " + start.toString() + " | " + this.repetition
     }
 }

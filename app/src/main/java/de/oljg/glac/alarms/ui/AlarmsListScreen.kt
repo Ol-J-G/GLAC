@@ -22,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -31,20 +30,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.alarms.ui.components.AlarmDialog
 import de.oljg.glac.alarms.ui.components.AlarmListItem
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults.localDateTimeSaver
-import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
+import de.oljg.glac.core.alarms.data.AlarmSettings
+import de.oljg.glac.settings.alarms.ui.AlarmSettingsEvent
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 @Composable
-fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
+fun AlarmsListScreen(
+    alarmSettings: AlarmSettings,
+    onEvent: (AlarmSettingsEvent) -> Unit
+) {
     val coroutineScope = rememberCoroutineScope()
-    val alarmSettings by viewModel.alarmSettingsStateFlow.collectAsState()
 
     var showAlarmDialog by rememberSaveable {
         mutableStateOf(false)
@@ -83,11 +84,11 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
 //                            start = LocalDateTime.now().plusSeconds(5),
 //                            isLightAlarm = false,
 //                            lightAlarmDuration = 20.seconds,
-//                            repetition = Repetition.WEEKLY,
+//                            repetition = Repetition.NONE,
 //                            snoozeDuration = 10.seconds,
 ////                            alarmSoundUri = Uri.parse("content://media/internal/audio/media/8?title=Coin&canonical=1")
 //                        )
-//                        viewModel.addAlarm(alarmSettings, testAlarm)
+//                        onEvent(AlarmSettingsEvent.AddAlarm(testAlarm))
 //                        selectedAlarmStart = testAlarm.start
 
 
@@ -109,25 +110,23 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
                     .filter { alarm -> !alarm.isSnoozeAlarm } // Keep snooze alarms under the hood
                     .sortedBy { alarm -> alarm.start } // ASC => next alarm is always on top
                     .forEach { alarm ->
-                    AlarmListItem(
-                        alarmStart = alarm.start,
-                        isLightAlarm = alarm.isLightAlarm,
-                        lightAlarmDuration = alarm.lightAlarmDuration,
-                        repetition = alarm.repetition,
-                        snoozeDuration = alarm.snoozeDuration,
-                        alarmSound = alarm.alarmSoundUri,
-                        selected = alarm.start == selectedAlarmStart,
-                        onClick = { selectedAlarmStart = alarm.start },
-                        onRemoveAlarm = {
-                            viewModel.removeAlarm(alarmSettings, alarm)
-                        },
-                        onUpdateAlarm = {
-                            alarmToBeUpdatedStart = alarm.start
-                            selectedAlarmStart = alarm.start
-                            showAlarmDialog = true
-                        }
-                    )
-                }
+                        AlarmListItem(
+                            alarmStart = alarm.start,
+                            isLightAlarm = alarm.isLightAlarm,
+                            lightAlarmDuration = alarm.lightAlarmDuration,
+                            repetition = alarm.repetition,
+                            snoozeDuration = alarm.snoozeDuration,
+                            alarmSound = alarm.alarmSoundUri,
+                            selected = alarm.start == selectedAlarmStart,
+                            onClick = { selectedAlarmStart = alarm.start },
+                            onRemoveAlarm = { onEvent(AlarmSettingsEvent.RemoveAlarm(alarm)) },
+                            onUpdateAlarm = {
+                                alarmToBeUpdatedStart = alarm.start
+                                selectedAlarmStart = alarm.start
+                                showAlarmDialog = true
+                            }
+                        )
+                    }
             }
         }
 
@@ -151,11 +150,18 @@ fun AlarmsListScreen(viewModel: AlarmSettingsViewModel = hiltViewModel()) {
                     showAlarmDialog = false
                 },
                 onAlarmUpdated = { updatedAlarm ->
-                    alarmToBeUpdated?.let { viewModel.updateAlarm(alarmSettings, it, updatedAlarm) }
+                    alarmToBeUpdated?.let {
+                        onEvent(
+                            AlarmSettingsEvent.UpdateAlarm(
+                                alarmtoBeUpdated = it,
+                                updatedAlarm = updatedAlarm
+                            )
+                        )
+                    }
                     selectedAlarmStart = updatedAlarm.start
                 },
                 onNewAlarmAdded = { newAlarm ->
-                    viewModel.addAlarm(alarmSettings, newAlarm)
+                    onEvent(AlarmSettingsEvent.AddAlarm(newAlarm))
                     selectedAlarmStart = newAlarm.start
                 }
             )

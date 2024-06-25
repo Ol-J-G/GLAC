@@ -1,5 +1,6 @@
 package de.oljg.glac
 
+import android.content.Intent
 import android.media.AudioManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -15,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import de.oljg.glac.alarms.ui.components.AlarmReactionDialog
 import de.oljg.glac.alarms.ui.utils.Repetition
@@ -26,8 +28,10 @@ import de.oljg.glac.core.alarms.media.AlarmSoundPlayer
 import de.oljg.glac.core.util.findActivity
 import de.oljg.glac.core.util.resetScreenBrightness
 import de.oljg.glac.core.util.unlockScreenOrientation
+import de.oljg.glac.settings.alarms.ui.AlarmSettingsEvent
 import de.oljg.glac.settings.alarms.ui.AlarmSettingsViewModel
 import de.oljg.glac.ui.theme.GLACTheme
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 @AndroidEntryPoint
@@ -82,10 +86,15 @@ class AlarmActivity : ComponentActivity() {
                 audioManager.setStreamVolume(
                     AudioManager.STREAM_ALARM, streamAlarmVolumeSetByUser, 0
                 )
+
+                // "Back" to FullScreenClock via starting main activity
+                lifecycleScope.launch {
+                    context.startActivity(Intent(context, MainActivity::class.java))
+                }
                 alarmActivity.finish()
             }
 
-            val alarmToBeLaunched = handleAlarmToBeLaunched()
+            val alarmToBeLaunched = handleAlarmToBeLaunched(alarmSettings, viewModel::onEvent)
 
             GLACTheme {
                 if (alarmToBeLaunched != null) {
@@ -115,17 +124,18 @@ class AlarmActivity : ComponentActivity() {
                              * (But everyone will wake up at some point, some sooner, some later,
                              * right? :>)
                              */
-                            viewModel.addAlarm(
-                                alarmSettings,
-                                Alarm(
-                                    start = LocalDateTime.now().plus(
-                                        alarmToBeLaunched.snoozeDuration
-                                    ),
-                                    alarmSoundUri = alarmToBeLaunched.alarmSoundUri,
-                                    isSnoozeAlarm = true,
-                                    snoozeDuration = alarmToBeLaunched.snoozeDuration,
-                                    isLightAlarm = false,
-                                    repetition = Repetition.NONE
+                            viewModel.onEvent(
+                                AlarmSettingsEvent.AddAlarm(
+                                    Alarm(
+                                        start = LocalDateTime.now().plus(
+                                            alarmToBeLaunched.snoozeDuration
+                                        ),
+                                        alarmSoundUri = alarmToBeLaunched.alarmSoundUri,
+                                        isSnoozeAlarm = true,
+                                        snoozeDuration = alarmToBeLaunched.snoozeDuration,
+                                        isLightAlarm = false,
+                                        repetition = Repetition.NONE
+                                    )
                                 )
                             )
                             handleAlarmStop()

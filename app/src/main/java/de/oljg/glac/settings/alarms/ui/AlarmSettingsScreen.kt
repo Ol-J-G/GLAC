@@ -11,17 +11,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.alarms.ui.components.AlarmSoundSelector
 import de.oljg.glac.alarms.ui.components.DurationSelector
 import de.oljg.glac.alarms.ui.components.RepetitionSelector
 import de.oljg.glac.alarms.ui.utils.AlarmDefaults
 import de.oljg.glac.alarms.ui.utils.Repetition
+import de.oljg.glac.core.alarms.data.AlarmSettings
 import de.oljg.glac.core.ui.components.SettingsSection
 import de.oljg.glac.settings.clock.ui.components.common.SettingsSwitch
 import de.oljg.glac.settings.clock.ui.utils.SettingsDefaults.DIALOG_DEFAULT_PADDING
@@ -29,9 +27,9 @@ import kotlin.time.DurationUnit
 
 @Composable
 fun AlarmSettingsScreen(
-    viewModel: AlarmSettingsViewModel = hiltViewModel()
+    alarmSettings: AlarmSettings,
+    onEvent: (AlarmSettingsEvent) -> Unit
 ) {
-    val alarmSettings by viewModel.alarmSettingsStateFlow.collectAsState()
     val scrollState = rememberScrollState()
 
     Surface(
@@ -51,17 +49,17 @@ fun AlarmSettingsScreen(
                 backgroundColor = MaterialTheme.colorScheme.inverseOnSurface,
                 expandedBackgroundColor = MaterialTheme.colorScheme.inverseOnSurface,
                 onExpandedChange = { newValue ->
-                    viewModel.updateAlarmDefaultsSectionIsExpanded(alarmSettings, newValue)
+                    onEvent(AlarmSettingsEvent.UpdateAlarmDefaultsSectionIsExpanded(newValue))
                 }
             ) {
                 AlarmSoundSelector(
                     label = stringResource(R.string.alarm_sound),
                     selectedAlarmSound = alarmSettings.alarmSoundUri.toString(),
-                    onNewAlarmSoundSelected = { newAlarmSound ->
-                        viewModel.updateAlarmSoundUri(alarmSettings, Uri.parse(newAlarmSound))
+                    onNewAlarmSoundSelected = { selectedSound ->
+                        onEvent(AlarmSettingsEvent.UpdateAlarmSoundUri(Uri.parse(selectedSound)))
                     },
-                    onNewAlarmSoundImported = { importedAlarmSound ->
-                        viewModel.updateAlarmSoundUri(alarmSettings, Uri.parse(importedAlarmSound))
+                    onNewAlarmSoundImported = { importedSound ->
+                        onEvent(AlarmSettingsEvent.UpdateAlarmSoundUri(Uri.parse(importedSound)))
                     },
                     showRemoveImportedAlarmSoundButton = true
                 )
@@ -70,8 +68,8 @@ fun AlarmSettingsScreen(
                     label = stringResource(R.string.repetition),
                     startPadding = DIALOG_DEFAULT_PADDING / 3,
                     selectedRepetition = alarmSettings.repetition,
-                    onNewRepeatModeSelected = { newRepeatMode ->
-                        viewModel.updateRepetition(alarmSettings, Repetition.valueOf(newRepeatMode))
+                    onNewRepeatModeSelected = { repeatMode ->
+                        onEvent(AlarmSettingsEvent.UpdateRepetition(Repetition.valueOf(repeatMode)))
                     }
                 )
 
@@ -80,7 +78,7 @@ fun AlarmSettingsScreen(
                     edgePadding = DIALOG_DEFAULT_PADDING / 3,
                     checked = alarmSettings.isLightAlarm,
                     onCheckedChange = { newValue ->
-                        viewModel.updateIsLightAlarm(alarmSettings, newValue)
+                        onEvent(AlarmSettingsEvent.UpdateIsLightAlarm(newValue))
                     }
                 )
 
@@ -97,8 +95,8 @@ fun AlarmSettingsScreen(
                         durationUnit = DurationUnit.MINUTES,
                         minDuration = AlarmDefaults.MIN_LIGHT_ALARM_DURATION,
                         maxDuration = AlarmDefaults.MAX_LIGHT_ALARM_DURATION,
-                        onDurationChanged = { newLightAlarmDuration ->
-                            viewModel.updateLightAlarmDuration(alarmSettings, newLightAlarmDuration)
+                        onDurationChanged = { duration ->
+                            onEvent(AlarmSettingsEvent.UpdateLightAlarmDuration(duration))
                         }
                     )
                 }
@@ -114,8 +112,8 @@ fun AlarmSettingsScreen(
                     durationUnit = DurationUnit.MINUTES,
                     minDuration = AlarmDefaults.MIN_SNOOZE_DURATION,
                     maxDuration = AlarmDefaults.MAX_SNOOZE_DURATION,
-                    onDurationChanged = { newSnoozeDuration ->
-                        viewModel.updateSnoozeDuration(alarmSettings, newSnoozeDuration)
+                    onDurationChanged = { duration ->
+                        onEvent(AlarmSettingsEvent.UpdateSnoozeDuration(duration))
                     }
                 )
                 DurationSelector(
@@ -130,10 +128,8 @@ fun AlarmSettingsScreen(
                     durationUnit = DurationUnit.SECONDS,
                     minDuration = AlarmDefaults.MIN_ALARM_SOUND_FADE_DUARTION,
                     maxDuration = AlarmDefaults.MAX_ALARM_SOUND_FADE_DUARTION,
-                    onDurationChanged = { newAlarmSoundFadeDuration ->
-                        viewModel.updateAlarmSoundFadeDuration(
-                            alarmSettings, newAlarmSoundFadeDuration
-                        )
+                    onDurationChanged = { duration ->
+                        onEvent(AlarmSettingsEvent.UpdateAlarmSoundFadeDuration(duration))
                     }
                 )
             }
