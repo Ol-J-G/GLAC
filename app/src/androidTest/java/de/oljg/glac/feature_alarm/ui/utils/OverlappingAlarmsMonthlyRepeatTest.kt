@@ -10,6 +10,12 @@ import kotlin.time.Duration.Companion.minutes
 
 
 /**
+ * Originally/Actually an unit test, but after the project has grown, e.g. Uri class became
+ * part of Alarm, and it's not possible use Uri in unit tests, unless adding mock frameworks
+ * and mock it. But this is too much effort for too little benefit imho. So, relocate this test
+ * to instrumented test is the easy solution, also since test execution time doesn't matter (for
+ * me in this project)
+ *
  * Unit under test: [interferesScheduledAlarms]
  *
  * Note: Sketches in comments are not to scale!
@@ -53,6 +59,8 @@ class OverlappingAlarmsMonthlyRepeatTest {
 
 
     /**
+     * (M1) Requested alarm does overlap because of not respecting buffer of A0
+     *
      *   |<                               max 1 year                               >|
      *   |                                                                          |
      *   |<      30m     >|< 1M-30m  >|<     30m      >|< nM-LAD  >|<      30m     >|
@@ -69,7 +77,7 @@ class OverlappingAlarmsMonthlyRepeatTest {
      *                      2024-01
      */
     @Test
-    fun `(M1) Requested alarm does overlap because of not respecting buffer of A0`() {
+    fun m1() {
         val m = startTime(dayOfMonth = 10, hour = 5, minute = 30)
         assertThat(
             m.interferesScheduledAlarms(
@@ -79,6 +87,8 @@ class OverlappingAlarmsMonthlyRepeatTest {
 
 
     /**
+     * (M2) Requested alarm does overlap because of not respecting buffer of A1
+     *
      *   |<                               max 1 year                               >|
      *   |                                                                          |
      *   |<      30m     >|< 1M-30m  >|<     30m      >|< nM-LAD  >|<      30m     >|
@@ -95,7 +105,7 @@ class OverlappingAlarmsMonthlyRepeatTest {
      *                      2024-02
      */
     @Test
-    fun `(M2) Requested alarm does overlap because of not respecting buffer of A1`() {
+    fun m2() {
         val m = startTime(month = 2, dayOfMonth = 10, hour = 4, minute = 30)
         assertThat(
             m.interferesScheduledAlarms(
@@ -105,6 +115,8 @@ class OverlappingAlarmsMonthlyRepeatTest {
 
 
     /**
+     * (M3) Requested alarm does not overlap because of respecting buffer of A1
+     *
      *   |<                               max 1 year                               >|
      *   |                                                                          |
      *   |<      30m     >|< 1M-30m  >|<     30m      >|< nM-LAD  >|<      30m     >|
@@ -121,7 +133,7 @@ class OverlappingAlarmsMonthlyRepeatTest {
      *                       2024-02
      */
     @Test
-    fun `(M3) Requested alarm does not overlap because of respecting buffer of A1`() {
+    fun m3() {
         val m = startTime(month = 2, dayOfMonth = 10, hour = 4, minute = 25)
         assertThat(
             m.interferesScheduledAlarms(
@@ -131,6 +143,8 @@ class OverlappingAlarmsMonthlyRepeatTest {
 
 
     /**
+     * (M4) Requested alarm does not overlap because of respecting buffer of A0
+     *
      *   |<                               max 1 year                               >|
      *   |                                                                          |
      *   |<      30m     >|< 1M-30m   >|<     30m      >|< nM-LAD  >|<      30m     >|
@@ -147,7 +161,7 @@ class OverlappingAlarmsMonthlyRepeatTest {
      *                       2024-02
      */
     @Test
-    fun `(M4) Requested alarm does not overlap because of respecting buffer of A0`() {
+    fun m4() {
         val m = startTime(dayOfMonth = 10, hour = 5, minute = 35)
         assertThat(
             m.interferesScheduledAlarms(
@@ -157,6 +171,8 @@ class OverlappingAlarmsMonthlyRepeatTest {
 
 
     /**
+     * (M5) Requested alarm does not overlap because it's more than 1 year after repetition
+     *
      *   |<                               max 1 year                                >|
      *   |                                                                           |
      *   |<      30m     >|< 1M-30m   >|<     30m      >|< nM-LAD  >|<      30m     >|
@@ -173,7 +189,7 @@ class OverlappingAlarmsMonthlyRepeatTest {
      *                                                                                       2025-02
      */
     @Test
-    fun `(M5) Requested alarm does not overlap because it's more than 1 year after repetition`() {
+    fun m5() {
         val m = startTime(year = 2025, month = 2, dayOfMonth = 10, hour = 5, minute = 0)
         assertThat(
             m.interferesScheduledAlarms(
@@ -183,6 +199,8 @@ class OverlappingAlarmsMonthlyRepeatTest {
 
 
     /**
+     * (M6) Requested alarm does overlap A1 completely
+     *
      *   |<                               max 1 year                                >|
      *   |                                                                           |
      *   |<      30m     >|< 1M-30m   >|<     30m      >|< nM-LAD  >|<      30m     >|
@@ -199,7 +217,7 @@ class OverlappingAlarmsMonthlyRepeatTest {
      *                       2024-02                      2024-02
      */
     @Test
-    fun `(M6) Requested alarm does overlap A1 completely`() {
+    fun m6() {
         val m = startTime(month = 2, dayOfMonth = 10, hour = 5, minute = 0)
         assertThat(
             m.interferesScheduledAlarms(
@@ -209,6 +227,8 @@ class OverlappingAlarmsMonthlyRepeatTest {
 
 
     /**
+     * (M7) Requested alarm does overlap several repetitions
+     *
      *   |<                               max 1 year                                >|
      *   |                                                                           |
      *   |<      30m     >|< 1M-30m   >|<     30m      >|< nM-LAD  >|<      30m     >|
@@ -225,7 +245,7 @@ class OverlappingAlarmsMonthlyRepeatTest {
      *                                               2024-05  2024-08
      */
     @Test
-    fun `(M7) Requested alarm does overlap several repetitions`() {
+    fun m7() {
         val m = startTime(month = 8, dayOfMonth = 17, hour = 5, minute = 0)
         val lat = startTime(month = 5, dayOfMonth = 17, hour = 5, minute = 0)
         assertThat(

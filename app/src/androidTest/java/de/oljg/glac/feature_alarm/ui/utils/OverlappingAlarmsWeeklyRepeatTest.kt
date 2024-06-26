@@ -10,6 +10,12 @@ import kotlin.time.Duration.Companion.minutes
 
 
 /**
+ * Originally/Actually an unit test, but after the project has grown, e.g. Uri class became
+ * part of Alarm, and it's not possible use Uri in unit tests, unless adding mock frameworks
+ * and mock it. But this is too much effort for too little benefit imho. So, relocate this test
+ * to instrumented test is the easy solution, also since test execution time doesn't matter (for
+ * me in this project)
+ *
  * Unit under test: [interferesScheduledAlarms]
  *
  * Note: Sketches in comments are not to scale!
@@ -51,6 +57,8 @@ class OverlappingAlarmsWeeklyRepeatTest {
 
 
     /**
+     * (W1) Requested alarm does overlap because of not respecting buffer of A0
+     *
      *   |<                               max 1 year                               >|
      *   |                                                                          |
      *   |<      30m     >|< 1w-30m  >|<     30m      >|< nw-LAD  >|<      30m     >|
@@ -65,7 +73,7 @@ class OverlappingAlarmsWeeklyRepeatTest {
      *                         10th
      */
     @Test
-    fun `(W1) Requested alarm does overlap because of not respecting buffer of A0`() {
+    fun w1() {
         val w = startTime(dayOfMonth = 10, hour = 5, minute = 30)
         assertThat(
             w.interferesScheduledAlarms(
@@ -75,6 +83,8 @@ class OverlappingAlarmsWeeklyRepeatTest {
 
 
     /**
+     * (W2) Requested alarm does overlap because of not respecting buffer of A1
+     *
      *   |<                               max 1 year                               >|
      *   |                                                                          |
      *   |<      30m     >|< 1w-30m  >|<     30m      >|< nw-LAD  >|<      30m     >|
@@ -89,7 +99,7 @@ class OverlappingAlarmsWeeklyRepeatTest {
      *                         17th
      */
     @Test
-    fun `(W2) Requested alarm does overlap because of not respecting buffer of A1`() {
+    fun w2() {
         val w = startTime(dayOfMonth = 17, hour = 4, minute = 30)
         assertThat(
             w.interferesScheduledAlarms(
@@ -99,6 +109,8 @@ class OverlappingAlarmsWeeklyRepeatTest {
 
 
     /**
+     * (W3) Requested alarm does not overlap because of respecting buffer of A1
+     *
      *   |<                               max 1 year                               >|
      *   |                                                                          |
      *   |<      30m     >|< 1w-30m  >|<     30m      >|<  nw-LAD >|<      30m     >|
@@ -113,7 +125,7 @@ class OverlappingAlarmsWeeklyRepeatTest {
      *                          17th
      */
     @Test
-    fun `(W3) Requested alarm does not overlap because of respecting buffer of A1`() {
+    fun w3() {
         val w = startTime(dayOfMonth = 11, hour = 4, minute = 25)
         assertThat(
             w.interferesScheduledAlarms(
@@ -123,6 +135,8 @@ class OverlappingAlarmsWeeklyRepeatTest {
 
 
     /**
+     * (W4) Requested alarm does not overlap because of respecting buffer of A0
+     *
      *   |<                                max 1 year                               >|
      *   |                                                                           |
      *   |<      30m     >|< 1w-30m   >|<     30m      >|< nw-LAD  >|<      30m     >|
@@ -137,7 +151,7 @@ class OverlappingAlarmsWeeklyRepeatTest {
      *                          10th
      */
     @Test
-    fun `(W4) Requested alarm does not overlap because of respecting buffer of A0`() {
+    fun w4() {
         val w = startTime(dayOfMonth = 10, hour = 5, minute = 35)
         assertThat(
             w.interferesScheduledAlarms(
@@ -147,6 +161,8 @@ class OverlappingAlarmsWeeklyRepeatTest {
 
 
     /**
+     * (W5) Requested alarm does not overlap because it's more than 1 year after repetition
+     *
      *   |<                               max 1 year                               >|
      *   |                                                                          |
      *   |<      30m     >|< 1w-30m  >|<     30m      >|< nw-LAD  >|<      30m     >|
@@ -162,7 +178,7 @@ class OverlappingAlarmsWeeklyRepeatTest {
      *                2024-01                                                                2025-01
      */
     @Test
-    fun `(W5) Requested alarm does not overlap because it's more than 1 year after repetition`() {
+    fun w5() {
         val w = startTime(year = 2025, dayOfMonth = 22, hour = 5, minute = 0)
         assertThat(
             w.interferesScheduledAlarms(
@@ -172,6 +188,8 @@ class OverlappingAlarmsWeeklyRepeatTest {
 
 
     /**
+     * (W6) Requested alarm does overlap A1 completely
+     *
      *   |<                               max 1 year                               >|
      *   |                                                                          |
      *   |<      30m     >|< 1w-30m  >|<     30m      >|< nw-LAD  >|<      30m     >|
@@ -186,7 +204,7 @@ class OverlappingAlarmsWeeklyRepeatTest {
      *                         17th                        17th
      */
     @Test
-    fun `(W6) Requested alarm does overlap A1 completely`() {
+    fun w6() {
         val w = startTime(dayOfMonth = 17, hour = 5, minute = 30)
         assertThat(
             w.interferesScheduledAlarms(
@@ -196,6 +214,8 @@ class OverlappingAlarmsWeeklyRepeatTest {
 
 
     /**
+     * (W7) Requested alarm does overlap several repetitions
+     *
      *   |<                               max 1 year                               >|
      *   |                                                                          |
      *   |<      30m     >|< 1w-30m  >|<     30m      >|< nw-LAD  >|<      30m     >|
@@ -211,7 +231,7 @@ class OverlappingAlarmsWeeklyRepeatTest {
      *                                                2024-05  2024-08
      */
     @Test
-    fun `(W7) Requested alarm does overlap several repetitions`() {
+    fun w7() {
         val w = startTime(month = 8, dayOfMonth = 22, hour = 5, minute = 0)
         val lat = startTime(month = 5, dayOfMonth = 22, hour = 5, minute = 0)
         assertThat(

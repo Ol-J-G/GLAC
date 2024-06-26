@@ -10,6 +10,12 @@ import java.time.LocalDateTime
 import kotlin.time.Duration.Companion.minutes
 
 /**
+ * Originally/Actually an unit test, but after the project has grown, e.g. Uri class became
+ * part of Alarm, and it's not possible use Uri in unit tests, unless adding mock frameworks
+ * and mock it. But this is too much effort for too little benefit imho. So, relocate this test
+ * to instrumented test is the easy solution, also since test execution time doesn't matter (for
+ * me in this project)
+ *
  * Unit under test: [interferesScheduledAlarms]
  *
  * Note: Sketches in comments are not to scale!
@@ -42,12 +48,14 @@ class OverlappingAlarmsSimpleTest {
             Alarm( // A
                 start = aStart,
                 isLightAlarm = true,
-                lightAlarmDuration = DEFAULT_LIGHT_ALARM_DURATION)
+                lightAlarmDuration = DEFAULT_LIGHT_ALARM_DURATION
+            )
         )
     }
 
+    // (T0) Requested alarm does overlap same existing alarm
     @Test
-    fun `(T0) Requested alarm does overlap same existing alarm`() {
+    fun t0() {
         val sameAlarmTimeAsA = aStart
         assertThat(
             sameAlarmTimeAsA.interferesScheduledAlarms(
@@ -55,8 +63,9 @@ class OverlappingAlarmsSimpleTest {
             .isTrue()
     }
 
+    // (T1-positive-left) Requested alarm does not overlap existing alarm
     @Test
-    fun `(T1-positive-left) Requested alarm does not overlap existing alarm`() {
+    fun t1_positive_left() {
         val justAboutValidAlarmTime = aStart
             .minus(DEFAULT_LIGHT_ALARM_DURATION)
             .minus(ALARM_START_BUFFER)
@@ -66,8 +75,9 @@ class OverlappingAlarmsSimpleTest {
             .isFalse()
     }
 
+    // (T1-negative-left) Requested alarm does overlap existing alarm
     @Test
-    fun `(T1-negative-left) Requested alarm does overlap existing alarm`() {
+    fun t1_negative_left() {
         val overlappingAlarmTime = aStart
             .minus(DEFAULT_LIGHT_ALARM_DURATION)
             .minus(ALARM_START_BUFFER)
@@ -78,8 +88,9 @@ class OverlappingAlarmsSimpleTest {
             .isTrue()
     }
 
+    // (T2-positive-right) Requested alarm does not overlap existing alarm
     @Test
-    fun `(T2-positive-right) Requested alarm does not overlap existing alarm`() {
+    fun t2_positive_right() {
         val justAboutValidAlarmTime = aStart
             .plus(DEFAULT_LIGHT_ALARM_DURATION)
             .plus(ALARM_START_BUFFER)
@@ -89,8 +100,9 @@ class OverlappingAlarmsSimpleTest {
             .isFalse()
     }
 
+    // (T2-negative-right) Requested alarm does overlap existing alarm
     @Test
-    fun `(T2-negative-right) Requested alarm does overlap existing alarm`() {
+    fun t2_negative_right() {
         val overlappingAlarmTime = aStart
             .plus(DEFAULT_LIGHT_ALARM_DURATION)
             .plus(ALARM_START_BUFFER)

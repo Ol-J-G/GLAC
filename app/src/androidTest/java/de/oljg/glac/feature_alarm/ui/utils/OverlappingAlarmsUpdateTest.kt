@@ -2,13 +2,19 @@ package de.oljg.glac.feature_alarm.ui.utils
 
 import com.google.common.truth.Truth.assertThat
 import de.oljg.glac.feature_alarm.domain.model.Alarm
-import de.oljg.glac.util.localDateTimeOf
+import de.oljg.glac.test.util.localDateTimeOf
 import org.junit.Before
 import org.junit.Test
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.minutes
 
 /**
+ * Originally/Actually an unit test, but after the project has grown, e.g. Uri class became
+ * part of Alarm, and it's not possible use Uri in unit tests, unless adding mock frameworks
+ * and mock it. But this is too much effort for too little benefit imho. So, relocate this test
+ * to instrumented test is the easy solution, also since test execution time doesn't matter (for
+ * me in this project)
+ *
  * Unit under test: [interferesScheduledAlarms]
  *
  * Note: Sketches in comments are not to scale!
@@ -50,6 +56,8 @@ class OverlappingAlarmsUpdateTest {
     }
 
     /**
+     * (U1) alarmToUpdate does overlap because of not respecting buffer to alarm A
+     *
      *   |<     30m     >|<   60m   >|<     60m     >|
      *
      *  4:30            5:00        6:00            7:00
@@ -59,7 +67,7 @@ class OverlappingAlarmsUpdateTest {
      *                   |<       90m      >|
      */
     @Test
-    fun `(U1) alarmToUpdate does overlap because of not respecting buffer to alarm A`() {
+    fun u1() {
         val u = startTime(hour = 6, minute = 30)
         assertThat(
             u.interferesScheduledAlarms(
@@ -68,6 +76,8 @@ class OverlappingAlarmsUpdateTest {
     }
 
     /**
+     * (U2) alarmToUpdate does not overlap because of respecting buffer to alarm A
+     *
      *   |<     30m     >|<    60m   >|<     60m     >|
      *
      *  4:30            5:00         6:00            7:00
@@ -77,7 +87,7 @@ class OverlappingAlarmsUpdateTest {
      *                       |<      85m    >|
      */
     @Test
-    fun `(U2) alarmToUpdate does not overlap because of respecting buffer to alarm A`() {
+    fun u2() {
         val u = startTime(hour = 6, minute = 30)
         assertThat(
             u.interferesScheduledAlarms(
@@ -86,6 +96,8 @@ class OverlappingAlarmsUpdateTest {
     }
 
     /**
+     * (U3) alarmToUpdate does overlap alarm A
+     *
      *   |<     30m     >|<    60m   >|<     60m     >|
      *
      *  4:30            5:00         6:00            7:00
@@ -95,7 +107,7 @@ class OverlappingAlarmsUpdateTest {
      *           |<    45m    >|
      */
     @Test
-    fun `(U3) alarmToUpdate does overlap alarm A`() {
+    fun u3() {
         val u = startTime(hour = 5, minute = 30)
         assertThat(
             u.interferesScheduledAlarms(
@@ -104,6 +116,8 @@ class OverlappingAlarmsUpdateTest {
     }
 
     /**
+     * (U4) alarmToUpdate is allowed to overlap,update itself
+     *
      *   |<     30m     >|<    60m   >|<     60m     >|
      *
      *  4:30            5:00         6:00            7:00
@@ -113,7 +127,7 @@ class OverlappingAlarmsUpdateTest {
      *                         |<    45m    >|
      */
     @Test
-    fun `(U4) alarmToUpdate is allowed to overlap,update itself`() {
+    fun u4() {
         val u = startTime(hour = 6, minute = 30)
         assertThat(
             u.interferesScheduledAlarms(
@@ -122,6 +136,8 @@ class OverlappingAlarmsUpdateTest {
     }
 
     /**
+     * (U5) alarmToUpdate may overlap itself, but not alarm A
+     *
      *   |<     30m     >|<    60m   >|<     60m     >|
      *
      *  4:30            5:00         6:00            7:00
@@ -131,7 +147,7 @@ class OverlappingAlarmsUpdateTest {
      *           |<           90m           >|
      */
     @Test
-    fun `(U5) alarmToUpdate may overlap itself, but not alarm A`() {
+    fun u5() {
         val u = startTime(hour = 6, minute = 30)
         assertThat(
             u.interferesScheduledAlarms(
@@ -140,6 +156,8 @@ class OverlappingAlarmsUpdateTest {
     }
 
     /**
+     * (U6) alarmToUpdate may overlap,include,span itself but not alarm A
+     *
      * |<15m>|<     30m     >|<    60m   >|<     60m     >|<15m>|
      *
      *      4:30            5:00         6:00            7:00
@@ -149,7 +167,7 @@ class OverlappingAlarmsUpdateTest {
      * |<                       180m(3h)                       >|
      */
     @Test
-    fun `(U6) alarmToUpdate may overlap,include,span itself but not alarm A`() {
+    fun u6() {
         val u = startTime(hour = 7, minute = 15)
         assertThat(
             u.interferesScheduledAlarms(
@@ -158,6 +176,8 @@ class OverlappingAlarmsUpdateTest {
     }
 
     /**
+     * (U7) alarmToUpdate may overlap,include,span itself
+     *
      * |<15m>|<     30m     >|<    60m   >|<     60m     >|<15m>|
      *
      *      4:30            5:00         6:00            7:00
@@ -167,7 +187,7 @@ class OverlappingAlarmsUpdateTest {
      *                             |<          105m            >|
      */
     @Test
-    fun `(U7) alarmToUpdate may overlap,include,span itself`() {
+    fun u7() {
         val u = startTime(hour = 7, minute = 15)
         assertThat(
             u.interferesScheduledAlarms(
@@ -176,6 +196,8 @@ class OverlappingAlarmsUpdateTest {
     }
 
     /**
+     * (U8) Update alarm B to be before alarm A is allowed
+     *
      *                |<    30m   >|<     30m     >|<    60m   >|<     60m     >|
      *
      *               4:00         4:30            5:00         6:00            7:00
@@ -185,7 +207,7 @@ class OverlappingAlarmsUpdateTest {
      *  |<    30m    >|
      */
     @Test
-    fun `(U8) Update alarm B to be before alarm A is allowed`() {
+    fun u8() {
         val u = startTime(hour = 4, minute = 0)
         assertThat(
             u.interferesScheduledAlarms(
@@ -194,6 +216,8 @@ class OverlappingAlarmsUpdateTest {
     }
 
     /**
+     * (U9) Update alarm B to be after alarm B is allowed
+     *
      *    |<     30m     >|<    60m   >|<     60m     >|<   30m    >|              
      *
      *   4:30            5:00         6:00            7:00         7:30          8:00
@@ -203,7 +227,7 @@ class OverlappingAlarmsUpdateTest {
      *                                                              |<    30m    >|
      */
     @Test
-    fun `(U9) Update alarm B to be after alarm B is allowed`() {
+    fun u9() {
         val u = startTime(hour = 8, minute = 0)
         assertThat(
             u.interferesScheduledAlarms(
@@ -212,6 +236,8 @@ class OverlappingAlarmsUpdateTest {
     }
 
     /**
+     * (U10) alarmToUpdate may not overlap alarm A exactly
+     *
      *   |<     30m     >|<    60m   >|<     60m     >|
      *
      *  4:30            5:00         6:00            7:00
@@ -221,7 +247,7 @@ class OverlappingAlarmsUpdateTest {
      *   |<     30m     >|
      */
     @Test
-    fun `(U10) alarmToUpdate may not overlap alarm A exactly`() {
+    fun u10() {
         val u = startTime(hour = 5, minute = 0)
         assertThat(
             u.interferesScheduledAlarms(

@@ -402,7 +402,7 @@ object AlarmDefaults {
     val MAX_ALARM_SOUND_FADE_DUARTION = 60.seconds
 
     // Users can schedule an alarm from now + ALARM_START_BUFFER
-    val ALARM_START_BUFFER = 1.minutes //TODO: change back to 5 after testing
+    val ALARM_START_BUFFER = 1.minutes //TODO: change back to 5 after manual testing
 
     val REPEAT_MODES = Repetition.entries.map { repeatMode -> repeatMode.name }
 

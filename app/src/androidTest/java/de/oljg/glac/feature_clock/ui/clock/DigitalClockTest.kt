@@ -6,8 +6,12 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import de.oljg.glac.MainActivity
 import de.oljg.glac.core.util.TestTags
+import de.oljg.glac.di.AppModule
 import de.oljg.glac.test.util.UITestBase
 import org.junit.Rule
 import org.junit.Test
@@ -20,9 +24,14 @@ import org.junit.Test
  * NOTE: setRotation() just works with activity => createAndroidComposeRule<>(), not with
  * tests in isolation (createComposeRule())!
  */
+@HiltAndroidTest
+@UninstallModules(AppModule::class)
 class DigitalClockTest: UITestBase() {
 
-    @get:Rule
+    @get:Rule(order = 0)
+    val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 1)
     val androidComposeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Test

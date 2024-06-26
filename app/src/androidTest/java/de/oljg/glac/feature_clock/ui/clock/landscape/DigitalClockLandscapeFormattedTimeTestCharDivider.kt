@@ -6,10 +6,15 @@ import androidx.compose.ui.test.hasAnyChild
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.hasTextExactly
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.printToLog
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import de.oljg.glac.EmptyTestActivity
 import de.oljg.glac.core.util.TestTags
+import de.oljg.glac.di.AppModule
 import de.oljg.glac.feature_clock.ui.clock.utils.DividerDefaults.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
 import de.oljg.glac.feature_clock.ui.clock.utils.DividerStyle
 import de.oljg.glac.test.isolated.DigitalClockLandscapeLayoutIsolatedFont
@@ -25,10 +30,15 @@ import org.junit.Test
  *
  * Debug: composeTestRule.onRoot(useUnmergedTree = false).printToLog("SEMANTICS_TREE")
  */
+@HiltAndroidTest
+@UninstallModules(AppModule::class)
 class DigitalClockLandscapeFormattedTimeTestCharDivider {
 
-    @get:Rule
-    val composeTestRule = createComposeRule()
+    @get:Rule(order = 0)
+    val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 1)
+    val composeTestRule = createAndroidComposeRule<EmptyTestActivity>()
 
     @Test
     fun time_format_HH_MM() {
