@@ -1,7 +1,7 @@
 package de.oljg.glac.feature_alarm.ui.utils
 
 import com.google.common.truth.Truth.assertThat
-import de.oljg.glac.util.january_2024_of
+import de.oljg.glac.utils.january_2024_of
 import org.junit.Before
 import org.junit.Test
 import java.time.LocalDateTime

@@ -1,4 +1,4 @@
-package de.oljg.glac.util
+package de.oljg.glac.utils
 
 import java.time.LocalDate
 import java.time.LocalDateTime

@@ -8,9 +8,18 @@ class UpdateAlarm(
     private val repository: AlarmSettingsRepository,
     private val alarmScheduler: AlarmScheduler
 ) {
-    suspend fun execute(alarmtoBeUpdated: Alarm, updatedAlarm: Alarm) {
-        alarmScheduler.cancel(alarmtoBeUpdated)
+    suspend fun execute(alarmtoBeUpdated: Alarm, updatedAlarm: Alarm): Boolean {
+
+        // 1st, cancel the alarm to be updated
+        val canceled = alarmScheduler.cancel(alarmtoBeUpdated)
+
+        // 2nd, remove alarm to be updated and add updated alarm
         repository.updateAlarm(alarmtoBeUpdated, updatedAlarm)
-        alarmScheduler.schedule(updatedAlarm)
+
+        // 3rd, schedule updated alarm
+        val scheduled = alarmScheduler.schedule(updatedAlarm)
+
+        // Finally, return true when update was succesful
+        return canceled && scheduled
     }
 }

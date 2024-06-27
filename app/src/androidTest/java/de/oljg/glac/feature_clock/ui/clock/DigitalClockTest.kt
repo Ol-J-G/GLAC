@@ -12,7 +12,7 @@ import dagger.hilt.android.testing.UninstallModules
 import de.oljg.glac.MainActivity
 import de.oljg.glac.core.util.TestTags
 import de.oljg.glac.di.AppModule
-import de.oljg.glac.test.util.UITestBase
+import de.oljg.glac.test.utils.UITestBase
 import org.junit.Rule
 import org.junit.Test
 

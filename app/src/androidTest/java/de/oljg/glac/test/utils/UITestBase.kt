@@ -1,4 +1,4 @@
-package de.oljg.glac.test.util
+package de.oljg.glac.test.utils
 
 import android.content.Context
 import androidx.annotation.StringRes

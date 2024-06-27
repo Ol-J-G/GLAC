@@ -2,7 +2,7 @@ package de.oljg.glac.feature_alarm.ui.utils
 
 import com.google.common.truth.Truth.assertThat
 import de.oljg.glac.feature_alarm.domain.model.Alarm
-import de.oljg.glac.test.util.localDateTimeOf
+import de.oljg.glac.test.utils.localDateTimeOf
 import org.junit.Before
 import org.junit.Test
 import java.time.LocalDate

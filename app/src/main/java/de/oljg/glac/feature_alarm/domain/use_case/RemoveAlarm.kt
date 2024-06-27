@@ -8,8 +8,8 @@ class RemoveAlarm(
     private val repository: AlarmSettingsRepository,
     private val alarmScheduler: AlarmScheduler
 ) {
-    suspend fun execute(alarm: Alarm) {
+    suspend fun execute(alarm: Alarm): Boolean {
         repository.removeAlarm(alarm)
-        alarmScheduler.cancel(alarm)
+        return alarmScheduler.cancel(alarm)
     }
 }

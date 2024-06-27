@@ -11,7 +11,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import de.oljg.glac.feature_alarm.data.repository.AlarmSettingsRepositoryImpl
 import de.oljg.glac.feature_alarm.domain.manager.AlarmScheduler
-import de.oljg.glac.feature_alarm.domain.manager.AndroidAlarmScheduler
 import de.oljg.glac.feature_alarm.domain.model.AlarmSettings
 import de.oljg.glac.feature_alarm.domain.model.serializer.AlarmSettingsSerializer
 import de.oljg.glac.feature_alarm.domain.repository.AlarmSettingsRepository
@@ -29,12 +28,12 @@ import de.oljg.glac.feature_alarm.domain.use_case.UpdateIsLightAlarm
 import de.oljg.glac.feature_alarm.domain.use_case.UpdateLightAlarmDuration
 import de.oljg.glac.feature_alarm.domain.use_case.UpdateRepetition
 import de.oljg.glac.feature_alarm.domain.use_case.UpdateSnoozeDuration
-import de.oljg.glac.feature_alarm.ui.utils.toEpochMillis
 import de.oljg.glac.feature_clock.data.repository.ClockSettingsRepository
+import de.oljg.glac.test.utils.FakeAlarmScheduler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import java.time.LocalDateTime
+import java.util.UUID
 import javax.inject.Singleton
 
 
@@ -64,8 +63,8 @@ object TestAppModule {
              * java.lang.IllegalStateException:
              * There are multiple DataStores active for the same file ...
              */
-            produceFile = { context.dataStoreFile("test"
-                    + LocalDateTime.now().toEpochMillis() + "-alarm-settings.json") }
+            produceFile = { context.dataStoreFile("test_"
+                    + UUID.randomUUID() + "_alarm-settings.json") }
         )
     }
 
@@ -80,9 +79,8 @@ object TestAppModule {
     @Provides
     @Singleton
     fun provideAlarmScheduler(
-        @ApplicationContext context: Context
     ): AlarmScheduler {
-        return AndroidAlarmScheduler(context)
+        return FakeAlarmScheduler()
     }
 
     @Provides
