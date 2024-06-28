@@ -42,7 +42,7 @@ object ClockThemeDefauls {
     const val DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR = DividerDefaults.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
     const val DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR = DividerDefaults.DEFAULT_DAYTIME_MARKER_DIVIDER_CHAR
 
-    const val DEFAULT_SET_COLORS_PER_CHAR = false
-    const val DEFAULT_SET_COLORS_PER_CLOCK_PART = false
-    const val DEFAULT_SET_SEGMENT_COLORS = false
+    const val DEFAULT_USE_COLORS_PER_CHAR = false
+    const val DEFAULT_USE_COLORS_PER_CLOCK_PART = false
+    const val DEFAULT_USE_SEGMENT_COLORS = false
 }

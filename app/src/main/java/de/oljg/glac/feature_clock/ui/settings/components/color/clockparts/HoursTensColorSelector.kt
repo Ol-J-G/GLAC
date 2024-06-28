@@ -1,19 +1,19 @@
 package de.oljg.glac.feature_clock.ui.settings.components.color.clockparts
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.util.defaultColor
+import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
-import de.oljg.glac.feature_clock.ui.ClockSettingsViewModel
+import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.settings.components.color.ColorSelector
 
 @Composable
-fun HoursTensColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
-    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
+fun HoursTensColorSelector(
+    clockSettings: ClockSettings,
+    onEvent: (ClockSettingsEvent) -> Unit
+) {
     val clockThemeName = clockSettings.clockThemeName
     val clockTheme = clockSettings.themes.getOrDefault(
         key = clockThemeName,
@@ -29,21 +29,25 @@ fun HoursTensColorSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) 
             ?: defaultCharColor,
         defaultColor = clockTheme.charColor ?: defaultCharColor,
         onResetColor = {
-            viewModel.updateClockTheme(
-                clockSettings, clockThemeName,
-                clockTheme.copy(
-                    clockPartsColors = currentClockPartsColors.copy(
-                        hours = currentClockPartsColors.hours.copy(tens = null)
+            onEvent(
+                ClockSettingsEvent.UpdateThemes(
+                    clockThemeName,
+                    clockTheme.copy(
+                        clockPartsColors = currentClockPartsColors.copy(
+                            hours = currentClockPartsColors.hours.copy(tens = null)
+                        )
                     )
                 )
             )
         }
     ) { selectedColor ->
-        viewModel.updateClockTheme(
-            clockSettings, clockThemeName,
-            clockTheme.copy(
-                clockPartsColors = currentClockPartsColors.copy(
-                    hours = currentClockPartsColors.hours.copy(tens = selectedColor)
+        onEvent(
+            ClockSettingsEvent.UpdateThemes(
+                clockThemeName,
+                clockTheme.copy(
+                    clockPartsColors = currentClockPartsColors.copy(
+                        hours = currentClockPartsColors.hours.copy(tens = selectedColor)
+                    )
                 )
             )
         )

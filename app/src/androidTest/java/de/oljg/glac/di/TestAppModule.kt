@@ -28,7 +28,28 @@ import de.oljg.glac.feature_alarm.domain.use_case.UpdateIsLightAlarm
 import de.oljg.glac.feature_alarm.domain.use_case.UpdateLightAlarmDuration
 import de.oljg.glac.feature_alarm.domain.use_case.UpdateRepetition
 import de.oljg.glac.feature_alarm.domain.use_case.UpdateSnoozeDuration
-import de.oljg.glac.feature_clock.data.repository.ClockSettingsRepository
+import de.oljg.glac.feature_clock.data.repository.ClockSettingsRepositoryImpl
+import de.oljg.glac.feature_clock.domain.model.ClockSettings
+import de.oljg.glac.feature_clock.domain.model.serializer.ClockSettingsSerializer
+import de.oljg.glac.feature_clock.domain.repository.ClockSettingsRepository
+import de.oljg.glac.feature_clock.domain.use_case.ClockUseCases
+import de.oljg.glac.feature_clock.domain.use_case.GetClockSettingsFlow
+import de.oljg.glac.feature_clock.domain.use_case.GetThemes
+import de.oljg.glac.feature_clock.domain.use_case.RemoveTheme
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockBrightness
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsColumnScrollPosition
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsEndColumnScrollPosition
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsSectionBrightnessIsExpanded
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsSectionClockCharIsExpanded
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsSectionColorsIsExpanded
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsSectionDisplayIsExpanded
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsSectionDividerIsExpanded
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsSectionPreviewIsExpanded
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsSectionThemeIsExpanded
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsStartColumnScrollPosition
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockThemeName
+import de.oljg.glac.feature_clock.domain.use_case.UpdateOverrideSystemBrightness
+import de.oljg.glac.feature_clock.domain.use_case.UpdateThemes
 import de.oljg.glac.test.utils.FakeAlarmScheduler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,12 +64,53 @@ object TestAppModule {
 
     @Provides
     @Singleton
-    fun provideClockSettingsRepository(
-        @ApplicationContext context: Context,
-
-    ): ClockSettingsRepository {
-        return ClockSettingsRepository(context)
+    fun provideClockSettingsDataStore(
+        @ApplicationContext context: Context
+    ): DataStore<ClockSettings> {
+        return DataStoreFactory.create(
+            serializer = ClockSettingsSerializer,
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            /**
+             * Generate a different unique file for every test case, to prevent
+             * java.lang.IllegalStateException:
+             * There are multiple DataStores active for the same file ...
+             */
+            produceFile = { context.dataStoreFile("test_"
+                    + UUID.randomUUID() + "_clock-settings.json") }
+        )
     }
+
+    @Provides
+    @Singleton
+    fun provideClockSettingsRepository(
+        dataStore: DataStore<ClockSettings>
+    ): ClockSettingsRepository {
+        return ClockSettingsRepositoryImpl(dataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideClockUseCases(
+        repository: ClockSettingsRepository
+    ): ClockUseCases = ClockUseCases(
+        GetClockSettingsFlow(repository),
+        UpdateClockThemeName(repository),
+        UpdateOverrideSystemBrightness(repository),
+        UpdateClockBrightness(repository),
+        UpdateClockSettingsSectionPreviewIsExpanded(repository),
+        UpdateClockSettingsSectionThemeIsExpanded(repository),
+        UpdateClockSettingsSectionDisplayIsExpanded(repository),
+        UpdateClockSettingsSectionClockCharIsExpanded(repository),
+        UpdateClockSettingsSectionDividerIsExpanded(repository),
+        UpdateClockSettingsSectionColorsIsExpanded(repository),
+        UpdateClockSettingsSectionBrightnessIsExpanded(repository),
+        UpdateClockSettingsColumnScrollPosition(repository),
+        UpdateClockSettingsStartColumnScrollPosition(repository),
+        UpdateClockSettingsEndColumnScrollPosition(repository),
+        GetThemes(repository),
+        UpdateThemes(repository),
+        RemoveTheme(repository)
+    )
 
     @Provides
     @Singleton

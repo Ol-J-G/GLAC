@@ -9,16 +9,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.ExpandableSection
+import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
-import de.oljg.glac.feature_clock.ui.ClockSettingsViewModel
+import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockCharType
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockDefaults.DEFAULT_DIGIT_SIZE_FACTOR
@@ -28,12 +25,12 @@ import de.oljg.glac.feature_clock.ui.settings.components.character.SevenSegmentS
 import de.oljg.glac.feature_clock.ui.settings.components.common.SettingsSlider
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.feature_clock.ui.settings.utils.prettyPrintPercentage
-import kotlinx.coroutines.launch
 
 @Composable
-fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
-    val coroutineScope = rememberCoroutineScope()
-    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
+fun ClockCharacterSettings(
+    clockSettings: ClockSettings,
+    onEvent: (ClockSettingsEvent) -> Unit
+) {
     val clockThemeName = clockSettings.clockThemeName
     val clockTheme = clockSettings.themes.getOrDefault(
         key = clockThemeName,
@@ -44,27 +41,19 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
         sectionTitle = stringResource(R.string.characters),
         expanded = clockSettings.clockSettingsSectionClockCharIsExpanded,
         onExpandedChange = { expanded ->
-            coroutineScope.launch {
-                viewModel.updateClockSettings(
-                    clockSettings.copy(
-                        clockSettingsSectionClockCharIsExpanded = expanded
-                    )
-                )
-            }
+            onEvent(ClockSettingsEvent.UpdateClockSettingsSectionClockCharIsExpanded(expanded))
         }
     ) {
         Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE))
         ClockCharTypeSelector(
             selectedClockCharType = clockTheme.clockCharType,
             onClockCharTypeSelected = { newClockCharType ->
-                coroutineScope.launch {
-                    viewModel.updateClockSettings(
-                        clockSettings.copy(
-                            themes = clockSettings.themes.put(
-                                clockThemeName, clockTheme.copy(clockCharType = newClockCharType))
-                        )
+                onEvent(
+                    ClockSettingsEvent.UpdateThemes(
+                        clockThemeName,
+                        clockTheme.copy(clockCharType = newClockCharType)
                     )
-                }
+                )
             }
         )
         Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
@@ -74,8 +63,8 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
             label = "crossfade"
         ) { clockCharType ->
             when (clockCharType) {
-                ClockCharType.FONT -> FontSelector()
-                ClockCharType.SEVEN_SEGMENT -> SevenSegmentSelector()
+                ClockCharType.FONT -> FontSelector(clockSettings, onEvent)
+                ClockCharType.SEVEN_SEGMENT -> SevenSegmentSelector(clockSettings, onEvent)
             }
         }
         Divider(
@@ -91,23 +80,20 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
             defaultValue = DEFAULT_DIGIT_SIZE_FACTOR,
             sliderValuePrettyPrintFun = Float::prettyPrintPercentage,
             onValueChangeFinished = { newSizeFactor ->
-                coroutineScope.launch {
-                    viewModel.updateClockSettings(
-                        clockSettings.copy(themes = clockSettings.themes.put(
-                            clockThemeName, clockTheme.copy(digitSizeFactor = newSizeFactor))
-                        )
+                onEvent(
+                    ClockSettingsEvent.UpdateThemes(
+                        clockThemeName,
+                        clockTheme.copy(digitSizeFactor = newSizeFactor)
                     )
-                }
+                )
             },
             onResetValue = {
-                coroutineScope.launch {
-                    viewModel.updateClockSettings(
-                        clockSettings.copy(themes = clockSettings.themes.put(
-                            clockThemeName, clockTheme.copy(
-                                digitSizeFactor = DEFAULT_DIGIT_SIZE_FACTOR))
-                        )
+                onEvent(
+                    ClockSettingsEvent.UpdateThemes(
+                        clockThemeName,
+                        clockTheme.copy(digitSizeFactor = DEFAULT_DIGIT_SIZE_FACTOR)
                     )
-                }
+                )
             }
         )
 
@@ -121,30 +107,21 @@ fun ClockCharacterSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) 
                     defaultValue = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
                     sliderValuePrettyPrintFun = Float::prettyPrintPercentage,
                     onValueChangeFinished = { newSizeFactor ->
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    themes = clockSettings.themes.put(
-                                        clockThemeName, clockTheme.copy(
-                                            daytimeMarkerSizeFactor = newSizeFactor
-                                        )
-                                    )
-                                )
+                        onEvent(
+                            ClockSettingsEvent.UpdateThemes(
+                                clockThemeName,
+                                clockTheme.copy(daytimeMarkerSizeFactor = newSizeFactor)
                             )
-                        }
+                        )
                     },
                     onResetValue = {
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    themes = clockSettings.themes.put(
-                                        clockThemeName, clockTheme.copy(
-                                            daytimeMarkerSizeFactor = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
-                                        )
-                                    )
-                                )
+                        onEvent(
+                            ClockSettingsEvent.UpdateThemes(
+                                clockThemeName,
+                                clockTheme.copy(
+                                    daytimeMarkerSizeFactor = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR)
                             )
-                        }
+                        )
                     }
                 )
             }

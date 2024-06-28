@@ -15,17 +15,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.util.CommonClockUtils.CLOCK_CHARS
 import de.oljg.glac.core.util.defaultColor
+import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
-import de.oljg.glac.feature_clock.ui.ClockSettingsViewModel
+import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_BORDER_WIDTH
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_ROUNDED_CORNER_SIZE
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
@@ -34,8 +32,10 @@ import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.MULTI_COLOR
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.SETTINGS_SECTION_HEIGHT
 
 @Composable
-fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
-    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
+fun ColorsPerCharSelector(
+    clockSettings: ClockSettings,
+    onEvent: (ClockSettingsEvent) -> Unit
+) {
     val clockThemeName = clockSettings.clockThemeName
     val clockTheme = clockSettings.themes.getOrDefault(
         key = clockThemeName,
@@ -47,7 +47,7 @@ fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
         modifier = Modifier
             .border(
                 width = DEFAULT_BORDER_WIDTH,
-                color = if(clockTheme.setColorsPerChar)
+                color = if(clockTheme.useColorsPerChar)
                     MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.outlineVariant,
                 shape = RoundedCornerShape(DEFAULT_ROUNDED_CORNER_SIZE)
             )
@@ -66,17 +66,19 @@ fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                     text = stringResource(R.string.color_per_character)
                 )
                 Switch(
-                    checked = clockTheme.setColorsPerChar,
+                    checked = clockTheme.useColorsPerChar,
                     onCheckedChange = {
-                        viewModel.updateClockTheme(
-                            clockSettings, clockThemeName,
-                            clockTheme.copy(setColorsPerChar = !clockTheme.setColorsPerChar)
+                        onEvent(
+                            ClockSettingsEvent.UpdateThemes(
+                                clockThemeName,
+                                clockTheme.copy(useColorsPerChar = !clockTheme.useColorsPerChar)
+                            )
                         )
                     }
                 )
             }
 
-            AnimatedVisibility(visible = clockTheme.setColorsPerChar) {
+            AnimatedVisibility(visible = clockTheme.useColorsPerChar) {
                 Column {
                     Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE / 2))
                     CLOCK_CHARS.forEach { clockChar ->
@@ -88,18 +90,25 @@ fun ColorsPerCharSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                             ),
                             defaultColor = clockTheme.charColor ?: defaultCharColor,
                             onResetColor = {
-                                viewModel.updateClockTheme(
-                                    clockSettings, clockThemeName,
-                                    clockTheme.copy(
-                                        charColors = clockTheme.charColors.remove(clockChar)
+                                onEvent(
+                                    ClockSettingsEvent.UpdateThemes(
+                                        clockThemeName,
+                                        clockTheme.copy(
+                                            charColors = clockTheme.charColors.remove(clockChar)
+                                        )
                                     )
                                 )
                             }
                         ) { selectedColor ->
-                            viewModel.updateClockTheme(
-                                clockSettings, clockThemeName,
-                                clockTheme.copy(
-                                    charColors = clockTheme.charColors.put(clockChar, selectedColor)
+                            onEvent(
+                                ClockSettingsEvent.UpdateThemes(
+                                    clockThemeName,
+                                    clockTheme.copy(
+                                        charColors = clockTheme.charColors.put(
+                                            clockChar,
+                                            selectedColor
+                                        )
+                                    )
                                 )
                             )
                         }

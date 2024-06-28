@@ -1,9 +1,10 @@
 package de.oljg.glac.feature_clock.domain.model
 
 
-import de.oljg.glac.core.util.CommonClockUtils.DEFAULT_THEME_NAME
 import de.oljg.glac.feature_clock.domain.model.serializer.ClockThemeSerializer
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_CLOCK_BRIGHTNESS
+import de.oljg.glac.feature_clock.domain.model.utils.ClockSettingsDefaults.DEFAULT_CLOCK_BRIGHTNESS
+import de.oljg.glac.feature_clock.domain.model.utils.ClockSettingsDefaults.DEFAULT_OVERRIDE_SYSTEM_BRIGHTNESS
+import de.oljg.glac.feature_clock.domain.model.utils.ClockSettingsDefaults.DEFAULT_THEME_NAME
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.serialization.Serializable
@@ -17,7 +18,7 @@ data class ClockSettings(
     val themes: PersistentMap<String, ClockTheme> =
             persistentMapOf(Pair(DEFAULT_THEME_NAME, ClockTheme())),
 
-    val overrideSystemBrightness: Boolean = false,
+    val overrideSystemBrightness: Boolean = DEFAULT_OVERRIDE_SYSTEM_BRIGHTNESS,
     val clockBrightness: Float = DEFAULT_CLOCK_BRIGHTNESS,
 
     val clockSettingsSectionPreviewIsExpanded: Boolean = false,
@@ -29,10 +30,10 @@ data class ClockSettings(
     val clockSettingsSectionBrigntnessIsExpanded: Boolean = false,
 
     // One column layout
-    val columnScrollPosition: Int = 0,
+    val clockSettingsColumnScrollPosition: Int = 0,
 
     // Two column layout
-    val startColumnScrollPosition: Int = 0,
-    val endColumnScrollPosition: Int = 0
+    val clockSettingsStartColumnScrollPosition: Int = 0,
+    val clockSettingsEndColumnScrollPosition: Int = 0
 )
 

@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.feature_alarm.ui.utils.SnoozeAlarmIndicator
+import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockCharType
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockDefaults.DEFAULT_CLOCK_PADDING
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
@@ -44,6 +45,7 @@ import de.oljg.glac.feature_clock.ui.clock.utils.defaultClockCharColors
 
 @Composable
 fun DigitalAlarmClock(
+    clockSettings: ClockSettings,
     isSnoozeAlarmActive: Boolean,
     previewMode: Boolean = false,
     onClick: () -> Unit = {},
@@ -84,6 +86,7 @@ fun DigitalAlarmClock(
     ) {
         if (currentDisplayOrientation == Configuration.ORIENTATION_LANDSCAPE) {
             DigitalAlarmClockLandscapeLayout(
+                clockSettings = clockSettings,
                 previewMode = previewMode,
                 clockBoxSize = clockBoxSize,
                 hoursMinutesDividerChar = hoursMinutesDividerChar,
@@ -103,6 +106,7 @@ fun DigitalAlarmClock(
             )
         } else {
             DigitalAlarmClockPortraitLayout(
+                clockSettings = clockSettings,
                 previewMode = previewMode,
                 clockBoxSize = clockBoxSize,
                 fontFamily = fontFamily,

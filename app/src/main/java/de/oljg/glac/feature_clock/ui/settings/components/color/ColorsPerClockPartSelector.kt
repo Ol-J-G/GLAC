@@ -15,15 +15,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
+import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
-import de.oljg.glac.feature_clock.ui.ClockSettingsViewModel
+import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.settings.components.color.clockparts.AntePostColorSelector
 import de.oljg.glac.feature_clock.ui.settings.components.color.clockparts.DaytimeMarkerDividerColorSelector
 import de.oljg.glac.feature_clock.ui.settings.components.color.clockparts.HoursMinutesDividerColorSelector
@@ -43,8 +41,10 @@ import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.MULTI_COLOR
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.SETTINGS_SECTION_HEIGHT
 
 @Composable
-fun ColorsPerClockPartSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
-    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
+fun ColorsPerClockPartSelector(
+    clockSettings: ClockSettings,
+    onEvent: (ClockSettingsEvent) -> Unit
+) {
     val clockThemeName = clockSettings.clockThemeName
     val clockTheme = clockSettings.themes.getOrDefault(
         key = clockThemeName,
@@ -73,32 +73,34 @@ fun ColorsPerClockPartSelector(viewModel: ClockSettingsViewModel = hiltViewModel
                     text = stringResource(R.string.color_per_clock_part)
                 )
                 Switch(
-                    checked = clockTheme.setColorsPerClockPart,
+                    checked = clockTheme.useColorsPerClockPart,
                     onCheckedChange = {
-                        viewModel.updateClockTheme(
-                            clockSettings, clockThemeName,
-                            clockTheme.copy(
-                                setColorsPerClockPart = !clockTheme.setColorsPerClockPart
+                        onEvent(
+                            ClockSettingsEvent.UpdateThemes(
+                                clockThemeName,
+                                clockTheme.copy(
+                                    useColorsPerClockPart = !clockTheme.useColorsPerClockPart
+                                )
                             )
                         )
                     }
                 )
             }
 
-            AnimatedVisibility(visible = clockTheme.setColorsPerClockPart) {
+            AnimatedVisibility(visible = clockTheme.useColorsPerClockPart) {
                 Column {
                     Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE / 2))
-                    HoursTensColorSelector()
-                    HoursOnesColorSelector()
-                    MinutesTensColorSelector()
-                    MinutesOnesColorSelector()
-                    SecondsTensColorSelector()
-                    SecondsOnesColorSelector()
-                    AntePostColorSelector()
-                    MeridiemColorSelector()
-                    HoursMinutesDividerColorSelector()
-                    MinutesSecondsDividerColorSelector()
-                    DaytimeMarkerDividerColorSelector()
+                    HoursTensColorSelector(clockSettings, onEvent)
+                    HoursOnesColorSelector(clockSettings, onEvent)
+                    MinutesTensColorSelector(clockSettings, onEvent)
+                    MinutesOnesColorSelector(clockSettings, onEvent)
+                    SecondsTensColorSelector(clockSettings, onEvent)
+                    SecondsOnesColorSelector(clockSettings, onEvent)
+                    AntePostColorSelector(clockSettings, onEvent)
+                    MeridiemColorSelector(clockSettings, onEvent)
+                    HoursMinutesDividerColorSelector(clockSettings, onEvent)
+                    MinutesSecondsDividerColorSelector(clockSettings, onEvent)
+                    DaytimeMarkerDividerColorSelector(clockSettings, onEvent)
                 }
             }
         }

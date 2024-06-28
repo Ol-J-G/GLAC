@@ -28,6 +28,7 @@ import de.oljg.glac.feature_alarm.ui.AlarmSettingsViewModel
 import de.oljg.glac.feature_alarm.ui.alarms.AlarmsListScreen
 import de.oljg.glac.feature_alarm.ui.components.CancelSnoozeAlarmDialog
 import de.oljg.glac.feature_alarm.ui.settings.AlarmSettingsScreen
+import de.oljg.glac.feature_clock.ui.ClockSettingsViewModel
 import de.oljg.glac.feature_clock.ui.clock.DigitalAlarmClockScreen
 import de.oljg.glac.feature_clock.ui.settings.ClockSettingsScreen
 
@@ -42,8 +43,8 @@ fun GlacNavHost(
         modifier = modifier
     ) {
         composable(route = AlarmClockFullScreen.route) {
-            val viewModel: AlarmSettingsViewModel = hiltViewModel()
-            val alarms = viewModel.alarmSettingsStateFlow.collectAsState().value.alarms
+            val alarmSettingsViewModel: AlarmSettingsViewModel = hiltViewModel()
+            val alarms = alarmSettingsViewModel.alarmSettingsStateFlow.collectAsState().value.alarms
             val snoozeAlarm = alarms.find { it.isSnoozeAlarm }
 
             var showCancelSnoozeAlarmDialog by rememberSaveable {
@@ -53,7 +54,7 @@ fun GlacNavHost(
             AnimatedVisibility(visible = showCancelSnoozeAlarmDialog) {
                 CancelSnoozeAlarmDialog(
                     onCancelSnoozeAlarm = {
-                        snoozeAlarm?.let { viewModel.onEvent(AlarmSettingsEvent.RemoveAlarm(it)) }
+                        snoozeAlarm?.let { alarmSettingsViewModel.onEvent(AlarmSettingsEvent.RemoveAlarm(it)) }
                         showCancelSnoozeAlarmDialog = false
                     },
                     onDismiss = { showCancelSnoozeAlarmDialog = false },
@@ -63,7 +64,10 @@ fun GlacNavHost(
                 )
             }
 
+            val clockSettingsViewModel: ClockSettingsViewModel = hiltViewModel()
+            val clockSettings by clockSettingsViewModel.clockSettingsStateFlow.collectAsState()
             DigitalAlarmClockScreen(
+                clockSettings = clockSettings,
                 isSnoozeAlarmActive = snoozeAlarm != null,
                 onClick = {
                     when (snoozeAlarm) {
@@ -75,7 +79,10 @@ fun GlacNavHost(
             )
         }
         composable(route = AlarmClockScreen.route) {
+            val viewModel: ClockSettingsViewModel = hiltViewModel()
+            val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
             DigitalAlarmClockScreen(
+                clockSettings = clockSettings,
                 onClick = { navController.navigateSingleTopTo(AlarmClockFullScreen.route) }
             )
         }
@@ -89,7 +96,9 @@ fun GlacNavHost(
             startDestination = ClockSettingsSubScreen.route
         ) {
             composable(route = ClockSettingsSubScreen.route) {
-                ClockSettingsScreen()
+                val viewModel: ClockSettingsViewModel = hiltViewModel()
+                val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
+                ClockSettingsScreen(clockSettings, onEvent = viewModel::onEvent)
             }
             composable(route = AlarmSettingsSubScreen.route) {
                 val viewModel: AlarmSettingsViewModel = hiltViewModel()

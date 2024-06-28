@@ -29,6 +29,7 @@ import de.oljg.glac.feature_alarm.ui.components.AlarmReactionDialog
 import de.oljg.glac.feature_alarm.ui.utils.Repetition
 import de.oljg.glac.feature_alarm.ui.utils.handleAlarmToBeLaunched
 import de.oljg.glac.feature_alarm.ui.utils.plus
+import de.oljg.glac.feature_clock.ui.ClockSettingsViewModel
 import de.oljg.glac.feature_clock.ui.clock.DigitalAlarmClockScreen
 import de.oljg.glac.ui.theme.GLACTheme
 import kotlinx.coroutines.launch
@@ -50,8 +51,11 @@ class AlarmActivity : ComponentActivity() {
              * when user clicks on back button?!?...)
              */
             BackHandler {}
-            val viewModel: AlarmSettingsViewModel = hiltViewModel()
-            val alarmSettings by viewModel.alarmSettingsStateFlow.collectAsState()
+            val alarmSettingsViewModel: AlarmSettingsViewModel = hiltViewModel()
+            val alarmSettings by alarmSettingsViewModel.alarmSettingsStateFlow.collectAsState()
+
+            val clockSettingsViewModel: ClockSettingsViewModel = hiltViewModel()
+            val clockSettings by clockSettingsViewModel.clockSettingsStateFlow.collectAsState()
 
             val context = LocalContext.current
             val alarmActivity = context.findActivity()
@@ -87,18 +91,22 @@ class AlarmActivity : ComponentActivity() {
                     AudioManager.STREAM_ALARM, streamAlarmVolumeSetByUser, 0
                 )
 
-                // "Back" to FullScreenClock via starting main activity
+                // "Back" to FullScreenClock by starting main activity
                 lifecycleScope.launch {
                     context.startActivity(Intent(context, MainActivity::class.java))
                 }
                 alarmActivity.finish()
             }
 
-            val alarmToBeLaunched = handleAlarmToBeLaunched(alarmSettings, viewModel::onEvent)
+            val alarmToBeLaunched = handleAlarmToBeLaunched(
+                alarmSettings,
+                alarmSettingsViewModel::onEvent
+            )
 
             GLACTheme {
                 if (alarmToBeLaunched != null) {
                     DigitalAlarmClockScreen(
+                        clockSettings = clockSettings,
                         fullScreen = true,
                         alarmMode = true,
                         alarmToBeLaunched = alarmToBeLaunched,
@@ -124,7 +132,7 @@ class AlarmActivity : ComponentActivity() {
                              * (But everyone will wake up at some point, some sooner, some later,
                              * right? :>)
                              */
-                            viewModel.onEvent(
+                            alarmSettingsViewModel.onEvent(
                                 AlarmSettingsEvent.AddAlarm(
                                     Alarm(
                                         start = LocalDateTime.now().plus(

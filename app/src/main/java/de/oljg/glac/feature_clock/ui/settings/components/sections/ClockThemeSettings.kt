@@ -14,35 +14,32 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.ExpandableSection
-import de.oljg.glac.core.util.CommonClockUtils.DEFAULT_THEME_NAME
+import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
-import de.oljg.glac.feature_clock.ui.ClockSettingsViewModel
+import de.oljg.glac.feature_clock.domain.model.utils.ClockSettingsDefaults.DEFAULT_THEME_NAME
+import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.settings.components.common.DropDownSelector
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_ICON_BUTTON_SIZE
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.MAX_THEME_NAME_LENGTH
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.MIN_THEME_NAME_LENGTH
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.RESET_BUTTON_SIZE
-import kotlinx.collections.immutable.toPersistentMap
-import kotlinx.coroutines.launch
 
 @Composable
-fun ClockThemeSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
+fun ClockThemeSettings(
+    clockSettings: ClockSettings,
+    onEvent: (ClockSettingsEvent) -> Unit
+) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    val coroutineScope = rememberCoroutineScope()
-    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
 
     var textFieldValue by remember(clockSettings.clockThemeName) {
         mutableStateOf(clockSettings.clockThemeName)
@@ -55,13 +52,7 @@ fun ClockThemeSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
         sectionTitle = stringResource(R.string.theme),
         expanded = clockSettings.clockSettingsSectionThemeIsExpanded,
         onExpandedChange = { expanded ->
-            coroutineScope.launch {
-                viewModel.updateClockSettings(
-                    clockSettings.copy(
-                        clockSettingsSectionThemeIsExpanded = expanded
-                    )
-                )
-            }
+            onEvent(ClockSettingsEvent.UpdateClockSettingsSectionThemeIsExpanded(expanded))
         }
     ) {
         Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
@@ -69,11 +60,7 @@ fun ClockThemeSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             label = stringResource(R.string.theme_name),
             selectedValue = textFieldValue,
             onNewValueSelected = { selectedThemeName ->
-                coroutineScope.launch {
-                    viewModel.updateClockSettings(
-                        clockSettings.copy(clockThemeName = selectedThemeName)
-                    )
-                }
+                onEvent(ClockSettingsEvent.UpdateClockThemeName(selectedThemeName))
                 textFieldValue = selectedThemeName
                 isValidInput = true
             },
@@ -103,13 +90,8 @@ fun ClockThemeSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             resetValueComponent = {
                 IconButton(
                     onClick = {
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy( // reset current theme to default theme
-                                    themes = clockSettings.themes.put(textFieldValue, ClockTheme())
-                                )
-                            )
-                        }
+                        // Reset current theme to default theme
+                        onEvent(ClockSettingsEvent.UpdateThemes(textFieldValue, ClockTheme()))
                     },
                     enabled = clockSettings.themes.containsKey(textFieldValue)
                             && clockSettings.themes[textFieldValue] != ClockTheme(),
@@ -128,28 +110,9 @@ fun ClockThemeSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             removeValueComponent = {
                 IconButton(
                     onClick = {
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-
-                                    /**
-                                     * Remove theme and select default theme afterwards.
-                                     *
-                                     * Note that clockSettings.themes.remove(key) did NOT remove
-                                     * the theme entry (dunno why!??..containsKey(key) was true..
-                                     * oO), so, alternatively, build a new map without the
-                                     * entry to remove...
-                                     */
-                                    themes = buildMap {
-                                        clockSettings.themes.entries.forEach { (key, value) ->
-                                            if (key != textFieldValue) put(key, value)
-                                        }
-                                    }.toPersistentMap(),
-                                    clockThemeName = DEFAULT_THEME_NAME
-                                )
-                            )
-                            textFieldValue = DEFAULT_THEME_NAME
-                        }
+                        onEvent(ClockSettingsEvent.RemoveTheme(textFieldValue))
+                        textFieldValue = DEFAULT_THEME_NAME
+                        onEvent(ClockSettingsEvent.UpdateClockThemeName(DEFAULT_THEME_NAME))
                     },
                     enabled = textFieldValue != DEFAULT_THEME_NAME
                             && clockSettings.themes.containsKey(textFieldValue),
@@ -168,19 +131,17 @@ fun ClockThemeSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             addValueComponent = {
                 IconButton(
                     onClick = {
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy( // create a new theme based on current theme
-                                    themes = clockSettings.themes.put(
-                                        textFieldValue, clockSettings.themes.getOrDefault(
-                                            key = clockSettings.clockThemeName,
-                                            defaultValue = ClockTheme()
-                                        )
-                                    ),
-                                    clockThemeName = textFieldValue
+                        // Create a new theme based on current theme
+                        onEvent(ClockSettingsEvent.UpdateClockThemeName(textFieldValue))
+                        onEvent(
+                            ClockSettingsEvent.UpdateThemes(
+                                textFieldValue,
+                                clockSettings.themes.getOrDefault(
+                                    key = clockSettings.clockThemeName,
+                                    defaultValue = ClockTheme()
                                 )
                             )
-                        }
+                        )
                         keyboardController?.hide()
                     },
                     enabled = textFieldValue != DEFAULT_THEME_NAME
@@ -202,4 +163,3 @@ fun ClockThemeSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
         Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
     }
 }
-

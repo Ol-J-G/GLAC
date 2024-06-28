@@ -81,10 +81,10 @@ fun AlarmsListScreen(
 
                         // quick manual test
 //                        val testAlarm = Alarm(
-//                            start = LocalDateTime.now().plusSeconds(5),
-//                            isLightAlarm = false,
-//                            lightAlarmDuration = 20.seconds,
-//                            repetition = Repetition.NONE,
+//                            start = LocalDateTime.now().plusSeconds(15),
+//                            isLightAlarm = true,
+//                            lightAlarmDuration = 10.seconds,
+//                            repetition = Repetition.WEEKLY,
 //                            snoozeDuration = 10.seconds,
 ////                            alarmSoundUri = Uri.parse("content://media/internal/audio/media/8?title=Coin&canonical=1")
 //                        )

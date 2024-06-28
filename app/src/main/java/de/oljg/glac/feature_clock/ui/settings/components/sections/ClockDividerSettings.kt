@@ -8,17 +8,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.ExpandableSection
+import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
-import de.oljg.glac.feature_clock.ui.ClockSettingsViewModel
+import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockCharType
 import de.oljg.glac.feature_clock.ui.clock.utils.DividerDefaults.DEFAULT_DASH_COUNT
 import de.oljg.glac.feature_clock.ui.clock.utils.DividerDefaults.DEFAULT_DASH_DOTTED_PART_COUNT
@@ -52,12 +49,12 @@ import de.oljg.glac.feature_clock.ui.settings.utils.isSevenSegmentItalicOrRevers
 import de.oljg.glac.feature_clock.ui.settings.utils.prettyPrintAngle
 import de.oljg.glac.feature_clock.ui.settings.utils.prettyPrintPercentage
 import de.oljg.glac.feature_clock.ui.settings.utils.prettyPrintPixel
-import kotlinx.coroutines.launch
 
 @Composable
-fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
-    val coroutineScope = rememberCoroutineScope()
-    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
+fun ClockDividerSettings(
+    clockSettings: ClockSettings,
+    onEvent: (ClockSettingsEvent) -> Unit
+) {
     val clockThemeName = clockSettings.clockThemeName
     val clockTheme = clockSettings.themes.getOrDefault(
         key = clockThemeName,
@@ -68,13 +65,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
         sectionTitle = stringResource(R.string.divider),
         expanded = clockSettings.clockSettingsSectionDividerIsExpanded,
         onExpandedChange = { expanded ->
-            coroutineScope.launch {
-                viewModel.updateClockSettings(
-                    clockSettings.copy(
-                        clockSettingsSectionDividerIsExpanded = expanded
-                    )
-                )
-            }
+            onEvent(ClockSettingsEvent.UpdateClockSettingsSectionDividerIsExpanded(expanded))
         }
     ) {
         Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
@@ -82,17 +73,12 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             label = stringResource(R.string.style),
             selectedDividerStyle = clockTheme.dividerStyle,
             onNewDividerStyleSelected = { newDividerStyle ->
-                coroutineScope.launch {
-                    viewModel.updateClockSettings(
-                        clockSettings.copy(
-                            themes = clockSettings.themes.put(
-                                clockThemeName, clockTheme.copy(
-                                    dividerStyle = DividerStyle.valueOf(newDividerStyle)
-                                )
-                            )
-                        )
+                onEvent(
+                    ClockSettingsEvent.UpdateThemes(
+                        clockThemeName,
+                        clockTheme.copy(dividerStyle = DividerStyle.valueOf(newDividerStyle))
                     )
-                }
+                )
             }
         )
 
@@ -111,30 +97,20 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                     sliderValuePrettyPrintFun = Float::prettyPrintPixel,
                     valueRange = MIN_DIVIDER_THICKNESS.toFloat()..MAX_DIVIDER_THICKNESS.toFloat(),
                     onValueChangeFinished = { newSizeFactor ->
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    themes = clockSettings.themes.put(
-                                        clockThemeName, clockTheme.copy(
-                                            dividerThickness = newSizeFactor.toInt()
-                                        )
-                                    )
-                                )
+                        onEvent(
+                            ClockSettingsEvent.UpdateThemes(
+                                clockThemeName,
+                                clockTheme.copy(dividerThickness = newSizeFactor.toInt())
                             )
-                        }
+                        )
                     },
                     onResetValue = {
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    themes = clockSettings.themes.put(
-                                        clockThemeName, clockTheme.copy(
-                                            dividerThickness = DEFAULT_THICKNESS
-                                        )
-                                    )
-                                )
+                        onEvent(
+                            ClockSettingsEvent.UpdateThemes(
+                                clockThemeName,
+                                clockTheme.copy(dividerThickness = DEFAULT_THICKNESS)
                             )
-                        }
+                        )
                     }
                 )
             }
@@ -149,30 +125,20 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                     defaultValue = DEFAULT_LENGTH_PERCENTAGE,
                     sliderValuePrettyPrintFun = Float::prettyPrintPercentage,
                     onValueChangeFinished = { newLength ->
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    themes = clockSettings.themes.put(
-                                        clockThemeName, clockTheme.copy(
-                                            dividerLengthPercentage = newLength
-                                        )
-                                    )
-                                )
+                        onEvent(
+                            ClockSettingsEvent.UpdateThemes(
+                                clockThemeName,
+                                clockTheme.copy(dividerLengthPercentage = newLength)
                             )
-                        }
+                        )
                     },
                     onResetValue = {
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    themes = clockSettings.themes.put(
-                                        clockThemeName, clockTheme.copy(
-                                            dividerLengthPercentage = DEFAULT_LENGTH_PERCENTAGE
-                                        )
-                                    )
-                                )
+                        onEvent(
+                            ClockSettingsEvent.UpdateThemes(
+                                clockThemeName,
+                                clockTheme.copy(dividerLengthPercentage = DEFAULT_LENGTH_PERCENTAGE)
                             )
-                        }
+                        )
                     }
                 )
             }
@@ -188,30 +154,20 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                     sliderValuePrettyPrintFun = Float::cutOffDecimalPlaces,
                     valueRange = MIN_DASH_COUNT.toFloat()..MAX_DASH_COUNT.toFloat(),
                     onValueChangeFinished = { newCount ->
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    themes = clockSettings.themes.put(
-                                        clockThemeName, clockTheme.copy(
-                                            dividerDashCount = newCount.toInt()
-                                        )
-                                    )
-                                )
+                        onEvent(
+                            ClockSettingsEvent.UpdateThemes(
+                                clockThemeName,
+                                clockTheme.copy(dividerDashCount = newCount.toInt())
                             )
-                        }
+                        )
                     },
                     onResetValue = {
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    themes = clockSettings.themes.put(
-                                        clockThemeName, clockTheme.copy(
-                                            dividerDashCount = DEFAULT_DASH_COUNT
-                                        )
-                                    )
-                                )
+                        onEvent(
+                            ClockSettingsEvent.UpdateThemes(
+                                clockThemeName,
+                                clockTheme.copy(dividerDashCount = DEFAULT_DASH_COUNT)
                             )
-                        }
+                        )
                     }
                 )
             }
@@ -228,31 +184,22 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                     valueRange =
                     MIN_DASH_DOTTED_PART_COUNT.toFloat()..MAX_DASH_DOTTED_PART_COUNT.toFloat(),
                     onValueChangeFinished = { newCount ->
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    themes = clockSettings.themes.put(
-                                        clockThemeName, clockTheme.copy(
-                                            dividerDashDottedPartCount = newCount.toInt()
-                                        )
-                                    )
-                                )
+                        onEvent(
+                            ClockSettingsEvent.UpdateThemes(
+                                clockThemeName,
+                                clockTheme.copy(dividerDashDottedPartCount = newCount.toInt())
                             )
-                        }
+                        )
                     },
                     onResetValue = {
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    themes = clockSettings.themes.put(
-                                        clockThemeName, clockTheme.copy(
-                                            dividerDashDottedPartCount =
-                                            DEFAULT_DASH_DOTTED_PART_COUNT
-                                        )
-                                    )
+                        onEvent(
+                            ClockSettingsEvent.UpdateThemes(
+                                clockThemeName,
+                                clockTheme.copy(
+                                    dividerDashDottedPartCount = DEFAULT_DASH_DOTTED_PART_COUNT
                                 )
                             )
-                        }
+                        )
                     }
                 )
             }
@@ -265,17 +212,14 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                     label = stringResource(R.string.line_end),
                     selectedDividerLineEnd = clockTheme.dividerLineEnd,
                     onNewDividerLineEndSelected = { newLineEnd ->
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    themes = clockSettings.themes.put(
-                                        clockThemeName, clockTheme.copy(
-                                            dividerLineEnd = DividerLineEnd.valueOf(newLineEnd)
-                                        )
-                                    )
+                        onEvent(
+                            ClockSettingsEvent.UpdateThemes(
+                                clockThemeName,
+                                clockTheme.copy(
+                                    dividerLineEnd = DividerLineEnd.valueOf(newLineEnd)
                                 )
                             )
-                        }
+                        )
                     }
                 )
                 Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
@@ -299,30 +243,20 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                     sliderValuePrettyPrintFun = Float::prettyPrintAngle,
                     valueRange = MIN_DIVIDER_ROTATE_ANGLE..MAX_DIVIDER_ROTATE_ANGLE,
                     onValueChangeFinished = { newAngle ->
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    themes = clockSettings.themes.put(
-                                        clockThemeName, clockTheme.copy(
-                                            dividerRotateAngle = newAngle
-                                        )
-                                    )
-                                )
+                        onEvent(
+                            ClockSettingsEvent.UpdateThemes(
+                                clockThemeName,
+                                clockTheme.copy(dividerRotateAngle = newAngle)
                             )
-                        }
+                        )
                     },
                     onResetValue = {
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    themes = clockSettings.themes.put(
-                                        clockThemeName, clockTheme.copy(
-                                            dividerRotateAngle = DEFAULT_ROTATE_ANGLE
-                                        )
-                                    )
-                                )
+                        onEvent(
+                            ClockSettingsEvent.UpdateThemes(
+                                clockThemeName,
+                                clockTheme.copy(dividerRotateAngle = DEFAULT_ROTATE_ANGLE)
                             )
-                        }
+                        )
                     }
                 )
             }
@@ -331,7 +265,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
         AnimatedVisibility(visible = clockTheme.dividerStyle == DividerStyle.COLON) {
             Column {
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
-                ColonDividerOptionsSelector()
+                ColonDividerOptionsSelector(clockSettings, onEvent)
                 Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
             }
         }
@@ -343,7 +277,7 @@ fun ClockDividerSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
         ) {
             Column {
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
-                DividerCharsSelector()
+                DividerCharsSelector(clockSettings, onEvent)
                 Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE / 2))
             }
         }

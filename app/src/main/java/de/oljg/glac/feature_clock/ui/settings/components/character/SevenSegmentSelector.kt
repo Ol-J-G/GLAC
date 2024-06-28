@@ -7,15 +7,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
+import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
-import de.oljg.glac.feature_clock.ui.ClockSettingsViewModel
+import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentDefaults.DEFAULT_OUTLINE_SIZE
 import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentDefaults.MAX_STROKE_WIDTH
 import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentDefaults.MIN_STROKE_WIDTH
@@ -26,12 +23,12 @@ import de.oljg.glac.feature_clock.ui.settings.components.common.SettingsSlider
 import de.oljg.glac.feature_clock.ui.settings.components.common.SettingsSwitch
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.feature_clock.ui.settings.utils.prettyPrintPixel
-import kotlinx.coroutines.launch
 
 @Composable
-fun SevenSegmentSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
-    val coroutineScope = rememberCoroutineScope()
-    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
+fun SevenSegmentSelector(
+    clockSettings: ClockSettings,
+    onEvent: (ClockSettingsEvent) -> Unit
+) {
     val clockThemeName = clockSettings.clockThemeName
     val clockTheme = clockSettings.themes.getOrDefault(
         key = clockThemeName,
@@ -43,38 +40,32 @@ fun SevenSegmentSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             label = stringResource(id = R.string.weight),
             selectedSevenSegmentWeight = clockTheme.sevenSegmentWeight,
             onNewSevenSegmentWeightSelected = { newSevenSegmentWeight ->
-                coroutineScope.launch {
-                    viewModel.updateClockSettings(
-                        clockSettings.copy(
-                            themes = clockSettings.themes.put(
-                                clockThemeName, clockTheme.copy(
-                                    sevenSegmentWeight = SevenSegmentWeight.valueOf(
-                                        newSevenSegmentWeight
-                                    )
-                                )
+                onEvent(
+                    ClockSettingsEvent.UpdateThemes(
+                        clockThemeName,
+                        clockTheme.copy(
+                            sevenSegmentWeight = SevenSegmentWeight.valueOf(
+                                newSevenSegmentWeight
                             )
                         )
                     )
-                }
+                )
             }
         )
         SevenSegmentStyleSelector(
             label = stringResource(id = R.string.style),
             selectedSevenSegmentStyle = clockTheme.sevenSegmentStyle,
             onNewSevenSegmentStyleSelected = { newSevenSegmentStyle ->
-                coroutineScope.launch {
-                    viewModel.updateClockSettings(
-                        clockSettings.copy(
-                            themes = clockSettings.themes.put(
-                                clockThemeName, clockTheme.copy(
-                                    sevenSegmentStyle = SevenSegmentStyle.valueOf(
-                                        newSevenSegmentStyle
-                                    )
-                                )
+                onEvent(
+                    ClockSettingsEvent.UpdateThemes(
+                        clockThemeName,
+                        clockTheme.copy(
+                            sevenSegmentStyle = SevenSegmentStyle.valueOf(
+                                newSevenSegmentStyle
                             )
                         )
                     )
-                }
+                )
             }
         )
         AnimatedVisibility(visible = clockTheme.sevenSegmentStyle.isOutline()) {
@@ -91,30 +82,20 @@ fun SevenSegmentSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                     defaultValue = DEFAULT_OUTLINE_SIZE,
                     sliderValuePrettyPrintFun = Float::prettyPrintPixel,
                     onValueChangeFinished = { newValue ->
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    themes = clockSettings.themes.put(
-                                        clockThemeName, clockTheme.copy(
-                                            sevenSegmentOutlineSize = newValue
-                                        )
-                                    )
-                                )
+                        onEvent(
+                            ClockSettingsEvent.UpdateThemes(
+                                clockThemeName,
+                                clockTheme.copy(sevenSegmentOutlineSize = newValue)
                             )
-                        }
+                        )
                     },
                     onResetValue = {
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    themes = clockSettings.themes.put(
-                                        clockThemeName, clockTheme.copy(
-                                            sevenSegmentOutlineSize = DEFAULT_OUTLINE_SIZE
-                                        )
-                                    )
-                                )
+                        onEvent(
+                            ClockSettingsEvent.UpdateThemes(
+                                clockThemeName,
+                                clockTheme.copy(sevenSegmentOutlineSize = DEFAULT_OUTLINE_SIZE)
                             )
-                        }
+                        )
                     },
                     valueRange = MIN_STROKE_WIDTH..MAX_STROKE_WIDTH
                 )
@@ -131,15 +112,12 @@ fun SevenSegmentSelector(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             label = stringResource(R.string.off_segments),
             checked = clockTheme.drawOffSegments,
             onCheckedChange = { newValue ->
-                coroutineScope.launch {
-                    viewModel.updateClockSettings(
-                        clockSettings.copy(
-                            themes = clockSettings.themes.put(
-                                clockThemeName, clockTheme.copy(drawOffSegments = newValue)
-                            )
-                        )
+                onEvent(
+                    ClockSettingsEvent.UpdateThemes(
+                        clockThemeName,
+                        clockTheme.copy(drawOffSegments = newValue)
                     )
-                }
+                )
             }
         )
     }

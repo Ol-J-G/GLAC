@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -16,14 +15,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.core.ui.components.RemoveImportedFileButton
 import de.oljg.glac.core.util.cutOffPathFromUri
 import de.oljg.glac.core.util.removeLocalFile
 import de.oljg.glac.feature_alarm.domain.media.utils.AlarmSoundDefaults
+import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls
-import de.oljg.glac.feature_clock.ui.ClockSettingsViewModel
+import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.clock.utils.FontNameParts
 import de.oljg.glac.feature_clock.ui.clock.utils.contains
 import de.oljg.glac.feature_clock.ui.settings.components.common.DropDownSelector
@@ -37,14 +36,14 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun FontFamilySelector(
-    viewModel: ClockSettingsViewModel = hiltViewModel(),
+    clockSettings: ClockSettings,
+    onEvent: (ClockSettingsEvent) -> Unit,
     label: String,
     selectedFontFamily: String,
     defaultValue: String = ClockThemeDefauls.DEFAULT_FONT_NAME,
     onNewFontFamilySelected: (String) -> Unit,
     onNewFontFamilyImported: (String) -> Unit
 ) {
-    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
     val clockThemeName = clockSettings.clockThemeName
     val clockTheme = clockSettings.themes.getOrDefault(
         key = clockThemeName,
@@ -108,10 +107,10 @@ fun FontFamilySelector(
         if (importedAreLoading && !builtInAreLoading) {
             if (importedFontUriToRemove != null) {
                 val updateJob = launch(start = CoroutineStart.LAZY) {
-                    viewModel.updateClockSettings(
-                        clockSettings.copy(
-                            themes = clockSettings.themes.put(
-                                clockThemeName, clockTheme.copy(fontName = defaultValue))
+                    onEvent(
+                        ClockSettingsEvent.UpdateThemes(
+                            clockThemeName,
+                            clockTheme.copy(fontName = defaultValue)
                         )
                     )
                 }

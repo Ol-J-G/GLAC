@@ -5,38 +5,28 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.ExpandableSection
-import de.oljg.glac.feature_clock.ui.ClockSettingsViewModel
+import de.oljg.glac.feature_clock.domain.model.ClockSettings
+import de.oljg.glac.feature_clock.domain.model.utils.ClockSettingsDefaults.DEFAULT_CLOCK_BRIGHTNESS
+import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.settings.components.common.SettingsSlider
 import de.oljg.glac.feature_clock.ui.settings.components.common.SettingsSwitch
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_CLOCK_BRIGHTNESS
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.feature_clock.ui.settings.utils.prettyPrintPercentage
-import kotlinx.coroutines.launch
 
 @Composable
-fun ClockBrightnessSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
-    val coroutineScope = rememberCoroutineScope()
-    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
-
+fun ClockBrightnessSettings(
+    clockSettings: ClockSettings,
+    onEvent: (ClockSettingsEvent) -> Unit
+) {
     ExpandableSection(
         sectionTitle = stringResource(R.string.brightness),
         expanded = clockSettings.clockSettingsSectionBrigntnessIsExpanded,
         onExpandedChange = { expanded ->
-            coroutineScope.launch {
-                viewModel.updateClockSettings(
-                    clockSettings.copy(
-                        clockSettingsSectionBrigntnessIsExpanded = expanded
-                    )
-                )
-            }
+            onEvent(ClockSettingsEvent.UpdateClockSettingsSectionBrightnessIsExpanded(expanded))
         }
     ) {
         Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
@@ -44,13 +34,7 @@ fun ClockBrightnessSettings(viewModel: ClockSettingsViewModel = hiltViewModel())
             label = stringResource(R.string.override_system_brightness),
             checked = clockSettings.overrideSystemBrightness,
             onCheckedChange = { newValue ->
-                coroutineScope.launch {
-                    viewModel.updateClockSettings(
-                        clockSettings.copy(
-                            overrideSystemBrightness = newValue
-                        )
-                    )
-                }
+                onEvent(ClockSettingsEvent.UpdateOverrideSystemBrightness(newValue))
             }
         )
 
@@ -63,22 +47,10 @@ fun ClockBrightnessSettings(viewModel: ClockSettingsViewModel = hiltViewModel())
                     defaultValue = DEFAULT_CLOCK_BRIGHTNESS,
                     sliderValuePrettyPrintFun = Float::prettyPrintPercentage,
                     onValueChangeFinished = { newBrightness ->
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    clockBrightness = newBrightness
-                                )
-                            )
-                        }
+                        onEvent(ClockSettingsEvent.UpdateClockBrightness(newBrightness))
                     },
                     onResetValue = {
-                        coroutineScope.launch {
-                            viewModel.updateClockSettings(
-                                clockSettings.copy(
-                                    clockBrightness = DEFAULT_CLOCK_BRIGHTNESS
-                                )
-                            )
-                        }
+                        onEvent(ClockSettingsEvent.UpdateClockBrightness(DEFAULT_CLOCK_BRIGHTNESS))
                     }
                 )
             }

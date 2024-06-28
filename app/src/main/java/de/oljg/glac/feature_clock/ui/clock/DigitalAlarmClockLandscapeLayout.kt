@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,13 +24,12 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.util.ClockPartsTestTags
 import de.oljg.glac.core.util.TestTags
 import de.oljg.glac.core.util.defaultColor
+import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
-import de.oljg.glac.feature_clock.ui.ClockSettingsViewModel
 import de.oljg.glac.feature_clock.ui.clock.components.ClockCharColumn
 import de.oljg.glac.feature_clock.ui.clock.components.ColonDivider
 import de.oljg.glac.feature_clock.ui.clock.components.LineDivider
@@ -60,7 +58,7 @@ import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.PREVIEW_SIZ
 
 @Composable
 fun DigitalAlarmClockLandscapeLayout(
-    viewModel: ClockSettingsViewModel = hiltViewModel(),
+    clockSettings: ClockSettings,
     previewMode: Boolean = false,
     currentTimeFormatted: String,
     clockBoxSize: IntSize,
@@ -82,11 +80,11 @@ fun DigitalAlarmClockLandscapeLayout(
     daytimeMarkerSizeFactor: Float = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
     clockChar: @Composable (Char, TextUnit, Color, DpSize) -> Unit
 ) {
-
     val isFontCharDivider =
         clockCharType == ClockCharType.FONT && dividerAttributes.dividerStyle == DividerStyle.CHAR
     val isSevenSegmentCharDivider =
-        clockCharType == ClockCharType.SEVEN_SEGMENT && dividerAttributes.dividerStyle == DividerStyle.CHAR
+        clockCharType == ClockCharType.SEVEN_SEGMENT
+                && dividerAttributes.dividerStyle == DividerStyle.CHAR
 
     /**
      * Set LINE as default divider style for 7-segment clock in case someone would try to do the
@@ -113,7 +111,6 @@ fun DigitalAlarmClockLandscapeLayout(
         mutableStateOf(IntSize(0, 0))
     }
 
-    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
     val clockTheme = clockSettings.themes.getOrDefault(
         key = clockSettings.clockThemeName,
         defaultValue = ClockTheme()

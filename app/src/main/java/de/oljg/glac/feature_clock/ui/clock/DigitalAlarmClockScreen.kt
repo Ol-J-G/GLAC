@@ -11,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,7 +20,6 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toFile
-import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.core.util.defaultBackgroundColor
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.core.util.lockScreenOrientation
@@ -34,9 +32,9 @@ import de.oljg.glac.feature_alarm.ui.utils.animateAlarmBrushOffset
 import de.oljg.glac.feature_alarm.ui.utils.animateAlarmColor
 import de.oljg.glac.feature_alarm.ui.utils.isLightAlarm
 import de.oljg.glac.feature_alarm.ui.utils.isNotLightAlarm
+import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls
-import de.oljg.glac.feature_clock.ui.ClockSettingsViewModel
 import de.oljg.glac.feature_clock.ui.clock.components.SevenSegmentChar
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockCharType
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockPartsColors
@@ -61,7 +59,7 @@ import kotlin.time.DurationUnit
 
 @Composable
 fun DigitalAlarmClockScreen(
-    viewModel: ClockSettingsViewModel = hiltViewModel(),
+    clockSettings: ClockSettings,
     fullScreen: Boolean = false,
     previewMode: Boolean = false,
     alarmMode: Boolean = false,
@@ -71,7 +69,6 @@ fun DigitalAlarmClockScreen(
     alarmSoundFadeDuration: Duration = Duration.ZERO,
     onClick: () -> Unit = {}
 ) {
-    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
     val clockTheme = clockSettings.themes.getOrDefault(
         key = clockSettings.clockThemeName,
         defaultValue = ClockTheme()
@@ -147,14 +144,14 @@ fun DigitalAlarmClockScreen(
      * ...
      */
     val charColor = clockTheme.charColor ?: defaultColor()
-    val charColors = if (clockTheme.setColorsPerChar)
+    val charColors = if (clockTheme.useColorsPerChar)
         clockTheme.charColors else emptyMap()
 
     val finalCharColors = setSpecifiedColors(charColors, defaultClockCharColors(charColor))
-    val finalClockPartsColors = if (clockTheme.setColorsPerClockPart)
+    val finalClockPartsColors = if (clockTheme.useColorsPerClockPart)
         clockTheme.clockPartsColors else ClockPartsColors()
 
-    val segmentColors = if (clockTheme.setSegmentColors)
+    val segmentColors = if (clockTheme.useSegmentColors)
         clockTheme.segmentColors else emptyMap()
 
     /**
@@ -304,6 +301,7 @@ fun DigitalAlarmClockScreen(
     fun useAlarmBrush() = alarmMode && alarmToBeLaunched.isLightAlarm() && !lightAlarmIsFinished
 
     DigitalAlarmClock(
+        clockSettings = clockSettings,
         isSnoozeAlarmActive = isSnoozeAlarmActive,
         previewMode = previewMode,
         onClick = onClick,

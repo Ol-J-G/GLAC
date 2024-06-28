@@ -6,37 +6,28 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpSize
-import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.ExpandableSection
 import de.oljg.glac.core.util.screenDetails
-import de.oljg.glac.feature_clock.ui.ClockSettingsViewModel
+import de.oljg.glac.feature_clock.domain.model.ClockSettings
+import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.clock.DigitalAlarmClockScreen
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.PREVIEW_SIZE_FACTOR
-import kotlinx.coroutines.launch
 
 @Composable
-fun ClockPreview(viewModel: ClockSettingsViewModel = hiltViewModel()) {
-    val coroutineScope = rememberCoroutineScope()
-    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
+fun ClockPreview(
+    clockSettings: ClockSettings,
+    onEvent: (ClockSettingsEvent) -> Unit
+) {
     ExpandableSection(
         sectionTitle = stringResource(R.string.clock_preview),
         expanded = clockSettings.clockSettingsSectionPreviewIsExpanded,
         onExpandedChange = { isExpanded ->
-            coroutineScope.launch {
-                viewModel.updateClockSettings(
-                    clockSettings.copy(
-                        clockSettingsSectionPreviewIsExpanded = isExpanded
-                    )
-                )
-            }
+            onEvent(ClockSettingsEvent.UpdateClockSettingsSectionPreviewIsExpanded(isExpanded))
         }
     ) {
         Row(
@@ -53,7 +44,10 @@ fun ClockPreview(viewModel: ClockSettingsViewModel = hiltViewModel()) {
                     ),
                 contentAlignment = Alignment.TopCenter
             ) {
-                DigitalAlarmClockScreen(previewMode = true)
+                DigitalAlarmClockScreen(
+                    clockSettings = clockSettings,
+                    previewMode = true
+                )
             }
         }
     }

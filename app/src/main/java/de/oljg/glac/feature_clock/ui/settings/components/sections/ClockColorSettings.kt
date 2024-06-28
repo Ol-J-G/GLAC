@@ -5,30 +5,27 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.ExpandableSection
 import de.oljg.glac.core.util.defaultBackgroundColor
 import de.oljg.glac.core.util.defaultColor
+import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
-import de.oljg.glac.feature_clock.ui.ClockSettingsViewModel
+import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockCharType
 import de.oljg.glac.feature_clock.ui.settings.components.color.ColorSelector
 import de.oljg.glac.feature_clock.ui.settings.components.color.ColorsPerCharSelector
 import de.oljg.glac.feature_clock.ui.settings.components.color.ColorsPerClockPartSelector
 import de.oljg.glac.feature_clock.ui.settings.components.color.SegmentColorsSelector
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
-import kotlinx.coroutines.launch
 
 @Composable
-fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
-    val coroutineScope = rememberCoroutineScope()
-    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
+fun ClockColorSettings(
+    clockSettings: ClockSettings,
+    onEvent: (ClockSettingsEvent) -> Unit
+) {
     val clockThemeName = clockSettings.clockThemeName
     val clockTheme = clockSettings.themes.getOrDefault(
         key = clockThemeName,
@@ -41,13 +38,7 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
         sectionTitle = stringResource(R.string.colors),
         expanded = clockSettings.clockSettingsSectionColorsIsExpanded,
         onExpandedChange = { expanded ->
-            coroutineScope.launch {
-                viewModel.updateClockSettings(
-                    clockSettings.copy(
-                        clockSettingsSectionColorsIsExpanded = expanded
-                    )
-                )
-            }
+            onEvent(ClockSettingsEvent.UpdateClockSettingsSectionColorsIsExpanded(expanded))
         }
     ) {
         Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
@@ -56,13 +47,19 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             color = clockTheme.charColor ?: defaultCharColor,
             defaultColor = defaultCharColor,
             onResetColor = {
-                viewModel.updateClockTheme(
-                    clockSettings, clockThemeName, clockTheme.copy(charColor = null)
+                onEvent(
+                    ClockSettingsEvent.UpdateThemes(
+                        clockThemeName,
+                        clockTheme.copy(charColor = null)
+                    )
                 )
             }
         ) { selectedColor ->
-            viewModel.updateClockTheme(
-                clockSettings, clockThemeName, clockTheme.copy(charColor = selectedColor)
+            onEvent(
+                ClockSettingsEvent.UpdateThemes(
+                    clockThemeName,
+                    clockTheme.copy(charColor = selectedColor)
+                )
             )
         }
         Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
@@ -71,13 +68,19 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             color = clockTheme.backgroundColor ?: defaultBackgroundColor,
             defaultColor = defaultBackgroundColor,
             onResetColor = {
-                viewModel.updateClockTheme(
-                    clockSettings, clockThemeName, clockTheme.copy(backgroundColor = null)
+                onEvent(
+                    ClockSettingsEvent.UpdateThemes(
+                        clockThemeName,
+                        clockTheme.copy(backgroundColor = null)
+                    )
                 )
             },
         ) { selectedColor ->
-            viewModel.updateClockTheme(
-                clockSettings, clockThemeName, clockTheme.copy(backgroundColor = selectedColor)
+            onEvent(
+                ClockSettingsEvent.UpdateThemes(
+                    clockThemeName,
+                    clockTheme.copy(backgroundColor = selectedColor)
+                )
             )
         }
         Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
@@ -86,25 +89,31 @@ fun ClockColorSettings(viewModel: ClockSettingsViewModel = hiltViewModel()) {
             color = clockTheme.dividerColor ?: clockTheme.charColor ?: defaultCharColor,
             defaultColor = clockTheme.charColor ?: defaultCharColor,
             onResetColor = {
-                viewModel.updateClockTheme(
-                    clockSettings, clockThemeName, clockTheme.copy(dividerColor = null)
+                onEvent(
+                    ClockSettingsEvent.UpdateThemes(
+                        clockThemeName,
+                        clockTheme.copy(dividerColor = null)
+                    )
                 )
             },
         ) { selectedColor ->
-            viewModel.updateClockTheme(
-                clockSettings, clockThemeName, clockTheme.copy(dividerColor = selectedColor)
+            onEvent(
+                ClockSettingsEvent.UpdateThemes(
+                    clockThemeName,
+                    clockTheme.copy(dividerColor = selectedColor)
+                )
             )
         }
         Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE))
-        ColorsPerCharSelector()
+        ColorsPerCharSelector(clockSettings, onEvent)
 
         Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE))
-        ColorsPerClockPartSelector()
+        ColorsPerClockPartSelector(clockSettings, onEvent)
 
         AnimatedVisibility(visible = clockTheme.clockCharType == ClockCharType.SEVEN_SEGMENT) {
             Column {
                 Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE))
-                SegmentColorsSelector()
+                SegmentColorsSelector(clockSettings, onEvent)
             }
         }
         Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))

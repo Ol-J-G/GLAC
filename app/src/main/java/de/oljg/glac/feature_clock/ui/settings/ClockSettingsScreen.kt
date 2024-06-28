@@ -18,14 +18,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import de.oljg.glac.core.util.ScreenDetails
 import de.oljg.glac.core.util.screenDetails
-import de.oljg.glac.feature_clock.ui.ClockSettingsViewModel
+import de.oljg.glac.feature_clock.domain.model.ClockSettings
+import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.settings.components.sections.ClockBrightnessSettings
 import de.oljg.glac.feature_clock.ui.settings.components.sections.ClockCharacterSettings
 import de.oljg.glac.feature_clock.ui.settings.components.sections.ClockColorSettings
@@ -43,7 +41,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 
 @Composable
-fun ClockSettingsScreen() {
+fun ClockSettingsScreen(
+    clockSettings: ClockSettings,
+    onEvent: (ClockSettingsEvent) -> Unit
+) {
     val screenDetails = screenDetails()
     val screenWidthType = screenDetails.screenWidthType
     val screenHeightType = screenDetails.screenHeightType
@@ -56,17 +57,18 @@ fun ClockSettingsScreen() {
             modifier = Modifier.padding(horizontal = SETTINGS_SCREEN_HORIZONTAL_OUTER_PADDING),
             verticalArrangement = Arrangement.Top
         ) {
-            ClockPreview()
+            ClockPreview(clockSettings, onEvent)
             Spacer(modifier = Modifier.height(SETTINGS_SCREEN_PREVIEW_SPACE))
             when {
-                screenWidthType is ScreenDetails.DisplayType.Compact -> OneColumnLayout()
+                screenWidthType is ScreenDetails.DisplayType.Compact ->
+                    OneColumnLayout(clockSettings, onEvent)
 
                 // E.g. small phones are Medium, but two columns are too much, content is too big
                 screenWidthType is ScreenDetails.DisplayType.Medium
                         && screenHeightType is ScreenDetails.DisplayType.Compact ->
-                    OneColumnLayout()
+                    OneColumnLayout(clockSettings, onEvent)
 
-                else -> TwoColumnsLayout()
+                else -> TwoColumnsLayout(clockSettings, onEvent)
             }
             Spacer(modifier = Modifier.height(SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2))
         }
@@ -76,9 +78,11 @@ fun ClockSettingsScreen() {
 
 @OptIn(FlowPreview::class)
 @Composable
-private fun OneColumnLayout(viewModel: ClockSettingsViewModel = hiltViewModel()) {
-    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
-    val scrollState = rememberScrollState(initial = clockSettings.columnScrollPosition)
+private fun OneColumnLayout(
+    clockSettings: ClockSettings,
+    onEvent: (ClockSettingsEvent) -> Unit
+) {
+    val scrollState = rememberScrollState(initial = clockSettings.clockSettingsColumnScrollPosition)
 
     /**
      * Persist column scroll position DEFAULT_DEBOUNCE_TIMEOUT millis after the column is scrolled.
@@ -92,7 +96,7 @@ private fun OneColumnLayout(viewModel: ClockSettingsViewModel = hiltViewModel())
         snapshotFlow { scrollState.value }
             .debounce(DEFAULT_DEBOUNCE_TIMEOUT)
             .collectLatest { scrollValue ->
-                viewModel.updateColumnScrollPosition(clockSettings, scrollValue)
+                onEvent(ClockSettingsEvent.UpdateClockSettingsColumnScrollPosition(scrollValue))
             }
     }
 
@@ -101,30 +105,35 @@ private fun OneColumnLayout(viewModel: ClockSettingsViewModel = hiltViewModel())
             .fillMaxWidth()
             .verticalScroll(scrollState)
     ) {
-        ClockThemeSettings()
-        ClockDisplaySettings()
-        ClockCharacterSettings()
-        ClockDividerSettings()
-        ClockColorSettings()
-        ClockBrightnessSettings()
+        ClockThemeSettings(clockSettings, onEvent)
+        ClockDisplaySettings(clockSettings, onEvent)
+        ClockCharacterSettings(clockSettings, onEvent)
+        ClockDividerSettings(clockSettings, onEvent)
+        ClockColorSettings(clockSettings, onEvent)
+        ClockBrightnessSettings(clockSettings, onEvent)
     }
 }
 
 
 @OptIn(FlowPreview::class)
 @Composable
-private fun TwoColumnsLayout(viewModel: ClockSettingsViewModel = hiltViewModel()) {
-    val clockSettings by viewModel.clockSettingsStateFlow.collectAsState()
+private fun TwoColumnsLayout(
+    clockSettings: ClockSettings,
+    onEvent: (ClockSettingsEvent) -> Unit
+) {
     val scrollStateStartColumn = rememberScrollState(
-        initial = clockSettings.startColumnScrollPosition
+        initial = clockSettings.clockSettingsStartColumnScrollPosition
     )
-    val scrollStateEndColumn = rememberScrollState(initial = clockSettings.endColumnScrollPosition)
+    val scrollStateEndColumn = rememberScrollState(
+        initial = clockSettings.clockSettingsEndColumnScrollPosition
+    )
 
     LaunchedEffect(scrollStateStartColumn) {
         snapshotFlow { scrollStateStartColumn.value }
             .debounce(DEFAULT_DEBOUNCE_TIMEOUT)
             .collectLatest { scrollValue ->
-                viewModel.updateStartColumnScrollPosition(clockSettings, scrollValue)
+                onEvent(ClockSettingsEvent
+                    .UpdateClockSettingsStartColumnScrollPosition(scrollValue))
             }
     }
 
@@ -132,7 +141,7 @@ private fun TwoColumnsLayout(viewModel: ClockSettingsViewModel = hiltViewModel()
         snapshotFlow { scrollStateEndColumn.value }
             .debounce(DEFAULT_DEBOUNCE_TIMEOUT)
             .collectLatest { scrollValue ->
-                viewModel.updateEndColumnScrollPosition(clockSettings, scrollValue)
+                onEvent(ClockSettingsEvent.UpdateClockSettingsEndColumnScrollPosition(scrollValue))
             }
     }
 
@@ -148,9 +157,9 @@ private fun TwoColumnsLayout(viewModel: ClockSettingsViewModel = hiltViewModel()
                 .weight(1f)
                 .verticalScroll(scrollStateStartColumn)
         ) {
-            ClockThemeSettings()
-            ClockDisplaySettings()
-            ClockCharacterSettings()
+            ClockThemeSettings(clockSettings, onEvent)
+            ClockDisplaySettings(clockSettings, onEvent)
+            ClockCharacterSettings(clockSettings, onEvent)
         }
         Spacer(
             modifier = Modifier
@@ -163,9 +172,9 @@ private fun TwoColumnsLayout(viewModel: ClockSettingsViewModel = hiltViewModel()
                 .weight(1f)
                 .verticalScroll(scrollStateEndColumn)
         ) {
-            ClockDividerSettings()
-            ClockColorSettings()
-            ClockBrightnessSettings()
+            ClockDividerSettings(clockSettings, onEvent)
+            ClockColorSettings(clockSettings, onEvent)
+            ClockBrightnessSettings(clockSettings, onEvent)
         }
     }
 }

@@ -14,7 +14,7 @@ import de.oljg.glac.feature_alarm.domain.manager.AlarmScheduler
 import de.oljg.glac.feature_alarm.domain.manager.AndroidAlarmScheduler
 import de.oljg.glac.feature_alarm.domain.model.AlarmSettings
 import de.oljg.glac.feature_alarm.domain.model.serializer.AlarmSettingsSerializer
-import de.oljg.glac.feature_alarm.domain.model.utils.AlarmDefaults.DATASTORE_FILE_NAME
+import de.oljg.glac.feature_alarm.domain.model.utils.AlarmDefaults
 import de.oljg.glac.feature_alarm.domain.repository.AlarmSettingsRepository
 import de.oljg.glac.feature_alarm.domain.use_case.AddAlarm
 import de.oljg.glac.feature_alarm.domain.use_case.AlarmUseCases
@@ -30,7 +30,29 @@ import de.oljg.glac.feature_alarm.domain.use_case.UpdateIsLightAlarm
 import de.oljg.glac.feature_alarm.domain.use_case.UpdateLightAlarmDuration
 import de.oljg.glac.feature_alarm.domain.use_case.UpdateRepetition
 import de.oljg.glac.feature_alarm.domain.use_case.UpdateSnoozeDuration
-import de.oljg.glac.feature_clock.data.repository.ClockSettingsRepository
+import de.oljg.glac.feature_clock.data.repository.ClockSettingsRepositoryImpl
+import de.oljg.glac.feature_clock.domain.model.ClockSettings
+import de.oljg.glac.feature_clock.domain.model.serializer.ClockSettingsSerializer
+import de.oljg.glac.feature_clock.domain.model.utils.ClockSettingsDefaults
+import de.oljg.glac.feature_clock.domain.repository.ClockSettingsRepository
+import de.oljg.glac.feature_clock.domain.use_case.UpdateThemes
+import de.oljg.glac.feature_clock.domain.use_case.ClockUseCases
+import de.oljg.glac.feature_clock.domain.use_case.GetClockSettingsFlow
+import de.oljg.glac.feature_clock.domain.use_case.GetThemes
+import de.oljg.glac.feature_clock.domain.use_case.RemoveTheme
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockBrightness
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsColumnScrollPosition
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsEndColumnScrollPosition
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsSectionBrightnessIsExpanded
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsSectionClockCharIsExpanded
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsSectionColorsIsExpanded
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsSectionDisplayIsExpanded
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsSectionDividerIsExpanded
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsSectionPreviewIsExpanded
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsSectionThemeIsExpanded
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsStartColumnScrollPosition
+import de.oljg.glac.feature_clock.domain.use_case.UpdateClockThemeName
+import de.oljg.glac.feature_clock.domain.use_case.UpdateOverrideSystemBrightness
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -43,11 +65,47 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideClockSettingsRepository(
+    fun provideClockSettingsDataStore(
         @ApplicationContext context: Context
-    ): ClockSettingsRepository {
-        return ClockSettingsRepository(context)
+    ): DataStore<ClockSettings> {
+        return DataStoreFactory.create(
+            serializer = ClockSettingsSerializer,
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            produceFile = { context.dataStoreFile(ClockSettingsDefaults.DATASTORE_FILE_NAME) }
+        )
     }
+
+    @Provides
+    @Singleton
+    fun provideClockSettingsRepository(
+        dataStore: DataStore<ClockSettings>
+    ): ClockSettingsRepository {
+        return ClockSettingsRepositoryImpl(dataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideClockUseCases(
+        repository: ClockSettingsRepository
+    ): ClockUseCases = ClockUseCases(
+        GetClockSettingsFlow(repository),
+        UpdateClockThemeName(repository),
+        UpdateOverrideSystemBrightness(repository),
+        UpdateClockBrightness(repository),
+        UpdateClockSettingsSectionPreviewIsExpanded(repository),
+        UpdateClockSettingsSectionThemeIsExpanded(repository),
+        UpdateClockSettingsSectionDisplayIsExpanded(repository),
+        UpdateClockSettingsSectionClockCharIsExpanded(repository),
+        UpdateClockSettingsSectionDividerIsExpanded(repository),
+        UpdateClockSettingsSectionColorsIsExpanded(repository),
+        UpdateClockSettingsSectionBrightnessIsExpanded(repository),
+        UpdateClockSettingsColumnScrollPosition(repository),
+        UpdateClockSettingsStartColumnScrollPosition(repository),
+        UpdateClockSettingsEndColumnScrollPosition(repository),
+        GetThemes(repository),
+        UpdateThemes(repository),
+        RemoveTheme(repository)
+    )
 
     @Provides
     @Singleton
@@ -57,7 +115,7 @@ object AppModule {
         return DataStoreFactory.create(
             serializer = AlarmSettingsSerializer,
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-            produceFile = { context.dataStoreFile(DATASTORE_FILE_NAME) }
+            produceFile = { context.dataStoreFile(AlarmDefaults.DATASTORE_FILE_NAME) }
         )
     }
 

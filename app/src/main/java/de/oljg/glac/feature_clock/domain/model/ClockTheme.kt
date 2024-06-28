@@ -25,9 +25,9 @@ import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_F
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_FONT_WEIGHT
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
-import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_SET_COLORS_PER_CHAR
-import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_SET_COLORS_PER_CLOCK_PART
-import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_SET_SEGMENT_COLORS
+import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_USE_COLORS_PER_CHAR
+import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_USE_COLORS_PER_CLOCK_PART
+import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_USE_SEGMENT_COLORS
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_SEVEN_SEGMENT_OUTLINE_SIZE
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_SEVEN_SEGMENT_STYLE
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_SEVEN_SEGMENT_WEIGHT
@@ -85,15 +85,15 @@ data class ClockTheme(
     @Serializable(with = CharColorsSerializer::class)
     val charColors: PersistentMap<Char, @Serializable(with = ColorSerializer::class) Color> =
             persistentMapOf(),
-    val setColorsPerChar: Boolean = DEFAULT_SET_COLORS_PER_CHAR,
+    val useColorsPerChar: Boolean = DEFAULT_USE_COLORS_PER_CHAR,
 
     val clockPartsColors: ClockPartsColors = ClockPartsColors(),
-    val setColorsPerClockPart: Boolean = DEFAULT_SET_COLORS_PER_CLOCK_PART,
+    val useColorsPerClockPart: Boolean = DEFAULT_USE_COLORS_PER_CLOCK_PART,
 
     @Serializable(with = SegmentColorsSerializer::class)
     val segmentColors: PersistentMap<Segment, @Serializable(with = ColorSerializer::class) Color> =
             persistentMapOf(),
-    val setSegmentColors: Boolean = DEFAULT_SET_SEGMENT_COLORS,
+    val useSegmentColors: Boolean = DEFAULT_USE_SEGMENT_COLORS,
 
     @Serializable(with = ColorSerializer::class)
     val backgroundColor: Color? = null
