@@ -27,7 +27,7 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * Alarm use cases integration test.
  *
- * Note that [AlarmSettingsViewModel], which makes use of alarm use case, will be covered in
+ * Note that [AlarmSettingsViewModel], which makes use of alarm use cases, will be covered in
  * end-to-end tests.
  *
  * Disadvantages:
@@ -42,6 +42,8 @@ import kotlin.time.Duration.Companion.seconds
  *   constructed with same 'infrastructure' as in real app, except datastore file, which is ofc
  *   wanted and necessary (similar as using in-memory DB in tests instead of real DB, and
  *   alarm scheduler).
+ *
+ *  TODO: evaluate and maybe add edge case tests
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
@@ -65,13 +67,13 @@ class AlarmUseCasesTest {
     fun init() { hiltRule.inject() } // Get a 'fresh infrastructure' for every test case
 
     @Test
-    fun testAlarmSettingsDefaultValues() = runTest {
+    fun alarmSettingsDefaultValues() = runTest {
         val alarmSettings = alarmUseCases.getAlarmSettingsFlow.execute().first()
         assertThat(alarmSettings).isEqualTo(AlarmSettings())
     }
 
     @Test
-    fun testUpdateSimpleAlarmDefaultValues() = runTest {
+    fun updateSimpleAlarmDefaultValues() = runTest {
         // Given, user A wants to update some simple alarm default settings
         // When user A updates the following default alarm settings
         alarmUseCases.updateAlarmDefaultsSectionIsExpanded.execute(true)
@@ -94,7 +96,7 @@ class AlarmUseCasesTest {
     }
 
     @Test
-    fun testAddAlarm() = runTest {
+    fun addAlarm() = runTest {
         // Given, user A wants to add/schedule the following alarm
         val alarm = buildTestAlarm()
 
@@ -162,6 +164,6 @@ class AlarmUseCasesTest {
         lightAlarmDuration = 60.minutes,
         repetition = Repetition.DAILY,
         snoozeDuration = 45.minutes
-        // default alarm sound
+        // default alarm sound, etc.
     )
 }

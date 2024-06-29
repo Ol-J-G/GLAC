@@ -7,6 +7,7 @@ import de.oljg.glac.feature_alarm.domain.model.AlarmSettings
 import de.oljg.glac.feature_alarm.domain.repository.AlarmSettingsRepository
 import de.oljg.glac.feature_alarm.ui.utils.Repetition
 import kotlinx.collections.immutable.mutate
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -68,7 +69,7 @@ class AlarmSettingsRepositoryImpl(
     override suspend fun removeAlarm(alarm: Alarm) {
         alarmSettingsDataStore.updateData {
             it.copy(
-                alarms = getSyncAlarmSettings().alarms.mutate { mutableAlarms ->
+                alarms = getAlarms().toPersistentList().mutate { mutableAlarms ->
                     mutableAlarms.remove(alarm)
                 }
             )
@@ -78,9 +79,8 @@ class AlarmSettingsRepositoryImpl(
     override suspend fun addAlarm(alarm: Alarm) {
         alarmSettingsDataStore.updateData {
             it.copy(
-                alarms = getSyncAlarmSettings().alarms.mutate { mutableAlarms ->
+                alarms = getAlarms().toPersistentList().mutate { mutableAlarms ->
                     mutableAlarms.add(alarm)
-
                 }
             )
         }
@@ -89,7 +89,7 @@ class AlarmSettingsRepositoryImpl(
     override suspend fun updateAlarm(alarmtoBeUpdated: Alarm, updatedAlarm: Alarm) {
         alarmSettingsDataStore.updateData {
             it.copy(
-                alarms = getSyncAlarmSettings().alarms.mutate { mutableAlarms ->
+                alarms = getAlarms().toPersistentList().mutate { mutableAlarms ->
                     mutableAlarms.remove(alarmtoBeUpdated)
                     mutableAlarms.add(updatedAlarm)
                 }

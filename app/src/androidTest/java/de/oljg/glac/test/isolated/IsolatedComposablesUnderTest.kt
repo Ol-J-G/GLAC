@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.core.util.screenDetails
+import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.ui.clock.DigitalAlarmClockLandscapeLayout
 import de.oljg.glac.feature_clock.ui.clock.DigitalAlarmClockPortraitLayout
 import de.oljg.glac.feature_clock.ui.clock.components.SevenSegmentChar
@@ -32,6 +33,7 @@ fun DigitalClockLandscapeLayoutIsolatedFont(
     dividerStyle: DividerStyle
 ) {
     DigitalAlarmClockLandscapeLayout(
+        clockSettings = ClockSettings(),
         currentTimeFormatted = currentTimeFormatted,
         clockBoxSize = screenDetails().screenSize,
         dividerAttributes = DividerAttributes(
@@ -57,6 +59,7 @@ fun DigitalClockPortraitLayoutIsolatedFont(
     dividerStyle: DividerStyle
 ) {
     DigitalAlarmClockPortraitLayout(
+        clockSettings = ClockSettings(),
         currentTimeWithoutSeparators = currentTimeWithoutSeparators,
         clockBoxSize = screenDetails().screenSize,
         dividerAttributes = DividerAttributes(
@@ -83,6 +86,7 @@ fun DigitalClockLandscapeLayoutIsolatedSevenSegment(
     dividerStyle: DividerStyle
 ) {
     DigitalAlarmClockLandscapeLayout(
+        clockSettings = ClockSettings(),
         currentTimeFormatted = currentTimeFormatted,
         clockBoxSize = screenDetails().screenSize,
         dividerAttributes = DividerAttributes(
@@ -114,6 +118,7 @@ fun DigitalClockPortraitLayoutIsolatedSevenSegment(
     dividerStyle: DividerStyle
 ) {
     DigitalAlarmClockPortraitLayout(
+        clockSettings = ClockSettings(),
         currentTimeWithoutSeparators = currentTimeWithoutSeparators,
         clockBoxSize = screenDetails().screenSize,
         dividerAttributes = DividerAttributes(

@@ -33,8 +33,6 @@ interface ClockSettingsRepository {
 
     suspend fun updateClockSettingsEndColumnScrollPosition(newValue: Int)
 
-    suspend fun getThemes(): Map<String, ClockTheme>
-
     suspend fun updateThemes(clockThemeName: String, clockTheme: ClockTheme)
 
     suspend fun removeTheme(clockThemeName: String)

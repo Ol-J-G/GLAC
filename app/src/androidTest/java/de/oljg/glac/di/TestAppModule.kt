@@ -34,7 +34,6 @@ import de.oljg.glac.feature_clock.domain.model.serializer.ClockSettingsSerialize
 import de.oljg.glac.feature_clock.domain.repository.ClockSettingsRepository
 import de.oljg.glac.feature_clock.domain.use_case.ClockUseCases
 import de.oljg.glac.feature_clock.domain.use_case.GetClockSettingsFlow
-import de.oljg.glac.feature_clock.domain.use_case.GetThemes
 import de.oljg.glac.feature_clock.domain.use_case.RemoveTheme
 import de.oljg.glac.feature_clock.domain.use_case.UpdateClockBrightness
 import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsColumnScrollPosition
@@ -107,7 +106,6 @@ object TestAppModule {
         UpdateClockSettingsColumnScrollPosition(repository),
         UpdateClockSettingsStartColumnScrollPosition(repository),
         UpdateClockSettingsEndColumnScrollPosition(repository),
-        GetThemes(repository),
         UpdateThemes(repository),
         RemoveTheme(repository)
     )

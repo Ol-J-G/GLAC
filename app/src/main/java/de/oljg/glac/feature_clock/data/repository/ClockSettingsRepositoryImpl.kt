@@ -97,12 +97,10 @@ class ClockSettingsRepositoryImpl(
         }
     }
 
-    override suspend fun getThemes() = getSyncClockSettings().themes
-
     override suspend fun updateThemes(clockThemeName: String, clockTheme: ClockTheme) {
         clockSettingsDataStore.updateData {
             it.copy(
-                themes = getThemes().mutate { mutableThemes ->
+                themes = getSyncClockSettings().themes.mutate { mutableThemes ->
                     mutableThemes[clockThemeName] = clockTheme
                 }
             )
@@ -112,7 +110,7 @@ class ClockSettingsRepositoryImpl(
     override suspend fun removeTheme(clockThemeName: String) {
         clockSettingsDataStore.updateData {
             it.copy(
-                themes = getThemes().mutate { mutableThemes ->
+                themes = getSyncClockSettings().themes.mutate { mutableThemes ->
                     mutableThemes.remove(clockThemeName)
                 }
             )

@@ -15,7 +15,6 @@ data class ClockUseCases (
     val updateClockSettingsColumnScrollPosition: UpdateClockSettingsColumnScrollPosition,
     val updateClockSettingsStartColumnScrollPosition: UpdateClockSettingsStartColumnScrollPosition,
     val updateClockSettingsEndColumnScrollPosition: UpdateClockSettingsEndColumnScrollPosition,
-    val getThemes: GetThemes,
     val updateThemes: UpdateThemes,
     val removeTheme: RemoveTheme
 )

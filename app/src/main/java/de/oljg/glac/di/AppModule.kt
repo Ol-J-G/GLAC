@@ -35,10 +35,8 @@ import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.serializer.ClockSettingsSerializer
 import de.oljg.glac.feature_clock.domain.model.utils.ClockSettingsDefaults
 import de.oljg.glac.feature_clock.domain.repository.ClockSettingsRepository
-import de.oljg.glac.feature_clock.domain.use_case.UpdateThemes
 import de.oljg.glac.feature_clock.domain.use_case.ClockUseCases
 import de.oljg.glac.feature_clock.domain.use_case.GetClockSettingsFlow
-import de.oljg.glac.feature_clock.domain.use_case.GetThemes
 import de.oljg.glac.feature_clock.domain.use_case.RemoveTheme
 import de.oljg.glac.feature_clock.domain.use_case.UpdateClockBrightness
 import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsColumnScrollPosition
@@ -53,6 +51,7 @@ import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsSectionThem
 import de.oljg.glac.feature_clock.domain.use_case.UpdateClockSettingsStartColumnScrollPosition
 import de.oljg.glac.feature_clock.domain.use_case.UpdateClockThemeName
 import de.oljg.glac.feature_clock.domain.use_case.UpdateOverrideSystemBrightness
+import de.oljg.glac.feature_clock.domain.use_case.UpdateThemes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -102,7 +101,6 @@ object AppModule {
         UpdateClockSettingsColumnScrollPosition(repository),
         UpdateClockSettingsStartColumnScrollPosition(repository),
         UpdateClockSettingsEndColumnScrollPosition(repository),
-        GetThemes(repository),
         UpdateThemes(repository),
         RemoveTheme(repository)
     )
