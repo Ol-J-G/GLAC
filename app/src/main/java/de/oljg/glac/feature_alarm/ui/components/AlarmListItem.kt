@@ -26,8 +26,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
+import de.oljg.glac.core.util.CommonUtils.SPACE
 import de.oljg.glac.feature_alarm.domain.media.utils.prettyPrintRingtone
-import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.SPACE
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.localizedShortDateTimeFormatter
 import de.oljg.glac.feature_alarm.ui.utils.Repetition
 import de.oljg.glac.feature_alarm.ui.utils.evaluateAlarmRepetitionInfo

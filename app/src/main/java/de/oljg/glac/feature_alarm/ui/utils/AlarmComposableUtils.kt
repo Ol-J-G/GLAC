@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.oljg.glac.R
+import de.oljg.glac.core.util.CommonUtils.SPACE
 import de.oljg.glac.feature_alarm.domain.model.Alarm
 import de.oljg.glac.feature_alarm.domain.model.AlarmSettings
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsEvent
@@ -124,31 +125,31 @@ fun evaluateAlarmRepetitionInfo(
 ) = when (repetition) {
 
     // E.g.: 'Once at 5/31/24, 5:00 PM '
-    Repetition.NONE -> stringResource(R.string.once) + AlarmDefaults.SPACE +
-            stringResource(R.string.at) + AlarmDefaults.SPACE +
+    Repetition.NONE -> stringResource(R.string.once) + SPACE +
+            stringResource(R.string.at) + SPACE +
             AlarmDefaults.localizedShortDateTimeFormatter.format(alarmStart)
 
     // E.g.: 'Every day at 5:00 PM'
-    Repetition.DAILY -> stringResource(R.string.every) + AlarmDefaults.SPACE +
-            stringResource(R.string.day) + AlarmDefaults.SPACE +
-            stringResource(R.string.at) + AlarmDefaults.SPACE +
+    Repetition.DAILY -> stringResource(R.string.every) + SPACE +
+            stringResource(R.string.day) + SPACE +
+            stringResource(R.string.at) + SPACE +
             AlarmDefaults.localizedShortTimeFormatter.format(alarmStart)
 
     // E.g.: 'Every Monday at 5:00 PM'
-    Repetition.WEEKLY -> stringResource(R.string.every) + AlarmDefaults.SPACE +
+    Repetition.WEEKLY -> stringResource(R.string.every) + SPACE +
             alarmStart.dayOfWeek.getDisplayName(
                 TextStyle.FULL,
                 Locale.getDefault()
-            ) + AlarmDefaults.SPACE +
-            stringResource(R.string.at) + AlarmDefaults.SPACE +
+            ) + SPACE +
+            stringResource(R.string.at) + SPACE +
             AlarmDefaults.localizedShortTimeFormatter.format(alarmStart)
 
     // E.g.: 'Every month on 22th at 5:00 PM '
-    Repetition.MONTHLY -> stringResource(R.string.every) + AlarmDefaults.SPACE +
-            stringResource(R.string.month) + AlarmDefaults.SPACE +
-            stringResource(R.string.on_) + AlarmDefaults.SPACE +
-            alarmStart.dayOfMonth.formatAsOrdinal() + AlarmDefaults.SPACE +
-            stringResource(R.string.at) + AlarmDefaults.SPACE +
+    Repetition.MONTHLY -> stringResource(R.string.every) + SPACE +
+            stringResource(R.string.month) + SPACE +
+            stringResource(R.string.on_) + SPACE +
+            alarmStart.dayOfMonth.formatAsOrdinal() + SPACE +
+            stringResource(R.string.at) + SPACE +
             AlarmDefaults.localizedShortTimeFormatter.format(alarmStart)
 }
 

@@ -74,7 +74,7 @@ fun ColorSelector(
      * (Without the key, when [ColorPickerDialog] is shown, and config changes, let's say
      * because of user rotates device, this state doesn't work as expected (dialog disapears
      * after rotation...), and unless docs claims there will be unique keys autegenerated,
-     * it only worked with specifiing the key manually ... dunno if this is a bug, or if I
+     * it only worked with specifying the key manually ... dunno if this is a bug, or if I
      * misunderstood something ...)
      */
     var showColorPicker by rememberSaveable(key = title.hashCode().toString()) {

@@ -1,5 +1,9 @@
 package de.oljg.glac.feature_clock.ui.settings.components.sections
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,12 +21,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.ExpandableSection
+import de.oljg.glac.core.ui.components.GlacAlertDialog
+import de.oljg.glac.core.util.CommonUtils.SPACE
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
 import de.oljg.glac.feature_clock.domain.model.utils.ClockSettingsDefaults.DEFAULT_THEME_NAME
@@ -46,6 +53,13 @@ fun ClockThemeSettings(
     }
     var isValidInput by remember {
         mutableStateOf(true)
+    }
+
+    var showResetConfirmationDialog by rememberSaveable(key = textFieldValue) {
+        mutableStateOf(false)
+    }
+    var showRemoveConfirmationDialog by rememberSaveable(key = textFieldValue) {
+        mutableStateOf(false)
     }
 
     ExpandableSection(
@@ -89,10 +103,7 @@ fun ClockThemeSettings(
             },
             resetValueComponent = {
                 IconButton(
-                    onClick = {
-                        // Reset current theme to default theme
-                        onEvent(ClockSettingsEvent.UpdateThemes(textFieldValue, ClockTheme()))
-                    },
+                    onClick = { showResetConfirmationDialog = true },
                     enabled = clockSettings.themes.containsKey(textFieldValue)
                             && clockSettings.themes[textFieldValue] != ClockTheme(),
                     colors = IconButtonDefaults.iconButtonColors(
@@ -109,11 +120,7 @@ fun ClockThemeSettings(
             },
             removeValueComponent = {
                 IconButton(
-                    onClick = {
-                        onEvent(ClockSettingsEvent.RemoveTheme(textFieldValue))
-                        textFieldValue = DEFAULT_THEME_NAME
-                        onEvent(ClockSettingsEvent.UpdateClockThemeName(DEFAULT_THEME_NAME))
-                    },
+                    onClick = { showRemoveConfirmationDialog = true },
                     enabled = textFieldValue != DEFAULT_THEME_NAME
                             && clockSettings.themes.containsKey(textFieldValue),
                     colors = IconButtonDefaults.iconButtonColors(
@@ -161,5 +168,40 @@ fun ClockThemeSettings(
             }
         )
         Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
+    }
+
+    AnimatedVisibility(
+        visible = showResetConfirmationDialog,
+        enter = fadeIn(TweenSpec(durationMillis = 100)),
+        exit = fadeOut(TweenSpec(durationMillis = 100))
+    ) {
+        GlacAlertDialog(
+            title = stringResource(R.string.reset_theme),
+            message = stringResource(R.string.do_you_really_want_to_reset_theme)
+                    + SPACE + "'$textFieldValue'?",
+            onDismissRequest = { showResetConfirmationDialog = false },
+            onConfirm = {
+                // Reset current theme to default theme
+                onEvent(ClockSettingsEvent.UpdateThemes(textFieldValue, ClockTheme()))
+            }
+        )
+    }
+
+    AnimatedVisibility(
+        visible = showRemoveConfirmationDialog,
+        enter = fadeIn(TweenSpec(durationMillis = 100)),
+        exit = fadeOut(TweenSpec(durationMillis = 100))
+    ) {
+        GlacAlertDialog(
+            title = stringResource(R.string.remove_theme),
+            message = stringResource(R.string.do_you_really_want_to_remove_theme)
+                    + SPACE + "'$textFieldValue'?",
+            onDismissRequest = { showRemoveConfirmationDialog = false },
+            onConfirm = {
+                onEvent(ClockSettingsEvent.RemoveTheme(textFieldValue))
+                textFieldValue = DEFAULT_THEME_NAME
+                onEvent(ClockSettingsEvent.UpdateClockThemeName(DEFAULT_THEME_NAME))
+            }
+        )
     }
 }

@@ -182,3 +182,9 @@ fun unlockScreenOrientation(activity: Activity?) {
         it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED // -1
     }
 }
+
+object CommonUtils {
+    const val SPACE = ' '
+    val ALERT_DIALOG_PADDING = 16.dp
+    val ALERT_DIALOG_EDGE_PADDING = 12.dp
+}

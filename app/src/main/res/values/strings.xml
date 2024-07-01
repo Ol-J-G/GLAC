@@ -174,5 +174,8 @@
     <string name="microseconds">Microseconds</string>
     <string name="milliseconds">Milliseconds</string>
     <string name="days">Days</string>
-    <string name="alarm_sound_fade_duration">Alarm Sound Fade Duration</string> <!-- 'default' is reserved keyword-->
+    <string name="alarm_sound_fade_duration">Alarm Sound Fade Duration</string>
+    <string name="do_you_really_want_to_reset_theme">Do you really want to reset theme</string>
+    <string name="do_you_really_want_to_remove_theme">Do you really want to remove theme</string>
+    <string name="do_you_really_want_to_remove_file">Do you really want to remove file</string> <!-- 'default' is reserved keyword-->
 </resources>

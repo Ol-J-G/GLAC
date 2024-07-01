@@ -4,9 +4,9 @@ import android.net.Uri
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.mapSaver
 import com.ibm.icu.text.RuleBasedNumberFormat
+import de.oljg.glac.core.util.CommonUtils.SPACE
 import de.oljg.glac.feature_alarm.domain.model.Alarm
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_START_BUFFER
-import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.SPACE
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.localizedShortDateTimeFormatter
 import java.time.Instant
 import java.time.LocalDate
@@ -388,7 +388,6 @@ fun Alarm?.isNotLightAlarm() = this != null && !this.isLightAlarm
 
 
 object AlarmDefaults {
-    const val SPACE = ' '
     const val ALARM_REACTION_DIALOG_BUTTON_WEIGHT = 1.7f
     const val ALARM_REACTION_DIALOG_DISMISS_BUTTON_WEIGHT = 1f
 
