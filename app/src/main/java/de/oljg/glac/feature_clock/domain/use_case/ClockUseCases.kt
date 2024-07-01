@@ -16,5 +16,6 @@ data class ClockUseCases (
     val updateClockSettingsStartColumnScrollPosition: UpdateClockSettingsStartColumnScrollPosition,
     val updateClockSettingsEndColumnScrollPosition: UpdateClockSettingsEndColumnScrollPosition,
     val updateThemes: UpdateThemes,
-    val removeTheme: RemoveTheme
+    val removeTheme: RemoveTheme,
+    val removeImportedFontFile: RemoveImportedFontFile = RemoveImportedFontFile()
 )

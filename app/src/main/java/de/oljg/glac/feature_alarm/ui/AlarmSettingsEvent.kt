@@ -19,6 +19,7 @@ sealed class AlarmSettingsEvent {
         val alarmtoBeUpdated: Alarm,
         val updatedAlarm: Alarm
     ): AlarmSettingsEvent()
+    data class RemoveImportedAlarmSoundFile(val uriString: String): AlarmSettingsEvent()
 
     data object ReScheduleAllAlarms: AlarmSettingsEvent()
 }

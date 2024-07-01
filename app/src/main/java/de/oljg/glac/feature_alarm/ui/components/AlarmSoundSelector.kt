@@ -34,8 +34,8 @@ fun AlarmSoundSelector(
     selectedAlarmSound: String,
     defaultValue: String = DEFAULT_ALARM_SOUND_URI.toString(),
     onNewAlarmSoundSelected: (String) -> Unit,
-    onNewAlarmSoundImported: ((String) -> Unit)? = null,
-    showRemoveImportedAlarmSoundButton: Boolean = false,
+    onImportClicked: ((Uri) -> Unit)? = null,
+    onRemoveClicked: ((String) -> Unit)? = null,
     startPadding: Dp = 0.dp,
     endPadding: Dp = 0.dp,
 ) {
@@ -133,23 +133,24 @@ fun AlarmSoundSelector(
             endPadding = endPadding,
             topPadding = DROPDOWN_ROW_VERTICAL_PADDING * 2,
             addValueComponent = {
-                if (onNewAlarmSoundImported != null) {
+                if (onImportClicked != null) {
                     ImportAlarmSoundButton(
-                        onNewAlarmSoundImported = { newValue ->
-                            selectedValue = newValue
+                        onNewAlarmSoundImported = { importedUriString ->
+                            onImportClicked(Uri.parse(importedUriString))
+                            selectedValue = importedUriString
                             isRemoveButtonEnabled = shouldRemoveButtonBeEnabled()
                             importedAreLoading = true // Trigger allAlarmSoundUris reload
-                            onNewAlarmSoundImported(newValue)
                         }
                     )
                 }
             },
             removeValueComponent = {
-                if (showRemoveImportedAlarmSoundButton) {
+                if (onRemoveClicked != null) {
                     RemoveImportedFileButton(
                         enabled = isRemoveButtonEnabled,
                         importedFileUriStringToRemove = selectedValue,
-                        onImportedFileRemoved = {
+                        onRemoveConfirmed = {
+                            onRemoveClicked(selectedValue)
                             selectedValue = defaultValue
                             isRemoveButtonEnabled = false
                             importedAreLoading = true // Trigger allAlarmSoundUris reload

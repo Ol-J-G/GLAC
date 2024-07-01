@@ -9,6 +9,7 @@ import de.oljg.glac.core.util.FontStyle
 import de.oljg.glac.core.util.FontWeight
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
+import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls
 import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.settings.utils.isFileUri
 
@@ -25,8 +26,6 @@ fun FontSelector(
 
     Column {
         FontFamilySelector(
-            clockSettings = clockSettings,
-            onEvent = onEvent,
             label = "${stringResource(R.string.family)}  ",
             selectedFontFamily = clockTheme.fontName,
             onNewFontFamilySelected = { newFontName ->
@@ -44,6 +43,15 @@ fun FontSelector(
                         clockTheme.copy(fontName = newFontUri)
                     )
                 )
+            },
+            onRemoveImportedFontClicked = { importedFontFileUriToRemove ->
+                onEvent(
+                    ClockSettingsEvent.UpdateThemes(
+                        clockThemeName,
+                        clockTheme.copy(fontName = ClockThemeDefauls.DEFAULT_FONT_NAME)
+                    )
+                )
+                onEvent(ClockSettingsEvent.RemoveImportedFontFile(importedFontFileUriToRemove))
             }
         )
 

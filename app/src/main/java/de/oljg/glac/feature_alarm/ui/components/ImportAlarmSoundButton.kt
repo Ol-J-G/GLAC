@@ -34,15 +34,16 @@ fun ImportAlarmSoundButton(
                 /**
                  * Save local file from picked document and send file URI back,
                  * but only when picked document is valid and local copy is created.
+                 *
+                 * Unfortunately, I wasn't able to do this within a use case
+                 * (Problem: Could not set selected value of AlarmSoundSelector to
+                 * importedSoundFile.toUri().toString() => alarmSettingsFlow seems to be updated
+                 * too slow (although it's synced with runBlocking!??), which ended in not
+                 * updating selected value after import... => no go)
                  */
-                /**
-                 * Save local file from picked document and send file URI back,
-                 * but only when picked document is valid and local copy is created.
-                 */
-                val importedSoundFile = openDocumentAndSaveLocalCopy(context, uri)
-                if (importedSoundFile != null) onNewAlarmSoundImported(
-                    importedSoundFile.toUri().toString()
-                )
+                openDocumentAndSaveLocalCopy(context, uri)?.let { importedSoundFile ->
+                    onNewAlarmSoundImported(importedSoundFile.toUri().toString())
+                }
             }
         }
     }

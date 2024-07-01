@@ -1,6 +1,5 @@
 package de.oljg.glac.feature_clock.ui.settings.components.character
 
-import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,12 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import de.oljg.glac.core.ui.components.RemoveImportedFileButton
 import de.oljg.glac.core.util.cutOffPathFromUri
-import de.oljg.glac.core.util.removeLocalFile
 import de.oljg.glac.feature_alarm.domain.media.utils.AlarmSoundDefaults
-import de.oljg.glac.feature_clock.domain.model.ClockSettings
-import de.oljg.glac.feature_clock.domain.model.ClockTheme
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls
-import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.clock.utils.FontNameParts
 import de.oljg.glac.feature_clock.ui.clock.utils.contains
 import de.oljg.glac.feature_clock.ui.settings.components.common.DropDownSelector
@@ -31,24 +26,16 @@ import de.oljg.glac.feature_clock.ui.settings.utils.getFontFileNamesFromAssets
 import de.oljg.glac.feature_clock.ui.settings.utils.getFontFileUrisFromFilesDir
 import de.oljg.glac.feature_clock.ui.settings.utils.isFileUri
 import de.oljg.glac.feature_clock.ui.settings.utils.prettyPrintFontName
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.launch
 
 @Composable
 fun FontFamilySelector(
-    clockSettings: ClockSettings,
-    onEvent: (ClockSettingsEvent) -> Unit,
     label: String,
     selectedFontFamily: String,
     defaultValue: String = ClockThemeDefauls.DEFAULT_FONT_NAME,
     onNewFontFamilySelected: (String) -> Unit,
-    onNewFontFamilyImported: (String) -> Unit
+    onNewFontFamilyImported: (String) -> Unit,
+    onRemoveImportedFontClicked: (String) -> Unit
 ) {
-    val clockThemeName = clockSettings.clockThemeName
-    val clockTheme = clockSettings.themes.getOrDefault(
-        key = clockThemeName,
-        defaultValue = ClockTheme()
-    )
     val context = LocalContext.current
     var allFontFileNamesAndUris by remember {
         mutableStateOf(emptyList<String>())
@@ -83,10 +70,6 @@ fun FontFamilySelector(
         mutableStateOf(true)
     }
 
-    var importedFontUriToRemove: String? by rememberSaveable {
-        mutableStateOf(null)
-    }
-
     // Load built-in fonts (assets/fonts) only initally.
     LaunchedEffect(builtInAreLoading) {
         if (builtInAreLoading) {
@@ -101,45 +84,22 @@ fun FontFamilySelector(
      * Wait until build-in fonts are loaded, then load imported font files and merge
      * them with built-in fonts initially, or when a user has been imported or removed an
      * imported font file.
-     * Eventually handle update and delete font.
      */
     LaunchedEffect(importedAreLoading, builtInAreLoading) {
         if (importedAreLoading && !builtInAreLoading) {
-            if (importedFontUriToRemove != null) {
-                val updateJob = launch(start = CoroutineStart.LAZY) {
-                    onEvent(
-                        ClockSettingsEvent.UpdateThemes(
-                            clockThemeName,
-                            clockTheme.copy(fontName = defaultValue)
-                        )
-                    )
-                }
-                updateJob.start()
-                updateJob.join()
-
-                val deleteJob = launch(start = CoroutineStart.LAZY) {
-                    removeLocalFile(Uri.parse(importedFontUriToRemove))
-                    importedFontUriToRemove = null
-                }
-                deleteJob.start()
-                deleteJob.join()
-            }
-
-            val populateJob = launch(start = CoroutineStart.LAZY) {
-                fontFileUrisFromFilesDir = getFontFileUrisFromFilesDir(context)
-                allFontFileNamesAndUris = (
-                        DEFAULT_FONT_NAMES + fontFileNamesFromAssets + fontFileUrisFromFilesDir
-                        ).sortedWith(
-                        compareBy(String.CASE_INSENSITIVE_ORDER) { it.cutOffPathFromUri() }
-                    )
-                importedAreLoading = false
-            }
-            populateJob.start()
+            fontFileUrisFromFilesDir = getFontFileUrisFromFilesDir(context)
+            allFontFileNamesAndUris = (
+                    DEFAULT_FONT_NAMES + fontFileNamesFromAssets + fontFileUrisFromFilesDir
+                    ).sortedWith(
+                    compareBy(String.CASE_INSENSITIVE_ORDER) { it.cutOffPathFromUri() }
+                )
+            importedAreLoading = false
         }
     }
 
     if (builtInAreLoading || importedAreLoading) {
-        Row(modifier = Modifier.fillMaxWidth(),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -159,26 +119,22 @@ fun FontFamilySelector(
             values = allFontFileNamesAndUris,
             prettyPrintValue = String::prettyPrintFontName,
             addValueComponent = {
-                ImportFontFamilyButton(onNewFontFamilyImported = { newValue ->
-                    onNewFontFamilyImported(newValue)
-                    selectedValue = newValue
-                    isRemoveButtonEnabled = shouldRemoveButtonBeEnabled()
-                    importedAreLoading = true // Trigger allFontFileNamesAndUris reload
-
-                })
+                ImportFontFamilyButton(
+                    onNewFontFamilyImported = { newValue ->
+                        onNewFontFamilyImported(newValue)
+                        selectedValue = newValue
+                        isRemoveButtonEnabled = shouldRemoveButtonBeEnabled()
+                        importedAreLoading = true // Trigger allFontFileNamesAndUris reload
+                    }
+                )
             },
             removeValueComponent = {
                 RemoveImportedFileButton(
                     enabled = isRemoveButtonEnabled,
-                    /**
-                     * App might crash, when deleting selected font directly, in case ClockPreview
-                     * is expanded, so, first set font to default, then delete...
-                     */
-                    removeDirectly = false,
                     importedFileUriStringToRemove = selectedValue,
-                    onImportedFileRemoved = { importedFileUriStringToRemove ->
+                    onRemoveConfirmed = {
+                        onRemoveImportedFontClicked(selectedValue)
                         selectedValue = defaultValue
-                        importedFontUriToRemove = importedFileUriStringToRemove
                         isRemoveButtonEnabled = false
                         importedAreLoading = true // Trigger allFontFileNamesAndUris reload
                     }

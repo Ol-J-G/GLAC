@@ -18,4 +18,5 @@ sealed class ClockSettingsEvent {
     data class UpdateClockSettingsEndColumnScrollPosition(val newValue: Int): ClockSettingsEvent()
     data class UpdateThemes(val clockThemeName: String, val clockTheme: ClockTheme): ClockSettingsEvent()
     data class RemoveTheme(val clockThemeName: String): ClockSettingsEvent()
+    data class RemoveImportedFontFile(val importedFileUriStringToRemove: String): ClockSettingsEvent()
 }

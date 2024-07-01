@@ -102,6 +102,12 @@ class AlarmSettingsViewModel @Inject constructor(
                     )
                 }
             }
+
+            is AlarmSettingsEvent.RemoveImportedAlarmSoundFile -> {
+                viewModelScope.launch {
+                    alarmUseCases.removeImportedAlarmSoundFile.execute(event.uriString)
+                }
+            }
         }
     }
 }

@@ -56,13 +56,17 @@ fun AlarmSettingsScreen(
                 AlarmSoundSelector(
                     label = stringResource(R.string.alarm_sound),
                     selectedAlarmSound = alarmSettings.alarmSoundUri.toString(),
-                    onNewAlarmSoundSelected = { selectedSound ->
-                        onEvent(AlarmSettingsEvent.UpdateAlarmSoundUri(Uri.parse(selectedSound)))
+                    onNewAlarmSoundSelected = { selectedSoundUriString ->
+                        onEvent(AlarmSettingsEvent.UpdateAlarmSoundUri(
+                            Uri.parse(selectedSoundUriString))
+                        )
                     },
-                    onNewAlarmSoundImported = { importedSound ->
-                        onEvent(AlarmSettingsEvent.UpdateAlarmSoundUri(Uri.parse(importedSound)))
+                    onImportClicked = { soundUriToImport ->
+                        onEvent(AlarmSettingsEvent.UpdateAlarmSoundUri(soundUriToImport))
                     },
-                    showRemoveImportedAlarmSoundButton = true
+                    onRemoveClicked = { uriStringToRemove ->
+                        onEvent(AlarmSettingsEvent.RemoveImportedAlarmSoundFile(uriStringToRemove))
+                    }
                 )
 
                 RepetitionSelector(

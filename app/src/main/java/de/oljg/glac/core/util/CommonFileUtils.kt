@@ -48,9 +48,16 @@ suspend fun openDocumentAndSaveLocalCopy(context: Context, uri: Uri): File? {
     return localFileCopy
 }
 
-fun removeLocalFile(uri: Uri): Boolean {
-    if (!uri.toString().isFileUri()) return false
-    return uri.toFile().delete()
+fun removeLocalFile(uriString: String): Boolean {
+    try {
+        val uri = Uri.parse(uriString)
+        if (!uri.toString().isFileUri()) return false
+        uri.toFile().delete()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return false
+    }
+    return true
 }
 
 fun String.cutOffFileNameExtension(): String = this.substringBeforeLast(FILE_EXTENSION_DELIMITER)

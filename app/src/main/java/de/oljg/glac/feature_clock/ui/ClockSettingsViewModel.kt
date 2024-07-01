@@ -121,6 +121,13 @@ class ClockSettingsViewModel @Inject constructor(
                         .execute(event.newValue)
                 }
             }
+
+            is ClockSettingsEvent.RemoveImportedFontFile -> {
+                viewModelScope.launch {
+                    clockUseCases.removeImportedFontFile
+                        .execute(event.importedFileUriStringToRemove)
+                }
+            }
         }
     }
 }
