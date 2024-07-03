@@ -63,7 +63,7 @@ import kotlin.time.DurationUnit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AlarmDialog(
+fun AlarmDialog( //TODO: not everything on screen at small device => two column layout?!
     alarmSettings: AlarmSettings,
     alarmToBeUpdated: Alarm? = null,
     onDismissRequest: () -> Unit,

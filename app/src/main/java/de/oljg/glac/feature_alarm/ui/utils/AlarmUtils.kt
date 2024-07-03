@@ -389,6 +389,38 @@ fun Alarm?.isLightAlarm() = this != null && this.isLightAlarm
 fun Alarm?.isNotLightAlarm() = this != null && !this.isLightAlarm
 
 
+fun List<Alarm>.filterAndSort() = this
+    .filter { alarm -> !alarm.isSnoozeAlarm } // Keep snooze alarms under the hood
+    .sortedBy { alarm -> alarm.start } // ASC => next alarm is always on top start/left side,
+
+
+/**
+ * Rearranges a sorted(ASC) list of alarms by rows as follows:
+ * |0|1|
+ * |2|3|  => Yes, unusual! But imho more natural/intuitive in this alarm list scenario
+ * |4|5|
+ * To be used in a vertically scrollable row with two columns
+ * => When looking chronologically through alarms => No need to scroll that much ...!
+ *
+ * Alternatively, arranged by columns would be another option (similar to clock settings screen)
+ * E.g.: Split alarms with List.chunked( size = ceil(alarms.size / 2f).toInt() )
+ * |0|3|
+ * |1|4|  => No way! ... . (manual tests have shown that this is annoying to use ... ¯\_(ツ)_/¯ ...)
+ * |2|5|
+ */
+fun List<Alarm>.rearrange(): Pair<List<Alarm>, List<Alarm>> {
+    val evenIndices = emptyList<Alarm>().toMutableList()
+    val oddIndices = emptyList<Alarm>().toMutableList()
+    this.forEachIndexed { index, alarm ->
+        when {
+            index % 2 == 0 -> evenIndices.add(alarm)
+            else -> oddIndices.add(alarm)
+        }
+    }
+    return Pair(evenIndices.toList(), oddIndices.toList())
+}
+
+
 object AlarmDefaults {
     val LIST_ITEM_TEXT_ICON_SPACE = 8.dp
     const val ALARM_REACTION_DIALOG_BUTTON_WEIGHT = 1.7f

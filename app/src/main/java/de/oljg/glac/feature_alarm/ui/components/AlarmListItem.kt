@@ -164,7 +164,7 @@ fun AlarmListItem(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(.5f),
+                    modifier = Modifier.fillMaxWidth(.45f),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(
                         LIST_ITEM_TEXT_ICON_SPACE,
@@ -183,7 +183,10 @@ fun AlarmListItem(
                         )
                     }
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(LIST_ITEM_TEXT_ICON_SPACE)) {
+                Row(
+                    modifier = Modifier.padding(start = LIST_ITEM_TEXT_ICON_SPACE * 2),
+                    horizontalArrangement = Arrangement.spacedBy(LIST_ITEM_TEXT_ICON_SPACE)
+                ) {
                     Icon(
                         imageVector = Icons.Outlined.WbTwilight,
                         contentDescription = stringResource(id = R.string.light_alarm_duration),
@@ -198,6 +201,7 @@ fun AlarmListItem(
                     )
                 }
                 Row(
+                    modifier = Modifier.padding(start = LIST_ITEM_TEXT_ICON_SPACE),
                     horizontalArrangement = Arrangement.spacedBy(
                         LIST_ITEM_TEXT_ICON_SPACE,
                         Alignment.End
@@ -207,7 +211,11 @@ fun AlarmListItem(
                         imageVector = Icons.Outlined.Snooze,
                         contentDescription = stringResource(id = R.string.snooze_duration)
                     )
-                    Text(snoozeDuration.toString(), fontStyle = FontStyle.Italic)
+                    Text(
+                        snoozeDuration.toString(),
+                        fontStyle = FontStyle.Italic,
+                        maxLines = 1
+                    )
                 }
             }
         }

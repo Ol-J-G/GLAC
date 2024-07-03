@@ -89,7 +89,7 @@ private fun OneColumnLayout(
      * This way, users can close the app (or even reboot device), and then continue, where they
      * left off.
      *
-     * Soucre/Idea:
+     * Source/Idea:
      * https://github.com/philipplackner/PersistentScrollPositionCompose/tree/master
      */
     LaunchedEffect(scrollState) {

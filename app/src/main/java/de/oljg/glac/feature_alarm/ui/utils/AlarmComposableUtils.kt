@@ -146,8 +146,6 @@ fun evaluateAlarmRepetitionInfo(
 
     // E.g.: 'Every month on 22th at 5:00 PM '
     Repetition.MONTHLY -> stringResource(R.string.every) + SPACE +
-            stringResource(R.string.month) + SPACE +
-            stringResource(R.string.on_) + SPACE +
             alarmStart.dayOfMonth.formatAsOrdinal() + SPACE +
             stringResource(R.string.at) + SPACE +
             AlarmDefaults.localizedShortTimeFormatter.format(alarmStart)

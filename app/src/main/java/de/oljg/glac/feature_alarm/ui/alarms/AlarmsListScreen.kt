@@ -3,15 +3,16 @@ package de.oljg.glac.feature_alarm.ui.alarms
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,17 +24,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.GlacAlertDialog
+import de.oljg.glac.core.util.ScreenDetails
+import de.oljg.glac.core.util.screenDetails
+import de.oljg.glac.feature_alarm.domain.model.Alarm
 import de.oljg.glac.feature_alarm.domain.model.AlarmSettings
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsEvent
 import de.oljg.glac.feature_alarm.ui.components.AlarmDialog
-import de.oljg.glac.feature_alarm.ui.components.AlarmListItem
+import de.oljg.glac.feature_alarm.ui.components.AlarmListItems
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.localDateTimeSaver
+import de.oljg.glac.feature_alarm.ui.utils.filterAndSort
+import de.oljg.glac.feature_alarm.ui.utils.rearrange
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -68,6 +72,9 @@ fun AlarmsListScreen(
         mutableStateOf(false)
     }
 
+    val screenDetails = screenDetails()
+    val screenWidthType = screenDetails.screenWidthType
+    val screenHeightType = screenDetails.screenHeightType
 
     Surface(
         modifier = Modifier
@@ -76,20 +83,12 @@ fun AlarmsListScreen(
         color = MaterialTheme.colorScheme.background
     ) {
         Scaffold(
-            bottomBar = {
-                Row(
-                    modifier = Modifier
-                        .padding(vertical = 8.dp)
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    FloatingActionButton(onClick = {
-                        showAlarmDialog = true
-                        selectedAlarmStart = null
+            floatingActionButton = {
+                FloatingActionButton(onClick = {
+                    showAlarmDialog = true
+                    selectedAlarmStart = null
 
-                        // quick manual test
+                    // quick manual test
 //                        val testAlarm = Alarm(
 //                            start = LocalDateTime.now().plusSeconds(15),
 //                            isLightAlarm = true,
@@ -102,48 +101,58 @@ fun AlarmsListScreen(
 //                        selectedAlarmStart = testAlarm.start
 
 
-                    }) {
-                        Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Alarm")
-                    }
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = stringResource(R.string.add_alarm)
+                    )
                 }
+            },
+            floatingActionButtonPosition = when (screenWidthType) {
+                is ScreenDetails.DisplayType.Compact -> FabPosition.Center
+                else -> FabPosition.End
             }
         ) { paddingValues ->
-            val scrollState = rememberScrollState()
-            Column( //TODO: add 2 columns layout
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxWidth()
-                    .padding(horizontal = SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2)
-                    .verticalScroll(scrollState)
-            ) {
-                alarmSettings.alarms
-                    .filter { alarm -> !alarm.isSnoozeAlarm } // Keep snooze alarms under the hood
-                    .sortedBy { alarm -> alarm.start } // ASC => next alarm is always on top
-                    .forEach { alarm ->
-                        AlarmListItem(
-                            alarmStart = alarm.start,
-                            isLightAlarm = alarm.isLightAlarm,
-                            lightAlarmDuration = alarm.lightAlarmDuration,
-                            repetition = alarm.repetition,
-                            snoozeDuration = alarm.snoozeDuration,
-                            alarmSoundUri = alarm.alarmSoundUri,
-                            selected = alarm.start == selectedAlarmStart,
-                            onClick = { selectedAlarmStart = alarm.start },
-                            onRemoveAlarm = {
-                                alarmToBeRemovedStart = alarm.start
-                                showRemoveAlarmConfirmationDialog = true
-                            },
-                            onUpdateAlarm = {
-                                alarmToBeUpdatedStart = alarm.start
-                                selectedAlarmStart = alarm.start
-                                showAlarmDialog = true
-                            }
-                        )
+            when {
+                screenWidthType is ScreenDetails.DisplayType.Compact
+                        // E.g. small phones are Medium, but with two columns => content is too big
+                        || (screenWidthType is ScreenDetails.DisplayType.Medium
+                        && screenHeightType is ScreenDetails.DisplayType.Compact) ->
+                    OneColumnLayout(
+                        paddingValues = paddingValues,
+                        alarmSettings = alarmSettings,
+                        selectedAlarmStart = selectedAlarmStart,
+                        onClick = { alarm -> selectedAlarmStart = alarm.start },
+                        onRemoveAlarm = { alarm ->
+                            alarmToBeRemovedStart = alarm.start
+                            showRemoveAlarmConfirmationDialog = true
+                        },
+                        onUpdateAlarm = { alarm ->
+                            alarmToBeUpdatedStart = alarm.start
+                            selectedAlarmStart = alarm.start
+                            showAlarmDialog = true
+                        }
+                    )
+
+                else -> TwoColumnLayout(
+                    paddingValues = paddingValues,
+                    alarmSettings = alarmSettings,
+                    selectedAlarmStart = selectedAlarmStart,
+                    onClick = { alarm -> selectedAlarmStart = alarm.start },
+                    onRemoveAlarm = { alarm ->
+                        alarmToBeRemovedStart = alarm.start
+                        showRemoveAlarmConfirmationDialog = true
+                    },
+                    onUpdateAlarm = { alarm ->
+                        alarmToBeUpdatedStart = alarm.start
+                        selectedAlarmStart = alarm.start
+                        showAlarmDialog = true
                     }
+                )
             }
         }
 
-        if(showAlarmDialog) {
+        if (showAlarmDialog) {
             /**
              * Can not be null => is set in onUpdateAlarm (when a user clicks on update button
              * of an existing alarm)
@@ -180,18 +189,96 @@ fun AlarmsListScreen(
         }
 
         if (showRemoveAlarmConfirmationDialog) {
-           GlacAlertDialog(
-               title = stringResource(R.string.remove_alarm),
-               message = stringResource(R.string.do_you_really_want_to_remove_this_alarm),
-               onDismissRequest = {
-                   showRemoveAlarmConfirmationDialog = false
-                   alarmToBeRemovedStart = null
-               }
-           ) {
-               alarmSettings.alarms.find { alarm ->
-                   alarm.start == alarmToBeRemovedStart
-               }?.let { onEvent(AlarmSettingsEvent.RemoveAlarm(it)) }
-           }
+            GlacAlertDialog(
+                title = stringResource(R.string.remove_alarm),
+                message = stringResource(R.string.do_you_really_want_to_remove_this_alarm),
+                onDismissRequest = {
+                    showRemoveAlarmConfirmationDialog = false
+                    alarmToBeRemovedStart = null
+                }
+            ) {
+                alarmSettings.alarms.find { alarm ->
+                    alarm.start == alarmToBeRemovedStart
+                }?.let { onEvent(AlarmSettingsEvent.RemoveAlarm(it)) }
+            }
+        }
+    }
+}
+
+
+@Composable
+private fun OneColumnLayout(
+    paddingValues: PaddingValues,
+    alarmSettings: AlarmSettings,
+    selectedAlarmStart: LocalDateTime?,
+    onClick: (Alarm) -> Unit,
+    onRemoveAlarm: (Alarm) -> Unit,
+    onUpdateAlarm: (Alarm) -> Unit
+) {
+    val scrollState = rememberScrollState()
+    Column(
+        modifier = Modifier
+            .padding(paddingValues)
+            .fillMaxWidth()
+            .padding(horizontal = SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2)
+            .verticalScroll(scrollState)
+    ) {
+        AlarmListItems(
+            alarms = alarmSettings.alarms.filterAndSort(),
+            selectedAlarmStart = selectedAlarmStart,
+            onClick = onClick,
+            onRemoveAlarm = onRemoveAlarm,
+            onUpdateAlarm = onUpdateAlarm
+        )
+    }
+}
+
+
+@Composable
+private fun TwoColumnLayout(
+    paddingValues: PaddingValues,
+    alarmSettings: AlarmSettings,
+    selectedAlarmStart: LocalDateTime?,
+    onClick: (Alarm) -> Unit,
+    onRemoveAlarm: (Alarm) -> Unit,
+    onUpdateAlarm: (Alarm) -> Unit
+) {
+    val scrollState = rememberScrollState()
+    val (columnOneAlarms, columnTwoAlarms) = alarmSettings.alarms.filterAndSort().rearrange()
+
+    Row(
+        modifier = Modifier
+            .padding(paddingValues)
+            .fillMaxWidth()
+            .padding(horizontal = SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2)
+            .verticalScroll(scrollState),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Column( // inner left/start column
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            AlarmListItems(
+                alarms = columnOneAlarms,
+                selectedAlarmStart = selectedAlarmStart,
+                onClick = onClick,
+                onRemoveAlarm = onRemoveAlarm,
+                onUpdateAlarm = onUpdateAlarm
+            )
+        }
+        Column( // inner right/end column
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            AlarmListItems(
+                alarms = columnTwoAlarms,
+                selectedAlarmStart = selectedAlarmStart,
+                onClick = onClick,
+                onRemoveAlarm = onRemoveAlarm,
+                onUpdateAlarm = onUpdateAlarm
+            )
         }
     }
 }

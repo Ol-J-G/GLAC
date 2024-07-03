@@ -179,5 +179,6 @@
     <string name="do_you_really_want_to_remove_theme">Do you really want to remove theme</string>
     <string name="do_you_really_want_to_remove_file">Do you really want to remove file</string>
     <string name="do_you_really_want_to_remove_this_alarm">Do you really want to remove this alarm?</string>
-    <string name="next_alarm">Next Alarm</string> <!-- 'default' is reserved keyword-->
+    <string name="next_alarm">Next Alarm</string>
+    <string name="add_alarm">Add Alarm</string> <!-- 'default' is reserved keyword-->
 </resources>
