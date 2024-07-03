@@ -21,6 +21,8 @@ import de.oljg.glac.R
 import de.oljg.glac.feature_alarm.ui.utils.between
 import de.oljg.glac.feature_alarm.ui.utils.format
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
+import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
+import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.EDGE_PADDING
 import kotlinx.coroutines.delay
 import java.time.LocalDateTime
 import kotlin.time.Duration
@@ -42,13 +44,13 @@ fun AlarmCountdown(alarmStart: LocalDateTime) {
 
     Row(
         modifier = Modifier
-            .padding(horizontal = SettingsDefaults.EDGE_PADDING)
+            .padding(horizontal = EDGE_PADDING, vertical = DEFAULT_VERTICAL_SPACE / 2)
             .fillMaxWidth()
             .height(SettingsDefaults.SETTINGS_SECTION_HEIGHT),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = stringResource(R.string.remaining_time) + ":")
+        Text(text = stringResource(R.string.remaining_time))
         Text(
             text = timeUntilAlarmStart.format(),
             fontFamily = FontFamily.Monospace,

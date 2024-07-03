@@ -48,7 +48,7 @@ import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.minutesSaver
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.uriSaver
 import de.oljg.glac.feature_alarm.ui.utils.Repetition
 import de.oljg.glac.feature_alarm.ui.utils.isSet
-import de.oljg.glac.feature_alarm.ui.utils.toEpochMillis
+import de.oljg.glac.feature_alarm.ui.utils.toEpochMillisUTC
 import de.oljg.glac.feature_clock.ui.settings.components.common.SettingsSwitch
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DIALOG_DEFAULT_PADDING
@@ -77,7 +77,7 @@ fun AlarmDialog(
     }
 
     var selectedRepetition by rememberSaveable {
-        mutableStateOf(alarmSettings.repetition)
+        mutableStateOf(alarmToBeUpdated?.repetition ?: alarmSettings.repetition)
     }
 
     var isLightAlarm by rememberSaveable {
@@ -99,8 +99,21 @@ fun AlarmDialog(
     }
 
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = alarmToBeUpdated?.start?.toEpochMillis()
-            ?: LocalDateTime.now().toEpochMillis(),
+        /**
+         * alarmToBeUpdated?.start is already persisted in local/user's time zone (see
+         * DatePickerDialog...onClick), so, here it's necessary to use UTC to convert back
+         * to millis to get the correct initial selected date.
+         *
+         * Example:
+         * Let's assume a user's time zone offset would be +02:00 hours and the user has been
+         * scheduled/add an alarm at 2024-02-02 01:00 AM.
+         * When the user wants to update this alarm's date,
+         * initialSelectedDateMillis(which is UTC!) would be
+         * => 2024-02-01 11:00 PM in case of using toEpochMillis() => wrong initial date!
+         * => 2024-02-02 01:00 AM in case of using toEpochMillisUTC() => OK
+         */
+        initialSelectedDateMillis = alarmToBeUpdated?.start?.toEpochMillisUTC()
+            ?: LocalDateTime.now().toEpochMillisUTC(),
         yearRange = LocalDateTime.now().year..LocalDateTime.now().year + 1,
 
         /** In case of screenHeightType Compact, users must manually change to [DisplayMode.Input]*/

@@ -18,3 +18,11 @@ val lightBlue = Color(0xFF3C4EA0) // Blue Hour starts fading away
 val orange = Color(0xFFD9541F)    // Intense Golden Hour
 val goldenrod = Color(0xFFFFC107) // Heart of Golden Hour
                                   // White => Bright Sunshine
+
+val neutralGray = Color(0xFF808080) // AlarmListItem no repetition border color
+val darkRed = Color(0xFF8C1616) // AlarmListItem monthly repetition border color, a little darker as Material 900
+val darkGreen = Color(0xFF33691E) // AlarmListItem daily repetition border color, Material 900
+val darkYellow = Color(0xFF827717) // AlarmListItem weekly repetition border color, Material 900
+val lightRed = Color(0xFFEF5350) // AlarmListItem monthly repetition border color, Material 400
+val lightGreen = Color(0xFF66BB6A) // AlarmListItem daily repetition border color, Material 400
+val lightYellow = Color(0xFFFDD835) // AlarmListItem daily repetition border color, Material 600

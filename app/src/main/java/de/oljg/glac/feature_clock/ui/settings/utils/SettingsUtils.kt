@@ -192,7 +192,7 @@ object SettingsDefaults {
     val DROPDOWN_END_PADDING = 4.dp
     val DROPDOWN_ROW_VERTICAL_PADDING = 8.dp
     val TRAILING_ICON_END_PADDING = 12.dp
-    val DEFAULT_ROUNDED_CORNER_SIZE = 8.dp
+    val DEFAULT_ROUNDED_CORNER_SIZE = 8.dp //TODO: many of them will be used also outside clock settings => check => relocate to core
     val DEFAULT_BORDER_WIDTH = 1.dp
 
     val RADIO_BUTTON_ROW_HEIGHT = 56.dp

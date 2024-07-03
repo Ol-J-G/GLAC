@@ -147,7 +147,7 @@
     <string name="day">day</string>
     <string name="on_">on</string>
     <string name="month">month</string>
-    <string name="remaining_time">Remaining time</string>
+    <string name="remaining_time">Remaining Time</string>
     <string name="stop">Stop</string>
     <string name="snooze">Snooze</string>
     <string name="snooze_duration">Snooze Duration</string>
@@ -177,5 +177,7 @@
     <string name="alarm_sound_fade_duration">Alarm Sound Fade Duration</string>
     <string name="do_you_really_want_to_reset_theme">Do you really want to reset theme</string>
     <string name="do_you_really_want_to_remove_theme">Do you really want to remove theme</string>
-    <string name="do_you_really_want_to_remove_file">Do you really want to remove file</string> <!-- 'default' is reserved keyword-->
+    <string name="do_you_really_want_to_remove_file">Do you really want to remove file</string>
+    <string name="do_you_really_want_to_remove_this_alarm">Do you really want to remove this alarm?</string>
+    <string name="next_alarm">Next Alarm</string> <!-- 'default' is reserved keyword-->
 </resources>

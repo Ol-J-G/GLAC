@@ -1,9 +1,5 @@
 package de.oljg.glac.feature_alarm.ui.alarms
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.TweenSpec
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,7 +25,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import de.oljg.glac.R
+import de.oljg.glac.core.ui.components.GlacAlertDialog
 import de.oljg.glac.feature_alarm.domain.model.AlarmSettings
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsEvent
 import de.oljg.glac.feature_alarm.ui.components.AlarmDialog
@@ -58,6 +57,17 @@ fun AlarmsListScreen(
     var selectedAlarmStart: LocalDateTime? by rememberSaveable(stateSaver = localDateTimeSaver) {
         mutableStateOf(null)
     }
+
+    var alarmToBeRemovedStart: LocalDateTime? by rememberSaveable(stateSaver = localDateTimeSaver) {
+        mutableStateOf(null)
+    }
+
+    var showRemoveAlarmConfirmationDialog by rememberSaveable(
+        key = alarmToBeRemovedStart.toString()
+    ) {
+        mutableStateOf(false)
+    }
+
 
     Surface(
         modifier = Modifier
@@ -99,7 +109,7 @@ fun AlarmsListScreen(
             }
         ) { paddingValues ->
             val scrollState = rememberScrollState()
-            Column(
+            Column( //TODO: add 2 columns layout
                 modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxWidth()
@@ -116,10 +126,13 @@ fun AlarmsListScreen(
                             lightAlarmDuration = alarm.lightAlarmDuration,
                             repetition = alarm.repetition,
                             snoozeDuration = alarm.snoozeDuration,
-                            alarmSound = alarm.alarmSoundUri,
+                            alarmSoundUri = alarm.alarmSoundUri,
                             selected = alarm.start == selectedAlarmStart,
                             onClick = { selectedAlarmStart = alarm.start },
-                            onRemoveAlarm = { onEvent(AlarmSettingsEvent.RemoveAlarm(alarm)) },
+                            onRemoveAlarm = {
+                                alarmToBeRemovedStart = alarm.start
+                                showRemoveAlarmConfirmationDialog = true
+                            },
                             onUpdateAlarm = {
                                 alarmToBeUpdatedStart = alarm.start
                                 selectedAlarmStart = alarm.start
@@ -130,16 +143,14 @@ fun AlarmsListScreen(
             }
         }
 
-        AnimatedVisibility(
-            visible = showAlarmDialog,
-            enter = fadeIn(TweenSpec(durationMillis = 100)),
-            exit = fadeOut(TweenSpec(durationMillis = 100))
-        ) {
+        if(showAlarmDialog) {
             /**
              * Can not be null => is set in onUpdateAlarm (when a user clicks on update button
              * of an existing alarm)
              */
-            val alarmToBeUpdated = alarmSettings.alarms.find { it.start == alarmToBeUpdatedStart }
+            val alarmToBeUpdated = alarmSettings.alarms.find { alarm ->
+                alarm.start == alarmToBeUpdatedStart
+            }
             AlarmDialog(
                 alarmSettings = alarmSettings,
                 alarmToBeUpdated = alarmToBeUpdated,
@@ -166,6 +177,21 @@ fun AlarmsListScreen(
                     selectedAlarmStart = newAlarm.start
                 }
             )
+        }
+
+        if (showRemoveAlarmConfirmationDialog) {
+           GlacAlertDialog(
+               title = stringResource(R.string.remove_alarm),
+               message = stringResource(R.string.do_you_really_want_to_remove_this_alarm),
+               onDismissRequest = {
+                   showRemoveAlarmConfirmationDialog = false
+                   alarmToBeRemovedStart = null
+               }
+           ) {
+               alarmSettings.alarms.find { alarm ->
+                   alarm.start == alarmToBeRemovedStart
+               }?.let { onEvent(AlarmSettingsEvent.RemoveAlarm(it)) }
+           }
         }
     }
 }

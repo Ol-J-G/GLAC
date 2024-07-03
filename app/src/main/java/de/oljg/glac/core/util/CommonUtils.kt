@@ -17,7 +17,7 @@ import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_HEIGHT_COMPA
 import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_HEIGHT_MEDIUM
 import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_WIDTH_COMPACT
 import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_WIDTH_MEDIUM
-import de.oljg.glac.feature_alarm.domain.media.utils.prettyPrintRingtone
+import de.oljg.glac.feature_alarm.domain.media.utils.prettyPrintAlarmSoundUri
 import de.oljg.glac.feature_alarm.ui.utils.Repetition
 import de.oljg.glac.feature_alarm.ui.utils.translate
 import de.oljg.glac.feature_clock.ui.clock.utils.DividerLineEnd
@@ -42,7 +42,7 @@ fun translateDropDownItemText(
     Repetition::class -> Repetition.valueOf(itemValue).translate()
     else -> {
         if (itemValue == Settings.System.DEFAULT_RINGTONE_URI.toString())
-            Uri.parse(itemValue).prettyPrintRingtone()
+            Uri.parse(itemValue).prettyPrintAlarmSoundUri()
         else
             defaultPrettyPrinter(itemValue)
 

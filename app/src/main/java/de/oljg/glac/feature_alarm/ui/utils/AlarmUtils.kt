@@ -3,6 +3,7 @@ package de.oljg.glac.feature_alarm.ui.utils
 import android.net.Uri
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.mapSaver
+import androidx.compose.ui.unit.dp
 import com.ibm.icu.text.RuleBasedNumberFormat
 import de.oljg.glac.core.util.CommonUtils.SPACE
 import de.oljg.glac.feature_alarm.domain.model.Alarm
@@ -341,8 +342,9 @@ fun Duration.Companion.between(a: LocalDateTime, b: LocalDateTime): Duration {
 
 private fun defaultOffset(): ZoneOffset = ZoneId.systemDefault().rules.getOffset(Instant.now())
 
-
 fun LocalDateTime?.toEpochMillis() = this?.toEpochSecond(defaultOffset())?.times(1000L)
+
+fun LocalDateTime?.toEpochMillisUTC() = this?.toEpochSecond(ZoneOffset.UTC)?.times(1000L)
 
 fun LocalDateTime.toMillis() = this.toEpochMillis()!!
 
@@ -388,6 +390,7 @@ fun Alarm?.isNotLightAlarm() = this != null && !this.isLightAlarm
 
 
 object AlarmDefaults {
+    val LIST_ITEM_TEXT_ICON_SPACE = 8.dp
     const val ALARM_REACTION_DIALOG_BUTTON_WEIGHT = 1.7f
     const val ALARM_REACTION_DIALOG_DISMISS_BUTTON_WEIGHT = 1f
 

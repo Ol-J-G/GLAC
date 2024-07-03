@@ -29,7 +29,7 @@ fun getAvailableRingtoneUris(context: Context): List<String> {
 
 
 @Composable
-fun Uri.prettyPrintRingtone() = when {
+fun Uri.prettyPrintAlarmSoundUri() = when {
     this.toString().isFileUri() -> this.toString().cutOffFileNameExtension().cutOffPathFromUri()
     // Default ringtone seems to have no title!? => calling it simply "Default Ringtone"
     this == Settings.System.DEFAULT_RINGTONE_URI -> stringResource(R.string._default_ringtone)
