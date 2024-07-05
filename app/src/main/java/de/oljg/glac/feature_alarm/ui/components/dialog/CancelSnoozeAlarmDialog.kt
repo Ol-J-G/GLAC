@@ -1,4 +1,4 @@
-package de.oljg.glac.feature_alarm.ui.components
+package de.oljg.glac.feature_alarm.ui.components.dialog
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column

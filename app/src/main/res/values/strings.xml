@@ -127,7 +127,7 @@
     <string name="hours_shortened">H</string>
     <string name="days_shortened">D</string>
     <string name="earliest_possible_alarm_time">"Earliest Possible Alarm Time: "</string>
-    <string name="more_alarm_details">More Alarm Details</string>
+    <string name="more_alarm_details">More…</string>
     <string name="update">Update</string>
     <string name="alarm_time_may_not_overlap_an_existing_alarm">Alarm time may not overlap an existing alarm!</string>
     <string name="please_select_start_date_and_time">Please SELECT start date and time!</string>

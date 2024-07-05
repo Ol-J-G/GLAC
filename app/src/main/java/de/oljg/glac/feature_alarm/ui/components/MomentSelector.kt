@@ -10,6 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.localizedFullDateFormatter
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.localizedShortTimeFormatter
@@ -22,6 +24,7 @@ import java.time.LocalTime
 @Composable
 fun MomentSelector(
     label: String,
+    labelStartPadding: Dp = 0.dp,
     dateMoment: LocalDate? = null,
     timeMoment: LocalTime? = null,
     onClick: () -> Unit
@@ -34,7 +37,7 @@ fun MomentSelector(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(label)
+        Text(modifier = Modifier.padding(start = labelStartPadding), text = label)
         TextButton(onClick = onClick) {
             Text(
                 text = when {

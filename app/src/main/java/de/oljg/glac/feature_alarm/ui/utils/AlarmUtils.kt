@@ -422,6 +422,9 @@ fun List<Alarm>.rearrange(): Pair<List<Alarm>, List<Alarm>> {
 
 
 object AlarmDefaults {
+    const val PREVIEW_PLAYER_CORNER_SIZE_PERCENT = 50
+    val PREVIEW_PLAYER_ELEVATION = 8.dp
+    val PREVIEW_PLAYER_PADDING = 8.dp
     val LIST_ITEM_TEXT_ICON_SPACE = 8.dp
     const val ALARM_REACTION_DIALOG_BUTTON_WEIGHT = 1.7f
     const val ALARM_REACTION_DIALOG_DISMISS_BUTTON_WEIGHT = 1f

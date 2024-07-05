@@ -1,9 +1,7 @@
-package de.oljg.glac.feature_alarm.ui.components
+package de.oljg.glac.feature_alarm.ui.components.dialog
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -16,31 +14,30 @@ import de.oljg.glac.R
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
 
 @Composable
-fun ColumnScope.AlarmDialogActions(
-    enabled: Boolean,
+fun AlarmDialogActions(
+    scheduleOrUpdateEnabled: Boolean,
     isUpdateAlarmAction: Boolean,
-    onDissmiss: () -> Unit,
+    onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .weight(3f, fill = false)
             .padding(vertical = SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.spacedBy(
             SettingsDefaults.COLOR_PICKER_BUTTON_SPACE, Alignment.End
         )
     ) {
-        TextButton(onClick = onDissmiss) {
+        TextButton(onClick = onDismiss) {
             Text(text = stringResource(R.string.dismiss).uppercase())
         }
         TextButton(
             onClick = {
                 onConfirm()
-                onDissmiss()
+                onDismiss()
             },
-            enabled = enabled
+            enabled = scheduleOrUpdateEnabled
         ) {
             Text(
                 modifier = Modifier.padding(end = SettingsDefaults.EDGE_PADDING),
@@ -51,6 +48,5 @@ fun ColumnScope.AlarmDialogActions(
             )
         }
     }
-    Spacer(modifier = Modifier.weight(1f, fill = false))
 }
 

@@ -1,18 +1,12 @@
-package de.oljg.glac.feature_alarm.ui.components
+package de.oljg.glac.feature_alarm.ui.components.dialog
 
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DisplayMode
@@ -30,28 +24,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.window.DialogProperties
 import de.oljg.glac.R
-import de.oljg.glac.core.ui.components.ExpandableSection
 import de.oljg.glac.core.ui.components.GlacDialog
 import de.oljg.glac.core.util.ScreenDetails
 import de.oljg.glac.core.util.screenDetails
 import de.oljg.glac.feature_alarm.domain.model.Alarm
 import de.oljg.glac.feature_alarm.domain.model.AlarmSettings
-import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.MAX_LIGHT_ALARM_DURATION
-import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.MAX_SNOOZE_DURATION
-import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.MIN_LIGHT_ALARM_DURATION
-import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.MIN_SNOOZE_DURATION
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.minutesSaver
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.uriSaver
 import de.oljg.glac.feature_alarm.ui.utils.Repetition
-import de.oljg.glac.feature_alarm.ui.utils.isSet
 import de.oljg.glac.feature_alarm.ui.utils.toEpochMillisUTC
-import de.oljg.glac.feature_clock.ui.settings.components.common.SettingsSwitch
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DIALOG_DEFAULT_PADDING
+import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -59,19 +45,16 @@ import java.time.LocalTime
 import java.time.ZoneId
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.ZERO
-import kotlin.time.DurationUnit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AlarmDialog( //TODO: not everything on screen at small device => two column layout?!
+fun AlarmDialog(
     alarmSettings: AlarmSettings,
     alarmToBeUpdated: Alarm? = null,
     onDismissRequest: () -> Unit,
     onAlarmUpdated: (Alarm) -> Unit,
     onNewAlarmAdded: (Alarm) -> Unit
 ) {
-    val scrollState = rememberScrollState()
-
     var moreAlarmDetailsIsExpanded by rememberSaveable {
         mutableStateOf(false)
     }
@@ -80,18 +63,20 @@ fun AlarmDialog( //TODO: not everything on screen at small device => two column 
         mutableStateOf(alarmToBeUpdated?.repetition ?: alarmSettings.repetition)
     }
 
-    var isLightAlarm by rememberSaveable {
+    var selectedIsLightAlarm by rememberSaveable {
         mutableStateOf(alarmToBeUpdated?.isLightAlarm ?: alarmSettings.isLightAlarm)
     }
-    var lightAlarmDuration: Duration by rememberSaveable(stateSaver = minutesSaver) {
-        mutableStateOf(alarmToBeUpdated?.lightAlarmDuration ?: alarmSettings.lightAlarmDuration)
+    var selectedLightAlarmDuration: Duration by rememberSaveable(stateSaver = minutesSaver) {
+        mutableStateOf(alarmToBeUpdated?.lightAlarmDuration
+            ?: alarmSettings.lightAlarmDuration)
     }
-    fun lightAlarmDuration() = if (isLightAlarm) lightAlarmDuration else ZERO
+
+    fun lightAlarmDuration() = if (selectedIsLightAlarm) selectedLightAlarmDuration else ZERO
     var isValidLightAlarmDuration by rememberSaveable {
         mutableStateOf(true) // default value is valid
     }
 
-    var snoozeDuration: Duration by rememberSaveable(stateSaver = minutesSaver) {
+    var selectedSnoozeDuration: Duration by rememberSaveable(stateSaver = minutesSaver) {
         mutableStateOf(alarmToBeUpdated?.snoozeDuration ?: alarmSettings.snoozeDuration)
     }
     var isValidSnoozeDuration by rememberSaveable {
@@ -135,7 +120,10 @@ fun AlarmDialog( //TODO: not everything on screen at small device => two column 
         mutableStateOf(alarmToBeUpdated?.start?.toLocalTime())
     }
 
-    var selectedAlarmSoundUri: Uri by rememberSaveable(stateSaver = uriSaver) {
+    var selectedAlarmSoundUri: Uri by rememberSaveable(
+        key = alarmToBeUpdated?.alarmSoundUri.toString(),
+        stateSaver = uriSaver
+    ) {
         mutableStateOf(alarmToBeUpdated?.alarmSoundUri ?: alarmSettings.alarmSoundUri)
     }
 
@@ -147,7 +135,7 @@ fun AlarmDialog( //TODO: not everything on screen at small device => two column 
                 lightAlarmDuration(),
                 alarmSettings.alarms,
                 alarmToBeUpdated,
-                isLightAlarm,
+                selectedIsLightAlarm,
                 isValidLightAlarmDuration,
                 isValidSnoozeDuration
             )
@@ -158,166 +146,177 @@ fun AlarmDialog( //TODO: not everything on screen at small device => two column 
 
     fun buildAlarm() = Alarm(
         start = LocalDateTime.of(selectedDate, selectedTime),
-        isLightAlarm = isLightAlarm,
-        lightAlarmDuration = lightAlarmDuration,
+        isLightAlarm = selectedIsLightAlarm,
+        lightAlarmDuration = selectedLightAlarmDuration,
         repetition = selectedRepetition,
-        snoozeDuration = snoozeDuration,
+        snoozeDuration = selectedSnoozeDuration,
         alarmSoundUri = selectedAlarmSoundUri
     )
 
-    GlacDialog(onDismissRequest = onDismissRequest) { //TODO: care about adaptive design => row+2col for expanded screen width class... => when dialog is completed
-        Column {
+    val screenDetails = screenDetails()
+    val screenWidthType = screenDetails.screenWidthType
+    val screenHeightType = screenDetails.screenHeightType
 
-            // Scrollable inner section
+    // E.g. tablet landscape => Needed to let this dialog not looking too 'ugly' on tablets ...
+    fun isWidthExpandedAndHeightMedium() = screenWidthType is ScreenDetails.DisplayType.Expanded
+            && screenHeightType is ScreenDetails.DisplayType.Medium
+
+    fun areTwoColumnsNeeded() = (screenWidthType is ScreenDetails.DisplayType.Medium
+            && screenHeightType is ScreenDetails.DisplayType.Compact)
+            || screenWidthType is ScreenDetails.DisplayType.Expanded
+
+
+    GlacDialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = when {
+                isWidthExpandedAndHeightMedium() -> true
+                areTwoColumnsNeeded() -> false
+                else -> true
+            }
+        ),
+        maxWidthFraction = when {
+            isWidthExpandedAndHeightMedium() -> null
+            areTwoColumnsNeeded() -> .9f
+            else -> null
+        },
+        maxHeightFraction = when {
+            isWidthExpandedAndHeightMedium() -> null
+            areTwoColumnsNeeded() -> .9f
+            else -> null
+        }
+    ) {
+        Column {
             Column(
                 modifier = Modifier
-                    .weight(10f, fill = false)
-                    .verticalScroll(scrollState),
-                verticalArrangement = Arrangement.Top
-            ) {
-                MomentSelector(
-                    label = stringResource(R.string.start_date),
-                    dateMoment = selectedDate
-                ) {
-                    showDatePicker = true
-                }
-                MomentSelector(
-                    label = stringResource(R.string.start_time),
-                    timeMoment = selectedTime
-                ) {
-                    showTimePicker = true
-                }
-
-                Divider(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(.9f)
-                        .padding(vertical = DEFAULT_VERTICAL_SPACE)
-                )
-
-                AlarmSoundSelector(
-                    label = stringResource(R.string.alarm_sound),
-                    startPadding = DIALOG_DEFAULT_PADDING / 3,
-                    endPadding = DIALOG_DEFAULT_PADDING,
-                    selectedAlarmSound = selectedAlarmSoundUri.toString(),
-                    onNewAlarmSoundSelected = { newAlarmSound ->
-                        selectedAlarmSoundUri = Uri.parse(newAlarmSound)
-                    }
-                )
-
-                Divider(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(.9f)
-                        .padding(top = DEFAULT_VERTICAL_SPACE)
-                )
-
-                RepetitionSelector(
-                    label = stringResource(R.string.repetition),
-                    startPadding = DIALOG_DEFAULT_PADDING,
-                    endPadding =  DIALOG_DEFAULT_PADDING,
-                    selectedRepetition = selectedRepetition,
-                    onNewRepeatModeSelected = { newRepeatMode ->
-                        selectedRepetition = Repetition.valueOf(newRepeatMode)
-                    }
-                )
-
-                Divider(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(.9f)
-                        .padding(bottom = DEFAULT_VERTICAL_SPACE)
-                )
-
-                ExpandableSection(
-                    sectionTitle = stringResource(R.string.more_alarm_details),
-                    sectionTitleStyle = MaterialTheme.typography.titleMedium,
-                    expanded = moreAlarmDetailsIsExpanded,
-                    horizontalPadding = DIALOG_DEFAULT_PADDING,
-                    backgroundColor = MaterialTheme.colorScheme.inverseOnSurface,
-                    expandedBackgroundColor = MaterialTheme.colorScheme.inverseOnSurface,
-                    onExpandedChange = { moreAlarmDetailsIsExpanded = it }
-                ) {
-                    SettingsSwitch(
-                        label = stringResource(R.string.light_alarm),
-                        edgePadding = DIALOG_DEFAULT_PADDING / 2,
-                        checked = isLightAlarm,
-                        onCheckedChange = {
-                            isLightAlarm = !isLightAlarm
+                    .weight(
+                        weight = when {
+                            isWidthExpandedAndHeightMedium() -> 1f
+                            areTwoColumnsNeeded() -> 3f
+                            else -> 6.5f
+                        },
+                        fill = true
+                    )
+            ) { // Scrollable sections inside
+                when {
+                    areTwoColumnsNeeded() -> AlarmDialogTwoColumnsLayout(
+                        selectedDate = selectedDate,
+                        selectedTime = selectedTime,
+                        onSelectDateClicked = { showDatePicker = true },
+                        onSelectTimeClicked = { showTimePicker = true },
+                        selectedAlarmSoundUri = selectedAlarmSoundUri,
+                        onNewAlarmSoundSelected = { newAlarmSound ->
+                            selectedAlarmSoundUri = Uri.parse(newAlarmSound)
+                        },
+                        selectedRepetition = selectedRepetition,
+                        onNewRepeatModeSelected = { newRepetition ->
+                            selectedRepetition = Repetition.valueOf(newRepetition)
+                        },
+                        moreAlarmDetailsIsExpanded = moreAlarmDetailsIsExpanded,
+                        onMoreAlarmDetailsExpandedChanged = { moreAlarmDetailsIsExpanded = it },
+                        isLightAlarm = selectedIsLightAlarm,
+                        onIsLightAlarmChanged = {
+                            selectedIsLightAlarm = !selectedIsLightAlarm
 
                             /**
                              * Actually, it's impossible to enter an invalid duration value into
-                             * light alarm duration TF below, so, when hiding it in case an invalid
+                             * light alarm duration TF, so, when hiding it in case an invalid
                              * duration value is entered, the last valid (persisted) value will be
                              * displayed when show TF again... => it's valid, doesn't matter if
                              * it's hidden or unhidden.
                              */
                             isValidLightAlarmDuration = true
                             isReadyToScheduleAlarm = checkIfReadyToScheduleAlarm()
-                        }
-                    )
-
-                    AnimatedVisibility(visible = isLightAlarm) {
-                        DurationSelector(
-                            modifier = Modifier
-                                .padding(DIALOG_DEFAULT_PADDING / 2)
-                                .fillMaxWidth(),
-                            label = stringResource(R.string.light_alarm_duration),
-                            duration = lightAlarmDuration,
-                            durationUnit = DurationUnit.MINUTES,
-                            minDuration = MIN_LIGHT_ALARM_DURATION,
-                            maxDuration = MAX_LIGHT_ALARM_DURATION,
-                            onValueChanged = { isValidDuration ->
-                                isValidLightAlarmDuration = isValidDuration
-                                isReadyToScheduleAlarm = checkIfReadyToScheduleAlarm()
-                            },
-                            onDurationChanged = { newLightAlarmDuration ->
-                                lightAlarmDuration = newLightAlarmDuration
-                            }
-                        )
-                    }
-                    DurationSelector(
-                        modifier = Modifier
-                            .padding(DIALOG_DEFAULT_PADDING / 2)
-                            .fillMaxWidth(),
-                        label = stringResource(R.string.snooze_duration),
-                        duration = snoozeDuration,
-                        durationUnit = DurationUnit.MINUTES,
-                        minDuration = MIN_SNOOZE_DURATION,
-                        maxDuration = MAX_SNOOZE_DURATION,
-                        onValueChanged = { isValidDuration ->
+                        },
+                        lightAlarmDuration = selectedLightAlarmDuration,
+                        onLightAlarmDurationValueChanged = { isValidDuration ->
+                            isValidLightAlarmDuration = isValidDuration
+                            isReadyToScheduleAlarm = checkIfReadyToScheduleAlarm()
+                        },
+                        onLightAlarmDurationChanged = { newLightAlarmDuration ->
+                            selectedLightAlarmDuration = newLightAlarmDuration
+                        },
+                        snoozeDuration = selectedSnoozeDuration,
+                        onSnoozeDurationValueChanged = { isValidDuration ->
                             isValidSnoozeDuration = isValidDuration
                             isReadyToScheduleAlarm = checkIfReadyToScheduleAlarm()
                         },
-                        onDurationChanged = { newSnoozeDuration ->
-                            snoozeDuration = newSnoozeDuration
+                        onSnoozeDurationChanged = { newSnoozeDuration ->
+                            selectedSnoozeDuration = newSnoozeDuration
+                        }
+                    )
+
+                    else -> AlarmDialogOneColumnLayout(
+                        selectedDate = selectedDate,
+                        selectedTime = selectedTime,
+                        onSelectDateClicked = { showDatePicker = true },
+                        onSelectTimeClicked = { showTimePicker = true },
+                        selectedAlarmSoundUri = selectedAlarmSoundUri,
+                        onNewAlarmSoundSelected = { newAlarmSound ->
+                            selectedAlarmSoundUri = Uri.parse(newAlarmSound)
+                        },
+                        selectedRepetition = selectedRepetition,
+                        onNewRepeatModeSelected = { newRepetition ->
+                            selectedRepetition = Repetition.valueOf(newRepetition)
+                        },
+                        moreAlarmDetailsIsExpanded = moreAlarmDetailsIsExpanded,
+                        onMoreAlarmDetailsExpandedChanged = { moreAlarmDetailsIsExpanded = it },
+                        isLightAlarm = selectedIsLightAlarm,
+                        onIsLightAlarmChanged = {
+                            selectedIsLightAlarm = !selectedIsLightAlarm
+                            isValidLightAlarmDuration = true
+                            isReadyToScheduleAlarm = checkIfReadyToScheduleAlarm()
+                        },
+                        lightAlarmDuration = selectedLightAlarmDuration,
+                        onLightAlarmDurationValueChanged = { isValidDuration ->
+                            isValidLightAlarmDuration = isValidDuration
+                            isReadyToScheduleAlarm = checkIfReadyToScheduleAlarm()
+                        },
+                        onLightAlarmDurationChanged = { newLightAlarmDuration ->
+                            selectedLightAlarmDuration = newLightAlarmDuration
+                        },
+                        snoozeDuration = selectedSnoozeDuration,
+                        onSnoozeDurationValueChanged = { isValidDuration ->
+                            isValidSnoozeDuration = isValidDuration
+                            isReadyToScheduleAlarm = checkIfReadyToScheduleAlarm()
+                        },
+                        onSnoozeDurationChanged = { newSnoozeDuration ->
+                            selectedSnoozeDuration = newSnoozeDuration
                         }
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE))
 
             // Fixed bottom section
-            Column(modifier = Modifier.weight(4f, fill = false)) {
-                AlarmDialogInfoSection( // Hint/Status
-                    date = selectedDate,
-                    time = selectedTime,
+            Column(
+                modifier = Modifier
+                    .weight(
+                        weight = when {
+                            isWidthExpandedAndHeightMedium() -> 1f
+                            areTwoColumnsNeeded() -> 1f
+                            else -> 4f
+                        },
+                        fill = false
+                    )
+            ) {
+                Divider(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.outline,
+                    thickness = SettingsDefaults.DIALOG_BORDER_WIDTH
+                )
+                AlarmDialogBottomBar( // Hint/Status .. // Dismiss/Schedule/Update
+                    selectedDate = selectedDate,
+                    selectedTime = selectedTime,
                     lightAlarmDuration = lightAlarmDuration(),
+                    scheduledAlarms = alarmSettings.alarms,
+                    alarmToBeUpdated = alarmToBeUpdated,
                     isValidLightAlarmDuration = isValidLightAlarmDuration,
                     isValidSnoozeDuration = isValidSnoozeDuration,
-                    scheduledAlarms = alarmSettings.alarms,
-                    alarmToBeUpdated = alarmToBeUpdated
+                    isReadyToScheduleAlarm = isReadyToScheduleAlarm,
+                    onDismiss = onDismissRequest,
+                    onAlarmUpdated = { onAlarmUpdated(buildAlarm()) },
+                    onNewAlarmAdded = { onNewAlarmAdded(buildAlarm()) }
                 )
-                AlarmDialogActions( // Dismiss/Schedule/Update
-                    enabled = isReadyToScheduleAlarm,
-                    isUpdateAlarmAction = alarmToBeUpdated.isSet(),
-                    onDissmiss = onDismissRequest
-                ) {
-                    when {
-                        alarmToBeUpdated.isSet() -> onAlarmUpdated(buildAlarm())
-                        else -> onNewAlarmAdded(buildAlarm())
-                    }
-                }
             }
         }
     }

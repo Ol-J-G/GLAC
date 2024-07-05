@@ -26,7 +26,7 @@ import de.oljg.glac.core.temp.DummyScreen
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsEvent
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsViewModel
 import de.oljg.glac.feature_alarm.ui.alarms.AlarmsListScreen
-import de.oljg.glac.feature_alarm.ui.components.CancelSnoozeAlarmDialog
+import de.oljg.glac.feature_alarm.ui.components.dialog.CancelSnoozeAlarmDialog
 import de.oljg.glac.feature_alarm.ui.settings.AlarmSettingsScreen
 import de.oljg.glac.feature_clock.ui.ClockSettingsViewModel
 import de.oljg.glac.feature_clock.ui.clock.DigitalAlarmClockScreen

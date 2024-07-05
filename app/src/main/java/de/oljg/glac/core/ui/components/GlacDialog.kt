@@ -1,5 +1,6 @@
 package de.oljg.glac.core.ui.components
 
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -16,7 +17,8 @@ import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DIALOG_TONA
 fun GlacDialog(
     onDismissRequest: () -> Unit,
     properties: DialogProperties = DialogProperties(),
-    maxWidthFraction: Float = 1f,
+    maxWidthFraction: Float? = null,
+    maxHeightFraction: Float? = null,
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
     content: @Composable () -> Unit
 ) {
@@ -28,9 +30,23 @@ fun GlacDialog(
             shape = DIALOG_SHAPE,
             tonalElevation = DIALOG_TONAL_ELEVATION,
             color = backgroundColor, // shape color, this surface is dialog's background
-            modifier = Modifier
-                .clip(DIALOG_SHAPE)
-                .fillMaxWidth(maxWidthFraction)
+            modifier = when {
+                maxWidthFraction != null && maxHeightFraction != null -> Modifier
+                    .clip(DIALOG_SHAPE)
+                    .fillMaxWidth(maxWidthFraction)
+                    .fillMaxHeight(maxHeightFraction)
+
+                maxWidthFraction != null -> Modifier
+                    .clip(DIALOG_SHAPE)
+                    .fillMaxWidth(maxWidthFraction)
+
+                maxHeightFraction != null -> Modifier
+                    .clip(DIALOG_SHAPE)
+                    .fillMaxHeight(maxHeightFraction)
+
+                else -> Modifier
+                    .clip(DIALOG_SHAPE)
+            }
         ) {
             content()
         }

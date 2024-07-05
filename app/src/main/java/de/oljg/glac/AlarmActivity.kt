@@ -25,7 +25,7 @@ import de.oljg.glac.feature_alarm.domain.media.AlarmSoundPlayer
 import de.oljg.glac.feature_alarm.domain.model.Alarm
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsEvent
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsViewModel
-import de.oljg.glac.feature_alarm.ui.components.AlarmReactionDialog
+import de.oljg.glac.feature_alarm.ui.components.dialog.AlarmReactionDialog
 import de.oljg.glac.feature_alarm.ui.utils.Repetition
 import de.oljg.glac.feature_alarm.ui.utils.handleAlarmToBeLaunched
 import de.oljg.glac.feature_alarm.ui.utils.plus

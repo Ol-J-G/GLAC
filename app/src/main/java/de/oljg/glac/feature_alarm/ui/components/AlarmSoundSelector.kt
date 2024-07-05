@@ -2,6 +2,7 @@ package de.oljg.glac.feature_alarm.ui.components
 
 import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.CircularProgressIndicator
@@ -57,7 +58,7 @@ fun AlarmSoundSelector(
         mutableStateOf(emptyList<String>())
     }
 
-    var selectedValue by rememberSaveable {
+    var selectedValue by remember {
         mutableStateOf(selectedAlarmSound)
     }
 
@@ -72,11 +73,11 @@ fun AlarmSoundSelector(
         mutableStateOf(shouldRemoveButtonBeEnabled())
     }
 
-    var importedAreLoading by rememberSaveable {
+    var importedAreLoading by remember {
         mutableStateOf(true)
     }
 
-    var builtInAreLoading by rememberSaveable {
+    var builtInAreLoading by remember {
         mutableStateOf(true)
     }
 
@@ -117,52 +118,52 @@ fun AlarmSoundSelector(
             CircularProgressIndicator()
         }
     } else {
-        DropDownSelector(
-            label = label,
-            selectedValue = selectedValue,
-            onNewValueSelected = { newValue ->
-                selectedValue = newValue
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            DropDownSelector(
+                label = label,
+                selectedValue = selectedValue,
+                onNewValueSelected = { newValue ->
+                    selectedValue = newValue
 
-                // Depending on what kind of value has been selected
-                isRemoveButtonEnabled = shouldRemoveButtonBeEnabled()
-                onNewAlarmSoundSelected(newValue)
-            },
-            values = allAlarmSoundUris,
-            prettyPrintValue = String::prettyPrintAlarmSound,
-            startPadding = startPadding,
-            endPadding = endPadding,
-            topPadding = DROPDOWN_ROW_VERTICAL_PADDING * 2,
-            addValueComponent = {
-                if (onImportClicked != null) {
-                    ImportAlarmSoundButton(
-                        onNewAlarmSoundImported = { importedUriString ->
-                            onImportClicked(Uri.parse(importedUriString))
-                            selectedValue = importedUriString
-                            isRemoveButtonEnabled = shouldRemoveButtonBeEnabled()
-                            importedAreLoading = true // Trigger allAlarmSoundUris reload
-                        }
-                    )
+                    // Depending on what kind of value has been selected
+                    isRemoveButtonEnabled = shouldRemoveButtonBeEnabled()
+                    onNewAlarmSoundSelected(newValue)
+                },
+                values = allAlarmSoundUris,
+                prettyPrintValue = String::prettyPrintAlarmSound,
+                startPadding = startPadding,
+                endPadding = endPadding,
+                topPadding = DROPDOWN_ROW_VERTICAL_PADDING * 3,
+                bottomPadding = 0.dp,
+                addValueComponent = {
+                    if (onImportClicked != null) {
+                        ImportAlarmSoundButton(
+                            onNewAlarmSoundImported = { importedUriString ->
+                                onImportClicked(Uri.parse(importedUriString))
+                                selectedValue = importedUriString
+                                isRemoveButtonEnabled = shouldRemoveButtonBeEnabled()
+                                importedAreLoading = true // Trigger allAlarmSoundUris reload
+                            }
+                        )
+                    }
+                },
+                removeValueComponent = {
+                    if (onRemoveClicked != null) {
+                        RemoveImportedFileButton(
+                            enabled = isRemoveButtonEnabled,
+                            importedFileUriStringToRemove = selectedValue,
+                            onRemoveConfirmed = {
+                                onRemoveClicked(selectedValue)
+                                selectedValue = defaultValue
+                                isRemoveButtonEnabled = false
+                                importedAreLoading = true // Trigger allAlarmSoundUris reload
+                            }
+                        )
+                    }
                 }
-            },
-            removeValueComponent = {
-                if (onRemoveClicked != null) {
-                    RemoveImportedFileButton(
-                        enabled = isRemoveButtonEnabled,
-                        importedFileUriStringToRemove = selectedValue,
-                        onRemoveConfirmed = {
-                            onRemoveClicked(selectedValue)
-                            selectedValue = defaultValue
-                            isRemoveButtonEnabled = false
-                            importedAreLoading = true // Trigger allAlarmSoundUris reload
-                        }
-                    )
-                }
-            }
-        )
+            )
 
-        AlarmSoundPreviewPlayer(
-            endPadding = endPadding,
-            alarmSoundUri = Uri.parse(selectedValue)
-        )
+            AlarmSoundPreviewPlayer(alarmSoundUri = Uri.parse(selectedValue))
+        }
     }
 }

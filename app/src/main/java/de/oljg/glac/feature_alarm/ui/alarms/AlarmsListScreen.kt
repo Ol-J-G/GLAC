@@ -33,8 +33,8 @@ import de.oljg.glac.core.util.screenDetails
 import de.oljg.glac.feature_alarm.domain.model.Alarm
 import de.oljg.glac.feature_alarm.domain.model.AlarmSettings
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsEvent
-import de.oljg.glac.feature_alarm.ui.components.AlarmDialog
 import de.oljg.glac.feature_alarm.ui.components.AlarmListItems
+import de.oljg.glac.feature_alarm.ui.components.dialog.AlarmDialog
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.localDateTimeSaver
 import de.oljg.glac.feature_alarm.ui.utils.filterAndSort
 import de.oljg.glac.feature_alarm.ui.utils.rearrange

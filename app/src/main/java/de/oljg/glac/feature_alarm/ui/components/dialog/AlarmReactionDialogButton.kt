@@ -1,4 +1,4 @@
-package de.oljg.glac.feature_alarm.ui.components
+package de.oljg.glac.feature_alarm.ui.components.dialog
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
