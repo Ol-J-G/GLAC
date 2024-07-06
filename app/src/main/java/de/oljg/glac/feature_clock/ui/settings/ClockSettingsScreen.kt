@@ -49,6 +49,11 @@ fun ClockSettingsScreen(
     val screenWidthType = screenDetails.screenWidthType
     val screenHeightType = screenDetails.screenHeightType
 
+    fun mustBeOneColumn() = screenWidthType is ScreenDetails.DisplayType.Compact
+            // E.g. small phones are Medium, but two columns are too much, content is too big
+            || (screenWidthType is ScreenDetails.DisplayType.Medium
+            && screenHeightType is ScreenDetails.DisplayType.Compact)
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -60,14 +65,7 @@ fun ClockSettingsScreen(
             ClockPreview(clockSettings, onEvent)
             Spacer(modifier = Modifier.height(SETTINGS_SCREEN_PREVIEW_SPACE))
             when {
-                screenWidthType is ScreenDetails.DisplayType.Compact ->
-                    OneColumnLayout(clockSettings, onEvent)
-
-                // E.g. small phones are Medium, but two columns are too much, content is too big
-                screenWidthType is ScreenDetails.DisplayType.Medium
-                        && screenHeightType is ScreenDetails.DisplayType.Compact ->
-                    OneColumnLayout(clockSettings, onEvent)
-
+                mustBeOneColumn() -> OneColumnLayout(clockSettings, onEvent)
                 else -> TwoColumnsLayout(clockSettings, onEvent)
             }
             Spacer(modifier = Modifier.height(SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2))
@@ -132,8 +130,10 @@ private fun TwoColumnsLayout(
         snapshotFlow { scrollStateStartColumn.value }
             .debounce(DEFAULT_DEBOUNCE_TIMEOUT)
             .collectLatest { scrollValue ->
-                onEvent(ClockSettingsEvent
-                    .UpdateClockSettingsStartColumnScrollPosition(scrollValue))
+                onEvent(
+                    ClockSettingsEvent
+                        .UpdateClockSettingsStartColumnScrollPosition(scrollValue)
+                )
             }
     }
 
