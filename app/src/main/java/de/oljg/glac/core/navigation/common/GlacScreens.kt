@@ -1,20 +1,19 @@
 package de.oljg.glac.core.navigation.common
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Help
+import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.AccessTimeFilled
 import androidx.compose.material.icons.filled.Alarm
-import androidx.compose.material.icons.filled.BuildCircle
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.MoreTime
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Snooze
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.Alarm
-import androidx.compose.material.icons.outlined.BuildCircle
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.MoreTime
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.Snooze
 import androidx.compose.ui.graphics.vector.ImageVector
 
 
@@ -28,9 +27,12 @@ interface GlacScreen {
 
 fun GlacScreen.isSettingsSubScreen() = this is ClockSettingsSubScreen
         || this is AlarmSettingsSubScreen
-        || this is CommonSettingsSubScreen
 
 fun GlacScreen.isSettingsScreen() = this is SettingsScreen || this.isSettingsSubScreen()
+
+fun GlacScreen.isInfoSubScreen() = this is HelpSubScreen || this is AboutSubScreen
+
+fun GlacScreen.isInfoScreen() = this is InfoScreen || this.isInfoSubScreen()
 
 
 object AlarmClockScreen : GlacScreen {
@@ -58,31 +60,36 @@ object SettingsScreen : GlacScreen {
 
 object ClockSettingsSubScreen : GlacScreen {
     override val route = GlacRoute.CLOCK_SETTINGS.name
-    override val tabIconSelected = Icons.Filled.MoreTime
-    override val tabIconUnselected = Icons.Outlined.MoreTime
+    override val tabIconSelected = Icons.Filled.AccessTimeFilled
+    override val tabIconUnselected = Icons.Filled.AccessTime
 }
 
 object AlarmSettingsSubScreen : GlacScreen {
     override val route = GlacRoute.ALARM_SETTINGS.name
-    override val tabIconSelected = Icons.Filled.Snooze
-    override val tabIconUnselected = Icons.Outlined.Snooze
+    override val tabIconSelected = Icons.Filled.Alarm
+    override val tabIconUnselected = Icons.Outlined.Alarm
 }
 
-object CommonSettingsSubScreen : GlacScreen {
-    override val route = GlacRoute.COMMON_SETTINGS.name
-    override val tabIconSelected = Icons.Filled.BuildCircle
-    override val tabIconUnselected = Icons.Outlined.BuildCircle
-}
-
-
-object AboutScreen : GlacScreen {
-    override val route = GlacRoute.ABOUT.name
+object InfoScreen : GlacScreen {
+    override val route = GlacRoute.INFO.name
     override val tabIconSelected = Icons.Filled.Info
     override val tabIconUnselected = Icons.Outlined.Info
 }
 
+object HelpSubScreen : GlacScreen {
+    override val route = GlacRoute.INFO_HELP.name
+    override val tabIconSelected = Icons.AutoMirrored.Filled.Help
+    override val tabIconUnselected = Icons.AutoMirrored.Filled.HelpOutline
+}
 
-val glacTabScreens = listOf(AlarmClockScreen, AlarmsScreen, SettingsScreen, AboutScreen)
-val glacSettingsSubScreens =
-        listOf(ClockSettingsSubScreen, AlarmSettingsSubScreen, CommonSettingsSubScreen)
-val allGlacScreens = glacTabScreens + glacSettingsSubScreens
+object AboutSubScreen : GlacScreen {
+    override val route = GlacRoute.INFO_ABOUT.name
+    override val tabIconSelected = Icons.Filled.Error
+    override val tabIconUnselected = Icons.Filled.ErrorOutline
+}
+
+
+val glacTabScreens = listOf(AlarmClockScreen, AlarmsScreen, SettingsScreen, InfoScreen)
+val glacSettingsSubScreens = listOf(ClockSettingsSubScreen, AlarmSettingsSubScreen)
+val glacInfoSubScreens = listOf(HelpSubScreen, AboutSubScreen)
+val allGlacScreens = glacTabScreens + glacSettingsSubScreens + glacInfoSubScreens

@@ -10,8 +10,9 @@ enum class GlacRoute {
     SETTINGS,
     CLOCK_SETTINGS,
     ALARM_SETTINGS,
-    COMMON_SETTINGS,
-    ABOUT
+    INFO,
+    INFO_HELP,
+    INFO_ABOUT
 }
 object GlacDefault {
 

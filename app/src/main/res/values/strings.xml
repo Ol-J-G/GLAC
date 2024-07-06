@@ -6,6 +6,7 @@
     <string name="alarm">Alarm</string>
     <string name="common">Common</string>
     <string name="about">About</string>
+    <string name="help">Help</string>
 
     <string name="icon">Icon</string>
 
@@ -181,5 +182,6 @@
     <string name="do_you_really_want_to_remove_this_alarm">Do you really want to remove this alarm?</string>
     <string name="next_alarm">Next Alarm</string>
     <string name="add_alarm">Add Alarm</string>
-    <string name="hint_basic_values_for_every_alarm">Hint: Basic Values For Every Alarm…</string> <!-- 'default' is reserved keyword-->
+    <string name="hint_basic_values_for_every_alarm">Hint: Basic Values For Every Alarm…</string>
+    <string name="info">Info</string> <!-- 'default' is reserved keyword-->
 </resources>

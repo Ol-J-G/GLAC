@@ -14,7 +14,8 @@ fun NavigationBarItemLabel(
         text = when (screen.route) {
             GlacRoute.CLOCK_SETTINGS.name -> labels.getValue(GlacRoute.CLOCK_SETTINGS)
             GlacRoute.ALARM_SETTINGS.name -> labels.getValue(GlacRoute.ALARM_SETTINGS)
-            GlacRoute.COMMON_SETTINGS.name -> labels.getValue(GlacRoute.COMMON_SETTINGS)
+            GlacRoute.INFO_HELP.name -> labels.getValue(GlacRoute.INFO_HELP)
+            GlacRoute.INFO_ABOUT.name -> labels.getValue(GlacRoute.INFO_ABOUT)
             else -> throw IllegalStateException()
         }
     )

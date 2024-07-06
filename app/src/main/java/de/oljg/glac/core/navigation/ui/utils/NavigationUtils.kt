@@ -9,8 +9,7 @@ object NavigationDefaults {
     val navItemLabels: Map<GlacRoute, String> @Composable get() = mapOf(
         Pair(GlacRoute.CLOCK_SETTINGS, stringResource(id = R.string.clock)),
         Pair(GlacRoute.ALARM_SETTINGS, stringResource(id = R.string.alarm)),
-        Pair(GlacRoute.COMMON_SETTINGS, stringResource(id = R.string.common))
+        Pair(GlacRoute.INFO_HELP, stringResource(id = R.string.help)),
+        Pair(GlacRoute.INFO_ABOUT, stringResource(id = R.string.about))
     )
 }
-
-

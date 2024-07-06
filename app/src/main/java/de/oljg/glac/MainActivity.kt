@@ -24,10 +24,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import de.oljg.glac.core.navigation.GlacNavHost
 import de.oljg.glac.core.navigation.common.AlarmClockFullScreen
 import de.oljg.glac.core.navigation.common.ClockSettingsSubScreen
+import de.oljg.glac.core.navigation.common.HelpSubScreen
+import de.oljg.glac.core.navigation.common.InfoScreen
 import de.oljg.glac.core.navigation.common.SettingsScreen
 import de.oljg.glac.core.navigation.common.allGlacScreens
+import de.oljg.glac.core.navigation.common.glacInfoSubScreens
 import de.oljg.glac.core.navigation.common.glacSettingsSubScreens
 import de.oljg.glac.core.navigation.common.glacTabScreens
+import de.oljg.glac.core.navigation.common.isInfoScreen
+import de.oljg.glac.core.navigation.common.isInfoSubScreen
 import de.oljg.glac.core.navigation.common.isSettingsScreen
 import de.oljg.glac.core.navigation.common.isSettingsSubScreen
 import de.oljg.glac.core.navigation.navigateSingleTopTo
@@ -90,6 +95,9 @@ fun GlacApp() {
         var currentSubSettingsScreenRoute by rememberSaveable {
             mutableStateOf(ClockSettingsSubScreen.route)
         }
+        var currentSubInfoScreenRoute by rememberSaveable {
+            mutableStateOf(HelpSubScreen.route)
+        }
 
         // Basically, show navigation rail (side bar) only when screen width is medium or expanded
         val showNavigationRail =
@@ -101,20 +109,24 @@ fun GlacApp() {
         ) {
             Scaffold(
                 topBar = {
-
                     // Don't show topBar when fullscreen clock is displayed
                     if (currentScreen !is AlarmClockFullScreen) {
                         GlacTabBar(
                             tabBarScreens = glacTabScreens,
                             onTabSelected = { tabBarScreen ->
+                                /**
+                                 * Navigate to the currently/lastly selected sub settings / sub info
+                                 * screen, when settings / info tab is selected.
+                                 */
                                 when (tabBarScreen) {
-                                    /**
-                                     * Navigate to the currently/lastly selected sub settings
-                                     * screen, when settings tab is selected.
-                                     */
                                     SettingsScreen ->
                                         navController.navigateSingleTopTo(
                                             currentSubSettingsScreenRoute
+                                        )
+
+                                    InfoScreen ->
+                                        navController.navigateSingleTopTo(
+                                            currentSubInfoScreenRoute
                                         )
 
                                     else -> navController.navigateSingleTopTo(tabBarScreen.route)
@@ -122,30 +134,48 @@ fun GlacApp() {
                             },
 
                             /**
-                             * Let settings tab stay selected when one of the bottom bar's /
-                             * navigation rail's tabs (sub settings) are selected.
+                             * Let settings / info tab stay selected when one of the bottom bar's /
+                             * navigation rail's tabs (sub settings / sub info) are selected.
                              */
-                            currentScreen = if (currentScreen.isSettingsSubScreen())
-                                SettingsScreen else currentScreen
+                            currentScreen = when {
+                                currentScreen.isSettingsSubScreen() -> SettingsScreen
+                                currentScreen.isInfoSubScreen() -> InfoScreen
+                                else -> currentScreen
+                            }
                         )
                     }
                 },
                 bottomBar = {
                     /**
-                     * Show bottom navigation bar only in case a settings screen is selected and
-                     * screen width is compact.
+                     * Show bottom navigation bar only in case a settings or info screen is
+                     * selected and screen width is compact.
                      */
-                    if (!showNavigationRail && currentScreen.isSettingsScreen()) {
-                        GlacBottomNavigationBar(
-                            bottomNavigationBarScreens = glacSettingsSubScreens,
-                            selected = { screen ->
-                                currentSubSettingsScreenRoute == screen.route
-                            },
-                            onNavigationBarItemIsClicked = { screen ->
-                                currentSubSettingsScreenRoute = screen.route
-                                navController.navigateSingleTopTo(screen.route)
-                            }
-                        )
+                    when {
+                        !showNavigationRail && currentScreen.isSettingsScreen() -> {
+                            GlacBottomNavigationBar(
+                                bottomNavigationBarScreens = glacSettingsSubScreens,
+                                selected = { screen ->
+                                    currentSubSettingsScreenRoute == screen.route
+                                },
+                                onNavigationBarItemIsClicked = { screen ->
+                                    currentSubSettingsScreenRoute = screen.route
+                                    navController.navigateSingleTopTo(screen.route)
+                                }
+                            )
+                        }
+
+                        !showNavigationRail && currentScreen.isInfoSubScreen() -> {
+                            GlacBottomNavigationBar(
+                                bottomNavigationBarScreens = glacInfoSubScreens,
+                                selected = { screen ->
+                                    currentSubInfoScreenRoute == screen.route
+                                },
+                                onNavigationBarItemIsClicked = { screen ->
+                                    currentSubInfoScreenRoute = screen.route
+                                    navController.navigateSingleTopTo(screen.route)
+                                }
+                            )
+                        }
                     }
                 }
             ) { scaffoldInnerPadding ->
@@ -157,7 +187,9 @@ fun GlacApp() {
                                 PaddingValues(0.dp) else scaffoldInnerPadding
                         )
                         .padding(
-                            start = if (showNavigationRail && currentScreen.isSettingsScreen())
+                            start = if (showNavigationRail
+                                && (currentScreen.isSettingsScreen()
+                                        || currentScreen.isInfoScreen()))
                                 DEFAULT_NAVIGATION_RAIL_WIDTH else 0.dp
                         )
                 ) {
@@ -166,17 +198,36 @@ fun GlacApp() {
             }
         }
 
-        if (showNavigationRail && currentScreen.isSettingsScreen())
-            GlacNavigationRail(
-                navigationRailScreens = glacSettingsSubScreens,
-                selected = { screen ->
-                    currentSubSettingsScreenRoute == screen.route
-                },
-                onNavigationRailItemIsClicked = { screen ->
-                    currentSubSettingsScreenRoute = screen.route
-                    navController.navigateSingleTopTo(screen.route)
-                }
-            )
+        /**
+         * Show navigation rail only in case a settings or info screen is
+         * selected and screen width is not compact.
+         */
+        when {
+            showNavigationRail && currentScreen.isSettingsScreen() -> {
+                GlacNavigationRail(
+                    navigationRailScreens = glacSettingsSubScreens,
+                    selected = { screen ->
+                        currentSubSettingsScreenRoute == screen.route
+                    },
+                    onNavigationRailItemIsClicked = { screen ->
+                        currentSubSettingsScreenRoute = screen.route
+                        navController.navigateSingleTopTo(screen.route)
+                    }
+                )
+            }
+
+            showNavigationRail && currentScreen.isInfoSubScreen() -> {
+                GlacNavigationRail(
+                    navigationRailScreens = glacInfoSubScreens,
+                    selected = { screen ->
+                        currentSubInfoScreenRoute == screen.route
+                    },
+                    onNavigationRailItemIsClicked = { screen ->
+                        currentSubInfoScreenRoute = screen.route
+                        navController.navigateSingleTopTo(screen.route)
+                    }
+                )
+            }
+        }
     }
 }
-

@@ -38,7 +38,7 @@ fun GlacTabBar(
                         GlacRoute.CLOCK.name -> stringResource(R.string.clock)
                         GlacRoute.ALARMS.name -> stringResource(id = R.string.alarms)
                         GlacRoute.SETTINGS.name -> stringResource(R.string.settings)
-                        GlacRoute.ABOUT.name -> stringResource(R.string.about)
+                        GlacRoute.INFO.name -> stringResource(R.string.info)
                         else -> throw IllegalStateException()
                     },
                     tabIconFilled = screen.tabIconSelected,

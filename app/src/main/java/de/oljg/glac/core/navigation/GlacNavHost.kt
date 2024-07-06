@@ -14,13 +14,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import de.oljg.glac.core.navigation.common.AboutScreen
+import de.oljg.glac.core.navigation.common.AboutSubScreen
 import de.oljg.glac.core.navigation.common.AlarmClockFullScreen
 import de.oljg.glac.core.navigation.common.AlarmClockScreen
 import de.oljg.glac.core.navigation.common.AlarmSettingsSubScreen
 import de.oljg.glac.core.navigation.common.AlarmsScreen
 import de.oljg.glac.core.navigation.common.ClockSettingsSubScreen
-import de.oljg.glac.core.navigation.common.CommonSettingsSubScreen
+import de.oljg.glac.core.navigation.common.HelpSubScreen
+import de.oljg.glac.core.navigation.common.InfoScreen
 import de.oljg.glac.core.navigation.common.SettingsScreen
 import de.oljg.glac.core.temp.DummyScreen
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsEvent
@@ -54,7 +55,9 @@ fun GlacNavHost(
             AnimatedVisibility(visible = showCancelSnoozeAlarmDialog) {
                 CancelSnoozeAlarmDialog(
                     onCancelSnoozeAlarm = {
-                        snoozeAlarm?.let { alarmSettingsViewModel.onEvent(AlarmSettingsEvent.RemoveAlarm(it)) }
+                        snoozeAlarm?.let {
+                            alarmSettingsViewModel.onEvent(AlarmSettingsEvent.RemoveAlarm(it))
+                        }
                         showCancelSnoozeAlarmDialog = false
                     },
                     onDismiss = { showCancelSnoozeAlarmDialog = false },
@@ -105,18 +108,23 @@ fun GlacNavHost(
                 val alarmSettings by viewModel.alarmSettingsStateFlow.collectAsState()
                 AlarmSettingsScreen(alarmSettings, viewModel::onEvent)
             }
-            composable(route = CommonSettingsSubScreen.route) {
+        }
+        navigation(
+            route = InfoScreen.route,
+            startDestination = HelpSubScreen.route
+        ) {
+            composable(route = HelpSubScreen.route) {
                 DummyScreen(
-                    text = CommonSettingsSubScreen.route,
-                    color = Color.Green.copy(alpha = .3f)
+                    text = HelpSubScreen.route,
+                    color = Color.DarkGray
                 )
             }
-        }
-        composable(route = AboutScreen.route) {
-            DummyScreen(
-                text = AboutScreen.route,
-                color = Color.Gray
-            )
+            composable(route = AboutSubScreen.route) {
+                DummyScreen(
+                    text = AboutSubScreen.route,
+                    color = Color.Gray
+                )
+            }
         }
     }
 }

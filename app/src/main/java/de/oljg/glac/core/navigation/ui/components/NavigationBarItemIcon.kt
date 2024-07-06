@@ -15,11 +15,12 @@ fun NavigationBarItemIcon(
 ) {
     val iconLabel = stringResource(id = R.string.icon)
     Icon(
-        imageVector = if(selected) screen.tabIconSelected else screen.tabIconUnselected,
+        imageVector = if (selected) screen.tabIconSelected else screen.tabIconUnselected,
         contentDescription = when (screen.route) {
             GlacRoute.CLOCK_SETTINGS.name -> "${labels.getValue(GlacRoute.CLOCK_SETTINGS)} $iconLabel"
             GlacRoute.ALARM_SETTINGS.name -> "${labels.getValue(GlacRoute.ALARM_SETTINGS)} $iconLabel"
-            GlacRoute.COMMON_SETTINGS.name -> "${labels.getValue(GlacRoute.COMMON_SETTINGS)} $iconLabel"
+            GlacRoute.INFO_HELP.name -> "${labels.getValue(GlacRoute.INFO_HELP)} $iconLabel"
+            GlacRoute.INFO_ABOUT.name -> "${labels.getValue(GlacRoute.INFO_ABOUT)} $iconLabel"
             else -> throw IllegalStateException()
         }
     )
