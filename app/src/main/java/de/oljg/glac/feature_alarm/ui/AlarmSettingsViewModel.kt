@@ -96,10 +96,16 @@ class AlarmSettingsViewModel @Inject constructor(
 
             is AlarmSettingsEvent.ReScheduleAllAlarms -> {
                 viewModelScope.launch {
-                    val allAlarms = alarmUseCases.getAlarms.execute()
-                    alarmUseCases.reScheduleAllAlarms.execute(
-                        alarms = allAlarms
-                    )
+                    /**
+                     * Check and eventually clean up alarms first, before re-scheduling.
+                     * Otherwise it might be, that outdated alarms would be re-scheduled at app
+                     * start (=> not useful!), in case, a user has been scheduled some alarms,
+                     * but didn't use the app for a while... (app closed, but time never stops,
+                     * while alarm start times are fixed => alarms might be outdated sometimes)
+                     */
+                    alarmUseCases.handleOutdatedAlarms.execute()
+                    val justHandledAlarms = alarmUseCases.getAlarms.execute()
+                    alarmUseCases.reScheduleAllAlarms.execute(alarms = justHandledAlarms)
                 }
             }
 

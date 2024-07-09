@@ -20,6 +20,7 @@ import de.oljg.glac.feature_alarm.domain.use_case.AddAlarm
 import de.oljg.glac.feature_alarm.domain.use_case.AlarmUseCases
 import de.oljg.glac.feature_alarm.domain.use_case.GetAlarmSettingsFlow
 import de.oljg.glac.feature_alarm.domain.use_case.GetAlarms
+import de.oljg.glac.feature_alarm.domain.use_case.HandleOutdatedAlarms
 import de.oljg.glac.feature_alarm.domain.use_case.ReScheduleAllAlarms
 import de.oljg.glac.feature_alarm.domain.use_case.RemoveAlarm
 import de.oljg.glac.feature_alarm.domain.use_case.UpdateAlarm
@@ -152,7 +153,8 @@ object AppModule {
             addAlarm = AddAlarm(repository, scheduler),
             updateAlarm = UpdateAlarm(repository, scheduler),
             reScheduleAllAlarms = ReScheduleAllAlarms(scheduler),
-            getAlarms = GetAlarms(repository)
+            getAlarms = GetAlarms(repository),
+            handleOutdatedAlarms = HandleOutdatedAlarms(repository)
         )
     }
 }

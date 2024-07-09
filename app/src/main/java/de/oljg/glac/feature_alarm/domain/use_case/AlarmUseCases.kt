@@ -14,5 +14,6 @@ data class AlarmUseCases(
     val updateAlarm: UpdateAlarm,
     val reScheduleAllAlarms: ReScheduleAllAlarms,
     val getAlarms: GetAlarms,
-    val removeImportedAlarmSoundFile: RemoveImportedAlarmSoundFile = RemoveImportedAlarmSoundFile()
+    val removeImportedAlarmSoundFile: RemoveImportedAlarmSoundFile = RemoveImportedAlarmSoundFile(),
+    val handleOutdatedAlarms: HandleOutdatedAlarms
 )
