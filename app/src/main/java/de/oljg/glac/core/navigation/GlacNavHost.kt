@@ -32,6 +32,7 @@ import de.oljg.glac.feature_alarm.ui.settings.AlarmSettingsScreen
 import de.oljg.glac.feature_clock.ui.ClockSettingsViewModel
 import de.oljg.glac.feature_clock.ui.clock.DigitalAlarmClockScreen
 import de.oljg.glac.feature_clock.ui.settings.ClockSettingsScreen
+import de.oljg.glac.feature_help.ui.HelpScreen
 
 @Composable
 fun GlacNavHost(
@@ -114,10 +115,7 @@ fun GlacNavHost(
             startDestination = HelpSubScreen.route
         ) {
             composable(route = HelpSubScreen.route) {
-                DummyScreen(
-                    text = HelpSubScreen.route,
-                    color = Color.DarkGray
-                )
+                HelpScreen()
             }
             composable(route = AboutSubScreen.route) {
                 DummyScreen(

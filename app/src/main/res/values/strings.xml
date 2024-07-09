@@ -166,7 +166,7 @@
     <string name="_default_ringtone">Default Ringtone</string>
     <string name="no_title">No Title</string>
     <string name="alarm_sound">Alarm Sound</string>
-    <string name="default_alarm_settings">Default Alarm Settings</string>
+    <string name="default_alarm_settings">Default Alarm Settings</string> <!-- 'default' is reserved keyword-->
     <string name="play_alarm_sound_preview">Play Alarm Sound Preview</string>
     <string name="stop_alarm_sound_preview">Stop Alarm Sound Preview</string>
     <string name="import_sound_file">Import Sound File</string>
@@ -183,5 +183,21 @@
     <string name="next_alarm">Next Alarm</string>
     <string name="add_alarm">Add Alarm</string>
     <string name="hint_basic_values_for_every_alarm">Hint: Basic Values For Every Alarm…</string>
-    <string name="info">Info</string> <!-- 'default' is reserved keyword-->
+    <string name="info">Info</string>
+    <string name="_1">1</string>
+    <string name="_2">2</string>
+    <string name="_3">3</string>
+    <string name="_4">4</string>
+    <string name="_5">5</string>
+    <string name="important_notes">Important Notes</string>
+    <string name="important_notes_p1">Alarms that you have set are only triggered as long as this app is running!</string>
+    <string name="important_notes_p2">If you are using any screen other than fullscreen clock and you have set a screen timeout on your device, an alarm will still be triggered, but the screen will remain off and you will only hear the alarm sound!</string>
+    <string name="important_notes_p3">In order to respond to the alarm, you may have to unlock your device first (which can be annoying when you are tired)!</string>
+    <string name="important_notes_p4">This also means that if you want to use a light alarm, please use fullscreen clock (keeps the screen on!) or turn off the screen timeout (not recommended!).</string>
+    <string name="recommended_use">Recommended Use</string>
+    <string name="recommended_use_p1">Place your device on your bedside table so that you can easily reach it with one hand.</string>
+    <string name="recommended_use_p2">Make sure that the battery of your device is sufficiently charged or connect it to a power adapter.</string>
+    <string name="recommended_use_p3">Set your alarms, switch to fullscreen clock, and enjoy being woken up in a friendly manner according to your preferences.</string>
+    <string name="recommended_use_p4">(Optional) Setup the clock according to your preferences using the clock settings.</string>
+    <string name="recommended_use_p5">(Optional) Setup basic alarm values that apply to every new alarm you set (instead of setting them again each time), using the alarm settings.</string>
 </resources>
