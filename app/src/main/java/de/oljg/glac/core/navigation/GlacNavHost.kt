@@ -8,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -23,7 +22,7 @@ import de.oljg.glac.core.navigation.common.ClockSettingsSubScreen
 import de.oljg.glac.core.navigation.common.HelpSubScreen
 import de.oljg.glac.core.navigation.common.InfoScreen
 import de.oljg.glac.core.navigation.common.SettingsScreen
-import de.oljg.glac.core.temp.DummyScreen
+import de.oljg.glac.feature_about.ui.AboutScreen
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsEvent
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsViewModel
 import de.oljg.glac.feature_alarm.ui.alarms.AlarmsListScreen
@@ -118,10 +117,7 @@ fun GlacNavHost(
                 HelpScreen()
             }
             composable(route = AboutSubScreen.route) {
-                DummyScreen(
-                    text = AboutSubScreen.route,
-                    color = Color.Gray
-                )
+                AboutScreen()
             }
         }
     }

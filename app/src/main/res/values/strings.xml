@@ -200,4 +200,12 @@
     <string name="recommended_use_p3">Set your alarms, switch to fullscreen clock, and enjoy being woken up in a friendly manner according to your preferences.</string>
     <string name="recommended_use_p4">(Optional) Setup the clock according to your preferences using the clock settings.</string>
     <string name="recommended_use_p5">(Optional) Setup basic alarm values that apply to every new alarm you set (instead of setting them again each time), using the alarm settings.</string>
+    <string name="visit">Visit</string>
+    <string name="glac_on_github">GLAC on GitHub</string>
+    <string name="by">by</string>
+    <string name="modified_by">Modified by</string>
+    <string name="renamed_to">Renamed to</string>
+    <string name="external_sound_resources">External Sound Resources</string>
+    <string name="external_font_resources">External Font Resources</string>
+    <string name="gentle_light_alarm_clock">Gentle Light Alarm Clock</string>
 </resources>

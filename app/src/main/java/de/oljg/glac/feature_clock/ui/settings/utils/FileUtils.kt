@@ -39,12 +39,21 @@ fun String.replaceLastWithBlank(char: Char): String =
     if (this.contains(char)) this.replaceLast(char, ' ') else this
 
 fun String.prettyPrintFontName(): String {
-    return this
+    var result = this
         .cutOffPathFromUri()
         .cutOffFileNameExtension()
         .replaceLastWithBlank('_')
         .replaceLastWithBlank('-')
         .replace(regex = Regex("(%20| )?[Rr]egular"), "")
+
+    when {
+        // For whatever reason '-' may not be part of asset file names ... oO
+        result.startsWith("D_Din") -> result = result.replaceFirst('_', '-')
+
+        // I seem to be too old to have fun with blanks as part of file names :>
+        result.startsWith("Exo_2") -> result = result.replaceFirst('_', ' ')
+    }
+    return result
 }
 
 

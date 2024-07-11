@@ -200,7 +200,7 @@ class ClockUseCasesTest {
          * To cover every properties, also set font stuff, even if it might seem illogical,
          * to set these, when ClockCharType.SEVEN_SEGMENT is set...
          */
-        fontName = "Exo2.0_SemiBoldItalic.otf",
+        fontName = "Exo_2_SemiBoldItalic.otf",
         fontWeight = FontWeight.SEMI_BOLD, // In reality, it will be recognized by (asset) fontName
         fontStyle = FontStyle.ITALIC, // In reality, it will be recognized by (asset) fontName
 

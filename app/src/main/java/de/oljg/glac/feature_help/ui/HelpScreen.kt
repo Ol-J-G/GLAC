@@ -1,18 +1,13 @@
 package de.oljg.glac.feature_help.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -21,20 +16,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import de.oljg.glac.R
-import de.oljg.glac.feature_help.ui.utils.HelpScreenDefaults.BULLET_POINT_ELEMENTS_HORIZONTAL_SPACE
-import de.oljg.glac.feature_help.ui.utils.HelpScreenDefaults.BULLET_POINT_ELEMENTS_VERTCAL_SPACE
-import de.oljg.glac.feature_help.ui.utils.HelpScreenDefaults.BULLET_POINT_NUMBER_SHAPE_SIZE
-import de.oljg.glac.feature_help.ui.utils.HelpScreenDefaults.BULLET_POINT_TEXT_LINE_HEIGHT
+import de.oljg.glac.core.ui.components.BulletPointRow
 import de.oljg.glac.feature_help.ui.utils.HelpScreenDefaults.IMPORTANT_NOTES_PADDING
 import de.oljg.glac.feature_help.ui.utils.HelpScreenDefaults.IMPORTANT_NOTES_SURFACE_CORNER_SIZE
 import de.oljg.glac.feature_help.ui.utils.HelpScreenDefaults.IMPORTANT_NOTES_SURFACE_ELEVATION
 import de.oljg.glac.feature_help.ui.utils.HelpScreenDefaults.OUTER_COLUMN_ELEMENTS_SPACE
 import de.oljg.glac.feature_help.ui.utils.HelpScreenDefaults.OUTER_SURFACE_PADDING
+import de.oljg.glac.feature_help.ui.utils.HelpScreenDefaults.RECOMMENDED_USE_ELEMENTS_SPACE
 import de.oljg.glac.feature_help.ui.utils.HelpScreenDefaults.SPACER_HEIGHT
 
 
@@ -99,7 +90,7 @@ fun HelpScreen() {
             Spacer(modifier = Modifier.height(SPACER_HEIGHT))
             Column(
                 horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(BULLET_POINT_ELEMENTS_VERTCAL_SPACE)
+                verticalArrangement = Arrangement.spacedBy(RECOMMENDED_USE_ELEMENTS_SPACE)
             ) {
                 Text(
                     text = stringResource(R.string.recommended_use),
@@ -127,44 +118,5 @@ fun HelpScreen() {
                 )
             }
         }
-    }
-}
-
-
-@Composable
-fun BulletPointRow(
-    number: String,
-    text: String
-) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(
-            BULLET_POINT_ELEMENTS_HORIZONTAL_SPACE,
-            alignment = Alignment.CenterHorizontally
-        ),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        BulletPointNumber(number = number)
-        Text(
-            text = text,
-            textAlign = TextAlign.Justify,
-            lineHeight = BULLET_POINT_TEXT_LINE_HEIGHT
-        )
-    }
-}
-
-
-@Composable
-fun BulletPointNumber(number: String) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .clip(CircleShape)
-            .size(BULLET_POINT_NUMBER_SHAPE_SIZE)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-    ) {
-        Text(
-            text = number,
-            fontFamily = FontFamily.Monospace
-        )
     }
 }
