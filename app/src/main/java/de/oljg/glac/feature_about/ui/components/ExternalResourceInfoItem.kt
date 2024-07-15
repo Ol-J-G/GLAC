@@ -18,6 +18,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.BulletPointRow
@@ -48,7 +49,11 @@ fun ExternalResourceInfoItem(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(INFO_ITEM_SPACE)
         ) {
-            Text(text = externalResourceInfo.title, style = MaterialTheme.typography.titleLarge)
+            Text(
+                text = externalResourceInfo.title,
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center
+            )
             Text(stringResource(R.string.by))
             externalResourceInfo.authors.forEach { author ->
                 Text(
@@ -75,10 +80,10 @@ fun ExternalResourceInfoItem(
                     append(SPACE)
                     pushStringAnnotation(
                         tag = INFO_ITEM_LICENCE_TAG,
-                        annotation = externalResourceInfo.licenceUriString
+                        annotation = externalResourceInfo.licence.url
                     )
                     withStyle(style = AboutScreenDefaults.hyperlink) {
-                        append(externalResourceInfo.licenceName)
+                        append(externalResourceInfo.licence.name)
                     }
                     pop()
                 },
@@ -104,7 +109,8 @@ fun ExternalResourceInfoItem(
                             withStyle(style = SpanStyle(fontStyle = FontStyle.Italic)) {
                                 append(it)
                             }
-                        }
+                        },
+                        textAlign = TextAlign.Center
                     )
                 }
             }
