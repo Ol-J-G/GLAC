@@ -1,5 +1,6 @@
 package de.oljg.glac.feature_clock.ui.settings.components.character
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,7 +48,7 @@ fun FontFamilySelector(
         mutableStateOf(emptyList<String>())
     }
 
-    var selectedValue by rememberSaveable {
+    var selectedValue by remember {
         mutableStateOf(selectedFontFamily)
     }
 
@@ -62,17 +63,18 @@ fun FontFamilySelector(
         mutableStateOf(shouldRemoveButtonBeEnabled())
     }
 
-    var importedAreLoading by rememberSaveable {
+    var importedAreLoading by remember {
         mutableStateOf(true)
     }
 
-    var builtInAreLoading by rememberSaveable {
+    var builtInAreLoading by remember {
         mutableStateOf(true)
     }
 
     // Load built-in fonts (assets/fonts) only initally.
     LaunchedEffect(builtInAreLoading) {
         if (builtInAreLoading) {
+            Log.d("TAG", "builtInAreLoading")
             fontFileNamesFromAssets = getFontFileNamesFromAssets(context).filter { fileName ->
                 fileName.contains(FontNameParts.REGULAR.name)
             }
@@ -87,6 +89,7 @@ fun FontFamilySelector(
      */
     LaunchedEffect(importedAreLoading, builtInAreLoading) {
         if (importedAreLoading && !builtInAreLoading) {
+            Log.d("TAG", "importedAreLoading")
             fontFileUrisFromFilesDir = getFontFileUrisFromFilesDir(context)
             allFontFileNamesAndUris = (
                     DEFAULT_FONT_NAMES + fontFileNamesFromAssets + fontFileUrisFromFilesDir
