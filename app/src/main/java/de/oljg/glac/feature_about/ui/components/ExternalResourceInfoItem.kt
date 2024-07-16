@@ -3,7 +3,9 @@ package de.oljg.glac.feature_about.ui.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -39,7 +41,9 @@ fun ExternalResourceInfoItem(
     externalResourceInfo: ExternalResourceInfo,
     renamedTo: String? = null,
     modified: String? = null,
-    modifications: List<String>? = null
+    modifications: List<String>? = null,
+    weights: List<String>? = null,
+    includesItalic: Boolean? = null
 ) {
     Card(shape = RoundedCornerShape(percent = INFO_ITEM_CARD_CORNER_SIZE)) {
         Column(
@@ -54,6 +58,32 @@ fun ExternalResourceInfoItem(
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center
             )
+
+            // In case of font => add weights etc. here as some kind of sub title info ...
+            weights?.let {
+                Text(
+                    text = buildAnnotatedString {
+                        weights.forEachIndexed { index, weight ->
+                            append(weight)
+                            if (index + 1 < weights.size) { // no separator after last weight
+                                append(',')
+                                append(SPACE)
+                            }
+                        }
+                        includesItalic?.let {
+                            withStyle(style = SpanStyle(fontStyle = FontStyle.Italic)) {
+                                append(SPACE)
+                                append('(')
+                                append(stringResource(R.string.italic_style_is_available))
+                                append(')')
+                            }
+                        }
+                    },
+                    style = MaterialTheme.typography.labelSmall,
+                    textAlign = TextAlign.Center
+                )
+            }
+
             Text(stringResource(R.string.by))
             externalResourceInfo.authors.forEach { author ->
                 Text(
@@ -63,6 +93,8 @@ fun ExternalResourceInfoItem(
                     fontStyle = FontStyle.Italic
                 )
             }
+
+            Spacer(modifier = Modifier.height(INFO_ITEM_DIVIDER_PADDING))
 
             // "Source / Licence" web links
             WebLinkText(
@@ -76,7 +108,7 @@ fun ExternalResourceInfoItem(
                     }
                     pop()
                     append(SPACE)
-                    append('/')
+                    append('\u2E31') // "Word Separator Middle Dot"
                     append(SPACE)
                     pushStringAnnotation(
                         tag = INFO_ITEM_LICENCE_TAG,

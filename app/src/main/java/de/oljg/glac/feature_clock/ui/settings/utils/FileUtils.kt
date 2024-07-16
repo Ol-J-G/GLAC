@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.core.net.toUri
 import de.oljg.glac.core.util.CommonFileDefaults.FILE_EXTENSION_DELIMITER
 import de.oljg.glac.core.util.CommonFileDefaults.FILE_PROTOCOL
+import de.oljg.glac.core.util.CommonUtils.SPACE
 import de.oljg.glac.core.util.cutOffFileNameExtension
 import de.oljg.glac.core.util.cutOffPathFromUri
 import de.oljg.glac.feature_clock.ui.clock.utils.FontDefaults
@@ -43,7 +44,7 @@ fun String.prettyPrintFontName(): String {
         .cutOffPathFromUri()
         .cutOffFileNameExtension()
         .replaceLastWithBlank('_')
-        .replaceLastWithBlank('-')
+        .replace('-', SPACE)
         .replace(regex = Regex("(%20| )?[Rr]egular"), "")
 
     when {

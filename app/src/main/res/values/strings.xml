@@ -208,4 +208,5 @@
     <string name="external_sound_resources">External Sound Resources</string>
     <string name="external_font_resources">External Font Resources</string>
     <string name="gentle_light_alarm_clock">Gentle Light Alarm Clock</string>
+    <string name="italic_style_is_available">Italic is available</string>
 </resources>

@@ -6,6 +6,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import de.oljg.glac.feature_about.ui.utils.isWebUrl
 
 
 /**
@@ -21,14 +23,21 @@ fun WebLinkText(
 
     ClickableText(
         text = annotatedString,
-        style = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.onSurface),
+        style = LocalTextStyle.current.copy(
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center
+        ),
         onClick = { offset ->
             tags.forEach { tag ->
                 annotatedString.getStringAnnotations(
                     tag = tag,
                     start = offset,
                     end = offset
-                ).firstOrNull()?.let { range -> uriHandler.openUri(range.item) }
+                ).firstOrNull()?.let { range ->
+                    if (range.item.isWebUrl()) {
+                        uriHandler.openUri(range.item)
+                    }
+                }
             }
         }
     )

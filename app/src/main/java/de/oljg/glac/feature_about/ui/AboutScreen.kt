@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -55,11 +56,15 @@ fun AboutScreen() {
                 text = stringResource(R.string.gentle_light_alarm_clock),
                 style = MaterialTheme.typography.headlineLarge.copy(fontFamily = D_DIN)
             )
-            Text(stringResource(R.string.by))
+            Text(
+                text = stringResource(R.string.by),
+                style = LocalTextStyle.current.copy(fontFamily = D_DIN)
+            )
             Text(
                 text = AUTHOR_NAME,
-                style = MaterialTheme.typography.headlineMedium,
-                fontFamily = FontFamily.Cursive
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontFamily = FontFamily.Cursive // It's "Dancing Script" currently
+                )
             )
             WebLinkText(
                 annotatedString = buildAnnotatedString {
@@ -82,7 +87,9 @@ fun AboutScreen() {
                 text = stringResource(R.string.external_sound_resources),
                 style = MaterialTheme.typography.headlineSmall
             )
-            externalSounds.forEach { externalResourceInfo ->
+            externalSounds
+                .sortedBy { it.title.lowercase() }
+                .forEach { externalResourceInfo ->
                 ExternalResourceInfoItem(
                     externalResourceInfo = externalResourceInfo,
                     renamedTo = externalResourceInfo.renamedTo,
@@ -96,8 +103,14 @@ fun AboutScreen() {
                 text = stringResource(R.string.external_font_resources),
                 style = MaterialTheme.typography.headlineSmall
             )
-            externalFonts.forEach { externalResourceInfo ->
-                ExternalResourceInfoItem(externalResourceInfo)
+            externalFonts
+                .sortedBy { it.title.lowercase() }
+                .forEach { externalResourceInfo ->
+                ExternalResourceInfoItem(
+                    externalResourceInfo = externalResourceInfo,
+                    weights = externalResourceInfo.weights,
+                    includesItalic = externalResourceInfo.includesItalic
+                )
             }
         }
     }

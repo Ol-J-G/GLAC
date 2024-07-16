@@ -1,5 +1,6 @@
 package de.oljg.glac.feature_about.ui.utils
 
+import android.util.Patterns
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -7,6 +8,10 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+
+
+fun String.isWebUrl() = Patterns.WEB_URL.matcher(this).matches()
+
 
 object AboutScreenDefaults {
     val D_DIN: FontFamily @Composable get() =

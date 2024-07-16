@@ -1,11 +1,22 @@
 package de.oljg.glac.feature_about.data
 
+import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.APACHE_LICENCE_NAME
+import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.B
+import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.BK
+import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.CUSTOM_LICENCE
 import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.C_C_BY_4
 import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.C_C_BY_NC_3
 import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.C_C_BY_NC_4
 import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.C_C_SAMPLING_PLUS
 import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.C_C_ZERO
+import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.EB
+import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.EL
+import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.L
+import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.M
+import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.R
+import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.SB
 import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.SIL_OFL_NAME
+import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.T
 import de.oljg.glac.feature_about.ui.utils.AboutScreenDefaults.AUTHOR_NAME
 
 
@@ -27,7 +38,18 @@ object ExternalResourcesDefaults {
     val C_C_BY_4 = LicenceInfo(C_C_BY_4_NAME, C_C_BY_4_URL)
     val C_C_SAMPLING_PLUS = LicenceInfo(C_C_SAMPLING_PLUS_NAME, C_C_SAMPLING_PLUS_URL)
 
-    internal const val SIL_OFL_NAME = "SIL Open Font Licence"
+    internal const val SIL_OFL_NAME = "SIL Open Font"
+    internal const val APACHE_LICENCE_NAME = "Apache Licence"
+    internal const val CUSTOM_LICENCE = "Custom Licence"
+    internal const val T = "Thin"
+    internal const val EL = "Extra Light"
+    internal const val L = "Light"
+    internal const val R = "Regular"
+    internal const val M = "Medium"
+    internal const val SB = "Semi Bold"
+    internal const val B = "Bold"
+    internal const val EB = "Extra Bold"
+    internal const val BK = "Black"
 }
 
 
@@ -65,15 +87,6 @@ data class ExternalSoundResourceInfo(
      */
     val modifiedBy: String? = null,
     val modifications: List<String>? = null // What adjustments have been made
-) : ExternalResourceInfo
-
-
-data class ExternalFontResourceInfo(
-    override val title: String,
-    override val authors: List<String>,
-    override val sourceName: String = "fontsquirrel.com", // Most of the fonts come from there
-    override val sourceUriString: String,
-    override val licence: LicenceInfo
 ) : ExternalResourceInfo
 
 
@@ -215,17 +228,237 @@ val externalSounds = listOf(
 )
 
 
+data class ExternalFontResourceInfo(
+    override val title: String,
+    override val authors: List<String>,
+    override val sourceName: String = "fontsquirrel.com", // Most of the fonts come from there
+    override val sourceUriString: String,
+    override val licence: LicenceInfo,
+    val weights: List<String>? = null,
+    val includesItalic: Boolean? = null
+) : ExternalResourceInfo
+
+
 val externalFonts = listOf(
     ExternalFontResourceInfo(
         title = "D-Din",
         authors = listOf("datto"),
         sourceUriString = "https://www.fontsquirrel.com/fonts/d-din",
-        licence = LicenceInfo(SIL_OFL_NAME, "https://www.fontsquirrel.com/license/d-din")
+        licence = LicenceInfo(SIL_OFL_NAME, "https://www.fontsquirrel.com/license/d-din"),
+        weights = listOf(R, B),
+        includesItalic = true
     ),
     ExternalFontResourceInfo(
         title = "Exo 2",
         authors = listOf("Natanael Gama"),
         sourceUriString = "https://www.fontsquirrel.com/fonts/exo-2",
-        licence = LicenceInfo(SIL_OFL_NAME, "https://www.fontsquirrel.com/license/exo-2")
+        licence = LicenceInfo(SIL_OFL_NAME, "https://www.fontsquirrel.com/license/exo-2"),
+        weights = listOf(T, EL, L, R, M, SB, B, EB, BK),
+        includesItalic = true
     ),
+    ExternalFontResourceInfo(
+        title = "Dosis",
+        authors = listOf("Edgar Tolentino", "Pablo Impallari", "Igino Marini"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/dosis",
+        licence = LicenceInfo(SIL_OFL_NAME, "https://www.fontsquirrel.com/license/dosis"),
+        weights = listOf(EL, L, R, M, SB, B, EB),
+    ),
+    ExternalFontResourceInfo(
+        title = "Caroni",
+        authors = listOf("Franzi Draws"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/caroni",
+        licence = LicenceInfo(SIL_OFL_NAME, "https://www.fontsquirrel.com/license/caroni"),
+        weights = listOf(R)
+    ),
+    ExternalFontResourceInfo(
+        title = "Fantasque Sans Mono",
+        authors = listOf("Jany Belluz"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/fantasque-sans-mono",
+        licence = LicenceInfo(
+            SIL_OFL_NAME,
+            "https://www.fontsquirrel.com/license/fantasque-sans-mono"
+        ),
+        weights = listOf(R, B),
+        includesItalic = true
+    ),
+    ExternalFontResourceInfo(
+        title = "JetBrains Mono",
+        authors = listOf("Philipp Nurullin"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/jetbrains-mono",
+        licence = LicenceInfo(
+            APACHE_LICENCE_NAME,
+            "https://www.fontsquirrel.com/fonts/jetbrains-mono"
+        ),
+        weights = listOf(R, M, B, EB),
+        includesItalic = true
+    ),
+    ExternalFontResourceInfo(
+        title = "Luxi Mono",
+        authors = listOf("Bigelow & Holmes"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/Luxi-Mono",
+        licence = LicenceInfo(
+            CUSTOM_LICENCE,
+            "https://www.fontsquirrel.com/license/Luxi-Mono"
+        ),
+        weights = listOf(R, B),
+        includesItalic = true
+    ),
+    ExternalFontResourceInfo(
+        title = "Secret Typewriter",
+        authors = listOf("Koczman Bálint"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/Secret-Typewriter",
+        licence = LicenceInfo(
+            CUSTOM_LICENCE,
+            "https://www.fontsquirrel.com/license/Secret-Typewriter"
+        ),
+        weights = listOf(R)
+    ),
+    ExternalFontResourceInfo(
+        title = "Antic Didone",
+        authors = listOf("Santiago Orozco"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/antic",
+        licence = LicenceInfo(SIL_OFL_NAME, "https://www.fontsquirrel.com/license/antic"),
+        weights = listOf(R)
+    ),
+    ExternalFontResourceInfo(
+        title = "Antic Sans",
+        authors = listOf("Santiago Orozco"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/antic",
+        licence = LicenceInfo(SIL_OFL_NAME, "https://www.fontsquirrel.com/license/antic"),
+        weights = listOf(R)
+    ),
+    ExternalFontResourceInfo(
+        title = "Antic Slab",
+        authors = listOf("Santiago Orozco"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/antic",
+        licence = LicenceInfo(SIL_OFL_NAME, "https://www.fontsquirrel.com/license/antic"),
+        weights = listOf(R)
+    ),
+    ExternalFontResourceInfo(
+        title = "CabinSketch",
+        authors = listOf("Pablo Impallari", "Igino Marini"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/cabinsketch",
+        licence = LicenceInfo(SIL_OFL_NAME, "https://www.fontsquirrel.com/license/cabinsketch"),
+        weights = listOf(R, B)
+    ),
+    ExternalFontResourceInfo(
+        title = "Karnivore Digit",
+        authors = listOf("Apostrophic Labs"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/Karnivore-Lite",
+        licence = LicenceInfo(
+            CUSTOM_LICENCE,
+            "https://www.fontsquirrel.com/license/Karnivore-Lite"
+        ),
+        weights = listOf(R)
+    ),
+    ExternalFontResourceInfo(
+        title = "Orbitron",
+        authors = listOf("Matt McInerney"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/Orbitron",
+        licence = LicenceInfo(SIL_OFL_NAME, "https://www.fontsquirrel.com/license/Orbitron"),
+        weights = listOf(R, M, B, BK)
+    ),
+    ExternalFontResourceInfo(
+        title = "Pincoya Black",
+        authors = listOf("Daniel Hernández"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/Pincoyablack",
+        licence = LicenceInfo(
+            CUSTOM_LICENCE,
+            "https://www.fontsquirrel.com/license/Pincoyablack"
+        ),
+        weights = listOf(BK)
+    ),
+    ExternalFontResourceInfo(
+        title = "Geotica 2012",
+        authors = listOf("Exljbris"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/geotica-2012",
+        licence = LicenceInfo(
+            CUSTOM_LICENCE,
+            "https://www.fontsquirrel.com/license/geotica-2012"
+        ),
+        weights = listOf(R)
+    ),
+    ExternalFontResourceInfo(
+        title = "Sportrop",
+        authors = listOf("GLUK fonts"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/sportrop",
+        licence = LicenceInfo(SIL_OFL_NAME, "https://www.fontsquirrel.com/license/sportrop"),
+        weights = listOf(R)
+    ),
+    ExternalFontResourceInfo(
+        title = "Library 3 AM",
+        authors = listOf("Igor Kosinsky"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/library-3-am",
+        licence = LicenceInfo(SIL_OFL_NAME, "https://www.fontsquirrel.com/license/library-3-am"),
+        weights = listOf(R)
+    ),
+    ExternalFontResourceInfo(
+        title = "Abril Fatface",
+        authors = listOf("Veronika Burian", "José Scaglione"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/abril-fatface",
+        licence = LicenceInfo(
+            SIL_OFL_NAME,
+            "https://www.fontsquirrel.com/license/abril-fatface"
+        ),
+        weights = listOf(R)
+    ),
+    ExternalFontResourceInfo(
+        title = "Neumann",
+        authors = listOf("Typedepot"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/neumann",
+        licence = LicenceInfo(SIL_OFL_NAME, "https://www.fontsquirrel.com/license/neumann"),
+        weights = listOf(R)
+    ),
+    ExternalFontResourceInfo(
+        title = "Spectral",
+        authors = listOf("Production Type"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/spectral",
+        licence = LicenceInfo(SIL_OFL_NAME, "https://www.fontsquirrel.com/license/spectral"),
+        weights = listOf(EL, L, R, M, SB, B, EB),
+        includesItalic = true
+    ),
+    ExternalFontResourceInfo(
+        title = "Tex Gyre Schola",
+        authors = listOf("GUST e-foundry"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/TeX-Gyre-Schola",
+        licence = LicenceInfo(
+            CUSTOM_LICENCE,
+            "https://www.fontsquirrel.com/license/TeX-Gyre-Schola"
+        ),
+        weights = listOf(R, B),
+        includesItalic = true
+    ),
+    ExternalFontResourceInfo(
+        title = "Tex Gyre Pagella",
+        authors = listOf("GUST e-foundry"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/TeX-Gyre-Pagella",
+        licence = LicenceInfo(
+            CUSTOM_LICENCE,
+            "https://www.fontsquirrel.com/license/TeX-Gyre-Pagella"
+        ),
+        weights = listOf(R, B),
+        includesItalic = true
+    ),
+    ExternalFontResourceInfo(
+        title = "Titillium",
+        authors = listOf("Accademia di Belle Arti Urbino"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/Titillium",
+        licence = LicenceInfo(SIL_OFL_NAME, "https://www.fontsquirrel.com/license/Titillium"),
+        weights = listOf(T, L, R, SB, B, BK),
+        includesItalic = true
+    ),
+    ExternalFontResourceInfo(
+        title = "Tulpen One",
+        authors = listOf("Naima Ben Ayed"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/tulpen-one",
+        licence = LicenceInfo(SIL_OFL_NAME, "https://www.fontsquirrel.com/license/tulpen-one"),
+        weights = listOf(R)
+    ),
+    ExternalFontResourceInfo(
+        title = "BodoniXT",
+        authors = listOf("Manfred Klein"),
+        sourceUriString = "https://www.fontsquirrel.com/fonts/BodoniXT",
+        licence = LicenceInfo(CUSTOM_LICENCE, "https://www.fontsquirrel.com/license/BodoniXT"),
+        weights = listOf(R)
+    )
 )
