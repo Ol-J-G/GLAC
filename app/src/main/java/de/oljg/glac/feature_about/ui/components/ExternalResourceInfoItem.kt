@@ -45,7 +45,7 @@ fun ExternalResourceInfoItem(
     weights: List<String>? = null,
     includesItalic: Boolean? = null
 ) {
-    Card(shape = RoundedCornerShape(percent = INFO_ITEM_CARD_CORNER_SIZE)) {
+    Card(shape = RoundedCornerShape(INFO_ITEM_CARD_CORNER_SIZE)) {
         Column(
             modifier = Modifier
                 .padding(INFO_ITEM_PADDING)

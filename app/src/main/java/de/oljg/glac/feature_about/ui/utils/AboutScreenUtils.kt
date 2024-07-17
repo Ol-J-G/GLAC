@@ -21,7 +21,7 @@ object AboutScreenDefaults {
     val OUTER_COLUMN_ELEMENTS_SPACE = 20.dp
     val SPACER_HEIGHT = 32.dp
 
-    const val INFO_ITEM_CARD_CORNER_SIZE = 10
+    val INFO_ITEM_CARD_CORNER_SIZE = 16.dp
     val INFO_ITEM_PADDING = 24.dp
     val INFO_ITEM_SPACE = 12.dp
     val INFO_ITEM_DIVIDER_PADDING = 8.dp
