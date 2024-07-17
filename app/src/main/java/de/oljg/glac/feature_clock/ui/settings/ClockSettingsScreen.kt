@@ -20,7 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import de.oljg.glac.core.util.ScreenDetails
+import de.oljg.glac.core.util.TestTags.CLOCK_SETTINGS_SCREEN
 import de.oljg.glac.core.util.screenDetails
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
@@ -55,7 +57,7 @@ fun ClockSettingsScreen(
             && screenHeightType is ScreenDetails.DisplayType.Compact)
 
     Surface(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().testTag(CLOCK_SETTINGS_SCREEN),
         color = MaterialTheme.colorScheme.background
     ) {
         Column( // fixed outer column

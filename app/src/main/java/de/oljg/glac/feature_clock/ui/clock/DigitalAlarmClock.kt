@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
+import de.oljg.glac.core.util.TestTags.DIGITAL_CLOCK
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.feature_alarm.ui.utils.SnoozeAlarmIndicator
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
@@ -81,7 +83,8 @@ fun DigitalAlarmClock(
             .onGloballyPositioned { layoutCoordinates ->
                 clockBoxSize = layoutCoordinates.size
             }
-            .clickable(onClick = onClick),
+            .clickable(onClick = onClick)
+            .testTag(DIGITAL_CLOCK),
         contentAlignment = Alignment.Center
     ) {
         if (currentDisplayOrientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -116,8 +119,7 @@ fun DigitalAlarmClock(
                  * Remove dividers, e.g. 'hh:mm' => 'hhmm'..., because in portrait orientation
                  * it's not useful to show DividerStyle.CHAR dividers (they would have to be rotated,
                  * and this would look kinda terrible imho, and it's not necessary at all.
-                 * Instead, a drawn colon will be used by default, or DividerStyle.LINE... are
-                 * possible as well).
+                 * Instead, DividerStyle.LINE will be used.
                  */
                 currentTimeWithoutSeparators = buildString {
                     currentTimeFormatted.split(

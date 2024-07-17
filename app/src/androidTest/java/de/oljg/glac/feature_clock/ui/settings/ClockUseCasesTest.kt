@@ -1,4 +1,4 @@
-package de.oljg.glac.feature_clock.ui
+package de.oljg.glac.feature_clock.ui.settings
 
 import androidx.compose.ui.graphics.Color
 import com.google.common.truth.Truth.assertThat
@@ -32,8 +32,8 @@ import javax.inject.Inject
 /**
  * Clock use cases integration test.
  *
- * Note that [ClockSettingsViewModel], which makes use of clock use cases, will be covered in
- * end-to-end tests.
+ * Note that [de.oljg.glac.feature_clock.ui.ClockSettingsViewModel], which makes use of clock use
+ * cases, will be covered in end-to-end and manual tests.
  *
  * Disadvantages:
  * - Longer execution time as an unit test!

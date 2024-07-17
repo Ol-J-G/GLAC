@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -50,10 +51,13 @@ fun ExpandableSection(
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
     expandedBackgroundColor: Color = MaterialTheme.colorScheme.inverseOnSurface,
     onExpandedChange: (Boolean) -> Unit,
+    testTag: String = "",
     sectionContent: @Composable () -> Unit
 ) {
     Surface(
-        modifier = Modifier.padding(horizontal = horizontalPadding, vertical = verticalPadding),
+        modifier = Modifier
+            .padding(horizontal = horizontalPadding, vertical = verticalPadding)
+            .testTag(testTag),
         shape = RoundedCornerShape(DEFAULT_ROUNDED_CORNER_SIZE),
         border = BorderStroke(
             width = DEFAULT_BORDER_WIDTH, color = if (expanded)

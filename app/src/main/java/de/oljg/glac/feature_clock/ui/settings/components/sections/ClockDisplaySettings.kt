@@ -7,6 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.ExpandableSection
+import de.oljg.glac.core.util.TestTags.CLOCK_SETTINGS_DISPLAY_EXPANDABLE_SECTION
+import de.oljg.glac.core.util.TestTags.SHOW_SECONDS_SWITCH
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
 import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
@@ -29,7 +31,8 @@ fun ClockDisplaySettings(
         expanded = clockSettings.clockSettingsSectionDisplayIsExpanded,
         onExpandedChange = { expanded ->
             onEvent(ClockSettingsEvent.UpdateClockSettingsSectionDisplayIsExpanded(expanded))
-        }
+        },
+        testTag = CLOCK_SETTINGS_DISPLAY_EXPANDABLE_SECTION
     ) {
         Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
         SettingsSwitch(
@@ -42,7 +45,8 @@ fun ClockDisplaySettings(
                         clockTheme.copy(showSeconds = newValue)
                     )
                 )
-            }
+            },
+            testTag = SHOW_SECONDS_SWITCH
         )
         Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
         SettingsSwitch(

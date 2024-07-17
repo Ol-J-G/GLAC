@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpSize
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.ExpandableSection
+import de.oljg.glac.core.util.TestTags.CLOCK_PREVIEW_EXPANDABLE_SECTION
 import de.oljg.glac.core.util.screenDetails
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
@@ -28,7 +29,8 @@ fun ClockPreview(
         expanded = clockSettings.clockSettingsSectionPreviewIsExpanded,
         onExpandedChange = { isExpanded ->
             onEvent(ClockSettingsEvent.UpdateClockSettingsSectionPreviewIsExpanded(isExpanded))
-        }
+        },
+        testTag = CLOCK_PREVIEW_EXPANDABLE_SECTION
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),

@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.Dp
 import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.INACTIVE_TAB_OPACITY
 import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TAB_FADE_IN_ANIMATION_DELAY
@@ -40,7 +41,8 @@ fun GlacTab(
     tabIconFilled: ImageVector,
     tabIconOutlined: ImageVector,
     onSelected: () -> Unit,
-    tabIsSelected: Boolean
+    tabIsSelected: Boolean,
+    testTag: String
 ) {
     val color = defaultColor()
     val durationMillis = if (tabIsSelected) TAB_FADE_IN_ANIMATION_DURATION else TAB_FADE_OUT_ANIMATION_DURATION
@@ -72,7 +74,10 @@ fun GlacTab(
                     color = Color.Unspecified
                 )
             )
-            .clearAndSetSemantics { contentDescription = tabText }
+            .clearAndSetSemantics {
+                contentDescription = tabText
+                this.testTag = testTag
+            }
     ) {
         if (tabIsSelected) {
             Icon(
