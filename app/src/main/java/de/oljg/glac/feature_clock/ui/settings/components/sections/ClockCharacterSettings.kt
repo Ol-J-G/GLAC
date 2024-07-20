@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -56,7 +56,7 @@ fun ClockCharacterSettings(
                 )
             }
         )
-        Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+        HorizontalDivider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
         Crossfade(
             targetState = clockTheme.clockCharType,
             animationSpec = TweenSpec(),
@@ -67,15 +67,14 @@ fun ClockCharacterSettings(
                 ClockCharType.SEVEN_SEGMENT -> SevenSegmentSelector(clockSettings, onEvent)
             }
         }
-        Divider(
+        HorizontalDivider(
             modifier = Modifier.padding(
                 top = DEFAULT_VERTICAL_SPACE / 2,
                 bottom = DEFAULT_VERTICAL_SPACE
             )
         )
         SettingsSlider(
-            label =  "${stringResource(id = R.string.digit)} " +
-                    stringResource(id = R.string.size),
+            label = stringResource(R.string.digit_size),
             value = clockTheme.digitSizeFactor,
             defaultValue = DEFAULT_DIGIT_SIZE_FACTOR,
             sliderValuePrettyPrintFun = Float::prettyPrintPercentage,
@@ -99,10 +98,9 @@ fun ClockCharacterSettings(
 
         AnimatedVisibility(visible = clockTheme.showDaytimeMarker) {
             Column {
-                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+                HorizontalDivider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 SettingsSlider(
-                    label = "${stringResource(id = R.string.daytime_marker)} " +
-                            stringResource(id = R.string.size),
+                    label = stringResource(R.string.daytime_marker_size),
                     value = clockTheme.daytimeMarkerSizeFactor,
                     defaultValue = DEFAULT_DAYTIME_MARKER_SIZE_FACTOR,
                     sliderValuePrettyPrintFun = Float::prettyPrintPercentage,

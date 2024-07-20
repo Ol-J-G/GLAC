@@ -1,6 +1,8 @@
 package de.oljg.glac.feature_alarm.ui.utils
 
 import android.net.Uri
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SelectableDates
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.mapSaver
 import androidx.compose.ui.unit.dp
@@ -418,6 +420,19 @@ fun List<Alarm>.rearrange(): Pair<List<Alarm>, List<Alarm>> {
         }
     }
     return Pair(evenIndices.toList(), oddIndices.toList())
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+object PresentSelectableDates: SelectableDates {
+    override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+        // Disable days in the past, excluding today
+        return Instant.ofEpochMilli(utcTimeMillis).atZone(ZoneId.systemDefault()).toLocalDate()
+            .isAfter(LocalDate.now().minusDays(1L))
+    }
+
+    override fun isSelectableYear(year: Int): Boolean {
+        return year <= LocalDate.now().year + 1
+    }
 }
 
 

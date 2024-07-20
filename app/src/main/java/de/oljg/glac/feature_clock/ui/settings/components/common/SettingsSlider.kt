@@ -41,7 +41,7 @@ fun SettingsSlider(
     onResetValue: () -> Unit,
     valueRange: ClosedFloatingPointRange<Float>? = null
 ) {
-    var showResetButton by remember {
+    var showResetButton by remember(key1 = value != defaultValue) {
         mutableStateOf(value != defaultValue)
     }
     val finalValueRange = valueRange ?: 0f..1f // percentage by default

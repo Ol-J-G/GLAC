@@ -125,12 +125,12 @@ fun evaluateAlarmRepetitionInfo(
 ) = when (repetition) {
 
     // E.g.: 'Once at 5/31/24, 5:00 PM '
-    Repetition.NONE -> stringResource(R.string.once) + SPACE +
-            stringResource(R.string.at) + SPACE +
+    Repetition.NONE -> stringResource(R.string.once_at) + SPACE +
             AlarmDefaults.localizedShortDateTimeFormatter.format(alarmStart)
 
     // E.g.: 'Every day at 5:00 PM'
-    Repetition.DAILY -> stringResource(R.string.every) + SPACE +
+    Repetition.DAILY ->
+        stringResource(R.string.every) + SPACE +
             stringResource(R.string.day) + SPACE +
             stringResource(R.string.at) + SPACE +
             AlarmDefaults.localizedShortTimeFormatter.format(alarmStart)

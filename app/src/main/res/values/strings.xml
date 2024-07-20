@@ -4,7 +4,6 @@
     <string name="clock">Clock</string>
     <string name="settings">Settings</string>
     <string name="alarm">Alarm</string>
-    <string name="common">Common</string>
     <string name="about">About</string>
     <string name="help">Help</string>
 
@@ -28,10 +27,8 @@
     <string name="off_segments">Off-Segments</string>
     <string name="outline_size">Outline Size</string>
     <string name="divider">Divider</string>
-    <string name="spacing">Spacing</string>
     <string name="length">Length</string>
     <string name="thickness">Thickness</string>
-    <string name="quantity">Quantity</string>
     <string name="dots">Dots</string>
     <string name="dashes">Dashes</string>
     <string name="line_end">Line End</string>
@@ -92,7 +89,7 @@
     <string name="theme_name">Theme Name</string>
     <string name="character_dividers_are_not_suitable_for_7_segement">Character dividers are not suitable for use together with 7-Segement clock characters!</string>
     <string name="reset_theme">Reset Theme</string>
-    <string name="normal">Normal</string>
+    <string name="normal">Regular</string>
     <string name="italic">Italic</string>
     <string name="medium">Medium</string>
     <string name="thin">Thin</string>
@@ -118,11 +115,11 @@
     <string name="please_enter_a_whole_number">Please Enter a Whole Positive Number!</string>
     <string name="invalid">Invalid</string>
     <string name="valid_range">Valid Range</string>
-    <string name="alarm_time_must_be_in_the_future">Alarm time must be at least 5m in the future!</string>
+    <string name="alarm_time_must_be_in_the_future">Alarm time must be at least 2m in the future!</string>
     <string name="select">Select</string>
     <string name="select_time">Select Time</string>
-    <string name="start_date">Start Date</string>
-    <string name="start_time">Start Time</string>
+    <string name="start_date">Date</string>
+    <string name="start_time">Time</string>
     <string name="light_alarm">Light Alarm</string>
     <string name="light_alarm_duration">Light Alarm Duration</string>
     <string name="hours_shortened">H</string>
@@ -137,7 +134,6 @@
     <string name="ready_to">"Ready to"</string>
     <string name="update_alarm">Update Alarm</string>
     <string name="remove_alarm">Remove Alarm</string>
-    <string name="start">Start</string>
     <string name="daily">Daily</string>
     <string name="weekly">Weekly</string>
     <string name="monthly">Monthly</string>
@@ -162,11 +158,9 @@
     <string name="close_clock">Close Clock</string>
     <string name="snooze_alarm_is_active">Snooze alarm is active</string>
     <string name="please_select_alarm_sound">Please select alarm sound</string>
-    <string name="select_ringtone">Select Ringtone</string>
     <string name="_default_ringtone">Default Ringtone</string>
     <string name="no_title">No Title</string>
     <string name="alarm_sound">Alarm Sound</string>
-    <string name="default_alarm_settings">Default Alarm Settings</string> <!-- 'default' is reserved keyword-->
     <string name="play_alarm_sound_preview">Play Alarm Sound Preview</string>
     <string name="stop_alarm_sound_preview">Stop Alarm Sound Preview</string>
     <string name="import_sound_file">Import Sound File</string>
@@ -191,12 +185,12 @@
     <string name="_5">5</string>
     <string name="important_notes">Important Notes</string>
     <string name="important_notes_p1">Alarms that you have set are only triggered as long as this app is running!</string>
-    <string name="important_notes_p2">If you are using any screen other than fullscreen clock and you have set a screen timeout on your device, an alarm will still be triggered, but the screen will remain off and you will only hear the alarm sound!</string>
+    <string name="important_notes_p2">If you are using any screen other than fullscreen clock (via click on clock) and you have set a screen timeout on your device, an alarm will still be triggered, but the screen will remain off and you will only hear the alarm sound!</string>
     <string name="important_notes_p3">In order to respond to the alarm, you may have to unlock your device first (which can be annoying when you are tired)!</string>
     <string name="important_notes_p4">This also means that if you want to use a light alarm, please use fullscreen clock (keeps the screen on!) or turn off the screen timeout (not recommended!).</string>
     <string name="recommended_use">Recommended Use</string>
     <string name="recommended_use_p1">Place your device on your bedside table so that you can easily reach it with one hand.</string>
-    <string name="recommended_use_p2">Make sure that the battery of your device is sufficiently charged or connect it to a power adapter.</string>
+    <string name="recommended_use_p2">Make sure that the battery of your device is sufficiently charged or connect it to a power adapter (recommended).</string>
     <string name="recommended_use_p3">Set your alarms, switch to fullscreen clock, and enjoy being woken up in a friendly manner according to your preferences.</string>
     <string name="recommended_use_p4">(Optional) Setup the clock according to your preferences using the clock settings.</string>
     <string name="recommended_use_p5">(Optional) Setup basic alarm values that apply to every new alarm you set (instead of setting them again each time), using the alarm settings.</string>
@@ -209,4 +203,13 @@
     <string name="external_font_resources">External Font Resources</string>
     <string name="gentle_light_alarm_clock">Gentle Light Alarm Clock</string>
     <string name="italic_style_is_available">Italic is available</string>
+    <string name="ready_to_update_alarm">Ready to update alarm!</string>
+    <string name="ready_to_schedule_alarm">Ready to schedule alarm!</string>
+    <string name="once_at">Once at</string>
+    <string name="normalized">Normalized</string>
+    <string name="noise_reduced">Noise Reduced</string>
+    <string name="cutted">Cutted</string>
+    <string name="converted_to_ogg">Converted to Ogg</string>
+    <string name="digit_size">Digit Size</string>
+    <string name="daytime_marker_size">Daytime Marker Size</string>
 </resources>

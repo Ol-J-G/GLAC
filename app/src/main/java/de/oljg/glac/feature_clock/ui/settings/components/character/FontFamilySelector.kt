@@ -48,7 +48,7 @@ fun FontFamilySelector(
         mutableStateOf(emptyList<String>())
     }
 
-    var selectedValue by remember {
+    var selectedValue by remember(key1 = selectedFontFamily) {
         mutableStateOf(selectedFontFamily)
     }
 

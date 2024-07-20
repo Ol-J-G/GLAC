@@ -18,7 +18,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.outlined.Audiotrack
 import androidx.compose.material.icons.outlined.Snooze
 import androidx.compose.material.icons.outlined.WbTwilight
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -120,7 +120,7 @@ fun AlarmListItem(
                     )
                 }
             }
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier
                     .fillMaxWidth(.95f)
                     .align(Alignment.CenterHorizontally)
@@ -149,7 +149,7 @@ fun AlarmListItem(
              */
             AlarmCountdown(alarmStart = alarmStart)
 
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier
                     .fillMaxWidth(.95f)
                     .align(Alignment.CenterHorizontally)

@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -84,7 +84,7 @@ fun ClockDividerSettings(
 
         AnimatedVisibility(visible = clockTheme.dividerStyle.isNeitherNoneNorChar()) {
             Column {
-                Divider(
+                HorizontalDivider(
                     modifier = Modifier.padding(
                         top = DEFAULT_VERTICAL_SPACE / 2,
                         bottom = DEFAULT_VERTICAL_SPACE
@@ -118,7 +118,7 @@ fun ClockDividerSettings(
 
         AnimatedVisibility(visible = clockTheme.dividerStyle.isLineBased()) {
             Column {
-                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+                HorizontalDivider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 SettingsSlider(
                     label = stringResource(R.string.length),
                     value = clockTheme.dividerLengthPercentage,
@@ -146,7 +146,7 @@ fun ClockDividerSettings(
 
         AnimatedVisibility(visible = clockTheme.dividerStyle == DividerStyle.DASHED_LINE) {
             Column {
-                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+                HorizontalDivider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 SettingsSlider(
                     label = stringResource(R.string.dashes),
                     value = clockTheme.dividerDashCount.toFloat(),
@@ -175,7 +175,7 @@ fun ClockDividerSettings(
 
         AnimatedVisibility(visible = clockTheme.dividerStyle == DividerStyle.DASHDOTTED_LINE) {
             Column {
-                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+                HorizontalDivider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 SettingsSlider(
                     label = stringResource(R.string.dots),
                     value = clockTheme.dividerDashDottedPartCount.toFloat(),
@@ -207,7 +207,7 @@ fun ClockDividerSettings(
 
         AnimatedVisibility(visible = clockTheme.dividerStyle.isLineOrDashedLine()) {
             Column {
-                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+                HorizontalDivider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 DividerLineEndSelector(
                     label = stringResource(R.string.line_end),
                     selectedDividerLineEnd = clockTheme.dividerLineEnd,
@@ -235,7 +235,7 @@ fun ClockDividerSettings(
             )
         ) {
             Column {
-                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+                HorizontalDivider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 SettingsSlider(
                     label = stringResource(R.string.angle),
                     value = clockTheme.dividerRotateAngle,
@@ -264,7 +264,7 @@ fun ClockDividerSettings(
 
         AnimatedVisibility(visible = clockTheme.dividerStyle == DividerStyle.COLON) {
             Column {
-                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+                HorizontalDivider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 ColonDividerOptionsSelector(clockSettings, onEvent)
                 Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
             }
@@ -276,9 +276,9 @@ fun ClockDividerSettings(
                     && clockTheme.clockCharType == ClockCharType.FONT
         ) {
             Column {
-                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
+                HorizontalDivider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE))
                 DividerCharsSelector(clockSettings, onEvent)
-                Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE / 2))
+                HorizontalDivider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE / 2))
             }
         }
 

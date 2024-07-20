@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DisplayMode
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -35,6 +35,7 @@ import de.oljg.glac.feature_alarm.domain.model.Alarm
 import de.oljg.glac.feature_alarm.domain.model.AlarmSettings
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.minutesSaver
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.uriSaver
+import de.oljg.glac.feature_alarm.ui.utils.PresentSelectableDates
 import de.oljg.glac.feature_alarm.ui.utils.Repetition
 import de.oljg.glac.feature_alarm.ui.utils.toEpochMillisUTC
 import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
@@ -102,7 +103,8 @@ fun AlarmDialog(
         yearRange = LocalDateTime.now().year..LocalDateTime.now().year + 1,
 
         /** In case of screenHeightType Compact, users must manually change to [DisplayMode.Input]*/
-        initialDisplayMode = DisplayMode.Picker
+        initialDisplayMode = DisplayMode.Picker,
+        selectableDates = PresentSelectableDates
     )
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
 
@@ -299,10 +301,10 @@ fun AlarmDialog(
                         fill = false
                     )
             ) {
-                Divider(
+                HorizontalDivider(
                     modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.outline,
-                    thickness = SettingsDefaults.DIALOG_BORDER_WIDTH
+                    thickness = SettingsDefaults.DIALOG_BORDER_WIDTH,
+                    color = MaterialTheme.colorScheme.outline
                 )
                 AlarmDialogBottomBar( // Hint/Status .. // Dismiss/Schedule/Update
                     selectedDate = selectedDate,
@@ -348,15 +350,7 @@ fun AlarmDialog(
                 }
             }
         ) {
-            DatePicker(
-                state = datePickerState,
-
-                // Disable days in the past, excluding today
-                dateValidator = { millis ->
-                    Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate()
-                        .isAfter(LocalDate.now().minusDays(1L))
-                }
-            )
+            DatePicker(state = datePickerState)
         }
     }
 

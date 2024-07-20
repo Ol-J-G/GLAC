@@ -1,7 +1,7 @@
 package de.oljg.glac.feature_clock.ui.settings.components.divider
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -36,7 +36,7 @@ fun DividerCharsSelector(
             )
         }
     )
-    Divider(
+    HorizontalDivider(
         modifier = Modifier.padding(
             top = SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2,
             bottom = SettingsDefaults.DEFAULT_VERTICAL_SPACE
@@ -56,7 +56,9 @@ fun DividerCharsSelector(
             )
         }
     )
-    Divider(modifier = Modifier.padding(vertical = SettingsDefaults.DEFAULT_VERTICAL_SPACE))
+    HorizontalDivider(modifier = Modifier.padding(
+        vertical = SettingsDefaults.DEFAULT_VERTICAL_SPACE)
+    )
     DividerCharSelector(
         title = stringResource(R.string.between) + " " +
                 stringResource(R.string.minutes_shortened) + ". | " +

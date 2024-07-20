@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,13 +19,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.BulletPointRow
 import de.oljg.glac.core.util.CommonUtils.SPACE
+import de.oljg.glac.core.util.FontWeight
 import de.oljg.glac.feature_about.data.ExternalResourceInfo
+import de.oljg.glac.feature_about.data.SoundMods
 import de.oljg.glac.feature_about.ui.utils.AboutScreenDefaults
 import de.oljg.glac.feature_about.ui.utils.AboutScreenDefaults.INFO_ITEM_CARD_CORNER_SIZE
 import de.oljg.glac.feature_about.ui.utils.AboutScreenDefaults.INFO_ITEM_DIVIDER_PADDING
@@ -41,8 +42,8 @@ fun ExternalResourceInfoItem(
     externalResourceInfo: ExternalResourceInfo,
     renamedTo: String? = null,
     modified: String? = null,
-    modifications: List<String>? = null,
-    weights: List<String>? = null,
+    modifications: List<SoundMods>? = null,
+    weights: List<FontWeight>? = null,
     includesItalic: Boolean? = null
 ) {
     Card(shape = RoundedCornerShape(INFO_ITEM_CARD_CORNER_SIZE)) {
@@ -64,7 +65,26 @@ fun ExternalResourceInfoItem(
                 Text(
                     text = buildAnnotatedString {
                         weights.forEachIndexed { index, weight ->
-                            append(weight)
+                            when (weight) {
+                                FontWeight.THIN -> append(stringResource(R.string.thin))
+                                FontWeight.EXTRA_LIGHT -> {
+                                    append(stringResource(R.string.extra) +
+                                            SPACE + stringResource(R.string.light))
+                                }
+                                FontWeight.LIGHT -> append(stringResource(R.string.light))
+                                FontWeight.NORMAL -> append(stringResource(R.string.normal))
+                                FontWeight.MEDIUM -> append(stringResource(R.string.medium))
+                                FontWeight.SEMI_BOLD -> {
+                                    append(stringResource(R.string.semi) +
+                                            SPACE + stringResource(R.string.bold))
+                                }
+                                FontWeight.BOLD -> append(stringResource(R.string.bold))
+                                FontWeight.EXTRA_BOLD -> {
+                                    append(stringResource(R.string.extra) +
+                                            SPACE + stringResource(R.string.bold))
+                                }
+                                FontWeight.BLACK -> append(stringResource(R.string.black))
+                            }
                             if (index + 1 < weights.size) { // no separator after last weight
                                 append(',')
                                 append(SPACE)
@@ -89,7 +109,7 @@ fun ExternalResourceInfoItem(
                 Text(
                     text = author,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                     fontStyle = FontStyle.Italic
                 )
             }
@@ -123,7 +143,7 @@ fun ExternalResourceInfoItem(
             )
 
             if (renamedTo != null || modified != null || modifications != null) {
-                Divider(
+                HorizontalDivider(
                     modifier = Modifier.padding(vertical = INFO_ITEM_DIVIDER_PADDING),
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
@@ -172,7 +192,13 @@ fun ExternalResourceInfoItem(
                     it.forEachIndexed { index, modification ->
                         BulletPointRow(
                             number = "${index + 1}",
-                            text = modification,
+                            text = when(modification) {
+                                SoundMods.NORMALIZATION -> stringResource(R.string.normalized)
+                                SoundMods.NOISE_REDUCTION -> stringResource(R.string.noise_reduced)
+                                SoundMods.CUTTED -> stringResource(R.string.cutted)
+                                SoundMods.CONVERTED_TO_OGG ->
+                                    stringResource(R.string.converted_to_ogg)
+                            },
                             circleSize = INFO_ITEM_MOD_BULLET_POINT_CIRCLE_SIZE,
                             circleColor = MaterialTheme.colorScheme.surface
                         )

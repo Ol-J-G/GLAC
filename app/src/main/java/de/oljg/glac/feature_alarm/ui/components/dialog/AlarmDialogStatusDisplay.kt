@@ -4,7 +4,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
-import de.oljg.glac.core.util.CommonUtils.SPACE
 import de.oljg.glac.feature_alarm.ui.utils.AlarmErrorState
 
 @Composable
@@ -47,10 +46,10 @@ fun AlarmDialogStatusDisplay(
             )
 
             AlarmErrorState.NO_ERROR -> DialogMessage(
-                message = stringResource(R.string.ready_to) + SPACE + when {
-                    isUpdate -> stringResource(R.string.update).lowercase()
-                    else -> stringResource(R.string.schedule).lowercase()
-                } + SPACE + stringResource(R.string.alarm).lowercase() + "!"
+                message = when {
+                    isUpdate -> stringResource(R.string.ready_to_update_alarm)
+                    else -> stringResource(R.string.ready_to_schedule_alarm)
+                }
             )
         }
     }

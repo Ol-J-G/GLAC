@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -79,7 +79,9 @@ fun SegmentColorsSelector(
 
             AnimatedVisibility(visible = clockTheme.useSegmentColors) {
                 Column {
-                    Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE / 2))
+                    HorizontalDivider(modifier = Modifier.padding(
+                        vertical = DEFAULT_VERTICAL_SPACE / 2)
+                    )
                     Segment.entries.forEach { segment ->
                         ColorSelector(
                             title = when (segment) {

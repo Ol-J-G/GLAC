@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -26,6 +26,7 @@ import de.oljg.glac.R
 import de.oljg.glac.core.util.ScreenDetails
 import de.oljg.glac.core.util.screenDetails
 import de.oljg.glac.feature_alarm.domain.model.AlarmSettings
+import de.oljg.glac.feature_alarm.domain.model.utils.AlarmDefaults.DEFAULT_ALARM_SOUND_URI
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsEvent
 import de.oljg.glac.feature_alarm.ui.components.AlarmSoundSelector
 import de.oljg.glac.feature_alarm.ui.components.DurationSelector
@@ -99,6 +100,7 @@ private fun OneColumnLayout(
             },
             onRemoveClicked = { uriStringToRemove ->
                 onEvent(AlarmSettingsEvent.RemoveImportedAlarmSoundFile(uriStringToRemove))
+                onEvent(AlarmSettingsEvent.UpdateAlarmSoundUri(DEFAULT_ALARM_SOUND_URI))
             }
         )
         Spacer(modifier = Modifier.height(SettingsDefaults.DEFAULT_VERTICAL_SPACE * 2))
@@ -287,7 +289,7 @@ private fun Header() {
                 style = MaterialTheme.typography.titleMedium
             )
         }
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth(.95f)

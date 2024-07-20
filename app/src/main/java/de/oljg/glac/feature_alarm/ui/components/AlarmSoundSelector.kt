@@ -69,7 +69,7 @@ fun AlarmSoundSelector(
     fun shouldRemoveButtonBeEnabled() = selectedValue.isFileUri()
             && !selectedValue.contains(GLAC_PREFIX, ignoreCase = false)
 
-    var isRemoveButtonEnabled by rememberSaveable(onNewAlarmSoundSelected) {
+    var isRemoveButtonEnabled by rememberSaveable(shouldRemoveButtonBeEnabled()) {
         mutableStateOf(shouldRemoveButtonBeEnabled())
     }
 

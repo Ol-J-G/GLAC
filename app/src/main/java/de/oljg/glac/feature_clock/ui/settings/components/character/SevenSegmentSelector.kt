@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -70,7 +70,7 @@ fun SevenSegmentSelector(
         )
         AnimatedVisibility(visible = clockTheme.sevenSegmentStyle.isOutline()) {
             Column {
-                Divider(
+                HorizontalDivider(
                     modifier = Modifier.padding(
                         top = DEFAULT_VERTICAL_SPACE / 2,
                         bottom = DEFAULT_VERTICAL_SPACE
@@ -102,7 +102,7 @@ fun SevenSegmentSelector(
                 Spacer(modifier = Modifier.height(DEFAULT_VERTICAL_SPACE / 2))
             }
         }
-        Divider(
+        HorizontalDivider(
             modifier = Modifier.padding(
                 top = DEFAULT_VERTICAL_SPACE / 2,
                 bottom = DEFAULT_VERTICAL_SPACE

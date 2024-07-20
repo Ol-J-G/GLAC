@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -89,7 +89,7 @@ fun ColorsPerClockPartSelector(
 
             AnimatedVisibility(visible = clockTheme.useColorsPerClockPart) {
                 Column {
-                    Divider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE / 2))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = DEFAULT_VERTICAL_SPACE / 2))
                     HoursTensColorSelector(clockSettings, onEvent)
                     HoursOnesColorSelector(clockSettings, onEvent)
                     MinutesTensColorSelector(clockSettings, onEvent)
