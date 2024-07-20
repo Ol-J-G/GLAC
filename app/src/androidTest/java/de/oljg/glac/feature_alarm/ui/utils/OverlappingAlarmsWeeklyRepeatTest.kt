@@ -19,6 +19,8 @@ import kotlin.time.Duration.Companion.minutes
  * Unit under test: [interferesScheduledAlarms]
  *
  * Note: Sketches in comments are not to scale!
+ *
+ * ASB = [de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_START_BUFFER]
  */
 class OverlappingAlarmsWeeklyRepeatTest {
     private lateinit var testAlarms: List<Alarm>
@@ -67,7 +69,7 @@ class OverlappingAlarmsWeeklyRepeatTest {
      *  4:30            5:00         4:30            5:00
      *   |--------A0------|           |--------A1------|    ...    |--------An------|
      *      repetition 0                 repetition 1                 repetition n
-     *                    |<5m>   <5m>|
+     *                    |<ASB> <ASB>|
      *                    |--W--|
      *                         5:30
      *                         10th
@@ -93,7 +95,7 @@ class OverlappingAlarmsWeeklyRepeatTest {
      *  4:30            5:00         4:30            5:00
      *   |--------A0------|           |--------A1------|    ...    |--------An------|
      *      repetition 0                 repetition 1                 repetition n
-     *                    |<5m>   <5m>|
+     *                    |<ASB> <ASB>|
      *                          |--W--|
      *                         4:00
      *                         17th
@@ -119,7 +121,7 @@ class OverlappingAlarmsWeeklyRepeatTest {
      *  4:30            5:00         4:30            5:00
      *   |--------A0------|           |--------A1------|    ...    |--------An------|
      *      repetition 0                 repetition 1                 repetition n
-     *                    |<5m>   <5m>|
+     *                    |<ASB> <ASB>|
      *                         |W|
      *                          4:25
      *                          17th
@@ -137,18 +139,18 @@ class OverlappingAlarmsWeeklyRepeatTest {
     /**
      * (W4) Requested alarm does not overlap because of respecting buffer of A0
      *
-     *   |<                                max 1 year                               >|
-     *   |                                                                           |
-     *   |<      30m     >|< 1w-30m   >|<     30m      >|< nw-LAD  >|<      30m     >|
+     *   |<                                  max 1 year                               >|
+     *   |                                                                             |
+     *   |<      30m     >|< 1w-30m     >|<     30m      >|< nw-LAD  >|<      30m     >|
      *
-     *  10th            10th          17th            17th
-     *  4:30            5:00          4:30            5:00
-     *   |--------A0------|            |--------A1------|    ...    |--------An------|
-     *      repetition 0                  repetition 1                 repetition n
-     *                    |<5m>|   <5m>|
-     *                         |W|
-     *                          5:35
-     *                          10th
+     *  10th            10th           17th            17th
+     *  4:30            5:00           4:30            5:00
+     *   |--------A0------|             |--------A1------|    ...    |--------An------|
+     *      repetition 0                   repetition 1                 repetition n
+     *                    |<ASB>| <ASB>|
+     *                          |W|
+     *                           5:35
+     *                           10th
      */
     @Test
     fun w4() {
@@ -171,7 +173,7 @@ class OverlappingAlarmsWeeklyRepeatTest {
      *  4:30             5:00        4:30            5:00                          5:00
      *   |--------A0------|           |--------A1------|    ...    |--------An------|
      *      repetition 0                 repetition 1                 repetition n
-     *                    |<5m>   <5m>|
+     *                    |<ASB> <ASB>|
      *                                                                                   |----W----|
      *                                                                                          5:00
      *                    |                                                                     22th
@@ -198,7 +200,7 @@ class OverlappingAlarmsWeeklyRepeatTest {
      *  4:30            5:00         4:30            5:00
      *   |--------A0------|           |--------A1------|    ...    |--------An------|
      *      repetition 0                 repetition 1                 repetition n
-     *                    |<5m>   <5m>|
+     *                    |<ASB> <ASB>|
      *                          |-------------W-------------|
      *                         4:00                        5:30
      *                         17th                        17th
@@ -224,7 +226,7 @@ class OverlappingAlarmsWeeklyRepeatTest {
      *  4:30            5:00         4:30            5:00
      *   |--------A0------|           |--------A1------|    ...    |--------An------|
      *      repetition 0                 repetition 1                 repetition n
-     *                    |<5m>   <5m>|
+     *                    |<ASB> <ASB>|
      *                                                   |---W---|
      *                                                  5:00    5:00
      *                                                  22th    22th

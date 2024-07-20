@@ -19,6 +19,8 @@ import kotlin.time.Duration.Companion.minutes
  * Unit under test: [interferesScheduledAlarms]
  *
  * Note: Sketches in comments are not to scale!
+ *
+ * ASB = [de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_START_BUFFER]
  */
 class OverlappingAlarmsMonthlyRepeatTest {
     private lateinit var testAlarms: List<Alarm>
@@ -70,7 +72,7 @@ class OverlappingAlarmsMonthlyRepeatTest {
      *  4:30            5:00         4:30            5:00
      *   |--------A0------|           |--------A1------|    ...    |--------An------|
      *      repetition 0                 repetition 1                 repetition n
-     *                    |<5m>   <5m>|
+     *                    |<ASB> <ASB>|
      *                    |--m--|
      *                         5:30
      *                         10th
@@ -98,7 +100,7 @@ class OverlappingAlarmsMonthlyRepeatTest {
      *  4:30            5:00         4:30            5:00
      *   |--------A0------|           |--------A1------|    ...    |--------An------|
      *      repetition 0                 repetition 1                 repetition n
-     *                    |<5m>   <5m>|
+     *                    |<ASB> <ASB>|
      *                          |--m--|
      *                         4:00
      *                         10th
@@ -126,7 +128,7 @@ class OverlappingAlarmsMonthlyRepeatTest {
      *  4:30            5:00         4:30            5:00
      *   |--------A0------|           |--------A1------|    ...    |--------An------|
      *      repetition 0                 repetition 1                 repetition n
-     *                    |<5m>   <5m>|
+     *                    |<ASB> <ASB>|
      *                         |m|
      *                          4:25
      *                          10th
@@ -154,7 +156,7 @@ class OverlappingAlarmsMonthlyRepeatTest {
      *  4:30            5:00          4:30            5:00
      *   |--------A0------|            |--------A1------|    ...    |--------An------|
      *      repetition 0                  repetition 1                 repetition n
-     *                    |<5m>|   <5m>|
+     *                    |<ASB>  <ASB>|
      *                         |m|
      *                          5:35
      *                          10th
@@ -182,7 +184,7 @@ class OverlappingAlarmsMonthlyRepeatTest {
      *  4:30            5:00          4:30             5:00
      *   |--------A0------|            |--------A1------|    ...    |--------An------|
      *      repetition 0                  repetition 1                 repetition n
-     *                    |<5m>|   <5m>|
+     *                    |<ASB> <ASB>|
      *                                                                                 |-----m-----|
      *                                                                                          5:00
      *                                                                                          10th
@@ -210,11 +212,11 @@ class OverlappingAlarmsMonthlyRepeatTest {
      *  4:30            5:00          4:30             5:00
      *   |--------A0------|            |--------A1------|    ...    |--------An------|
      *      repetition 0                  repetition 1                 repetition n
-     *                    |<5m>|   <5m>|
-     *                           |--------------m-------------|
-     *                          4:00                         5:00
-     *                          10th                         10th
-     *                       2024-02                      2024-02
+     *                    |<ASB> <ASB>|
+     *                          |--------------m-------------|
+     *                         4:00                         5:00
+     *                         10th                         10th
+     *                      2024-02                      2024-02
      */
     @Test
     fun m6() {
@@ -238,7 +240,7 @@ class OverlappingAlarmsMonthlyRepeatTest {
      *  4:30            5:00          4:30             5:00
      *   |--------A0------|            |--------A1------|    ...    |--------An------|
      *      repetition 0                  repetition 1                 repetition n
-     *                    |<5m>|   <5m>|
+     *                    |<ASB>  <ASB>|
      *                                                   |---m----|
      *                                                  5:00     5:00
      *                                                  17th     17th

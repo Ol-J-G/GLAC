@@ -19,6 +19,8 @@ import kotlin.time.Duration.Companion.minutes
  * Unit under test: [interferesScheduledAlarms]
  *
  * Note: Sketches in comments are not to scale!
+ *
+ * ASB = [de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_START_BUFFER]
  */
 class OverlappingAlarmsSimpleTest {
     private lateinit var testAlarms: List<Alarm>
@@ -31,7 +33,7 @@ class OverlappingAlarmsSimpleTest {
          * LAS  => Light Alarm Start
          * RAS  => Requested Alarm Start
          * RLAS => Requested Light Alarm Start
-         * ASB  => ALARM_START_BUFFER = 5m
+         * ASB  => ALARM_START_BUFFER = 2m
          * DLAD => DEFAULT_LIGHT_ALARM_DURATION = 30m
          *
          *               4:25 4:30       5:00 5:05

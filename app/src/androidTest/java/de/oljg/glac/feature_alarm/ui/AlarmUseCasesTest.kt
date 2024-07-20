@@ -43,7 +43,7 @@ import kotlin.time.Duration.Companion.seconds
  *   wanted and necessary (similar as using in-memory DB in tests instead of real DB, and
  *   alarm scheduler).
  *
- *  TODO: evaluate and maybe add edge case tests
+ *  TODO_LATER: evaluate and maybe add edge case tests
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest

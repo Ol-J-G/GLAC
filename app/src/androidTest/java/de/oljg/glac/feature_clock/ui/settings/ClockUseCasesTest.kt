@@ -44,7 +44,7 @@ import javax.inject.Inject
  *   constructed with same 'infrastructure' as in real app, except datastore file, which is ofc
  *   wanted and necessary (similar as using in-memory DB in tests instead of real DB).
  *
- *  TODO: evaluate and maybe add edge case tests
+ *  TODO_LATER: evaluate and maybe add edge case tests
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest

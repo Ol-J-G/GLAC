@@ -40,7 +40,7 @@ fun Uri.prettyPrintAlarmSoundUri() = when {
 
 private fun String.prettyPrintRingtoneUriString(): String {
     val uri = Uri.parse(this)
-    // Can actually not be null => no translation necessary yet //TODO: test on other devices
+    // Can actually not be null => no translation necessary yet
     return uri.getQueryParameter(RINGTONE_TITLE_KEY) ?: "No Title"
 }
 

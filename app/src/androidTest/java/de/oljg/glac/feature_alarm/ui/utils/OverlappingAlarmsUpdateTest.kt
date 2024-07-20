@@ -18,6 +18,8 @@ import kotlin.time.Duration.Companion.minutes
  * Unit under test: [interferesScheduledAlarms]
  *
  * Note: Sketches in comments are not to scale!
+ *
+ * ASB = [de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_START_BUFFER]
  */
 class OverlappingAlarmsUpdateTest {
     private lateinit var testAlarms: List<Alarm>
@@ -62,7 +64,7 @@ class OverlappingAlarmsUpdateTest {
      *
      *  4:30            5:00        6:00            7:00
      *   |-------A-------|           |-------B-------|
-     *                   |<5m>   <5m>| alarmToUpdate
+     *                   |<ASB> <ASB>| alarmToUpdate
      *                   |---------U--------|
      *                   |<       90m      >|
      */
@@ -82,7 +84,7 @@ class OverlappingAlarmsUpdateTest {
      *
      *  4:30            5:00         6:00            7:00
      *   |-------A-------|            |-------B-------|
-     *                   |<5m>    <5m>| alarmToUpdate
+     *                   |<ASB>  <ASB>| alarmToUpdate
      *                       |-------U-------|
      *                       |<      85m    >|
      */
@@ -102,7 +104,7 @@ class OverlappingAlarmsUpdateTest {
      *
      *  4:30            5:00         6:00            7:00
      *   |-------A-------|            |-------B-------|
-     *                   |<5m>    <5m>| alarmToUpdate
+     *                   |<ASB>  <ASB>| alarmToUpdate
      *           |------U------|
      *           |<    45m    >|
      */
@@ -122,7 +124,7 @@ class OverlappingAlarmsUpdateTest {
      *
      *  4:30            5:00         6:00            7:00
      *   |-------A-------|            |-------B-------|
-     *                   |<5m>    <5m>| alarmToUpdate
+     *                   |<ASB>  <ASB>| alarmToUpdate
      *                         |------U------|
      *                         |<    45m    >|
      */
@@ -142,7 +144,7 @@ class OverlappingAlarmsUpdateTest {
      *
      *  4:30            5:00         6:00            7:00
      *   |-------A-------|            |-------B-------|
-     *                   |<5m>    <5m>| alarmToUpdate
+     *                   |<ASB>  <ASB>| alarmToUpdate
      *           |-------------U-------------|
      *           |<           90m           >|
      */
@@ -162,7 +164,7 @@ class OverlappingAlarmsUpdateTest {
      *
      *      4:30            5:00         6:00            7:00
      *       |-------A-------|            |-------B-------|
-     *                       |<5m>    <5m>| alarmToUpdate
+     *                       |<ASB>  <ASB>| alarmToUpdate
      * |---------------------------U----------------------------|
      * |<                       180m(3h)                       >|
      */
@@ -182,7 +184,7 @@ class OverlappingAlarmsUpdateTest {
      *
      *      4:30            5:00         6:00            7:00
      *       |-------A-------|            |-------B-------|
-     *                       |<5m>    <5m>| alarmToUpdate
+     *                       |<ASB>  <ASB>| alarmToUpdate
      *                             |-------------U--------------|
      *                             |<          105m            >|
      */
@@ -202,7 +204,7 @@ class OverlappingAlarmsUpdateTest {
      *
      *               4:00         4:30            5:00         6:00            7:00
      *                |            |-------A-------|            |-------B-------|
-     *                                             |<5m>    <5m>| alarmToUpdate
+     *                                             |<ASB>  <ASB>| alarmToUpdate
      *  |------U------|
      *  |<    30m    >|
      */
@@ -222,7 +224,7 @@ class OverlappingAlarmsUpdateTest {
      *
      *   4:30            5:00         6:00            7:00         7:30          8:00
      *    |-------A-------|            |-------B-------|            |             |
-     *                    |<5m>    <5m>| alarmToUpdate
+     *                    |<ASB>  <ASB>| alarmToUpdate
      *                                                              |------U------|
      *                                                              |<    30m    >|
      */
@@ -242,7 +244,7 @@ class OverlappingAlarmsUpdateTest {
      *
      *  4:30            5:00         6:00            7:00
      *   |-------A-------|            |-------B-------|
-     *                   |<5m>    <5m>| alarmToUpdate
+     *                   |<ASB>  <ASB>| alarmToUpdate
      *   |-------U-------|
      *   |<     30m     >|
      */
