@@ -51,6 +51,10 @@ From the deepest blackness of the night, into the blue hour, which transforms in
 During this color gradient animation, the brightness of the Android device's screen is successively increased from the currently set brightness to the maximum brightness, so that the brightness of a room is as bright as possible (white + max. brightness!) when the alarm sounds.
 Despite the limited size of an Android device, the light generated should be sufficient to find your way around the room without having to switch on a light that may be perceived as dazzling when you are tired.
 
+Below is a visual example of a 10 second light alarm (unrealistic, just a demo). Note that when the light alarm is finished, the digits start to flash while the alarm sound slowly starts to fade in.
+
+<img src="doc/screenshots/LightAlarm.gif" width="270" alt="Light Alarm"/>
+
 ## Documentation
 ### Alarm sounds
 - A few very special selected sounds are included (prefix: “GLAC_” / see about screen for details)
