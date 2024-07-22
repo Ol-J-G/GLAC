@@ -167,9 +167,10 @@ Below is a visual example of a 10 second light alarm (unrealistic, just a demo).
 |-------------------------------------------------|------------------------------------------------------|---------------------------------------------|--------------------------------------------------------|
 | ![Medium](doc/screenshots/7-segment_Medium.png) | ![Semi Bold](doc/screenshots/7-segment_SemiBold.png) | ![Bold](doc/screenshots/7-segment_Bold.png) | ![Extra Bold](doc/screenshots/7-segment_ExtraBold.png) |
 
-| Black                                         | 
-|-----------------------------------------------|
-| ![Black](doc/screenshots/7-segment_Black.png) | 
+| Black                                                                          | 
+|--------------------------------------------------------------------------------|
+| <img src="doc/screenshots/7-segment_Black.png" width="270" alt="Light Alarm"/> |
+
 
 ##### Styles
 Note that the following styles are applied to regular weight, but of course they can be applied to every other weight as well!
