@@ -105,8 +105,8 @@ Below is a visual example of a 10 second light alarm (unrealistic, just a demo).
       - Note that daytime marker size setting is not visible in screenshot above, because daytime marker is switched off...
 - Dividers (between hours<>minutes etc.)
   - ![Dividers](doc/screenshots/ClockSettingsDividers.png)
-  - Types
-    - No divider
+  - Styles
+    - None
     - Line
     - Dashed line
       - Number of dashes can be adjusted
@@ -115,13 +115,21 @@ Below is a visual example of a 10 second light alarm (unrealistic, just a demo).
     - Dashed-dotted line
       - Number of dots can be adjusted, number of dashes depends on number of dots
     - Colon 
-      - Points can be moved
+      - Position of the two colon dots can be adjusted
+    - Character 
+      - Most characters are allowed, like colon, slash, etc., except some special characters
+        - Note that the shape and position depend of course on selected font
+      - Not available for 7-segment displays! (There are simply no such characters...(only: 0-9, A, P)
+        - But, at least colon divider could be used instead
+      - Only available in landscape format
+        - Absolutely not suitable in portrait format! (They would have to be rotated or so ...)
   - Adjustable thickness
   - Adjustable length
   - Line ends: Round or angular
   - Adjustable angle 
     - To be able to adapt dividers in landscape format to an angle of an italic font
     - Note that this option is not visible, because the screenshot above is taken in portrait format!
+      - And, line-like dividers in portrait mode must not be adapted to an italic font, because they are horizontal...
 - Colors
   - ![Colors](doc/screenshots/ClockSettingsColors.png)
   - Random color can be generated ('AutoAwesome' icon (3 'stars'))
@@ -159,17 +167,17 @@ Below is a visual example of a 10 second light alarm (unrealistic, just a demo).
 
 #### 7-segment weights and styles
 ##### Weights
-| Thin                                        | Extra Light                                              | Light                                         | Regular                                           |
-|---------------------------------------------|----------------------------------------------------------|-----------------------------------------------|---------------------------------------------------|
-| ![Thin](doc/screenshots/7-segment_Thin.png) | ![Extra Light](doc/screenshots/7-segment_ExtraLight.png) | ![Light](doc/screenshots/7-segment_Light.png) | ![Regular](doc/screenshots/7-segment_Regular.png) |
+| Thin                                        | Extra Light                                              | Light                                         |
+|---------------------------------------------|----------------------------------------------------------|-----------------------------------------------|
+| ![Thin](doc/screenshots/7-segment_Thin.png) | ![Extra Light](doc/screenshots/7-segment_ExtraLight.png) | ![Light](doc/screenshots/7-segment_Light.png) |
 
-| Medium                                          | Semi Bold                                            | Bold                                        | Extra Bold                                             |
-|-------------------------------------------------|------------------------------------------------------|---------------------------------------------|--------------------------------------------------------|
-| ![Medium](doc/screenshots/7-segment_Medium.png) | ![Semi Bold](doc/screenshots/7-segment_SemiBold.png) | ![Bold](doc/screenshots/7-segment_Bold.png) | ![Extra Bold](doc/screenshots/7-segment_ExtraBold.png) |
+| Regular                                           | Medium                                          | Semi Bold                                            | 
+|---------------------------------------------------|-------------------------------------------------|------------------------------------------------------| 
+| ![Regular](doc/screenshots/7-segment_Regular.png) | ![Medium](doc/screenshots/7-segment_Medium.png) | ![Semi Bold](doc/screenshots/7-segment_SemiBold.png) | 
 
-| Black                                                                          | 
-|--------------------------------------------------------------------------------|
-| <img src="doc/screenshots/7-segment_Black.png" width="270" alt="Light Alarm"/> |
+| Bold                                        | Extra Bold                                             | Black                                         |
+|---------------------------------------------|--------------------------------------------------------|-----------------------------------------------|
+| ![Bold](doc/screenshots/7-segment_Bold.png) | ![Extra Bold](doc/screenshots/7-segment_ExtraBold.png) | ![Black](doc/screenshots/7-segment_Black.png) |
 
 
 ##### Styles
