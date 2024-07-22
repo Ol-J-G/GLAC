@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -250,17 +249,9 @@ fun SnoozeAlarmIndicator(onClick: () -> Unit) {
                 .clickable(onClick = onClick)
         ) {
             Text(
-                /**
-                 * When font size is too big, text will not be centered correctly,
-                 * but it must be that big, so, unfortunately, found no other solution,
-                 * than move it a bit.
-                 *
-                 * Note that this might break when google decides to change monospace font :/
-                 */
-                modifier = Modifier.offset(y = (-4).dp),
                 color = textColor,
-                text = "S",
-                fontSize = 28.sp,
+                text = stringResource(R.string.snooze_shorthand),
+                fontSize = 28.sp, //TODO: add const
                 fontFamily = FontFamily.Monospace
             )
         }

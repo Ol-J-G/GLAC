@@ -212,4 +212,5 @@
     <string name="converted_to_ogg">Converted to Ogg</string>
     <string name="digit_size">Digit Size</string>
     <string name="daytime_marker_size">Daytime Marker Size</string>
+    <string name="snooze_shorthand">S</string>
 </resources>

@@ -213,4 +213,5 @@
     <string name="converted_to_ogg">Konvertiert zu Ogg</string>
     <string name="digit_size">Zifferngröße</string>
     <string name="daytime_marker_size">Tageszeit-Markierungsgröße</string>
+    <string name="snooze_shorthand">S</string>
 </resources>

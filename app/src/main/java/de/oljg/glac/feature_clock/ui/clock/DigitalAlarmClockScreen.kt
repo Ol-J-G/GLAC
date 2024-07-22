@@ -287,10 +287,6 @@ fun DigitalAlarmClockScreen(
                 else 1000L * 60 - (currentTime.second * 1000L) - (currentTime.nano / 1000000).toLong()
         delay(delayMillis)
         currentTime = LocalTime.now()
-//        Log.d(
-//            "TAG",
-//            "curentTime: ${formatter.format(currentTime)} | nanos: ${currentTime.nano} | delay: $delayMillis"
-//        )
     }
 
     // In case of "sound only" / snooze alarms or after light alarm, use flashing alarm color
@@ -339,7 +335,7 @@ fun DigitalAlarmClockScreen(
                 char = clockChar,
                 charSize = clockCharSize,
                 charColor = if (useAlarmColor()) alarmColor else clockCharColor,
-                segmentColors = segmentColors,
+                segmentColors = if (useAlarmColor()) emptyMap() else segmentColors,
                 style = clockTheme.sevenSegmentStyle,
                 weight = clockTheme.sevenSegmentWeight,
                 outlineSize = clockTheme.sevenSegmentOutlineSize,
