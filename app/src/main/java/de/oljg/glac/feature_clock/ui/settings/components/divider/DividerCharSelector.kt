@@ -17,8 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.CHAR_SELECTOR_TF_TOP_PADDING
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.CHAR_SELECTOR_TF_WIDTH
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.CHAR_SELECTOR_TF_TOP_PADDING
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.CHAR_SELECTOR_TF_WIDTH
 import de.oljg.glac.feature_clock.ui.settings.utils.isValidDividerChar
 
 @Composable

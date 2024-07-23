@@ -36,7 +36,7 @@ import de.oljg.glac.feature_about.ui.utils.AboutScreenDefaults.GLAC_GITHUB_URL
 import de.oljg.glac.feature_about.ui.utils.AboutScreenDefaults.OUTER_COLUMN_ELEMENTS_SPACE
 import de.oljg.glac.feature_about.ui.utils.AboutScreenDefaults.OUTER_SURFACE_PADDING
 import de.oljg.glac.feature_about.ui.utils.AboutScreenDefaults.SPACER_HEIGHT
-import de.oljg.glac.feature_about.ui.utils.AboutScreenDefaults.hyperlink
+import de.oljg.glac.feature_about.ui.utils.AboutScreenDefaults.hyperlinkStyle
 
 @Composable
 fun AboutScreen() {
@@ -140,7 +140,7 @@ private fun AboutInfo() {
                 tag = GLAC_GITHUB_TAG,
                 annotation = GLAC_GITHUB_URL
             )
-            withStyle(style = hyperlink) {
+            withStyle(style = hyperlinkStyle) {
                 append(stringResource(R.string.glac_on_github))
             }
             pop()

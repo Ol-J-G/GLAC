@@ -7,11 +7,11 @@ import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
 import de.oljg.glac.core.util.FontStyle
 import de.oljg.glac.core.util.FontWeight
+import de.oljg.glac.core.util.isFileUri
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls
 import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
-import de.oljg.glac.feature_clock.ui.settings.utils.isFileUri
 
 @Composable
 fun FontSelector(

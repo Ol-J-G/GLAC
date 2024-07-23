@@ -1,14 +1,14 @@
-package de.oljg.glac.feature_alarm.domain.media.utils
+package de.oljg.glac.feature_alarm.ui.utils
 
 import android.content.Context
 import android.net.Uri
 import androidx.core.net.toUri
 import de.oljg.glac.core.util.CommonFileDefaults.FILE_EXTENSION_DELIMITER
-import de.oljg.glac.feature_alarm.domain.media.utils.AlarmSoundDefaults.FLAC_FILE_EXTENSION
-import de.oljg.glac.feature_alarm.domain.media.utils.AlarmSoundDefaults.MP3_FILE_EXTENSION
-import de.oljg.glac.feature_alarm.domain.media.utils.AlarmSoundDefaults.OGG_FILE_EXTENSION
-import de.oljg.glac.feature_alarm.domain.media.utils.AlarmSoundDefaults.SOUNDS_ASSETS_DIRECTORY
-import de.oljg.glac.feature_alarm.domain.media.utils.AlarmSoundDefaults.WAV_FILE_EXTENSION
+import de.oljg.glac.feature_alarm.ui.utils.AlarmSoundDefaults.FLAC_FILE_EXTENSION
+import de.oljg.glac.feature_alarm.ui.utils.AlarmSoundDefaults.MP3_FILE_EXTENSION
+import de.oljg.glac.feature_alarm.ui.utils.AlarmSoundDefaults.OGG_FILE_EXTENSION
+import de.oljg.glac.feature_alarm.ui.utils.AlarmSoundDefaults.SOUNDS_ASSETS_DIRECTORY
+import de.oljg.glac.feature_alarm.ui.utils.AlarmSoundDefaults.WAV_FILE_EXTENSION
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File

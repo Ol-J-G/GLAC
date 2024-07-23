@@ -25,9 +25,9 @@ import de.oljg.glac.core.ui.components.GlacDialog
 import de.oljg.glac.feature_alarm.domain.model.Alarm
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_REACTION_DIALOG_BUTTON_WEIGHT
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_REACTION_DIALOG_DISMISS_BUTTON_WEIGHT
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_REACTION_DIALOG_PADDING
 import de.oljg.glac.feature_alarm.ui.utils.isSnoozeAlarmBeforeNextAlarm
 import de.oljg.glac.feature_alarm.ui.utils.plus
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DIALOG_DEFAULT_PADDING
 import kotlinx.coroutines.delay
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -85,7 +85,7 @@ private fun PortraitLayout(
     Column(modifier = Modifier.fillMaxHeight()) {
         AlarmReactionDialogButton( // SNOOZE
             modifier = Modifier
-                .padding(DIALOG_DEFAULT_PADDING)
+                .padding(ALARM_REACTION_DIALOG_PADDING)
                 .fillMaxWidth()
                 .weight(ALARM_REACTION_DIALOG_BUTTON_WEIGHT),
             label = stringResource(R.string.snooze).uppercase(),
@@ -94,7 +94,7 @@ private fun PortraitLayout(
         )
         AlarmReactionDialogButton( // DISMISS
             modifier = Modifier
-                .padding(horizontal = DIALOG_DEFAULT_PADDING)
+                .padding(horizontal = ALARM_REACTION_DIALOG_PADDING)
                 .fillMaxWidth()
                 .weight(ALARM_REACTION_DIALOG_DISMISS_BUTTON_WEIGHT),
             label = stringResource(R.string.dismiss).uppercase(),
@@ -106,7 +106,7 @@ private fun PortraitLayout(
         )
         AlarmReactionDialogButton( // STOP
             modifier = Modifier
-                .padding(DIALOG_DEFAULT_PADDING)
+                .padding(ALARM_REACTION_DIALOG_PADDING)
                 .fillMaxWidth()
                 .weight(ALARM_REACTION_DIALOG_BUTTON_WEIGHT),
             label = stringResource(R.string.stop).uppercase(),
@@ -126,7 +126,7 @@ private fun LandscapeLayout(
     Row(modifier = Modifier.fillMaxWidth()) {
         AlarmReactionDialogButton( // SNOOZE
             modifier = Modifier
-                .padding(DIALOG_DEFAULT_PADDING)
+                .padding(ALARM_REACTION_DIALOG_PADDING)
                 .fillMaxHeight()
                 .weight(ALARM_REACTION_DIALOG_BUTTON_WEIGHT),
             label = stringResource(R.string.snooze).uppercase(),
@@ -135,7 +135,7 @@ private fun LandscapeLayout(
         )
         AlarmReactionDialogButton( // DISMISS
             modifier = Modifier
-                .padding(vertical = DIALOG_DEFAULT_PADDING)
+                .padding(vertical = ALARM_REACTION_DIALOG_PADDING)
                 .fillMaxHeight()
                 .weight(ALARM_REACTION_DIALOG_DISMISS_BUTTON_WEIGHT),
             label = stringResource(R.string.dismiss).uppercase(),
@@ -147,7 +147,7 @@ private fun LandscapeLayout(
         )
         AlarmReactionDialogButton( // STOP
             modifier = Modifier
-                .padding(DIALOG_DEFAULT_PADDING)
+                .padding(ALARM_REACTION_DIALOG_PADDING)
                 .fillMaxHeight()
                 .weight(ALARM_REACTION_DIALOG_BUTTON_WEIGHT),
             label = stringResource(R.string.stop).uppercase(),

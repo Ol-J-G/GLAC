@@ -3,8 +3,8 @@ package de.oljg.glac.feature_clock.ui.clock.utils
 import androidx.compose.ui.graphics.Color
 import com.smarttoolfactory.extendedcolors.model.ColorItem
 import com.smarttoolfactory.extendedcolors.util.HSLUtil
-import de.oljg.glac.core.util.CommonClockUtils.CLOCK_CHARS
 import de.oljg.glac.feature_clock.domain.model.serializer.ColorSerializer
+import de.oljg.glac.feature_clock.ui.clock.utils.ClockDefaults.CLOCK_CHARS
 import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentDefaults.DEFAULT_LIGHTNESS_THRESHOLD
 import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentDefaults.OFFCOLOR_LIGHTNESS_DELTA
 import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentDefaults.SEVEN_SEGMENT_CHARS

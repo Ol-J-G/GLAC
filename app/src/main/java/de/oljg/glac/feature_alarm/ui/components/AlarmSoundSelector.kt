@@ -18,16 +18,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import de.oljg.glac.core.ui.components.DropDownSelector
 import de.oljg.glac.core.ui.components.RemoveImportedFileButton
-import de.oljg.glac.feature_alarm.domain.media.utils.AlarmSoundDefaults.GLAC_PREFIX
-import de.oljg.glac.feature_alarm.domain.media.utils.getAlarmSoundFileUrisFromCache
-import de.oljg.glac.feature_alarm.domain.media.utils.getAvailableRingtoneUris
-import de.oljg.glac.feature_alarm.domain.media.utils.getSoundFileUrisFromFilesDir
-import de.oljg.glac.feature_alarm.domain.media.utils.prettyPrintAlarmSound
+import de.oljg.glac.core.util.isFileUri
 import de.oljg.glac.feature_alarm.domain.model.utils.AlarmDefaults.DEFAULT_ALARM_SOUND_URI
-import de.oljg.glac.feature_clock.ui.settings.components.common.DropDownSelector
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DROPDOWN_ROW_VERTICAL_PADDING
-import de.oljg.glac.feature_clock.ui.settings.utils.isFileUri
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_SOUND_SELECTOR_BOTTOM_PADDING
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_SOUND_SELECTOR_TOP_PADDING
+import de.oljg.glac.feature_alarm.ui.utils.AlarmSoundDefaults.GLAC_PREFIX
+import de.oljg.glac.feature_alarm.ui.utils.getAlarmSoundFileUrisFromCache
+import de.oljg.glac.feature_alarm.ui.utils.getAvailableRingtoneUris
+import de.oljg.glac.feature_alarm.ui.utils.getSoundFileUrisFromFilesDir
+import de.oljg.glac.feature_alarm.ui.utils.prettyPrintAlarmSound
 
 @Composable
 fun AlarmSoundSelector(
@@ -133,8 +134,8 @@ fun AlarmSoundSelector(
                 prettyPrintValue = String::prettyPrintAlarmSound,
                 startPadding = startPadding,
                 endPadding = endPadding,
-                topPadding = DROPDOWN_ROW_VERTICAL_PADDING * 3,
-                bottomPadding = 0.dp,
+                topPadding = ALARM_SOUND_SELECTOR_TOP_PADDING,
+                bottomPadding = ALARM_SOUND_SELECTOR_BOTTOM_PADDING,
                 addValueComponent = {
                     if (onImportClicked != null) {
                         ImportAlarmSoundButton(

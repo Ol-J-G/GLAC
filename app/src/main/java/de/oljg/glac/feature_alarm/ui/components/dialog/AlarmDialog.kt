@@ -38,7 +38,7 @@ import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.uriSaver
 import de.oljg.glac.feature_alarm.ui.utils.PresentSelectableDates
 import de.oljg.glac.feature_alarm.ui.utils.Repetition
 import de.oljg.glac.feature_alarm.ui.utils.toEpochMillisUTC
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -129,7 +129,7 @@ fun AlarmDialog(
         mutableStateOf(alarmToBeUpdated?.alarmSoundUri ?: alarmSettings.alarmSoundUri)
     }
 
-    // Just a shortcut to improve readability a tiny bit^^ (there must be a better solution oO)
+    // Just a shortcut to improve readability a tiny bit^^ (there must be a better solution ... oO)
     fun checkIfReadyToScheduleAlarm() =
             de.oljg.glac.feature_alarm.ui.utils.checkIfReadyToScheduleAlarm(
                 selectedDate,
@@ -303,7 +303,7 @@ fun AlarmDialog(
             ) {
                 HorizontalDivider(
                     modifier = Modifier.fillMaxWidth(),
-                    thickness = SettingsDefaults.DIALOG_BORDER_WIDTH,
+                    thickness = ClockSettingsDefaults.DIALOG_BORDER_WIDTH,
                     color = MaterialTheme.colorScheme.outline
                 )
                 AlarmDialogBottomBar( // Hint/Status .. // Dismiss/Schedule/Update

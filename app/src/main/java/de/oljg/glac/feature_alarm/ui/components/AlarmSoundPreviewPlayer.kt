@@ -25,12 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
-import de.oljg.glac.feature_alarm.domain.media.AlarmSoundPlayer
+import de.oljg.glac.core.media.AlarmSoundPlayer
+import de.oljg.glac.core.util.defaultIconButtonColors
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.PREVIEW_PLAYER_CORNER_SIZE_PERCENT
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.PREVIEW_PLAYER_ELEVATION
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.PREVIEW_PLAYER_ICON_SIZE
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.PREVIEW_PLAYER_PADDING
-import de.oljg.glac.feature_alarm.ui.utils.defaultIconButtonColors
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_ICON_BUTTON_SIZE
 
 @Composable
 fun AlarmSoundPreviewPlayer(
@@ -74,7 +74,7 @@ fun AlarmSoundPreviewPlayer(
                     }
                 ) {
                     Icon(
-                        modifier = Modifier.size(DEFAULT_ICON_BUTTON_SIZE),
+                        modifier = Modifier.size(PREVIEW_PLAYER_ICON_SIZE),
                         imageVector = Icons.Filled.PlayCircle,
                         contentDescription = stringResource(R.string.play_alarm_sound_preview)
                     )
@@ -89,7 +89,7 @@ fun AlarmSoundPreviewPlayer(
                     }
                 ) {
                     Icon(
-                        modifier = Modifier.size(DEFAULT_ICON_BUTTON_SIZE),
+                        modifier = Modifier.size(PREVIEW_PLAYER_ICON_SIZE),
                         imageVector = Icons.Filled.StopCircle,
                         contentDescription = stringResource(R.string.stop_alarm_sound_preview)
                     )

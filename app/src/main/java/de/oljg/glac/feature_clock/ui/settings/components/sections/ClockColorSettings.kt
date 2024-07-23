@@ -19,7 +19,7 @@ import de.oljg.glac.feature_clock.ui.settings.components.color.ColorSelector
 import de.oljg.glac.feature_clock.ui.settings.components.color.ColorsPerCharSelector
 import de.oljg.glac.feature_clock.ui.settings.components.color.ColorsPerClockPartSelector
 import de.oljg.glac.feature_clock.ui.settings.components.color.SegmentColorsSelector
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.DEFAULT_VERTICAL_SPACE
 
 @Composable
 fun ClockColorSettings(

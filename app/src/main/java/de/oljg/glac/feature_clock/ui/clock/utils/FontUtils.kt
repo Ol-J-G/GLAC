@@ -27,15 +27,15 @@ import androidx.compose.ui.unit.sp
 import de.oljg.glac.core.util.CommonFileDefaults.PATH_SEPARATOR
 import de.oljg.glac.core.util.ScreenSizeDefaults
 import de.oljg.glac.core.util.TestTags
+import de.oljg.glac.core.util.isFileUri
 import de.oljg.glac.core.util.screenDetails
 import de.oljg.glac.feature_clock.ui.clock.utils.FontDefaults.DEFAULT_CURSIVE
 import de.oljg.glac.feature_clock.ui.clock.utils.FontDefaults.DEFAULT_MONOSPACE
 import de.oljg.glac.feature_clock.ui.clock.utils.FontDefaults.DEFAULT_SANS_SERIF
 import de.oljg.glac.feature_clock.ui.clock.utils.FontDefaults.DEFAULT_SERIF
 import de.oljg.glac.feature_clock.ui.clock.utils.FontDefaults.FONT_BASENAME_DELIMITER
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.PREVIEW_SIZE_FACTOR
 import de.oljg.glac.feature_clock.ui.settings.utils.FileUtilDefaults.FONT_ASSETS_DIRECTORY
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.PREVIEW_SIZE_FACTOR
-import de.oljg.glac.feature_clock.ui.settings.utils.isFileUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -188,15 +188,15 @@ fun calculateMaxCharSizeFont(
  * (Ok, at least I didn't find a better approach yet, maybe I would able to find one when having
  * more time available ...)
  * Note: When font size is too big, chars cannot be centered and this looks "ugly", e.g. in case,
- * dividers are in place, they aren't placed as expected exactly in the middle between to rows...
+ * dividers are in place, they aren't placed as expected exactly in the middle between two rows...
  *
  * Values are results of manual tests with 'Exo2.0' and 'D-Din' fonts, and should be a good starting
  * point for max, but not too big font sizes.
  *
- * In case font size should be still to big, a user will have the possibility to scale it via
+ * In case font size should be still to big, a user will have the option to scale it via
  * settings (e.g. when user imports an unknown font...)
  *
- * Builtin fonts in assets folder should be ok with this shrink factor (will see... :>)
+ * Built-in fonts in assets folder should be ok with this shrink factor (will see... :>)
  */
 fun evaluateFontSizeShrinkFactor(dividerCount: Int, fontWeight: FontWeight): Float {
     val baseFontSizeShrinkFactor = when(dividerCount) {
@@ -532,4 +532,3 @@ object FontDefaults {
     const val DEFAULT_SERIF = "${DEFAULT_FONTFAMILY_NAMES_PREFIX}Serif"
     const val DEFAULT_CURSIVE = "${DEFAULT_FONTFAMILY_NAMES_PREFIX}Cursive"
 }
-

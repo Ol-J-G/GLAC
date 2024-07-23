@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import de.oljg.glac.core.util.ScreenDetails
 import de.oljg.glac.core.util.screenDetails
 import de.oljg.glac.feature_alarm.domain.model.Alarm
-import de.oljg.glac.feature_alarm.ui.utils.isSet
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.time.Duration
@@ -62,11 +61,11 @@ fun AlarmDialogBottomBar(
                 ) {
                     AlarmDialogActions( // Dismiss/Schedule/Update
                         scheduleOrUpdateEnabled = isReadyToScheduleAlarm,
-                        isUpdateAlarmAction = alarmToBeUpdated.isSet(),
+                        isUpdateAlarmAction = alarmToBeUpdated != null,
                         onDismiss = onDismiss
                     ) {
                         when {
-                            alarmToBeUpdated.isSet() -> onAlarmUpdated()
+                            alarmToBeUpdated != null -> onAlarmUpdated()
                             else -> onNewAlarmAdded()
                         }
                     }
@@ -86,11 +85,11 @@ fun AlarmDialogBottomBar(
             )
             AlarmDialogActions( // Dismiss/Schedule/Update
                 scheduleOrUpdateEnabled = isReadyToScheduleAlarm,
-                isUpdateAlarmAction = alarmToBeUpdated.isSet(),
+                isUpdateAlarmAction = alarmToBeUpdated != null,
                 onDismiss = onDismiss
             ) {
                 when {
-                    alarmToBeUpdated.isSet() -> onAlarmUpdated()
+                    alarmToBeUpdated != null -> onAlarmUpdated()
                     else -> onNewAlarmAdded()
                 }
             }

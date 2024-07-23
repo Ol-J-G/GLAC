@@ -16,8 +16,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import de.oljg.glac.R
 import de.oljg.glac.core.util.openDocumentAndSaveLocalCopy
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.DEFAULT_ICON_BUTTON_SIZE
 import de.oljg.glac.feature_clock.ui.settings.utils.FileUtilDefaults
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_ICON_BUTTON_SIZE
 import kotlinx.coroutines.launch
 
 @Composable
@@ -34,12 +34,9 @@ fun ImportFontFamilyButton(
                  * Save local file from picked document and send file URI back,
                  * but only when picked document is valid and local copy is created.
                  */
-                /**
-                 * Save local file from picked document and send file URI back,
-                 * but only when picked document is valid and local copy is created.
-                 */
-                val importedFontFile = openDocumentAndSaveLocalCopy(context, uri)
-                if(importedFontFile != null) onNewFontFamilyImported(importedFontFile.toUri().toString())
+                openDocumentAndSaveLocalCopy(context, uri)?.let { importedFontFile ->
+                    onNewFontFamilyImported(importedFontFile.toUri().toString())
+                }
             }
         }
     }

@@ -16,9 +16,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import de.oljg.glac.R
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockCharType
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.CLOCK_CHAR_TYPE_FONT_SIZE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.RADIO_BUTTON_ROW_HEIGHT
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.SETTINGS_HORIZONTAL_PADDING
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.CLOCK_CHAR_TYPE_FONT_SIZE
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.RADIO_BUTTON_ROW_HEIGHT
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.SETTINGS_HORIZONTAL_PADDING
 
 @Composable
 fun ClockCharTypeSelector(

@@ -35,10 +35,10 @@ import de.oljg.glac.feature_alarm.domain.model.AlarmSettings
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsEvent
 import de.oljg.glac.feature_alarm.ui.components.AlarmListItems
 import de.oljg.glac.feature_alarm.ui.components.dialog.AlarmDialog
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARMS_LIST_SCREEN_HORZONTAL_PADDING
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.localDateTimeSaver
 import de.oljg.glac.feature_alarm.ui.utils.filterAndSort
 import de.oljg.glac.feature_alarm.ui.utils.rearrange
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -220,7 +220,7 @@ private fun OneColumnLayout(
         modifier = Modifier
             .padding(paddingValues)
             .fillMaxWidth()
-            .padding(horizontal = SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2)
+            .padding(horizontal = ALARMS_LIST_SCREEN_HORZONTAL_PADDING)
             .verticalScroll(scrollState)
     ) {
         AlarmListItems(
@@ -250,7 +250,7 @@ private fun TwoColumnLayout(
         modifier = Modifier
             .padding(paddingValues)
             .fillMaxWidth()
-            .padding(horizontal = SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2)
+            .padding(horizontal = ALARMS_LIST_SCREEN_HORZONTAL_PADDING)
             .verticalScroll(scrollState),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {

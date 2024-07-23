@@ -1,5 +1,7 @@
-package de.oljg.glac.feature_clock.ui.settings.components.common
+package de.oljg.glac.core.ui.components
 
+import android.net.Uri
+import android.provider.Settings
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -28,12 +30,23 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import de.oljg.glac.core.util.translateDropDownItemText
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_ICON_BUTTON_SIZE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DROPDOWN_ROW_VERTICAL_PADDING
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DROP_DOWN_MENU_ITEM_FONT_SIZE
+import de.oljg.glac.core.util.CoreLayoutDefaults.DROP_DOWN_SELECTOR_END_PADDING
+import de.oljg.glac.core.util.CoreLayoutDefaults.DROP_DOWN_SELECTOR_MENU_ITEM_FONT_SIZE
+import de.oljg.glac.core.util.CoreLayoutDefaults.DROP_DOWN_SELECTOR_ROW_VERTICAL_PADDING
+import de.oljg.glac.core.util.CoreLayoutDefaults.DROP_DOWN_SELECTOR_SPACE
+import de.oljg.glac.core.util.CoreLayoutDefaults.TRAILING_ICON_END_PADDING
+import de.oljg.glac.core.util.FontStyle
+import de.oljg.glac.core.util.FontWeight
+import de.oljg.glac.feature_alarm.ui.utils.Repetition
+import de.oljg.glac.feature_alarm.ui.utils.prettyPrintAlarmSoundUri
+import de.oljg.glac.feature_alarm.ui.utils.translate
+import de.oljg.glac.feature_clock.ui.clock.utils.DividerLineEnd
+import de.oljg.glac.feature_clock.ui.clock.utils.DividerStyle
+import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentStyle
+import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentWeight
+import de.oljg.glac.feature_clock.ui.settings.utils.translate
 import kotlin.reflect.KClass
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,8 +59,8 @@ fun DropDownSelector(
     type: KClass<out Any> = String::class,
     maxWidthFraction: Float = 1f,
     readOnly: Boolean = true,
-    topPadding: Dp = DROPDOWN_ROW_VERTICAL_PADDING,
-    bottomPadding: Dp = DROPDOWN_ROW_VERTICAL_PADDING,
+    topPadding: Dp = DROP_DOWN_SELECTOR_ROW_VERTICAL_PADDING,
+    bottomPadding: Dp = DROP_DOWN_SELECTOR_ROW_VERTICAL_PADDING,
     startPadding: Dp = 0.dp,
     endPadding: Dp = 0.dp,
     onTextFieldValueChanged: (String) -> Unit = {},
@@ -85,9 +98,9 @@ fun DropDownSelector(
                 || resetValueComponent != null) {
                 Row(
                     modifier = Modifier
-                        .padding(end = SettingsDefaults.DROPDOWN_END_PADDING * 3),
+                        .padding(end = DROP_DOWN_SELECTOR_END_PADDING * 3),
                     horizontalArrangement = Arrangement.spacedBy(
-                        DEFAULT_ICON_BUTTON_SIZE / 8,
+                        DROP_DOWN_SELECTOR_SPACE,
                         alignment = Alignment.Start
                     ),
                     verticalAlignment = Alignment.CenterVertically
@@ -100,7 +113,7 @@ fun DropDownSelector(
 
             ExposedDropdownMenuBox(
                 modifier = Modifier
-                    .padding(end = SettingsDefaults.DROPDOWN_END_PADDING),
+                    .padding(end = DROP_DOWN_SELECTOR_END_PADDING),
                 expanded = dropDownIsExpanded,
                 onExpandedChange = { dropDownIsExpanded = !dropDownIsExpanded }
             ) {
@@ -148,7 +161,7 @@ fun DropDownSelector(
                                         itemValue = value,
                                         defaultPrettyPrinter = prettyPrintValue
                                     ),
-                                    fontSize = DROP_DOWN_MENU_ITEM_FONT_SIZE
+                                    fontSize = DROP_DOWN_SELECTOR_MENU_ITEM_FONT_SIZE
                                 )
                             },
                             onClick = {
@@ -164,15 +177,38 @@ fun DropDownSelector(
     }
 }
 
+
 @Composable
 private fun DropDownTrailingIcon(expanded: Boolean, onClick: () -> Unit) {
     Icon(
         modifier = Modifier
             .clickable { onClick.invoke() }
-            .padding(end = SettingsDefaults.TRAILING_ICON_END_PADDING)
+            .padding(end = TRAILING_ICON_END_PADDING)
             .rotate(if (expanded) 180f else 0f),
         imageVector = Icons.Filled.ArrowDropDown,
         contentDescription = null
     )
 }
 
+
+@Composable
+private fun translateDropDownItemText(
+    type: KClass<out Any>,
+    itemValue: String,
+    defaultPrettyPrinter: (String) -> String
+) = when(type) {
+    FontStyle::class -> FontStyle.valueOf(itemValue).translate()
+    FontWeight::class -> FontWeight.valueOf(itemValue).translate()
+    SevenSegmentStyle::class -> SevenSegmentStyle.valueOf(itemValue).translate()
+    SevenSegmentWeight::class -> SevenSegmentWeight.valueOf(itemValue).translate()
+    DividerStyle::class -> DividerStyle.valueOf(itemValue).translate()
+    DividerLineEnd::class -> DividerLineEnd.valueOf(itemValue).translate()
+    Repetition::class -> Repetition.valueOf(itemValue).translate()
+    else -> {
+        if (itemValue == Settings.System.DEFAULT_RINGTONE_URI.toString())
+            Uri.parse(itemValue).prettyPrintAlarmSoundUri()
+        else
+            defaultPrettyPrinter(itemValue)
+
+    }
+}

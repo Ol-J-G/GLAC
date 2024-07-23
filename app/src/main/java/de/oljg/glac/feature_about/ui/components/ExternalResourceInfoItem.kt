@@ -123,7 +123,7 @@ fun ExternalResourceInfoItem(
                         tag = INFO_ITEM_SOURCE_TAG,
                         annotation = externalResourceInfo.sourceUriString
                     )
-                    withStyle(style = AboutScreenDefaults.hyperlink) {
+                    withStyle(style = AboutScreenDefaults.hyperlinkStyle) {
                         append(externalResourceInfo.sourceName)
                     }
                     pop()
@@ -134,7 +134,7 @@ fun ExternalResourceInfoItem(
                         tag = INFO_ITEM_LICENCE_TAG,
                         annotation = externalResourceInfo.licence.url
                     )
-                    withStyle(style = AboutScreenDefaults.hyperlink) {
+                    withStyle(style = AboutScreenDefaults.hyperlinkStyle) {
                         append(externalResourceInfo.licence.name)
                     }
                     pop()

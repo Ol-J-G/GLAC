@@ -17,7 +17,7 @@ import de.oljg.glac.core.util.screenDetails
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.clock.DigitalAlarmClockScreen
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.PREVIEW_SIZE_FACTOR
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.PREVIEW_SIZE_FACTOR
 
 @Composable
 fun ClockPreview(

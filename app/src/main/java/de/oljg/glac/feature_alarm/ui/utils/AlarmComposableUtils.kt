@@ -1,31 +1,12 @@
 package de.oljg.glac.feature_alarm.ui.utils
 
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import de.oljg.glac.R
 import de.oljg.glac.core.util.CommonUtils.SPACE
 import de.oljg.glac.feature_alarm.domain.model.Alarm
@@ -51,12 +32,12 @@ fun handleAlarmToBeLaunched(
         mutableStateOf(null)
     }
 
-    var ishandling by remember {
+    var isHandling by remember {
         mutableStateOf(true)
     }
 
-    LaunchedEffect(ishandling) {
-        if (ishandling) { // Handle alarmToBeLaunched exactly one time (per onCreate)
+    LaunchedEffect(isHandling) {
+        if (isHandling) { // Handle alarmToBeLaunched exactly one time (per onCreate)
 
             /**
              * Can't be null => alarms.size must be > 0
@@ -110,7 +91,7 @@ fun handleAlarmToBeLaunched(
                     )
                 }
             }
-            ishandling = false
+            isHandling = false
         }
     }
     return alarmToBeLaunched
@@ -221,45 +202,3 @@ private fun Duration.toDaysHoursMinutesSeconds() =
                 put(DurationUnit.SECONDS, seconds.seconds.toInt(DurationUnit.SECONDS))
             }
         }
-
-
-@Composable
-fun SnoozeAlarmIndicator(onClick: () -> Unit) {
-    val textColor by animateSnoozeAlarmIndicatorColor(
-        rememberInfiniteTransition(label = "aSaTc"),
-        Color.White,
-        Color.Black
-    )
-    val backgroundColor by animateSnoozeAlarmIndicatorColor(
-        rememberInfiniteTransition(label = "aSaBc"),
-        Color.Black,
-        Color.White
-    )
-    Column(
-        modifier = Modifier.padding(16.dp),
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.Top
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .clip(CircleShape)
-                .size(32.dp)
-                .background(backgroundColor)
-                .clickable(onClick = onClick)
-        ) {
-            Text(
-                color = textColor,
-                text = stringResource(R.string.snooze_shorthand),
-                fontSize = 28.sp, //TODO: add const
-                fontFamily = FontFamily.Monospace
-            )
-        }
-    }
-}
-
-@Composable
-fun defaultIconButtonColors() = IconButtonDefaults.iconButtonColors(
-    contentColor = MaterialTheme.colorScheme.secondary,
-    disabledContentColor = MaterialTheme.colorScheme.secondaryContainer
-)

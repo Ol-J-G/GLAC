@@ -54,7 +54,7 @@ import de.oljg.glac.feature_clock.ui.clock.utils.dividerCount
 import de.oljg.glac.feature_clock.ui.clock.utils.evaluateFontSizeShrinkFactor
 import de.oljg.glac.feature_clock.ui.clock.utils.evaluateStartFontSize
 import de.oljg.glac.feature_clock.ui.clock.utils.isDaytimeMarkerChar
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.PREVIEW_SIZE_FACTOR
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.PREVIEW_SIZE_FACTOR
 
 @Composable
 fun DigitalAlarmClockLandscapeLayout(
@@ -136,8 +136,8 @@ fun DigitalAlarmClockLandscapeLayout(
         MeasureFontSize(
             textToMeasure = evaluateTextToMeasure(
                 dividerCount = dividerCount,
-                widestChar =
-                if (currentTimeFormatted.last().isLetter()) WIDEST_LETTER else WIDEST_DIGIT,
+                widestChar = if (currentTimeFormatted.last().isLetter())
+                    WIDEST_LETTER else WIDEST_DIGIT,
                 isCharDivider = finalDividerStyle == DividerStyle.CHAR
             ),
             fontSize = startFontSize,
@@ -145,7 +145,8 @@ fun DigitalAlarmClockLandscapeLayout(
             fontWeight = fontWeight,
             fontStyle = fontStyle,
             dividerStrokeWithToTakeIntoAccount =
-            if (finalDividerStyle != DividerStyle.CHAR) dividerAttributes.dividerThickness else 0.dp,
+            if (finalDividerStyle != DividerStyle.CHAR)
+                dividerAttributes.dividerThickness else 0.dp,
             onFontSizeMeasured = { measuredFontSize, measuredSize ->
                 maxFontSize = measuredFontSize
                 finalFontBoundsSize = measuredSize
@@ -289,8 +290,10 @@ fun DigitalAlarmClockLandscapeLayout(
                                         else dividerAttributes.dividerThickness,
                                         dividerColor = finalDividerColor,
                                         dividerRotateAngle = dividerAttributes.dividerRotateAngle,
-                                        firstCirclePosition = dividerAttributes.colonFirstCirclePosition,
-                                        secondCirclePosition = dividerAttributes.colonSecondCirclePosition,
+                                        firstCirclePosition = dividerAttributes
+                                            .colonFirstCirclePosition,
+                                        secondCirclePosition = dividerAttributes
+                                            .colonSecondCirclePosition,
                                         orientation = Configuration.ORIENTATION_LANDSCAPE
                                     )
 
@@ -304,8 +307,10 @@ fun DigitalAlarmClockLandscapeLayout(
                                         dividerColor = finalDividerColor,
                                         dividerStyle = finalDividerStyle,
                                         dividerLineCap = dividerAttributes.dividerLineCap,
-                                        dividerLengthPercent = dividerAttributes.dividerLengthPercentage,
-                                        dividerDashDottedPartCount = dividerAttributes.dividerDashDottedPartCount,
+                                        dividerLengthPercent = dividerAttributes
+                                            .dividerLengthPercentage,
+                                        dividerDashDottedPartCount = dividerAttributes
+                                            .dividerDashDottedPartCount,
                                         dividerRotateAngle = dividerAttributes.dividerRotateAngle,
                                         orientation = Configuration.ORIENTATION_LANDSCAPE
                                     )
@@ -407,7 +412,7 @@ private fun evaluateTextToMeasure(
 }
 
 /**
- * Used set test tags and to override default/specified clock char colors for landscape layout
+ * Used to set test tags and to override default/specified clock char colors for landscape layout
  * clock.
  *
  * Example use case
@@ -460,7 +465,8 @@ private fun evaluateTextToMeasure(
  * @param index Position of a clockChar within [formattedTime]
  * @param clockParts Contains [T] for all "parts" of a clock
  * (except dividers => these colors will be evaluated with evaluateDividerColor())
- * @return A [T] for one clock parts part, depending on the [index] of a clockChar in [formattedTime]
+ * @return A [T] for one clock parts part, depending on the [index] of a clockChar
+ * in [formattedTime]
  * @see ClockPartsColors, [ClockParts], [ClockPartsTestTags]
  */
 private fun <T> evaluateClockPartUsingIndex(

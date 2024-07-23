@@ -13,11 +13,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.MOMENT_SELECTOR_PADDING
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.localizedFullDateFormatter
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.localizedShortTimeFormatter
-import de.oljg.glac.feature_alarm.ui.utils.isSet
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DIALOG_DEFAULT_PADDING
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -31,8 +29,8 @@ fun MomentSelector(
 ) {
     Row(
         modifier = Modifier
-            .padding(horizontal = DIALOG_DEFAULT_PADDING)
-            .padding(top = DEFAULT_VERTICAL_SPACE)
+            .padding(horizontal = MOMENT_SELECTOR_PADDING)
+            .padding(top = MOMENT_SELECTOR_PADDING)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -41,8 +39,8 @@ fun MomentSelector(
         TextButton(onClick = onClick) {
             Text(
                 text = when {
-                    dateMoment.isSet() -> localizedFullDateFormatter.format(dateMoment)
-                    timeMoment.isSet() -> localizedShortTimeFormatter.format(timeMoment)
+                    dateMoment != null -> localizedFullDateFormatter.format(dateMoment)
+                    timeMoment != null -> localizedShortTimeFormatter.format(timeMoment)
                     else -> stringResource(R.string.select).uppercase()
                 }
             )

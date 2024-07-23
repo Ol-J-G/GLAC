@@ -1,9 +1,10 @@
 package de.oljg.glac.feature_clock.ui.settings.components.divider
 
 import androidx.compose.runtime.Composable
+import de.oljg.glac.core.ui.components.DropDownSelector
 import de.oljg.glac.feature_clock.ui.clock.utils.DividerLineEnd
-import de.oljg.glac.feature_clock.ui.settings.components.common.DropDownSelector
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.DIVIDER_LINE_ENDS
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.SELECTOR_PADDING
 
 @Composable
 fun DividerLineEndSelector(
@@ -13,10 +14,10 @@ fun DividerLineEndSelector(
 ) {
     DropDownSelector(
         type = DividerLineEnd::class,
-        startPadding = SettingsDefaults.DIALOG_DEFAULT_PADDING / 3,
+        startPadding = SELECTOR_PADDING / 3,
         label = label,
         selectedValue = selectedDividerLineEnd.name,
         onNewValueSelected = onNewDividerLineEndSelected,
-        values = SettingsDefaults.DIVIDER_LINE_ENDS
+        values = DIVIDER_LINE_ENDS
     )
 }

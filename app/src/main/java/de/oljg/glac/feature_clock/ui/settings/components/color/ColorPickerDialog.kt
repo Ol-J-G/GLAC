@@ -45,16 +45,16 @@ import de.oljg.glac.core.ui.components.GlacDialog
 import de.oljg.glac.core.util.ScreenDetails
 import de.oljg.glac.core.util.defaultColor
 import de.oljg.glac.core.util.screenDetails
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.COLOR_DIALOG_WIDTH
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.COLOR_PICKER_BUTTON_SPACE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.COLOR_PICKER_FLASHING_COLOR_ANIM_DURATION
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.COLOR_PICKER_HEIGHT_EXTRA_SMALL
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.COLOR_PICKER_HEIGHT_LARGE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.COLOR_PICKER_HEIGHT_MEDIUM
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.COLOR_PICKER_HEIGHT_SMALL
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.COLOR_PICKER_SLIDER_HEIGHT
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DIALOG_DEFAULT_PADDING
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.colorSaver
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.COLOR_DIALOG_WIDTH
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.COLOR_PICKER_BUTTON_SPACE
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.COLOR_PICKER_FLASHING_COLOR_ANIM_DURATION
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.COLOR_PICKER_HEIGHT_EXTRA_SMALL
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.COLOR_PICKER_HEIGHT_LARGE
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.COLOR_PICKER_HEIGHT_MEDIUM
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.COLOR_PICKER_HEIGHT_SMALL
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.COLOR_PICKER_SLIDER_HEIGHT
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.DIALOG_DEFAULT_PADDING
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.colorSaver
 
 @Composable
 fun ColorPickerDialog(

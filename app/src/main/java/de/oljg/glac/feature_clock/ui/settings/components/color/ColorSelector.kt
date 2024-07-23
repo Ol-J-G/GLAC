@@ -38,13 +38,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
 import de.oljg.glac.core.util.defaultBackgroundColor
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.COLOR_SELECTOR_COLOR_SWATCH_SIZE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.COLOR_SELECTOR_HEIGHT
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.COLOR_SELECTOR_HEX_TEXTFIELD_WIDTH
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.COLOR_SELECTOR_TF_COLOR_SWATCH_SPACE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.COLOR_SELECTOR_TF_TOP_PADDING
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.EDGE_PADDING
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.COLOR_SELECTOR_COLOR_SWATCH_SIZE
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.COLOR_SELECTOR_HEIGHT
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.COLOR_SELECTOR_HEX_TEXTFIELD_WIDTH
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.COLOR_SELECTOR_TF_COLOR_SWATCH_SPACE
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.COLOR_SELECTOR_TF_TOP_PADDING
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.EDGE_PADDING
 import de.oljg.glac.feature_clock.ui.settings.utils.argbHexCode
 import de.oljg.glac.feature_clock.ui.settings.utils.fromHexCode
 import de.oljg.glac.feature_clock.ui.settings.utils.isArgbHexCode
@@ -62,7 +62,7 @@ fun ColorSelector(
 ) {
     var initialColor by rememberSaveable(
         key = color.toArgb().toString(),
-        stateSaver = SettingsDefaults.colorSaver
+        stateSaver = ClockSettingsDefaults.colorSaver
     ) {
         mutableStateOf(color)
     }
@@ -113,7 +113,7 @@ fun ColorSelector(
                         showResetButton = false
                     }) {
                         Icon(
-                            modifier = Modifier.size(SettingsDefaults.RESET_BUTTON_SIZE),
+                            modifier = Modifier.size(ClockSettingsDefaults.RESET_BUTTON_SIZE),
                             imageVector = Icons.Filled.RestartAlt,
                             contentDescription = stringResource(R.string.reset) +
                                     " " + stringResource(R.string.color_for) + " $title",
@@ -132,7 +132,7 @@ fun ColorSelector(
                         showResetButton = true
                     }) {
                         Icon(
-                            modifier = Modifier.size(SettingsDefaults.RESET_BUTTON_SIZE),
+                            modifier = Modifier.size(ClockSettingsDefaults.RESET_BUTTON_SIZE),
                             imageVector = Icons.Filled.AutoAwesome,
                             contentDescription = stringResource(R.string.generate_random) +
                                     " " + stringResource(R.string.color_for) + " $title",

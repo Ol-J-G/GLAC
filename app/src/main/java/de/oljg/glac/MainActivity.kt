@@ -39,7 +39,7 @@ import de.oljg.glac.core.navigation.navigateSingleTopTo
 import de.oljg.glac.core.navigation.ui.bottombar.GlacBottomNavigationBar
 import de.oljg.glac.core.navigation.ui.navigationrail.GlacNavigationRail
 import de.oljg.glac.core.navigation.ui.topappbar.GlacTabBar
-import de.oljg.glac.core.util.CommonLayoutDefaults.DEFAULT_NAVIGATION_RAIL_WIDTH
+import de.oljg.glac.core.util.CoreLayoutDefaults.NAVIGATION_RAIL_WIDTH
 import de.oljg.glac.core.util.ScreenDetails
 import de.oljg.glac.core.util.screenDetails
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsEvent
@@ -190,7 +190,7 @@ fun GlacApp() {
                             start = if (showNavigationRail
                                 && (currentScreen.isSettingsScreen()
                                         || currentScreen.isInfoScreen()))
-                                DEFAULT_NAVIGATION_RAIL_WIDTH else 0.dp
+                                NAVIGATION_RAIL_WIDTH else 0.dp
                         )
                 ) {
                     GlacNavHost(navController = navController)

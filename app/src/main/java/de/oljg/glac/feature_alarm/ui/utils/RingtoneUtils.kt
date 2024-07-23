@@ -1,4 +1,4 @@
-package de.oljg.glac.feature_alarm.domain.media.utils
+package de.oljg.glac.feature_alarm.ui.utils
 
 import android.content.Context
 import android.media.RingtoneManager
@@ -10,8 +10,8 @@ import de.oljg.glac.R
 import de.oljg.glac.core.util.CommonUtils.SPACE
 import de.oljg.glac.core.util.cutOffFileNameExtension
 import de.oljg.glac.core.util.cutOffPathFromUri
-import de.oljg.glac.feature_alarm.domain.media.utils.RingtoneDefaults.RINGTONE_TITLE_KEY
-import de.oljg.glac.feature_clock.ui.settings.utils.isFileUri
+import de.oljg.glac.core.util.isFileUri
+import de.oljg.glac.feature_alarm.ui.utils.RingtoneDefaults.RINGTONE_TITLE_KEY
 import kotlin.random.Random
 
 

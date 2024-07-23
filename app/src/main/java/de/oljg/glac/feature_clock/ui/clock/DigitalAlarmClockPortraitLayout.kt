@@ -50,7 +50,7 @@ import de.oljg.glac.feature_clock.ui.clock.utils.evaluateStartFontSize
 import de.oljg.glac.feature_clock.ui.clock.utils.evalutateDividerCount
 import de.oljg.glac.feature_clock.ui.clock.utils.isDaytimeMarkerChar
 import de.oljg.glac.feature_clock.ui.clock.utils.pxToDp
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.PREVIEW_SIZE_FACTOR
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.PREVIEW_SIZE_FACTOR
 
 
 @Composable
@@ -247,11 +247,10 @@ fun DigitalAlarmClockPortraitLayout(
              * Draw 'A' or 'P' ONLY in case of ClockCharType.SEVEN_SEGMENT in last row as single
              * column (last char in currentTimeWithoutSeparators must be a letter).
              */
-            if (index == currentTimeWithoutSeparators.length - 1 &&
-                char.isLetter() &&
-                clockCharType == ClockCharType.SEVEN_SEGMENT
+            if (index == currentTimeWithoutSeparators.length - 1
+                && char.isLetter()
+                && clockCharType == ClockCharType.SEVEN_SEGMENT
             ) {
-
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
@@ -316,7 +315,8 @@ fun DigitalAlarmClockPortraitLayout(
                     }
                 }
 
-                if (index + 1 < currentTimeWithoutSeparators.length - 1) { // don't draw a divider at bottom of screen
+                // Don't draw a divider at bottom of screen
+                if (index + 1 < currentTimeWithoutSeparators.length - 1) {
                     if (dividerAttributes.dividerStyle != DividerStyle.NONE) {
                         when (dividerAttributes.dividerStyle) {
                             DividerStyle.COLON ->

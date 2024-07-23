@@ -16,7 +16,7 @@ import de.oljg.glac.core.navigation.common.GlacScreen
 import de.oljg.glac.core.navigation.ui.components.NavigationBarItemIcon
 import de.oljg.glac.core.navigation.ui.components.NavigationBarItemLabel
 import de.oljg.glac.core.navigation.ui.utils.NavigationDefaults.navItemLabels
-import de.oljg.glac.core.util.CommonLayoutDefaults.DEFAULT_NAVIGATION_RAIL_ITEM_SPACE
+import de.oljg.glac.core.util.CoreLayoutDefaults.NAVIGATION_RAIL_ITEM_SPACE
 
 @Composable
 fun GlacNavigationRail(
@@ -37,7 +37,7 @@ fun GlacNavigationRail(
                 .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
                 .fillMaxHeight(),
             verticalArrangement = Arrangement
-                .spacedBy(DEFAULT_NAVIGATION_RAIL_ITEM_SPACE, Alignment.Bottom)
+                .spacedBy(NAVIGATION_RAIL_ITEM_SPACE, Alignment.Bottom)
         ) {
             navigationRailScreens.forEach { screen ->
                 NavigationRailItem(

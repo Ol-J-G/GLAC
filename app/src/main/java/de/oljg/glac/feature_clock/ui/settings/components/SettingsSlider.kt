@@ -1,4 +1,4 @@
-package de.oljg.glac.feature_clock.ui.settings.components.common
+package de.oljg.glac.feature_clock.ui.settings.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
@@ -25,10 +25,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.EDGE_PADDING
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.RESET_BUTTON_SIZE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.SETTINGS_SLIDER_HEIGHT
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.DEFAULT_VERTICAL_SPACE
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.EDGE_PADDING
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.RESET_BUTTON_SIZE
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.SETTINGS_SLIDER_HEIGHT
 
 
 @Composable

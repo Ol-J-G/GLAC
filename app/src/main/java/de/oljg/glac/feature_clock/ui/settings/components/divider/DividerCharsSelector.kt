@@ -9,7 +9,7 @@ import de.oljg.glac.R
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
 import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults
 
 @Composable
 fun DividerCharsSelector(
@@ -38,8 +38,8 @@ fun DividerCharsSelector(
     )
     HorizontalDivider(
         modifier = Modifier.padding(
-            top = SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2,
-            bottom = SettingsDefaults.DEFAULT_VERTICAL_SPACE
+            top = ClockSettingsDefaults.DEFAULT_VERTICAL_SPACE / 2,
+            bottom = ClockSettingsDefaults.DEFAULT_VERTICAL_SPACE
         )
     )
     DividerCharSelector(
@@ -57,7 +57,7 @@ fun DividerCharsSelector(
         }
     )
     HorizontalDivider(modifier = Modifier.padding(
-        vertical = SettingsDefaults.DEFAULT_VERTICAL_SPACE)
+        vertical = ClockSettingsDefaults.DEFAULT_VERTICAL_SPACE)
     )
     DividerCharSelector(
         title = stringResource(R.string.between) + " " +

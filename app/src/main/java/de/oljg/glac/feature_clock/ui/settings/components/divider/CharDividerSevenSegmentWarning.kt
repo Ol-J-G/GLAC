@@ -14,25 +14,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults
 
 @Composable
 fun CharDividerSevenSegmentWarning() {
     Surface(
         modifier = Modifier
-            .padding(vertical = SettingsDefaults.DEFAULT_VERTICAL_SPACE),
-        shape = RoundedCornerShape(SettingsDefaults.DEFAULT_ROUNDED_CORNER_SIZE),
+            .padding(vertical = ClockSettingsDefaults.DEFAULT_VERTICAL_SPACE),
+        shape = RoundedCornerShape(ClockSettingsDefaults.DEFAULT_ROUNDED_CORNER_SIZE),
         border = BorderStroke(
-            width = SettingsDefaults.DEFAULT_BORDER_WIDTH,
+            width = ClockSettingsDefaults.DEFAULT_BORDER_WIDTH,
             color = MaterialTheme.colorScheme.error
         )
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(SettingsDefaults.DEFAULT_VERTICAL_SPACE),
+                .padding(ClockSettingsDefaults.DEFAULT_VERTICAL_SPACE),
             verticalArrangement = Arrangement.spacedBy(
-                SettingsDefaults.DEFAULT_VERTICAL_SPACE * 2,
+                ClockSettingsDefaults.DEFAULT_VERTICAL_SPACE * 2,
                 Alignment.CenterVertically
             ),
             horizontalAlignment = Alignment.CenterHorizontally

@@ -45,9 +45,12 @@ object TestTags {
 
 
 data class ClockPartsTestTags(
-    override val hours: DigitPair<String> = DigitPairTestTag(tens = HOURS_TENS, ones = HOURS_ONES),
-    override val minutes: DigitPair<String> = DigitPairTestTag(tens = MINUTES_TENS, ones = MINUTES_ONES),
-    override val seconds: DigitPair<String> = DigitPairTestTag(tens = SECONDS_TENS, ones = SECONDS_ONES),
+    override val hours: DigitPair<String> =
+            DigitPairTestTag(tens = HOURS_TENS, ones = HOURS_ONES),
+    override val minutes: DigitPair<String> =
+            DigitPairTestTag(tens = MINUTES_TENS, ones = MINUTES_ONES),
+    override val seconds: DigitPair<String> =
+            DigitPairTestTag(tens = SECONDS_TENS, ones = SECONDS_ONES),
     override val daytimeMarker: DaytimeMarker<String> =
         DaytimeMarkerTestTag(
             anteOrPost = DAYTIME_MARKER_ANTE_OR_POST,

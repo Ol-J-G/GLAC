@@ -28,7 +28,7 @@ object AboutScreenDefaults {
     val INFO_ITEM_MOD_ELEMENTS_SPACE = 8.dp
     val INFO_ITEM_MOD_BULLET_POINT_CIRCLE_SIZE = 24.dp
 
-    val hyperlink: SpanStyle @Composable get() =
+    val hyperlinkStyle: SpanStyle @Composable get() =
         SpanStyle(color = MaterialTheme.colorScheme.primary)
 
     const val AUTHOR_NAME = "Oliver Götze"

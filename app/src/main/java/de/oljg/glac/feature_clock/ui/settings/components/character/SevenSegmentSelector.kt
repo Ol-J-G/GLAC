@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
+import de.oljg.glac.core.ui.components.GlacSwitch
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
 import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
@@ -19,9 +20,8 @@ import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentDefaults.MIN_STROKE
 import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentStyle
 import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentWeight
 import de.oljg.glac.feature_clock.ui.clock.utils.isOutline
-import de.oljg.glac.feature_clock.ui.settings.components.common.SettingsSlider
-import de.oljg.glac.feature_clock.ui.settings.components.common.SettingsSwitch
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
+import de.oljg.glac.feature_clock.ui.settings.components.SettingsSlider
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.feature_clock.ui.settings.utils.prettyPrintPixel
 
 @Composable
@@ -108,7 +108,7 @@ fun SevenSegmentSelector(
                 bottom = DEFAULT_VERTICAL_SPACE
             )
         )
-        SettingsSwitch(
+        GlacSwitch(
             label = stringResource(R.string.off_segments),
             checked = clockTheme.drawOffSegments,
             onCheckedChange = { newValue ->

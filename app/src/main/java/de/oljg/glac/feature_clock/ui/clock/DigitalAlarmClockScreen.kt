@@ -20,18 +20,12 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toFile
+import de.oljg.glac.core.media.AlarmSoundPlayer
 import de.oljg.glac.core.util.defaultBackgroundColor
 import de.oljg.glac.core.util.defaultColor
+import de.oljg.glac.core.util.isFileUri
 import de.oljg.glac.core.util.lockScreenOrientation
-import de.oljg.glac.feature_alarm.domain.media.AlarmSoundPlayer
 import de.oljg.glac.feature_alarm.domain.model.Alarm
-import de.oljg.glac.feature_alarm.ui.utils.FadeSoundVolume
-import de.oljg.glac.feature_alarm.ui.utils.LightAlarm
-import de.oljg.glac.feature_alarm.ui.utils.alarmBrush
-import de.oljg.glac.feature_alarm.ui.utils.animateAlarmBrushOffset
-import de.oljg.glac.feature_alarm.ui.utils.animateAlarmColor
-import de.oljg.glac.feature_alarm.ui.utils.isLightAlarm
-import de.oljg.glac.feature_alarm.ui.utils.isNotLightAlarm
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls
@@ -40,15 +34,19 @@ import de.oljg.glac.feature_clock.ui.clock.utils.ClockCharType
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockPartsColors
 import de.oljg.glac.feature_clock.ui.clock.utils.DividerAttributes
 import de.oljg.glac.feature_clock.ui.clock.utils.DividerLineEnd
+import de.oljg.glac.feature_clock.ui.clock.utils.FadeSoundVolume
 import de.oljg.glac.feature_clock.ui.clock.utils.HideSystemBars
 import de.oljg.glac.feature_clock.ui.clock.utils.KeepScreenOn
+import de.oljg.glac.feature_clock.ui.clock.utils.LightAlarm
 import de.oljg.glac.feature_clock.ui.clock.utils.OverrideSystemBrightness
+import de.oljg.glac.feature_clock.ui.clock.utils.alarmBrush
+import de.oljg.glac.feature_clock.ui.clock.utils.animateAlarmBrushOffset
+import de.oljg.glac.feature_clock.ui.clock.utils.animateAlarmColor
 import de.oljg.glac.feature_clock.ui.clock.utils.defaultClockCharColors
 import de.oljg.glac.feature_clock.ui.clock.utils.evaluateDividerRotateAngle
 import de.oljg.glac.feature_clock.ui.clock.utils.evaluateFont
 import de.oljg.glac.feature_clock.ui.clock.utils.pxToDp
 import de.oljg.glac.feature_clock.ui.clock.utils.setSpecifiedColors
-import de.oljg.glac.feature_clock.ui.settings.utils.isFileUri
 import de.oljg.glac.feature_clock.ui.settings.utils.isSevenSegmentItalicOrReverseItalic
 import kotlinx.coroutines.delay
 import java.time.LocalTime
@@ -178,10 +176,10 @@ fun DigitalAlarmClockScreen(
     }
 
     when {
-        alarmMode && alarmToBeLaunched.isLightAlarm() -> {
+        alarmMode && alarmToBeLaunched?.isLightAlarm == true -> {
             lockScreenOrientation(context, LocalConfiguration.current.orientation)
             LightAlarm(
-                alarmToBeLaunched = alarmToBeLaunched!!, // is set in alarmMode => save
+                alarmToBeLaunched = alarmToBeLaunched,
                 lightAlarmColors = lightAlarmColors!!, // default is set in every Alarm => save
                 lightAlarmAnimatedColor = lightAlarmAnimatedColor,
                 clockBrightness = if (clockSettings.overrideSystemBrightness)
@@ -199,13 +197,13 @@ fun DigitalAlarmClockScreen(
             }
         }
 
-        alarmMode && alarmToBeLaunched.isNotLightAlarm() -> {
+        alarmMode && alarmToBeLaunched?.isLightAlarm == false -> {
             lockScreenOrientation(context, LocalConfiguration.current.orientation)
             FadeSoundVolume(
                 fadeDurationMillis = alarmSoundFadeDuration.toInt(DurationUnit.MILLISECONDS)
             )
             DisposableEffect(Unit) {
-                alarmToBeLaunched?.alarmSoundUri?.let { alarmSoundPlayer?.play(it) }
+                alarmSoundPlayer?.play(alarmToBeLaunched.alarmSoundUri)
                 onDispose { alarmSoundPlayer?.stop() }
             }
         }
@@ -290,11 +288,13 @@ fun DigitalAlarmClockScreen(
     }
 
     // In case of "sound only" / snooze alarms or after light alarm, use flashing alarm color
-    fun useAlarmColor() = (alarmMode && alarmToBeLaunched.isNotLightAlarm())
+    fun useAlarmColor() = (alarmMode && alarmToBeLaunched?.isLightAlarm == false)
             || lightAlarmIsFinished
 
     // In case of light alarm in ongoing, use cloud-like brush
-    fun useAlarmBrush() = alarmMode && alarmToBeLaunched.isLightAlarm() && !lightAlarmIsFinished
+    fun useAlarmBrush() = alarmMode
+            && alarmToBeLaunched?.isLightAlarm == true
+            && !lightAlarmIsFinished
 
     DigitalAlarmClock(
         clockSettings = clockSettings,
@@ -309,7 +309,7 @@ fun DigitalAlarmClockScreen(
         fontStyle = finalFontStyle, // for measurement
         charColors = finalCharColors,
         clockPartsColors = finalClockPartsColors,
-        backgroundColor = if (alarmMode && alarmToBeLaunched.isLightAlarm())
+        backgroundColor = if (alarmMode && alarmToBeLaunched?.isLightAlarm == true)
             lightAlarmAnimatedColor.value else
             clockTheme.backgroundColor ?: defaultBackgroundColor(),
         dividerAttributes = dividerAttributes,

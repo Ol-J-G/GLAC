@@ -3,7 +3,6 @@ package de.oljg.glac.feature_clock.ui.settings.utils
 import android.content.Context
 import androidx.core.net.toUri
 import de.oljg.glac.core.util.CommonFileDefaults.FILE_EXTENSION_DELIMITER
-import de.oljg.glac.core.util.CommonFileDefaults.FILE_PROTOCOL
 import de.oljg.glac.core.util.CommonUtils.SPACE
 import de.oljg.glac.core.util.cutOffFileNameExtension
 import de.oljg.glac.core.util.cutOffPathFromUri
@@ -64,8 +63,6 @@ fun String.hasTrueTypeFontExtension(): Boolean =
 fun String.hasOpenTypeFontExtension(): Boolean =
     this.endsWith("$FILE_EXTENSION_DELIMITER$OPEN_TYPE_FONT_FILE_EXTENSION", ignoreCase = true)
 
-fun String.isFileUri(): Boolean = this.startsWith(FILE_PROTOCOL, ignoreCase = true)
-
 fun File.isValidFontFile(): Boolean {
     return this.canRead() && this.isFile &&
             (this.name.hasTrueTypeFontExtension() || this.name.hasOpenTypeFontExtension())
@@ -73,9 +70,6 @@ fun File.isValidFontFile(): Boolean {
 
 
 object FileUtilDefaults {
-    const val LOG_TAG = "FileUtils"
-    const val UNKNOWN_FILENAME = "Unknown"
-
     const val TRUE_TYPE_FONT_FILE_EXTENSION = "ttf"
     const val OPEN_TYPE_FONT_FILE_EXTENSION = "otf"
 

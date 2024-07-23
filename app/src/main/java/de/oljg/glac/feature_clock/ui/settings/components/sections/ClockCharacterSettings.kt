@@ -19,11 +19,11 @@ import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockCharType
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockDefaults.DEFAULT_DIGIT_SIZE_FACTOR
+import de.oljg.glac.feature_clock.ui.settings.components.SettingsSlider
 import de.oljg.glac.feature_clock.ui.settings.components.character.ClockCharTypeSelector
 import de.oljg.glac.feature_clock.ui.settings.components.character.FontSelector
 import de.oljg.glac.feature_clock.ui.settings.components.character.SevenSegmentSelector
-import de.oljg.glac.feature_clock.ui.settings.components.common.SettingsSlider
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.feature_clock.ui.settings.utils.prettyPrintPercentage
 
 @Composable

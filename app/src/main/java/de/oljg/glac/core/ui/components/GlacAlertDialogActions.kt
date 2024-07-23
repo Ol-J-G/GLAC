@@ -14,11 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
-import de.oljg.glac.core.util.CommonUtils.ALERT_DIALOG_EDGE_PADDING
-import de.oljg.glac.core.util.CommonUtils.ALERT_DIALOG_PADDING
+import de.oljg.glac.core.util.CoreLayoutDefaults.GLAC_ALERT_DIALOG_EDGE_PADDING
+import de.oljg.glac.core.util.CoreLayoutDefaults.GLAC_ALERT_DIALOG_PADDING
 
 @Composable
-fun ColumnScope.AlertDialogActions(
+fun ColumnScope.GlacAlertDialogActions(
     onDissmiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
@@ -26,7 +26,7 @@ fun ColumnScope.AlertDialogActions(
         modifier = Modifier
             .fillMaxWidth()
             .weight(3f, fill = false)
-            .padding(vertical = ALERT_DIALOG_PADDING / 2),
+            .padding(vertical = GLAC_ALERT_DIALOG_PADDING / 2),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(0.dp, Alignment.End)
     ) {
@@ -40,7 +40,7 @@ fun ColumnScope.AlertDialogActions(
             },
         ) {
             Text(
-                modifier = Modifier.padding(end = ALERT_DIALOG_EDGE_PADDING),
+                modifier = Modifier.padding(end = GLAC_ALERT_DIALOG_EDGE_PADDING),
                 text = stringResource(R.string.confirm).uppercase()
             )
         }

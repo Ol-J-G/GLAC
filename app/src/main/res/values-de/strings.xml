@@ -52,7 +52,7 @@
     <string name="minutes_shortened">M</string>
 
     <!-- Seconds abbreviation -->
-    <string name="seconds_shortened">Sek</string>
+    <string name="seconds_shortened">S</string>
     <string name="caution">ACHTUNG!</string>
     <string name="character_dividers_are_not_really_useful_in_portrait_mode">Zeichen-Trenner sind nicht sinnvoll im Hochkant-Format!</string>
     <string name="line_dividers_have_been_selected_automatically_as_a_replacement">Als passender Ersatz wurden automatisch Linien-Trenner ausgewählt!</string>
@@ -123,7 +123,7 @@
     <string name="start_time">Uhrzeit</string>
     <string name="light_alarm">Lichtwecker</string>
     <string name="light_alarm_duration">Lichtwecker Dauer</string>
-    <string name="hours_shortened">Std</string>
+    <string name="hours_shortened">S</string>
     <string name="days_shortened">T</string>
     <string name="earliest_possible_alarm_time">"Frühest mögliche Weckzeit: "</string>
     <string name="more_alarm_details">Mehr…</string>

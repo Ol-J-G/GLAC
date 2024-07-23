@@ -1,8 +1,8 @@
 package de.oljg.glac.feature_clock.ui.settings.utils
 
 import com.google.common.truth.Truth.assertThat
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.FLOAT_PERCENTAGE_BETWEEN_ZERO_ONE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.PERCENTAGE_ONLY_2_PLACES
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.FLOAT_PERCENTAGE_BETWEEN_ZERO_ONE
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.PERCENTAGE_ONLY_2_PLACES
 import de.oljg.glac.utils.UnitTestDefaults.FAILED_REQUIREMENT
 import org.junit.Assert.assertThrows
 import org.junit.Test

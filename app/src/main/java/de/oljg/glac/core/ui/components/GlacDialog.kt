@@ -10,8 +10,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DIALOG_SHAPE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DIALOG_TONAL_ELEVATION
+import de.oljg.glac.core.util.CoreLayoutDefaults.GLAC_DIALOG_SHAPE
+import de.oljg.glac.core.util.CoreLayoutDefaults.GLAC_DIALOG_TONAL_ELEVATION
 
 @Composable
 fun GlacDialog(
@@ -27,25 +27,25 @@ fun GlacDialog(
         properties = properties
     ) {
         Surface(
-            shape = DIALOG_SHAPE,
-            tonalElevation = DIALOG_TONAL_ELEVATION,
+            shape = GLAC_DIALOG_SHAPE,
+            tonalElevation = GLAC_DIALOG_TONAL_ELEVATION,
             color = backgroundColor, // shape color, this surface is dialog's background
             modifier = when {
                 maxWidthFraction != null && maxHeightFraction != null -> Modifier
-                    .clip(DIALOG_SHAPE)
+                    .clip(GLAC_DIALOG_SHAPE)
                     .fillMaxWidth(maxWidthFraction)
                     .fillMaxHeight(maxHeightFraction)
 
                 maxWidthFraction != null -> Modifier
-                    .clip(DIALOG_SHAPE)
+                    .clip(GLAC_DIALOG_SHAPE)
                     .fillMaxWidth(maxWidthFraction)
 
                 maxHeightFraction != null -> Modifier
-                    .clip(DIALOG_SHAPE)
+                    .clip(GLAC_DIALOG_SHAPE)
                     .fillMaxHeight(maxHeightFraction)
 
                 else -> Modifier
-                    .clip(DIALOG_SHAPE)
+                    .clip(GLAC_DIALOG_SHAPE)
             }
         ) {
             content()

@@ -17,16 +17,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.ExpandableSection
+import de.oljg.glac.core.ui.components.GlacSwitch
 import de.oljg.glac.feature_alarm.ui.components.AlarmSoundSelector
 import de.oljg.glac.feature_alarm.ui.components.DurationSelector
 import de.oljg.glac.feature_alarm.ui.components.MomentSelector
 import de.oljg.glac.feature_alarm.ui.components.RepetitionSelector
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_DIALOG_HORIZONTAL_PADDING
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_DIALOG_LABEL_START_PADDING
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_DIALOG_VERTICAL_PADDING
 import de.oljg.glac.feature_alarm.ui.utils.Repetition
-import de.oljg.glac.feature_clock.ui.settings.components.common.SettingsSwitch
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.EDGE_PADDING
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.time.Duration
@@ -70,20 +70,20 @@ fun AlarmDialogTwoColumnsLayout(
         ) {
             MomentSelector(
                 label = stringResource(R.string.start_date),
-                labelStartPadding = EDGE_PADDING,
+                labelStartPadding = ALARM_DIALOG_LABEL_START_PADDING,
                 dateMoment = selectedDate,
                 onClick = onSelectDateClicked
             )
             MomentSelector(
                 label = stringResource(R.string.start_time),
-                labelStartPadding = EDGE_PADDING,
+                labelStartPadding = ALARM_DIALOG_LABEL_START_PADDING,
                 timeMoment = selectedTime,
                 onClick = onSelectTimeClicked
             )
             RepetitionSelector(
                 label = stringResource(R.string.repetition),
-                startPadding = SettingsDefaults.DIALOG_DEFAULT_PADDING,
-                endPadding =  SettingsDefaults.DIALOG_DEFAULT_PADDING,
+                startPadding = ALARM_DIALOG_HORIZONTAL_PADDING,
+                endPadding =  ALARM_DIALOG_HORIZONTAL_PADDING,
                 selectedRepetition = selectedRepetition,
                 onNewRepeatModeSelected = onNewRepeatModeSelected
             )
@@ -96,8 +96,8 @@ fun AlarmDialogTwoColumnsLayout(
         ) {
             AlarmSoundSelector(
                 label = stringResource(R.string.alarm_sound),
-                startPadding = SettingsDefaults.DIALOG_DEFAULT_PADDING / 3,
-                endPadding = SettingsDefaults.DIALOG_DEFAULT_PADDING,
+                startPadding = ALARM_DIALOG_HORIZONTAL_PADDING / 3,
+                endPadding = ALARM_DIALOG_HORIZONTAL_PADDING,
                 selectedAlarmSound = selectedAlarmSoundUri.toString(),
                 onNewAlarmSoundSelected = onNewAlarmSoundSelected
             )
@@ -105,15 +105,15 @@ fun AlarmDialogTwoColumnsLayout(
                 sectionTitle = stringResource(R.string.more_alarm_details),
                 sectionTitleStyle = MaterialTheme.typography.titleMedium,
                 expanded = moreAlarmDetailsIsExpanded,
-                horizontalPadding = SettingsDefaults.DIALOG_DEFAULT_PADDING,
-                verticalPadding = DEFAULT_VERTICAL_SPACE,
+                horizontalPadding = ALARM_DIALOG_HORIZONTAL_PADDING,
+                verticalPadding = ALARM_DIALOG_VERTICAL_PADDING,
                 backgroundColor = MaterialTheme.colorScheme.inverseOnSurface,
                 expandedBackgroundColor = MaterialTheme.colorScheme.inverseOnSurface,
                 onExpandedChange = onMoreAlarmDetailsExpandedChanged
             ) {
-                SettingsSwitch(
+                GlacSwitch(
                     label = stringResource(R.string.light_alarm),
-                    edgePadding = SettingsDefaults.DIALOG_DEFAULT_PADDING / 2,
+                    edgePadding = ALARM_DIALOG_HORIZONTAL_PADDING / 2,
                     checked = isLightAlarm,
                     onCheckedChange = onIsLightAlarmChanged
                 )
@@ -121,7 +121,7 @@ fun AlarmDialogTwoColumnsLayout(
                 AnimatedVisibility(visible = isLightAlarm) {
                     DurationSelector(
                         modifier = Modifier
-                            .padding(SettingsDefaults.DIALOG_DEFAULT_PADDING / 2)
+                            .padding(ALARM_DIALOG_HORIZONTAL_PADDING / 2)
                             .fillMaxWidth(),
                         label = stringResource(R.string.light_alarm_duration),
                         duration = lightAlarmDuration,
@@ -134,7 +134,7 @@ fun AlarmDialogTwoColumnsLayout(
                 }
                 DurationSelector(
                     modifier = Modifier
-                        .padding(SettingsDefaults.DIALOG_DEFAULT_PADDING / 2)
+                        .padding(ALARM_DIALOG_HORIZONTAL_PADDING / 2)
                         .fillMaxWidth(),
                     label = stringResource(R.string.snooze_duration),
                     duration = snoozeDuration,

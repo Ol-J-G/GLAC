@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.DIALOG_MESSAGE_TOP_PADDING
 
 @Composable
 fun DialogMessage(
@@ -20,7 +20,7 @@ fun DialogMessage(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2),
+            .padding(top = DIALOG_MESSAGE_TOP_PADDING),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {

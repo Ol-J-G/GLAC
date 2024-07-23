@@ -24,12 +24,12 @@ import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
 import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.clock.utils.Segment
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_BORDER_WIDTH
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_ROUNDED_CORNER_SIZE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.EDGE_PADDING
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.MULTI_COLOR_SELECTOR_PADDING
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.SETTINGS_SECTION_HEIGHT
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.DEFAULT_BORDER_WIDTH
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.DEFAULT_ROUNDED_CORNER_SIZE
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.DEFAULT_VERTICAL_SPACE
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.EDGE_PADDING
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.MULTI_COLOR_SELECTOR_PADDING
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.SETTINGS_SECTION_HEIGHT
 
 @Composable
 fun SegmentColorsSelector(

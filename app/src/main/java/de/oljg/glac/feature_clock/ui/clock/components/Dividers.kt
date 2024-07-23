@@ -155,7 +155,7 @@ fun LineDivider(
 
             rotate(degrees = dividerRotateAngle, pivot = size.center) {
                 if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    drawLine( // centered horizontal
+                    drawLine( // centered horizontally
                         start = Offset(gapBetweenEdgeAndDivider, size.center.y),
                         end = Offset(size.width - gapBetweenEdgeAndDivider, size.center.y),
                         color = dividerColor,
@@ -164,7 +164,7 @@ fun LineDivider(
                         pathEffect = pathEffect
                     )
                 } else {
-                    drawLine( // centered vertical
+                    drawLine( // centered vertically
                         start = Offset(size.center.x, gapBetweenEdgeAndDivider),
                         end = Offset(size.center.x, size.height - gapBetweenEdgeAndDivider),
                         color = dividerColor,
@@ -330,6 +330,3 @@ private fun DrawScope.drawColon(
         radius = radius
     )
 }
-
-
-

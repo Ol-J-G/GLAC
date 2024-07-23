@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
+import de.oljg.glac.core.ui.components.DropDownSelector
 import de.oljg.glac.core.ui.components.ExpandableSection
 import de.oljg.glac.core.ui.components.GlacAlertDialog
 import de.oljg.glac.core.util.CommonUtils.SPACE
@@ -34,12 +35,11 @@ import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
 import de.oljg.glac.feature_clock.domain.model.utils.ClockSettingsDefaults.DEFAULT_THEME_NAME
 import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
-import de.oljg.glac.feature_clock.ui.settings.components.common.DropDownSelector
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_ICON_BUTTON_SIZE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.MAX_THEME_NAME_LENGTH
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.MIN_THEME_NAME_LENGTH
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.RESET_BUTTON_SIZE
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.DEFAULT_ICON_BUTTON_SIZE
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.DEFAULT_VERTICAL_SPACE
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.MAX_THEME_NAME_LENGTH
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.MIN_THEME_NAME_LENGTH
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.RESET_BUTTON_SIZE
 
 @Composable
 fun ClockThemeSettings(

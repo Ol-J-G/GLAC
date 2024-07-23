@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import de.oljg.glac.core.util.CommonUtils.ALERT_DIALOG_PADDING
+import de.oljg.glac.core.util.CoreLayoutDefaults.GLAC_ALERT_DIALOG_PADDING
 
 @Composable
 fun GlacAlertDialog(
@@ -22,10 +22,10 @@ fun GlacAlertDialog(
                 horizontalAlignment = Alignment.Start,
                 modifier = Modifier
                     .padding(
-                        top = ALERT_DIALOG_PADDING * 2,
-                        start = ALERT_DIALOG_PADDING,
-                        end = ALERT_DIALOG_PADDING,
-                        bottom = ALERT_DIALOG_PADDING
+                        top = GLAC_ALERT_DIALOG_PADDING * 2,
+                        start = GLAC_ALERT_DIALOG_PADDING,
+                        end = GLAC_ALERT_DIALOG_PADDING,
+                        bottom = GLAC_ALERT_DIALOG_PADDING
                     )
                     .weight(1f, fill = false)
             ) {
@@ -35,14 +35,14 @@ fun GlacAlertDialog(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .padding(ALERT_DIALOG_PADDING)
+                    .padding(GLAC_ALERT_DIALOG_PADDING)
                     .weight(3f, fill = false)
             ) {
                 Text(message)
             }
 
             Column(modifier = Modifier.weight(1f, fill = false)) {
-                AlertDialogActions(onDissmiss = onDismissRequest) {
+                GlacAlertDialogActions(onDissmiss = onDismissRequest) {
                     onConfirm()
                 }
             }

@@ -1,11 +1,7 @@
 package de.oljg.glac.feature_alarm.ui.utils
 
-import android.net.Uri
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.mapSaver
-import androidx.compose.ui.unit.dp
 import com.ibm.icu.text.RuleBasedNumberFormat
 import de.oljg.glac.core.util.CommonUtils.SPACE
 import de.oljg.glac.feature_alarm.domain.model.Alarm
@@ -17,15 +13,11 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.Locale
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.DurationUnit
 import kotlin.time.times
 import kotlin.time.toJavaDuration
 import kotlin.time.toKotlinDuration
@@ -54,9 +46,9 @@ enum class Repetition {
     MONTHLY
 }
 
-fun <T> T?.isSet() = this != null
 
-fun dateAndTimeAreSet(date: LocalDate?, time: LocalTime?) = date.isSet() && time.isSet()
+fun dateAndTimeAreSet(date: LocalDate?, time: LocalTime?) =
+        date != null && time != null
 
 
 fun evaluateAlarmErrorState(
@@ -68,9 +60,9 @@ fun evaluateAlarmErrorState(
     scheduledAlarms: List<Alarm>,
     alarmToUpdate: Alarm? = null
 ) = when {
-    !date.isSet() && !time.isSet() -> AlarmErrorState.DATE_AND_TIME_NOT_SET
-    !date.isSet() -> AlarmErrorState.DATE_NOT_SET
-    !time.isSet() -> AlarmErrorState.TIME_NOT_SET
+    date == null && time == null -> AlarmErrorState.DATE_AND_TIME_NOT_SET
+    date == null -> AlarmErrorState.DATE_NOT_SET
+    time == null -> AlarmErrorState.TIME_NOT_SET
 
     !isValidLightAlarmDuration -> AlarmErrorState.INVALID_LIGHT_ALARM_DURATION
     !isValidSnoozeDuration -> AlarmErrorState.INVALID_SNOOZE_DURATION
@@ -386,11 +378,6 @@ fun Int.formatAsOrdinal(): String {
 }
 
 
-fun Alarm?.isLightAlarm() = this != null && this.isLightAlarm
-
-fun Alarm?.isNotLightAlarm() = this != null && !this.isLightAlarm
-
-
 fun List<Alarm>.filterAndSort() = this
     .filter { alarm -> !alarm.isSnoozeAlarm } // Keep snooze alarms under the hood
     .sortedBy { alarm -> alarm.start } // ASC => next alarm is always on top start/left side,
@@ -424,76 +411,11 @@ fun List<Alarm>.rearrange(): Pair<List<Alarm>, List<Alarm>> {
 
 @OptIn(ExperimentalMaterial3Api::class)
 object PresentSelectableDates: SelectableDates {
-    override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-        // Disable days in the past, excluding today
-        return Instant.ofEpochMilli(utcTimeMillis).atZone(ZoneId.systemDefault()).toLocalDate()
+
+    // Disable days in the past, excluding today
+    override fun isSelectableDate(utcTimeMillis: Long) =
+            Instant.ofEpochMilli(utcTimeMillis).atZone(ZoneId.systemDefault()).toLocalDate()
             .isAfter(LocalDate.now().minusDays(1L))
-    }
 
-    override fun isSelectableYear(year: Int): Boolean {
-        return year <= LocalDate.now().year + 1
-    }
-}
-
-
-object AlarmDefaults {
-    const val PREVIEW_PLAYER_CORNER_SIZE_PERCENT = 50
-    val PREVIEW_PLAYER_ELEVATION = 8.dp
-    val PREVIEW_PLAYER_PADDING = 8.dp
-    val LIST_ITEM_TEXT_ICON_SPACE = 8.dp
-    const val ALARM_REACTION_DIALOG_BUTTON_WEIGHT = 1.7f
-    const val ALARM_REACTION_DIALOG_DISMISS_BUTTON_WEIGHT = 1f
-
-    val MIN_LIGHT_ALARM_DURATION = 1.minutes
-    val MAX_LIGHT_ALARM_DURATION = 60.minutes
-
-    val MIN_SNOOZE_DURATION = 5.minutes
-    val MAX_SNOOZE_DURATION = 60.minutes
-
-    val MIN_ALARM_SOUND_FADE_DUARTION = ZERO
-    val MAX_ALARM_SOUND_FADE_DUARTION = 60.seconds
-
-    // Users can schedule an alarm from now + ALARM_START_BUFFER
-    val ALARM_START_BUFFER = 2.minutes
-
-    val REPEAT_MODES = Repetition.entries.map { repeatMode -> repeatMode.name }
-
-    val localizedFullDateFormatter: DateTimeFormatter =
-            DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
-
-    val localizedShortTimeFormatter: DateTimeFormatter =
-            DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
-
-    val localizedShortDateTimeFormatter: DateTimeFormatter =
-            DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
-
-    val minutesSaver: Saver<Duration, Any> = run {
-        val minutes = "minutes"
-        mapSaver(
-            save = { duration -> mapOf(minutes to duration.toInt(DurationUnit.MINUTES)) },
-            restore = { minutesMap -> (minutesMap[minutes] as Int).minutes }
-        )
-    }
-
-    val uriSaver: Saver<Uri, Any> = run {
-        val uriKey = "uri"
-        mapSaver(
-            save = { uri -> mapOf(uriKey to uri.toString()) },
-            restore = { uriMap -> Uri.parse(uriMap[uriKey].toString()) }
-        )
-    }
-
-    val localDateTimeSaver: Saver<LocalDateTime?, Any> = run {
-        val localDateTimeKey = "localDateTime"
-        mapSaver(
-            save = { localDateTime ->
-                mapOf(localDateTimeKey to localDateTime?.format(DateTimeFormatter.ISO_DATE_TIME))
-            },
-            restore = { localDateTimeMap ->
-                localDateTimeMap[localDateTimeKey]?.let {
-                    LocalDateTime.parse(it as String, DateTimeFormatter.ISO_DATE_TIME)
-                }
-            }
-        )
-    }
+    override fun isSelectableYear(year: Int) = year <= LocalDate.now().year + 1
 }

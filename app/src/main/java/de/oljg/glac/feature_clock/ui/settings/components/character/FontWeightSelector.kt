@@ -1,10 +1,10 @@
 package de.oljg.glac.feature_clock.ui.settings.components.character
 
 import androidx.compose.runtime.Composable
+import de.oljg.glac.core.ui.components.DropDownSelector
 import de.oljg.glac.core.util.FontWeight
-import de.oljg.glac.feature_clock.ui.settings.components.common.DropDownSelector
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DIALOG_DEFAULT_PADDING
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.FONT_WEIGHTS
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.FONT_WEIGHTS
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.SELECTOR_PADDING
 
 
 @Composable
@@ -15,11 +15,10 @@ fun FontWeightSelector(
 ) {
     DropDownSelector(
         type = FontWeight::class,
-        startPadding = DIALOG_DEFAULT_PADDING / 3,
+        startPadding = SELECTOR_PADDING / 3,
         label = label,
         selectedValue = selectedFontWeight.name,
         onNewValueSelected = onNewFontWeightSelected,
         values = FONT_WEIGHTS
     )
 }
-

@@ -35,16 +35,16 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
-import de.oljg.glac.feature_alarm.domain.media.utils.prettyPrintAlarmSoundUri
-import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.LIST_ITEM_TEXT_ICON_SPACE
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_LIST_ITEM_BORDER_SIZE
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_LIST_ITEM_HORIZONTAL_PADDING
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_LIST_ITEM_PADDING
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_LIST_ITEM_ROW_HEIGHT
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_LIST_ITEM_SURFACE_CORNER_SIZE
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_LIST_ITEM_TEXT_ICON_SPACE
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.localizedShortDateTimeFormatter
 import de.oljg.glac.feature_alarm.ui.utils.Repetition
 import de.oljg.glac.feature_alarm.ui.utils.evaluateAlarmRepetitionInfo
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_BORDER_WIDTH
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_ROUNDED_CORNER_SIZE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.EDGE_PADDING
+import de.oljg.glac.feature_alarm.ui.utils.prettyPrintAlarmSoundUri
 import de.oljg.glac.ui.theme.glacColorScheme
 import java.time.LocalDateTime
 import kotlin.time.Duration
@@ -74,30 +74,30 @@ fun AlarmListItem(
     val borderColorSelected = MaterialTheme.colorScheme.surfaceTint
 
     Surface(
-        shape = RoundedCornerShape(DEFAULT_ROUNDED_CORNER_SIZE),
+        shape = RoundedCornerShape(ALARM_LIST_ITEM_SURFACE_CORNER_SIZE),
         tonalElevation = when {
             selected -> 1.dp
             else -> 0.dp
         },
         modifier = Modifier
-            .clip(RoundedCornerShape(DEFAULT_ROUNDED_CORNER_SIZE))
-            .padding(DEFAULT_VERTICAL_SPACE / 2)
+            .clip(RoundedCornerShape(ALARM_LIST_ITEM_SURFACE_CORNER_SIZE))
+            .padding(ALARM_LIST_ITEM_PADDING)
             .border(
-                width = DEFAULT_BORDER_WIDTH * 2,
+                width = ALARM_LIST_ITEM_BORDER_SIZE,
                 color = when {
                     selected -> borderColorSelected
                     else -> borderColorUnselected
                 },
-                shape = RoundedCornerShape(DEFAULT_ROUNDED_CORNER_SIZE)
+                shape = RoundedCornerShape(ALARM_LIST_ITEM_SURFACE_CORNER_SIZE)
             )
             .clickable { onClick() }
     ) {
-        Column(modifier = Modifier.padding(DEFAULT_VERTICAL_SPACE / 2)) {
+        Column(modifier = Modifier.padding(ALARM_LIST_ITEM_PADDING)) {
             Row( // Edit alarm, Repetitioninfo, Remove alarm
                 modifier = Modifier
-                    .padding(vertical = DEFAULT_VERTICAL_SPACE)
+                    .padding(vertical = ALARM_LIST_ITEM_PADDING * 2)
                     .fillMaxWidth()
-                    .height(SettingsDefaults.SETTINGS_SECTION_HEIGHT),
+                    .height(ALARM_LIST_ITEM_ROW_HEIGHT),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -129,9 +129,12 @@ fun AlarmListItem(
             if (repetition != Repetition.NONE) {
                 Row( // Next Alarm
                     modifier = Modifier
-                        .padding(horizontal = EDGE_PADDING, vertical = DEFAULT_VERTICAL_SPACE / 2)
+                        .padding(
+                            horizontal = ALARM_LIST_ITEM_HORIZONTAL_PADDING,
+                            vertical = ALARM_LIST_ITEM_PADDING
+                        )
                         .fillMaxWidth()
-                        .height(SettingsDefaults.SETTINGS_SECTION_HEIGHT),
+                        .height(ALARM_LIST_ITEM_ROW_HEIGHT),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -157,9 +160,12 @@ fun AlarmListItem(
 
             Row( // Alarm sound, light alarm duration, snooze duration
                 modifier = Modifier
-                    .padding(horizontal = EDGE_PADDING, vertical = DEFAULT_VERTICAL_SPACE)
+                    .padding(
+                        horizontal = ALARM_LIST_ITEM_HORIZONTAL_PADDING,
+                        vertical = ALARM_LIST_ITEM_PADDING * 2
+                    )
                     .fillMaxWidth()
-                    .height(SettingsDefaults.SETTINGS_SECTION_HEIGHT),
+                    .height(ALARM_LIST_ITEM_ROW_HEIGHT),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -167,7 +173,7 @@ fun AlarmListItem(
                     modifier = Modifier.fillMaxWidth(.45f),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(
-                        LIST_ITEM_TEXT_ICON_SPACE,
+                        ALARM_LIST_ITEM_TEXT_ICON_SPACE,
                         Alignment.Start
                     )
                 ) {
@@ -184,8 +190,8 @@ fun AlarmListItem(
                     }
                 }
                 Row(
-                    modifier = Modifier.padding(start = LIST_ITEM_TEXT_ICON_SPACE * 2),
-                    horizontalArrangement = Arrangement.spacedBy(LIST_ITEM_TEXT_ICON_SPACE)
+                    modifier = Modifier.padding(start = ALARM_LIST_ITEM_TEXT_ICON_SPACE * 2),
+                    horizontalArrangement = Arrangement.spacedBy(ALARM_LIST_ITEM_TEXT_ICON_SPACE)
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.WbTwilight,
@@ -201,9 +207,9 @@ fun AlarmListItem(
                     )
                 }
                 Row(
-                    modifier = Modifier.padding(start = LIST_ITEM_TEXT_ICON_SPACE),
+                    modifier = Modifier.padding(start = ALARM_LIST_ITEM_TEXT_ICON_SPACE),
                     horizontalArrangement = Arrangement.spacedBy(
-                        LIST_ITEM_TEXT_ICON_SPACE,
+                        ALARM_LIST_ITEM_TEXT_ICON_SPACE,
                         Alignment.End
                     )
                 ) {

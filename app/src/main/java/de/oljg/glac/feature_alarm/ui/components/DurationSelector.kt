@@ -69,8 +69,10 @@ fun DurationSelector(
                 AnimatedVisibility(visible = !isValidDuration) {
                     Text(
                         text = when {
-                            durationValue.isBlank() -> stringResource(R.string.please_enter_a_number)
-                            !durationValue.isInt() -> stringResource(R.string.please_enter_a_whole_number)
+                            durationValue.isBlank() ->
+                                stringResource(R.string.please_enter_a_number)
+                            !durationValue.isInt() ->
+                                stringResource(R.string.please_enter_a_whole_number)
                             durationValue.toInt() !in
                                     minDuration.toInt(durationUnit)
                                     ..maxDuration.toInt(durationUnit) ->

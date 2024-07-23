@@ -11,8 +11,8 @@ import de.oljg.glac.feature_clock.domain.model.ClockTheme
 import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.clock.utils.DividerDefaults.DEFAULT_COLON_FIRST_CIRCLE_POSITION
 import de.oljg.glac.feature_clock.ui.clock.utils.DividerDefaults.DEFAULT_COLON_SECOND_CIRCLE_POSITION
-import de.oljg.glac.feature_clock.ui.settings.components.common.SettingsSlider
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
+import de.oljg.glac.feature_clock.ui.settings.components.SettingsSlider
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.feature_clock.ui.settings.utils.prettyPrintCirclePosition
 
 @Composable
@@ -66,7 +66,9 @@ fun ColonDividerOptionsSelector(
             onEvent(
                 ClockSettingsEvent.UpdateThemes(
                     clockThemeName,
-                    clockTheme.copy(colonSecondCirclePosition = DEFAULT_COLON_SECOND_CIRCLE_POSITION)
+                    clockTheme.copy(
+                        colonSecondCirclePosition = DEFAULT_COLON_SECOND_CIRCLE_POSITION
+                    )
                 )
             )
         }

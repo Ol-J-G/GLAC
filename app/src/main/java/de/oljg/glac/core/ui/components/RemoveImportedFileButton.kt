@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
 import de.oljg.glac.core.util.CommonUtils.SPACE
+import de.oljg.glac.core.util.CoreLayoutDefaults.ICON_SIZE
 import de.oljg.glac.core.util.cutOffPathFromUri
-import de.oljg.glac.feature_alarm.ui.utils.defaultIconButtonColors
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_ICON_BUTTON_SIZE
+import de.oljg.glac.core.util.defaultIconButtonColors
 
 
 @Composable
@@ -35,7 +35,7 @@ fun RemoveImportedFileButton(
         colors = defaultIconButtonColors(),
     ) {
         Icon(
-            modifier = Modifier.size(DEFAULT_ICON_BUTTON_SIZE),
+            modifier = Modifier.size(ICON_SIZE),
             imageVector = Icons.Filled.RemoveCircleOutline,
             contentDescription = stringResource(R.string.remove_imported_file)
         )

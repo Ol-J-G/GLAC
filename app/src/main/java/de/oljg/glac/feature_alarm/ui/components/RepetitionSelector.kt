@@ -3,10 +3,10 @@ package de.oljg.glac.feature_alarm.ui.components
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import de.oljg.glac.core.ui.components.DropDownSelector
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.REPEAT_MODES
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.REPETITION_SELECTOR_TOP_PADDING
 import de.oljg.glac.feature_alarm.ui.utils.Repetition
-import de.oljg.glac.feature_clock.ui.settings.components.common.DropDownSelector
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DIALOG_DEFAULT_PADDING
 
 @Composable
 fun RepetitionSelector(
@@ -17,7 +17,7 @@ fun RepetitionSelector(
     onNewRepeatModeSelected: (String) -> Unit
 ) {
     DropDownSelector(
-        topPadding = DIALOG_DEFAULT_PADDING,
+        topPadding = REPETITION_SELECTOR_TOP_PADDING,
         startPadding = startPadding,
         endPadding = endPadding,
         type = Repetition::class,

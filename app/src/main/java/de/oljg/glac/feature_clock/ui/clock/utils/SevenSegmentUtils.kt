@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import de.oljg.glac.core.util.CommonClockUtils.DIGIT_CHARS
+import de.oljg.glac.feature_clock.ui.clock.utils.ClockDefaults.DIGIT_CHARS
 import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentDefaults.SEGMENT_CHARS_MAP
 import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentDefaults.SEVEN_SEGMENT_CHARS
 import kotlin.math.atan
@@ -166,7 +166,7 @@ fun calculateMaxCharSizeSevenSegment(
     /**
      * When height determined throug with above is greater than available height => shrink until
      * it fits, and adjust width accordingly, to keep aspect ratio (1:2) (w:h)
-     * (It's the case at 'hh:mm' in landscape)
+     * (It's the case with 'hh:mm' in landscape)
      */
     while (charHeightSevenSegment > availableHeightForSevenSegmentClockChar) {
         charHeightSevenSegment *= .97f

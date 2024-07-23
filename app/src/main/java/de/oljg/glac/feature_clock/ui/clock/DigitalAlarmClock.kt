@@ -32,8 +32,8 @@ import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
 import de.oljg.glac.core.util.TestTags.DIGITAL_CLOCK
 import de.oljg.glac.core.util.defaultColor
-import de.oljg.glac.feature_alarm.ui.utils.SnoozeAlarmIndicator
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
+import de.oljg.glac.feature_clock.ui.clock.components.SnoozeAlarmIndicator
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockCharType
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockDefaults.DEFAULT_CLOCK_PADDING
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockDefaults.DEFAULT_DAYTIME_MARKER_SIZE_FACTOR
@@ -138,11 +138,11 @@ fun DigitalAlarmClock(
             )
         }
     }
-    if(isSnoozeAlarmActive) {
+    if (isSnoozeAlarmActive) {
         val context = LocalContext.current
         val toastText = stringResource(R.string.snooze_alarm_is_active) + "!"
-        SnoozeAlarmIndicator(onClick = {
-            Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
-        })
+        SnoozeAlarmIndicator(
+            onClick = { Toast.makeText(context, toastText, Toast.LENGTH_LONG).show() }
+        )
     }
 }

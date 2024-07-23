@@ -44,7 +44,7 @@
 
         <receiver android:name=".feature_alarm.domain.manager.AlarmReceiver" />
 
-        <service android:name=".feature_alarm.domain.media.service.AlarmSoundService" />
+        <service android:name=".core.media.service.AlarmSoundService" />
     </application>
 
 </manifest>

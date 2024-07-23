@@ -36,14 +36,14 @@ import de.oljg.glac.feature_clock.ui.clock.utils.isLineBased
 import de.oljg.glac.feature_clock.ui.clock.utils.isLineOrDashedLine
 import de.oljg.glac.feature_clock.ui.clock.utils.isNeitherNoneNorChar
 import de.oljg.glac.feature_clock.ui.clock.utils.isRotatable
-import de.oljg.glac.feature_clock.ui.settings.components.common.SettingsSlider
+import de.oljg.glac.feature_clock.ui.settings.components.SettingsSlider
 import de.oljg.glac.feature_clock.ui.settings.components.divider.CharDividerPortraitWarning
 import de.oljg.glac.feature_clock.ui.settings.components.divider.CharDividerSevenSegmentWarning
 import de.oljg.glac.feature_clock.ui.settings.components.divider.ColonDividerOptionsSelector
 import de.oljg.glac.feature_clock.ui.settings.components.divider.DividerCharsSelector
 import de.oljg.glac.feature_clock.ui.settings.components.divider.DividerLineEndSelector
 import de.oljg.glac.feature_clock.ui.settings.components.divider.DividerStyleSelector
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.DEFAULT_VERTICAL_SPACE
 import de.oljg.glac.feature_clock.ui.settings.utils.cutOffDecimalPlaces
 import de.oljg.glac.feature_clock.ui.settings.utils.isSevenSegmentItalicOrReverseItalic
 import de.oljg.glac.feature_clock.ui.settings.utils.prettyPrintAngle
@@ -181,8 +181,8 @@ fun ClockDividerSettings(
                     value = clockTheme.dividerDashDottedPartCount.toFloat(),
                     defaultValue = DEFAULT_DASH_DOTTED_PART_COUNT.toFloat(),
                     sliderValuePrettyPrintFun = Float::cutOffDecimalPlaces,
-                    valueRange =
-                    MIN_DASH_DOTTED_PART_COUNT.toFloat()..MAX_DASH_DOTTED_PART_COUNT.toFloat(),
+                    valueRange = MIN_DASH_DOTTED_PART_COUNT
+                        .toFloat()..MAX_DASH_DOTTED_PART_COUNT.toFloat(),
                     onValueChangeFinished = { newCount ->
                         onEvent(
                             ClockSettingsEvent.UpdateThemes(
@@ -298,4 +298,3 @@ fun ClockDividerSettings(
         }
     }
 }
-

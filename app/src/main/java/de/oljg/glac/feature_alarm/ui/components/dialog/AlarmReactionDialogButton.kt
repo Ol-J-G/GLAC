@@ -7,7 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_REACTION_DIALOG_BUTTON_SHAPE
 
 @Composable
 fun AlarmReactionDialogButton(
@@ -24,7 +24,7 @@ fun AlarmReactionDialogButton(
 ) {
     Button(
         modifier = modifier,
-        shape = SettingsDefaults.DIALOG_SHAPE,
+        shape = ALARM_REACTION_DIALOG_BUTTON_SHAPE,
         colors = buttonColors,
         enabled = enabled,
         onClick = onClick

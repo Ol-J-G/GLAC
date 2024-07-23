@@ -1,4 +1,4 @@
-package de.oljg.glac.feature_clock.ui.settings.components.common
+package de.oljg.glac.core.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -11,14 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.EDGE_PADDING
+import de.oljg.glac.core.util.CoreLayoutDefaults.GLAC_SWITCH_DEFAULT_EDGE_PADDING
 
 @Composable
-fun SettingsSwitch(
+fun GlacSwitch(
     modifier: Modifier = Modifier,
     label: String,
     checked: Boolean,
-    edgePadding: Dp = EDGE_PADDING,
+    edgePadding: Dp = GLAC_SWITCH_DEFAULT_EDGE_PADDING,
     testTag: String = "",
     onCheckedChange: (Boolean) -> Unit
 ) {
@@ -35,4 +35,3 @@ fun SettingsSwitch(
         )
     }
 }
-

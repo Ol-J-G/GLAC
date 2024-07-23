@@ -18,11 +18,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import de.oljg.glac.R
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_COUNTDOWN_HEIGHT
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_COUNTDOWN_HORIZONTAL_PADDING
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_COUNTDOWN_VERTICAL_PADDING
 import de.oljg.glac.feature_alarm.ui.utils.between
 import de.oljg.glac.feature_alarm.ui.utils.format
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.EDGE_PADDING
 import kotlinx.coroutines.delay
 import java.time.LocalDateTime
 import kotlin.time.Duration
@@ -44,9 +44,12 @@ fun AlarmCountdown(alarmStart: LocalDateTime) {
 
     Row(
         modifier = Modifier
-            .padding(horizontal = EDGE_PADDING, vertical = DEFAULT_VERTICAL_SPACE / 2)
+            .padding(
+                horizontal = ALARM_COUNTDOWN_HORIZONTAL_PADDING,
+                vertical = ALARM_COUNTDOWN_VERTICAL_PADDING
+            )
             .fillMaxWidth()
-            .height(SettingsDefaults.SETTINGS_SECTION_HEIGHT),
+            .height(ALARM_COUNTDOWN_HEIGHT),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

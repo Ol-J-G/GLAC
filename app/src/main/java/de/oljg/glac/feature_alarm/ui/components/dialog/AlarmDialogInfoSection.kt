@@ -7,7 +7,6 @@ import de.oljg.glac.R
 import de.oljg.glac.feature_alarm.domain.model.Alarm
 import de.oljg.glac.feature_alarm.ui.utils.earliestPossibleAlarmTime
 import de.oljg.glac.feature_alarm.ui.utils.evaluateAlarmErrorState
-import de.oljg.glac.feature_alarm.ui.utils.isSet
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.time.Duration
@@ -27,7 +26,7 @@ fun AlarmDialogInfoSection(
             message = stringResource(R.string.earliest_possible_alarm_time)
                     + earliestPossibleAlarmTime(lightAlarmDuration)
         )
-        AlarmDialogStatusDisplay( // Ready to schedule alarm? => If not => Info why // + Hints
+        AlarmDialogStatusDisplay( // Ready to schedule alarm? => If not => Info why + Hints
             alarmErrorState = evaluateAlarmErrorState(
                 startDate,
                 startTime,
@@ -37,7 +36,7 @@ fun AlarmDialogInfoSection(
                 scheduledAlarms,
                 alarmToBeUpdated
             ),
-            isUpdate = alarmToBeUpdated.isSet()
+            isUpdate = alarmToBeUpdated != null
         )
     }
 }

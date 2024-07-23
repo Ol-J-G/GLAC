@@ -14,10 +14,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import de.oljg.glac.R
+import de.oljg.glac.core.util.defaultIconButtonColors
 import de.oljg.glac.core.util.openDocumentAndSaveLocalCopy
-import de.oljg.glac.feature_alarm.domain.media.utils.AlarmSoundDefaults.SOUND_MIMETYPES
-import de.oljg.glac.feature_alarm.ui.utils.defaultIconButtonColors
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_ICON_BUTTON_SIZE
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.IMPORT_ALARM_SOUND_ICON_SIZE
+import de.oljg.glac.feature_alarm.ui.utils.AlarmSoundDefaults.SOUND_MIMETYPES
 import kotlinx.coroutines.launch
 
 @Composable
@@ -53,7 +53,7 @@ fun ImportAlarmSoundButton(
         onClick = { documentPicker.launch(SOUND_MIMETYPES) }
     ) {
         Icon(
-            modifier = Modifier.size(DEFAULT_ICON_BUTTON_SIZE),
+            modifier = Modifier.size(IMPORT_ALARM_SOUND_ICON_SIZE),
             imageVector = Icons.Filled.AddCircleOutline,
             contentDescription = stringResource(R.string.import_sound_file)
         )

@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
+import de.oljg.glac.core.ui.components.GlacSwitch
 import de.oljg.glac.core.util.ScreenDetails
 import de.oljg.glac.core.util.screenDetails
 import de.oljg.glac.feature_alarm.domain.model.AlarmSettings
@@ -32,10 +33,10 @@ import de.oljg.glac.feature_alarm.ui.components.AlarmSoundSelector
 import de.oljg.glac.feature_alarm.ui.components.DurationSelector
 import de.oljg.glac.feature_alarm.ui.components.RepetitionSelector
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_SETTINGS_SCREEN_HORIZONTAL_SPACE
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_SETTINGS_SCREEN_PADDING
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_SETTINGS_SCREEN_VERTICAL_SPACE
 import de.oljg.glac.feature_alarm.ui.utils.Repetition
-import de.oljg.glac.feature_clock.ui.settings.components.common.SettingsSwitch
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DIALOG_DEFAULT_PADDING
 import kotlin.time.DurationUnit
 
 @Composable
@@ -72,14 +73,14 @@ private fun OneColumnLayout(
 
     Column(
         modifier = Modifier
-            .padding(horizontal = DIALOG_DEFAULT_PADDING)
+            .padding(horizontal = ALARM_SETTINGS_SCREEN_PADDING)
             .fillMaxWidth()
             .verticalScroll(scrollState)
     ) {
         Header()
         RepetitionSelector(
             label = stringResource(R.string.repetition),
-            startPadding = DIALOG_DEFAULT_PADDING / 3,
+            startPadding = ALARM_SETTINGS_SCREEN_PADDING / 3,
             selectedRepetition = alarmSettings.repetition,
             onNewRepeatModeSelected = { repeatMode ->
                 onEvent(AlarmSettingsEvent.UpdateRepetition(Repetition.valueOf(repeatMode)))
@@ -103,10 +104,10 @@ private fun OneColumnLayout(
                 onEvent(AlarmSettingsEvent.UpdateAlarmSoundUri(DEFAULT_ALARM_SOUND_URI))
             }
         )
-        Spacer(modifier = Modifier.height(SettingsDefaults.DEFAULT_VERTICAL_SPACE * 2))
-        SettingsSwitch(
+        Spacer(modifier = Modifier.height(ALARM_SETTINGS_SCREEN_VERTICAL_SPACE * 2))
+        GlacSwitch(
             label = stringResource(R.string.light_alarm),
-            edgePadding = DIALOG_DEFAULT_PADDING / 3,
+            edgePadding = ALARM_SETTINGS_SCREEN_PADDING / 3,
             checked = alarmSettings.isLightAlarm,
             onCheckedChange = { newValue ->
                 onEvent(AlarmSettingsEvent.UpdateIsLightAlarm(newValue))
@@ -116,8 +117,8 @@ private fun OneColumnLayout(
             DurationSelector(
                 modifier = Modifier
                     .padding(
-                        vertical = DIALOG_DEFAULT_PADDING / 2,
-                        horizontal = DIALOG_DEFAULT_PADDING / 3
+                        vertical = ALARM_SETTINGS_SCREEN_PADDING / 2,
+                        horizontal = ALARM_SETTINGS_SCREEN_PADDING / 3
                     )
                     .fillMaxWidth(),
                 label = stringResource(R.string.light_alarm_duration),
@@ -133,8 +134,8 @@ private fun OneColumnLayout(
         DurationSelector(
             modifier = Modifier
                 .padding(
-                    vertical = DIALOG_DEFAULT_PADDING / 2,
-                    horizontal = DIALOG_DEFAULT_PADDING / 3
+                    vertical = ALARM_SETTINGS_SCREEN_PADDING / 2,
+                    horizontal = ALARM_SETTINGS_SCREEN_PADDING / 3
                 )
                 .fillMaxWidth(),
             label = stringResource(R.string.snooze_duration),
@@ -149,8 +150,8 @@ private fun OneColumnLayout(
         DurationSelector(
             modifier = Modifier
                 .padding(
-                    vertical = DIALOG_DEFAULT_PADDING / 2,
-                    horizontal = DIALOG_DEFAULT_PADDING / 3
+                    vertical = ALARM_SETTINGS_SCREEN_PADDING / 2,
+                    horizontal = ALARM_SETTINGS_SCREEN_PADDING / 3
                 )
                 .fillMaxWidth(),
             label = stringResource(R.string.alarm_sound_fade_duration),
@@ -175,7 +176,7 @@ private fun TwoColumnsLayout(
 
     Column(
         modifier = Modifier
-            .padding(horizontal = DIALOG_DEFAULT_PADDING)
+            .padding(horizontal = ALARM_SETTINGS_SCREEN_PADDING)
             .fillMaxWidth()
             .verticalScroll(scrollState)
     ) {
@@ -184,7 +185,7 @@ private fun TwoColumnsLayout(
             Column(modifier = Modifier.weight(1f)) {
                 RepetitionSelector(
                     label = stringResource(R.string.repetition),
-                    startPadding = DIALOG_DEFAULT_PADDING / 3,
+                    startPadding = ALARM_SETTINGS_SCREEN_PADDING / 3,
                     selectedRepetition = alarmSettings.repetition,
                     onNewRepeatModeSelected = { repeatMode ->
                         onEvent(AlarmSettingsEvent.UpdateRepetition(Repetition.valueOf(repeatMode)))
@@ -210,14 +211,14 @@ private fun TwoColumnsLayout(
             }
             Spacer(
                 modifier = Modifier
-                    .width(SettingsDefaults.DEFAULT_HORIZONTAL_SPACE)
+                    .width(ALARM_SETTINGS_SCREEN_HORIZONTAL_SPACE)
                     .fillMaxHeight()
             )
             Column(modifier = Modifier.weight(1f)) {
-                Spacer(modifier = Modifier.height(SettingsDefaults.DEFAULT_VERTICAL_SPACE))
-                SettingsSwitch(
+                Spacer(modifier = Modifier.height(ALARM_SETTINGS_SCREEN_VERTICAL_SPACE))
+                GlacSwitch(
                     label = stringResource(R.string.light_alarm),
-                    edgePadding = DIALOG_DEFAULT_PADDING / 3,
+                    edgePadding = ALARM_SETTINGS_SCREEN_PADDING / 3,
                     checked = alarmSettings.isLightAlarm,
                     onCheckedChange = { newValue ->
                         onEvent(AlarmSettingsEvent.UpdateIsLightAlarm(newValue))
@@ -227,8 +228,8 @@ private fun TwoColumnsLayout(
                     DurationSelector(
                         modifier = Modifier
                             .padding(
-                                vertical = DIALOG_DEFAULT_PADDING / 2,
-                                horizontal = DIALOG_DEFAULT_PADDING / 3
+                                vertical = ALARM_SETTINGS_SCREEN_PADDING / 2,
+                                horizontal = ALARM_SETTINGS_SCREEN_PADDING / 3
                             )
                             .fillMaxWidth(),
                         label = stringResource(R.string.light_alarm_duration),
@@ -244,8 +245,8 @@ private fun TwoColumnsLayout(
                 DurationSelector(
                     modifier = Modifier
                         .padding(
-                            vertical = DIALOG_DEFAULT_PADDING / 2,
-                            horizontal = DIALOG_DEFAULT_PADDING / 3
+                            vertical = ALARM_SETTINGS_SCREEN_PADDING / 2,
+                            horizontal = ALARM_SETTINGS_SCREEN_PADDING / 3
                         )
                         .fillMaxWidth(),
                     label = stringResource(R.string.snooze_duration),
@@ -260,8 +261,8 @@ private fun TwoColumnsLayout(
                 DurationSelector(
                     modifier = Modifier
                         .padding(
-                            vertical = DIALOG_DEFAULT_PADDING / 2,
-                            horizontal = DIALOG_DEFAULT_PADDING / 3
+                            vertical = ALARM_SETTINGS_SCREEN_PADDING / 2,
+                            horizontal = ALARM_SETTINGS_SCREEN_PADDING / 3
                         )
                         .fillMaxWidth(),
                     label = stringResource(R.string.alarm_sound_fade_duration),
@@ -282,7 +283,7 @@ private fun TwoColumnsLayout(
 @Composable
 private fun Header() {
     Column {
-        Spacer(modifier = Modifier.height(SettingsDefaults.DEFAULT_VERTICAL_SPACE))
+        Spacer(modifier = Modifier.height(ALARM_SETTINGS_SCREEN_VERTICAL_SPACE))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             Text(
                 text = stringResource(R.string.hint_basic_values_for_every_alarm),
@@ -293,7 +294,7 @@ private fun Header() {
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth(.95f)
-                .padding(vertical = SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2)
+                .padding(vertical = ALARM_SETTINGS_SCREEN_PADDING / 2)
         )
     }
 }

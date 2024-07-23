@@ -33,11 +33,11 @@ import de.oljg.glac.feature_clock.ui.settings.components.sections.ClockDisplaySe
 import de.oljg.glac.feature_clock.ui.settings.components.sections.ClockDividerSettings
 import de.oljg.glac.feature_clock.ui.settings.components.sections.ClockPreview
 import de.oljg.glac.feature_clock.ui.settings.components.sections.ClockThemeSettings
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_DEBOUNCE_TIMEOUT
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_HORIZONTAL_SPACE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.SETTINGS_SCREEN_HORIZONTAL_OUTER_PADDING
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.SETTINGS_SCREEN_PREVIEW_SPACE
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.DEFAULT_DEBOUNCE_TIMEOUT
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.DEFAULT_HORIZONTAL_SPACE
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.SETTINGS_SCREEN_HORIZONTAL_OUTER_PADDING
+import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.SETTINGS_SCREEN_PREVIEW_SPACE
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -70,7 +70,7 @@ fun ClockSettingsScreen(
                 mustBeOneColumn() -> OneColumnLayout(clockSettings, onEvent)
                 else -> TwoColumnsLayout(clockSettings, onEvent)
             }
-            Spacer(modifier = Modifier.height(SettingsDefaults.DEFAULT_VERTICAL_SPACE / 2))
+            Spacer(modifier = Modifier.height(ClockSettingsDefaults.DEFAULT_VERTICAL_SPACE / 2))
         }
     }
 }

@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
-import android.net.Uri
 import android.provider.Settings
 import android.view.WindowManager
 import androidx.compose.runtime.Composable
@@ -17,37 +16,6 @@ import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_HEIGHT_COMPA
 import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_HEIGHT_MEDIUM
 import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_WIDTH_COMPACT
 import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_WIDTH_MEDIUM
-import de.oljg.glac.feature_alarm.domain.media.utils.prettyPrintAlarmSoundUri
-import de.oljg.glac.feature_alarm.ui.utils.Repetition
-import de.oljg.glac.feature_alarm.ui.utils.translate
-import de.oljg.glac.feature_clock.ui.clock.utils.DividerLineEnd
-import de.oljg.glac.feature_clock.ui.clock.utils.DividerStyle
-import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentStyle
-import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentWeight
-import de.oljg.glac.feature_clock.ui.settings.utils.translate
-import kotlin.reflect.KClass
-
-@Composable
-fun translateDropDownItemText(
-    type: KClass<out Any>,
-    itemValue: String,
-    defaultPrettyPrinter: (String) -> String
-) = when(type) {
-    FontStyle::class -> FontStyle.valueOf(itemValue).translate()
-    FontWeight::class -> FontWeight.valueOf(itemValue).translate()
-    SevenSegmentStyle::class -> SevenSegmentStyle.valueOf(itemValue).translate()
-    SevenSegmentWeight::class -> SevenSegmentWeight.valueOf(itemValue).translate()
-    DividerStyle::class -> DividerStyle.valueOf(itemValue).translate()
-    DividerLineEnd::class -> DividerLineEnd.valueOf(itemValue).translate()
-    Repetition::class -> Repetition.valueOf(itemValue).translate()
-    else -> {
-        if (itemValue == Settings.System.DEFAULT_RINGTONE_URI.toString())
-            Uri.parse(itemValue).prettyPrintAlarmSoundUri()
-        else
-            defaultPrettyPrinter(itemValue)
-
-    }
-}
 
 
 fun Context.findActivity(): Activity? {
@@ -185,6 +153,4 @@ fun unlockScreenOrientation(activity: Activity?) {
 
 object CommonUtils {
     const val SPACE = ' '
-    val ALERT_DIALOG_PADDING = 16.dp
-    val ALERT_DIALOG_EDGE_PADDING = 12.dp
 }

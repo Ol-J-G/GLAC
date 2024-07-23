@@ -1,6 +1,5 @@
 package de.oljg.glac.feature_clock.ui.settings.components.character
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,17 +14,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import de.oljg.glac.core.ui.components.DropDownSelector
 import de.oljg.glac.core.ui.components.RemoveImportedFileButton
 import de.oljg.glac.core.util.cutOffPathFromUri
-import de.oljg.glac.feature_alarm.domain.media.utils.AlarmSoundDefaults
+import de.oljg.glac.core.util.isFileUri
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls
 import de.oljg.glac.feature_clock.ui.clock.utils.FontNameParts
 import de.oljg.glac.feature_clock.ui.clock.utils.contains
-import de.oljg.glac.feature_clock.ui.settings.components.common.DropDownSelector
 import de.oljg.glac.feature_clock.ui.settings.utils.FileUtilDefaults.DEFAULT_FONT_NAMES
 import de.oljg.glac.feature_clock.ui.settings.utils.getFontFileNamesFromAssets
 import de.oljg.glac.feature_clock.ui.settings.utils.getFontFileUrisFromFilesDir
-import de.oljg.glac.feature_clock.ui.settings.utils.isFileUri
 import de.oljg.glac.feature_clock.ui.settings.utils.prettyPrintFontName
 
 @Composable
@@ -57,7 +55,6 @@ fun FontFamilySelector(
      * => GLAC selection, default font families available on device
      */
     fun shouldRemoveButtonBeEnabled() = selectedValue.isFileUri()
-            && !selectedValue.contains(AlarmSoundDefaults.GLAC_PREFIX, ignoreCase = false)
 
     var isRemoveButtonEnabled by rememberSaveable(onNewFontFamilyImported) {
         mutableStateOf(shouldRemoveButtonBeEnabled())
@@ -74,7 +71,6 @@ fun FontFamilySelector(
     // Load built-in fonts (assets/fonts) only initally.
     LaunchedEffect(builtInAreLoading) {
         if (builtInAreLoading) {
-            Log.d("TAG", "builtInAreLoading")
             fontFileNamesFromAssets = getFontFileNamesFromAssets(context).filter { fileName ->
                 fileName.contains(FontNameParts.REGULAR.name)
             }
@@ -89,7 +85,6 @@ fun FontFamilySelector(
      */
     LaunchedEffect(importedAreLoading, builtInAreLoading) {
         if (importedAreLoading && !builtInAreLoading) {
-            Log.d("TAG", "importedAreLoading")
             fontFileUrisFromFilesDir = getFontFileUrisFromFilesDir(context)
             allFontFileNamesAndUris = (
                     DEFAULT_FONT_NAMES + fontFileNamesFromAssets + fontFileUrisFromFilesDir

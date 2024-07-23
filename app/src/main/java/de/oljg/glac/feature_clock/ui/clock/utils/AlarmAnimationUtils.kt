@@ -1,4 +1,4 @@
-package de.oljg.glac.feature_alarm.ui.utils
+package de.oljg.glac.feature_clock.ui.clock.utils
 
 import android.content.Context.AUDIO_SERVICE
 import android.media.AudioManager

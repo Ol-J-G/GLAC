@@ -33,12 +33,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_BORDER_WIDTH
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_ROUNDED_CORNER_SIZE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.DEFAULT_VERTICAL_SPACE
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.SETTINGS_HORIZONTAL_PADDING
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.SETTINGS_SECTION_HEIGHT
-import de.oljg.glac.feature_clock.ui.settings.utils.SettingsDefaults.TRAILING_ICON_END_PADDING
+import de.oljg.glac.core.util.CoreLayoutDefaults.EXPANDABLE_SECTION_BORDER_WIDTH
+import de.oljg.glac.core.util.CoreLayoutDefaults.EXPANDABLE_SECTION_HEIGHT
+import de.oljg.glac.core.util.CoreLayoutDefaults.EXPANDABLE_SECTION_HORIZONTAL_PADDING
+import de.oljg.glac.core.util.CoreLayoutDefaults.EXPANDABLE_SECTION_SURFACE_CORNER_SIZE
+import de.oljg.glac.core.util.CoreLayoutDefaults.EXPANDABLE_SECTION_VERTICAL_PADDING
+import de.oljg.glac.core.util.CoreLayoutDefaults.TRAILING_ICON_END_PADDING
 
 
 @Composable
@@ -47,7 +47,7 @@ fun ExpandableSection(
     sectionTitleStyle: TextStyle = MaterialTheme.typography.titleLarge,
     expanded: Boolean,
     horizontalPadding: Dp = 0.dp,
-    verticalPadding: Dp = DEFAULT_VERTICAL_SPACE / 2,
+    verticalPadding: Dp = EXPANDABLE_SECTION_VERTICAL_PADDING,
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
     expandedBackgroundColor: Color = MaterialTheme.colorScheme.inverseOnSurface,
     onExpandedChange: (Boolean) -> Unit,
@@ -58,25 +58,25 @@ fun ExpandableSection(
         modifier = Modifier
             .padding(horizontal = horizontalPadding, vertical = verticalPadding)
             .testTag(testTag),
-        shape = RoundedCornerShape(DEFAULT_ROUNDED_CORNER_SIZE),
+        shape = RoundedCornerShape(EXPANDABLE_SECTION_SURFACE_CORNER_SIZE),
         border = BorderStroke(
-            width = DEFAULT_BORDER_WIDTH, color = if (expanded)
-                MaterialTheme.colorScheme.outline
-            else MaterialTheme.colorScheme.outlineVariant
+            width = EXPANDABLE_SECTION_BORDER_WIDTH,
+            color = if (expanded)
+                MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.outlineVariant
         )
     ) {
         Column {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(SETTINGS_SECTION_HEIGHT)
+                    .height(EXPANDABLE_SECTION_HEIGHT)
                     .background(if (expanded) expandedBackgroundColor else backgroundColor)
                     .clickable(onClick = { onExpandedChange(!expanded) }),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    modifier = Modifier.padding(start = SETTINGS_HORIZONTAL_PADDING),
+                    modifier = Modifier.padding(start = EXPANDABLE_SECTION_HORIZONTAL_PADDING),
                     text = sectionTitle,
                     style = sectionTitleStyle
                 )
@@ -94,7 +94,7 @@ fun ExpandableSection(
                 Column(
                     modifier = Modifier
                         .padding(
-                            horizontal = SETTINGS_HORIZONTAL_PADDING,
+                            horizontal = EXPANDABLE_SECTION_HORIZONTAL_PADDING,
                             vertical = verticalPadding
                         )
                 ) {

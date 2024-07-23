@@ -1,4 +1,4 @@
-package de.oljg.glac.feature_alarm.domain.media.service
+package de.oljg.glac.core.media.service
 
 import android.app.Service
 import android.content.Intent
@@ -7,7 +7,7 @@ import android.media.AudioAttributes.USAGE_ALARM
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
-import de.oljg.glac.feature_alarm.domain.media.utils.AlarmSoundDefaults.ALARM_SOUND_URI_KEY
+import de.oljg.glac.feature_alarm.ui.utils.AlarmSoundDefaults.ALARM_SOUND_URI_KEY
 
 class AlarmSoundService : Service() {
 

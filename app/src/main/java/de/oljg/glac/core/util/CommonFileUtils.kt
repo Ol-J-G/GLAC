@@ -6,10 +6,9 @@ import android.util.Log
 import androidx.core.net.toFile
 import androidx.documentfile.provider.DocumentFile
 import de.oljg.glac.core.util.CommonFileDefaults.FILE_EXTENSION_DELIMITER
+import de.oljg.glac.core.util.CommonFileDefaults.FILE_PROTOCOL
+import de.oljg.glac.core.util.CommonFileDefaults.LOG_TAG
 import de.oljg.glac.core.util.CommonFileDefaults.PATH_SEPARATOR
-import de.oljg.glac.feature_clock.ui.settings.utils.FileUtilDefaults.LOG_TAG
-import de.oljg.glac.feature_clock.ui.settings.utils.FileUtilDefaults.UNKNOWN_FILENAME
-import de.oljg.glac.feature_clock.ui.settings.utils.isFileUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -29,8 +28,7 @@ import java.io.IOException
  */
 @Throws(IOException::class)
 suspend fun openDocumentAndSaveLocalCopy(context: Context, uri: Uri): File? {
-    val fileName = DocumentFile.fromSingleUri(context, uri)?.name ?: UNKNOWN_FILENAME
-    if (fileName == UNKNOWN_FILENAME) return null
+    val fileName = DocumentFile.fromSingleUri(context, uri)?.name ?: return null
 
     val localFileCopy = File(context.filesDir, fileName)
     withContext(Dispatchers.IO) {
@@ -64,8 +62,13 @@ fun String.cutOffFileNameExtension(): String = this.substringBeforeLast(FILE_EXT
 
 fun String.cutOffPathFromUri(): String = this.substringAfterLast(PATH_SEPARATOR)
 
+fun String.isFileUri(): Boolean =
+        this.startsWith(FILE_PROTOCOL, ignoreCase = true)
+
 object CommonFileDefaults {
     val PATH_SEPARATOR = File.separator.toString()
     const val FILE_EXTENSION_DELIMITER = '.'
     const val FILE_PROTOCOL = "file://"
+
+    const val LOG_TAG = "FileUtils"
 }

@@ -19,10 +19,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import de.oljg.glac.R
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.TIME_PICKER_DIALOG_ACTIONS_HEIGHT
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.TIME_PICKER_DIALOG_PADDING
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.TIME_PICKER_DIALOG_TITLE_BOTTOM_PADDING
+import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.TIME_PICKER_DIALOG_TONAL_ELEVATION
 
 /**
  * Source:
@@ -49,7 +52,7 @@ fun TimePickerDialog(
     ) {
         Surface(
             shape = MaterialTheme.shapes.extraLarge,
-            tonalElevation = 6.dp,
+            tonalElevation = TIME_PICKER_DIALOG_TONAL_ELEVATION,
             modifier = Modifier
                 .width(IntrinsicSize.Min)
                 .height(IntrinsicSize.Min)
@@ -60,13 +63,13 @@ fun TimePickerDialog(
             color = containerColor
         ) {
             Column(
-                modifier = Modifier.padding(24.dp),
+                modifier = Modifier.padding(TIME_PICKER_DIALOG_PADDING),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 20.dp),
+                        .padding(bottom = TIME_PICKER_DIALOG_TITLE_BOTTOM_PADDING),
                     text = title,
                     style = MaterialTheme.typography.labelMedium
                 )
@@ -76,7 +79,7 @@ fun TimePickerDialog(
                 }
                 Row(
                     modifier = Modifier
-                        .height(40.dp)
+                        .height(TIME_PICKER_DIALOG_ACTIONS_HEIGHT)
                         .fillMaxWidth()
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
