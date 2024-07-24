@@ -3,7 +3,7 @@ package de.oljg.glac.feature_alarm.ui.utils
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates
 import com.ibm.icu.text.RuleBasedNumberFormat
-import de.oljg.glac.core.util.CommonUtils.SPACE
+import de.oljg.glac.core.utils.CommonUtils.SPACE
 import de.oljg.glac.feature_alarm.domain.model.Alarm
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_START_BUFFER
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.localizedShortDateTimeFormatter

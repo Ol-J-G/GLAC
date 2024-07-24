@@ -30,7 +30,7 @@ import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.DropDownSelector
 import de.oljg.glac.core.ui.components.ExpandableSection
 import de.oljg.glac.core.ui.components.GlacAlertDialog
-import de.oljg.glac.core.util.CommonUtils.SPACE
+import de.oljg.glac.core.utils.CommonUtils.SPACE
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
 import de.oljg.glac.feature_clock.domain.model.utils.ClockSettingsDefaults.DEFAULT_THEME_NAME

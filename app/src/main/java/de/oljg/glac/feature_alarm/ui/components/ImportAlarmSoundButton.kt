@@ -14,8 +14,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import de.oljg.glac.R
-import de.oljg.glac.core.util.defaultIconButtonColors
-import de.oljg.glac.core.util.openDocumentAndSaveLocalCopy
+import de.oljg.glac.core.utils.defaultIconButtonColors
+import de.oljg.glac.core.utils.openDocumentAndSaveLocalCopy
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.IMPORT_ALARM_SOUND_ICON_SIZE
 import de.oljg.glac.feature_alarm.ui.utils.AlarmSoundDefaults.SOUND_MIMETYPES
 import kotlinx.coroutines.launch

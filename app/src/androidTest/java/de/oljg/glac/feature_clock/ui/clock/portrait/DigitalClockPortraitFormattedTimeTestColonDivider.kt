@@ -10,7 +10,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import de.oljg.glac.EmptyTestActivity
-import de.oljg.glac.core.util.TestTags
+import de.oljg.glac.core.utils.TestTags
 import de.oljg.glac.di.AppModule
 import de.oljg.glac.feature_clock.ui.clock.utils.DividerStyle
 import de.oljg.glac.test.isolated.DigitalClockPortraitLayoutIsolatedFont

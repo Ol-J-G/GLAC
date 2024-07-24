@@ -30,8 +30,8 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
-import de.oljg.glac.core.util.TestTags.DIGITAL_CLOCK
-import de.oljg.glac.core.util.defaultColor
+import de.oljg.glac.core.utils.TestTags.DIGITAL_CLOCK
+import de.oljg.glac.core.utils.defaultColor
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.ui.clock.components.SnoozeAlarmIndicator
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockCharType

@@ -2,10 +2,10 @@ package de.oljg.glac.feature_clock.ui.settings.utils
 
 import android.content.Context
 import androidx.core.net.toUri
-import de.oljg.glac.core.util.CommonFileDefaults.FILE_EXTENSION_DELIMITER
-import de.oljg.glac.core.util.CommonUtils.SPACE
-import de.oljg.glac.core.util.cutOffFileNameExtension
-import de.oljg.glac.core.util.cutOffPathFromUri
+import de.oljg.glac.core.utils.CommonFileDefaults.FILE_EXTENSION_DELIMITER
+import de.oljg.glac.core.utils.CommonUtils.SPACE
+import de.oljg.glac.core.utils.cutOffFileNameExtension
+import de.oljg.glac.core.utils.cutOffPathFromUri
 import de.oljg.glac.feature_clock.ui.clock.utils.FontDefaults
 import de.oljg.glac.feature_clock.ui.settings.utils.FileUtilDefaults.FONT_ASSETS_DIRECTORY
 import de.oljg.glac.feature_clock.ui.settings.utils.FileUtilDefaults.OPEN_TYPE_FONT_FILE_EXTENSION

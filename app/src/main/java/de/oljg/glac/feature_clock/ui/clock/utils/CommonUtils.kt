@@ -9,9 +9,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import de.oljg.glac.core.util.findActivity
-import de.oljg.glac.core.util.resetScreenBrightness
-import de.oljg.glac.core.util.setScreenBrightness
+import de.oljg.glac.core.utils.findActivity
+import de.oljg.glac.core.utils.resetScreenBrightness
+import de.oljg.glac.core.utils.setScreenBrightness
 
 
 @Composable

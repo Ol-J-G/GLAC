@@ -3,7 +3,7 @@ package de.oljg.glac.feature_alarm.ui.utils
 import android.content.Context
 import android.net.Uri
 import androidx.core.net.toUri
-import de.oljg.glac.core.util.CommonFileDefaults.FILE_EXTENSION_DELIMITER
+import de.oljg.glac.core.utils.CommonFileDefaults.FILE_EXTENSION_DELIMITER
 import de.oljg.glac.feature_alarm.ui.utils.AlarmSoundDefaults.FLAC_FILE_EXTENSION
 import de.oljg.glac.feature_alarm.ui.utils.AlarmSoundDefaults.MP3_FILE_EXTENSION
 import de.oljg.glac.feature_alarm.ui.utils.AlarmSoundDefaults.OGG_FILE_EXTENSION

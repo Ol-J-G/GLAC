@@ -7,10 +7,10 @@ import android.provider.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
-import de.oljg.glac.core.util.CommonUtils.SPACE
-import de.oljg.glac.core.util.cutOffFileNameExtension
-import de.oljg.glac.core.util.cutOffPathFromUri
-import de.oljg.glac.core.util.isFileUri
+import de.oljg.glac.core.utils.CommonUtils.SPACE
+import de.oljg.glac.core.utils.cutOffFileNameExtension
+import de.oljg.glac.core.utils.cutOffPathFromUri
+import de.oljg.glac.core.utils.isFileUri
 import de.oljg.glac.feature_alarm.ui.utils.RingtoneDefaults.RINGTONE_TITLE_KEY
 import kotlin.random.Random
 

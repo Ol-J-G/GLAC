@@ -1,14 +1,14 @@
-package de.oljg.glac.core.util
+package de.oljg.glac.core.utils
 
 import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.core.net.toFile
 import androidx.documentfile.provider.DocumentFile
-import de.oljg.glac.core.util.CommonFileDefaults.FILE_EXTENSION_DELIMITER
-import de.oljg.glac.core.util.CommonFileDefaults.FILE_PROTOCOL
-import de.oljg.glac.core.util.CommonFileDefaults.LOG_TAG
-import de.oljg.glac.core.util.CommonFileDefaults.PATH_SEPARATOR
+import de.oljg.glac.core.utils.CommonFileDefaults.FILE_EXTENSION_DELIMITER
+import de.oljg.glac.core.utils.CommonFileDefaults.FILE_PROTOCOL
+import de.oljg.glac.core.utils.CommonFileDefaults.LOG_TAG
+import de.oljg.glac.core.utils.CommonFileDefaults.PATH_SEPARATOR
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File

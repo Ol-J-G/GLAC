@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import de.oljg.glac.core.util.CoreLayoutDefaults.GLAC_ALERT_DIALOG_PADDING
+import de.oljg.glac.core.utils.CoreLayoutDefaults.GLAC_ALERT_DIALOG_PADDING
 
 @Composable
 fun GlacAlertDialog(

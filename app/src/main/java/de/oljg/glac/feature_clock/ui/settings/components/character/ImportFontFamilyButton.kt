@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import de.oljg.glac.R
-import de.oljg.glac.core.util.openDocumentAndSaveLocalCopy
+import de.oljg.glac.core.utils.openDocumentAndSaveLocalCopy
 import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.DEFAULT_ICON_BUTTON_SIZE
 import de.oljg.glac.feature_clock.ui.settings.utils.FileUtilDefaults
 import kotlinx.coroutines.launch

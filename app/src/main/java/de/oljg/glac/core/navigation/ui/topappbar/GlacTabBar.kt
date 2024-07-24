@@ -16,10 +16,10 @@ import de.oljg.glac.core.navigation.common.GlacRoute
 import de.oljg.glac.core.navigation.common.GlacScreen
 import de.oljg.glac.core.navigation.ui.topappbar.components.GlacTab
 import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TOP_APP_BAR_HEIGHT
-import de.oljg.glac.core.util.TestTags.ALARMS_TAB
-import de.oljg.glac.core.util.TestTags.CLOCK_TAB
-import de.oljg.glac.core.util.TestTags.INFO_TAB
-import de.oljg.glac.core.util.TestTags.SETTINGS_TAB
+import de.oljg.glac.core.utils.TestTags.ALARMS_TAB
+import de.oljg.glac.core.utils.TestTags.CLOCK_TAB
+import de.oljg.glac.core.utils.TestTags.INFO_TAB
+import de.oljg.glac.core.utils.TestTags.SETTINGS_TAB
 
 @Composable
 fun GlacTabBar(

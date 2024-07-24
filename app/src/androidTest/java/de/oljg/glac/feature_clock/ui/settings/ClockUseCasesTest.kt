@@ -5,8 +5,8 @@ import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import de.oljg.glac.core.util.FontStyle
-import de.oljg.glac.core.util.FontWeight
+import de.oljg.glac.core.utils.FontStyle
+import de.oljg.glac.core.utils.FontWeight
 import de.oljg.glac.di.AppModule
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme

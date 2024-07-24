@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import de.oljg.glac.core.util.ScreenDetails
-import de.oljg.glac.core.util.screenDetails
+import de.oljg.glac.core.utils.ScreenDetails
+import de.oljg.glac.core.utils.screenDetails
 import de.oljg.glac.feature_alarm.domain.model.Alarm
 import java.time.LocalDate
 import java.time.LocalTime

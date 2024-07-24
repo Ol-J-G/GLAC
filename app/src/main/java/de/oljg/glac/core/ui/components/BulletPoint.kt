@@ -16,9 +16,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
-import de.oljg.glac.core.util.CoreLayoutDefaults.BULLET_POINT_ELEMENTS_HORIZONTAL_SPACE
-import de.oljg.glac.core.util.CoreLayoutDefaults.BULLET_POINT_NUMBER_SHAPE_SIZE
-import de.oljg.glac.core.util.CoreLayoutDefaults.BULLET_POINT_TEXT_LINE_HEIGHT
+import de.oljg.glac.core.utils.CoreLayoutDefaults.BULLET_POINT_ELEMENTS_HORIZONTAL_SPACE
+import de.oljg.glac.core.utils.CoreLayoutDefaults.BULLET_POINT_NUMBER_SHAPE_SIZE
+import de.oljg.glac.core.utils.CoreLayoutDefaults.BULLET_POINT_TEXT_LINE_HEIGHT
 
 
 @Composable

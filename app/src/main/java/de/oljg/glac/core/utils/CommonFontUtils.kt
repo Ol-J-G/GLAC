@@ -1,4 +1,4 @@
-package de.oljg.glac.core.util
+package de.oljg.glac.core.utils
 
 
 enum class FontWeight {

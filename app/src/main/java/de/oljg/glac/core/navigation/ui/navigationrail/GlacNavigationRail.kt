@@ -16,7 +16,7 @@ import de.oljg.glac.core.navigation.common.GlacScreen
 import de.oljg.glac.core.navigation.ui.components.NavigationBarItemIcon
 import de.oljg.glac.core.navigation.ui.components.NavigationBarItemLabel
 import de.oljg.glac.core.navigation.ui.utils.NavigationDefaults.navItemLabels
-import de.oljg.glac.core.util.CoreLayoutDefaults.NAVIGATION_RAIL_ITEM_SPACE
+import de.oljg.glac.core.utils.CoreLayoutDefaults.NAVIGATION_RAIL_ITEM_SPACE
 
 @Composable
 fun GlacNavigationRail(

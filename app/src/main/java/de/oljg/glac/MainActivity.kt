@@ -39,9 +39,9 @@ import de.oljg.glac.core.navigation.navigateSingleTopTo
 import de.oljg.glac.core.navigation.ui.bottombar.GlacBottomNavigationBar
 import de.oljg.glac.core.navigation.ui.navigationrail.GlacNavigationRail
 import de.oljg.glac.core.navigation.ui.topappbar.GlacTabBar
-import de.oljg.glac.core.util.CoreLayoutDefaults.NAVIGATION_RAIL_WIDTH
-import de.oljg.glac.core.util.ScreenDetails
-import de.oljg.glac.core.util.screenDetails
+import de.oljg.glac.core.utils.CoreLayoutDefaults.NAVIGATION_RAIL_WIDTH
+import de.oljg.glac.core.utils.ScreenDetails
+import de.oljg.glac.core.utils.screenDetails
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsEvent
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsViewModel
 import de.oljg.glac.ui.theme.GLACTheme

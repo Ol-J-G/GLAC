@@ -21,9 +21,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import de.oljg.glac.core.util.ScreenDetails
-import de.oljg.glac.core.util.TestTags.CLOCK_SETTINGS_SCREEN
-import de.oljg.glac.core.util.screenDetails
+import de.oljg.glac.core.utils.ScreenDetails
+import de.oljg.glac.core.utils.TestTags.CLOCK_SETTINGS_SCREEN
+import de.oljg.glac.core.utils.screenDetails
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.settings.components.sections.ClockBrightnessSettings

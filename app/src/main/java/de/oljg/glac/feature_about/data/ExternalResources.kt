@@ -1,6 +1,6 @@
 package de.oljg.glac.feature_about.data
 
-import de.oljg.glac.core.util.FontWeight
+import de.oljg.glac.core.utils.FontWeight
 import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.APACHE_LICENCE_NAME
 import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.CUSTOM_LICENCE
 import de.oljg.glac.feature_about.data.ExternalResourcesDefaults.C_C_BY_4

@@ -32,7 +32,7 @@ import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TAB_FADE_OUT_ANI
 import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TAB_PADDING
 import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TAB_TEXT_ICON_SPACE
 import de.oljg.glac.core.navigation.ui.topappbar.util.Constants.TOP_APP_BAR_HEIGHT
-import de.oljg.glac.core.util.defaultColor
+import de.oljg.glac.core.utils.defaultColor
 import java.util.Locale
 
 @Composable

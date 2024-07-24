@@ -31,7 +31,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import de.oljg.glac.core.util.defaultColor
+import de.oljg.glac.core.utils.defaultColor
 import de.oljg.glac.feature_clock.ui.clock.utils.Segment
 import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentDefaults.DEFAULT_ASPECT_RATIO
 import de.oljg.glac.feature_clock.ui.clock.utils.SevenSegmentDefaults.DEFAULT_ITALIC_FACTOR

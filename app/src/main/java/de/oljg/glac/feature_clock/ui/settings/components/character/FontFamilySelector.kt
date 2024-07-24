@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import de.oljg.glac.core.ui.components.DropDownSelector
 import de.oljg.glac.core.ui.components.RemoveImportedFileButton
-import de.oljg.glac.core.util.cutOffPathFromUri
-import de.oljg.glac.core.util.isFileUri
+import de.oljg.glac.core.utils.cutOffPathFromUri
+import de.oljg.glac.core.utils.isFileUri
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls
 import de.oljg.glac.feature_clock.ui.clock.utils.FontNameParts
 import de.oljg.glac.feature_clock.ui.clock.utils.contains

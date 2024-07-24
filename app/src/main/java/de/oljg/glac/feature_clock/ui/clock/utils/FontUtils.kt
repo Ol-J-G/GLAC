@@ -24,11 +24,11 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import de.oljg.glac.core.util.CommonFileDefaults.PATH_SEPARATOR
-import de.oljg.glac.core.util.ScreenSizeDefaults
-import de.oljg.glac.core.util.TestTags
-import de.oljg.glac.core.util.isFileUri
-import de.oljg.glac.core.util.screenDetails
+import de.oljg.glac.core.utils.CommonFileDefaults.PATH_SEPARATOR
+import de.oljg.glac.core.utils.ScreenSizeDefaults
+import de.oljg.glac.core.utils.TestTags
+import de.oljg.glac.core.utils.isFileUri
+import de.oljg.glac.core.utils.screenDetails
 import de.oljg.glac.feature_clock.ui.clock.utils.FontDefaults.DEFAULT_CURSIVE
 import de.oljg.glac.feature_clock.ui.clock.utils.FontDefaults.DEFAULT_MONOSPACE
 import de.oljg.glac.feature_clock.ui.clock.utils.FontDefaults.DEFAULT_SANS_SERIF
@@ -449,14 +449,14 @@ private fun createFont(
 
 fun mapFontWeight(fontWeightString: String): FontWeight {
     return when (fontWeightString) {
-        de.oljg.glac.core.util.FontWeight.THIN.name -> FontWeight.Thin
-        de.oljg.glac.core.util.FontWeight.EXTRA_LIGHT.name -> FontWeight.ExtraLight
-        de.oljg.glac.core.util.FontWeight.LIGHT.name -> FontWeight.Light
-        de.oljg.glac.core.util.FontWeight.MEDIUM.name -> FontWeight.Medium
-        de.oljg.glac.core.util.FontWeight.SEMI_BOLD.name -> FontWeight.SemiBold
-        de.oljg.glac.core.util.FontWeight.BOLD.name -> FontWeight.Bold
-        de.oljg.glac.core.util.FontWeight.EXTRA_BOLD.name -> FontWeight.ExtraBold
-        de.oljg.glac.core.util.FontWeight.BLACK.name -> FontWeight.Black
+        de.oljg.glac.core.utils.FontWeight.THIN.name -> FontWeight.Thin
+        de.oljg.glac.core.utils.FontWeight.EXTRA_LIGHT.name -> FontWeight.ExtraLight
+        de.oljg.glac.core.utils.FontWeight.LIGHT.name -> FontWeight.Light
+        de.oljg.glac.core.utils.FontWeight.MEDIUM.name -> FontWeight.Medium
+        de.oljg.glac.core.utils.FontWeight.SEMI_BOLD.name -> FontWeight.SemiBold
+        de.oljg.glac.core.utils.FontWeight.BOLD.name -> FontWeight.Bold
+        de.oljg.glac.core.utils.FontWeight.EXTRA_BOLD.name -> FontWeight.ExtraBold
+        de.oljg.glac.core.utils.FontWeight.BLACK.name -> FontWeight.Black
         else -> FontWeight.Normal
     }
 }
@@ -464,7 +464,7 @@ fun mapFontWeight(fontWeightString: String): FontWeight {
 
 fun mapFontStyle(fontStyleString: String): FontStyle {
     return when (fontStyleString) {
-        de.oljg.glac.core.util.FontStyle.ITALIC.name -> FontStyle.Italic
+        de.oljg.glac.core.utils.FontStyle.ITALIC.name -> FontStyle.Italic
         else -> FontStyle.Normal
     }
 }

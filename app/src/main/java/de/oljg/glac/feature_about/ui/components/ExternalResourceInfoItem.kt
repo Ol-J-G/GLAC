@@ -23,8 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.BulletPointRow
-import de.oljg.glac.core.util.CommonUtils.SPACE
-import de.oljg.glac.core.util.FontWeight
+import de.oljg.glac.core.utils.CommonUtils.SPACE
+import de.oljg.glac.core.utils.FontWeight
 import de.oljg.glac.feature_about.data.ExternalResourceInfo
 import de.oljg.glac.feature_about.data.SoundMods
 import de.oljg.glac.feature_about.ui.utils.AboutScreenDefaults

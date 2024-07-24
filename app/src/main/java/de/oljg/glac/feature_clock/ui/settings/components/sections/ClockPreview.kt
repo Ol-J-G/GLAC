@@ -12,8 +12,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpSize
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.ExpandableSection
-import de.oljg.glac.core.util.TestTags.CLOCK_PREVIEW_EXPANDABLE_SECTION
-import de.oljg.glac.core.util.screenDetails
+import de.oljg.glac.core.utils.TestTags.CLOCK_PREVIEW_EXPANDABLE_SECTION
+import de.oljg.glac.core.utils.screenDetails
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.ui.ClockSettingsEvent
 import de.oljg.glac.feature_clock.ui.clock.DigitalAlarmClockScreen

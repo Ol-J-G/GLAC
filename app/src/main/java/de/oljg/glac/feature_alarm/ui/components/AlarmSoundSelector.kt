@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.oljg.glac.core.ui.components.DropDownSelector
 import de.oljg.glac.core.ui.components.RemoveImportedFileButton
-import de.oljg.glac.core.util.isFileUri
+import de.oljg.glac.core.utils.isFileUri
 import de.oljg.glac.feature_alarm.domain.model.utils.AlarmDefaults.DEFAULT_ALARM_SOUND_URI
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_SOUND_SELECTOR_BOTTOM_PADDING
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.ALARM_SOUND_SELECTOR_TOP_PADDING

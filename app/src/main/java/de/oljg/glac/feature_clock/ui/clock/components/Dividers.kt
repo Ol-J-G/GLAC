@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
-import de.oljg.glac.core.util.TestTags
+import de.oljg.glac.core.utils.TestTags
 import de.oljg.glac.feature_clock.ui.clock.utils.DividerDefaults.DEFAULT_DISTANCE_CIRCLE_TO_CIRCLE_FACTOR
 import de.oljg.glac.feature_clock.ui.clock.utils.DividerDefaults.DEFAULT_DISTANCE_DASH_TO_DASH_FACTOR
 import de.oljg.glac.feature_clock.ui.clock.utils.DividerStyle

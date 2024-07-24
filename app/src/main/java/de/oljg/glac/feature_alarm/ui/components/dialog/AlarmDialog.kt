@@ -29,8 +29,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.GlacDialog
-import de.oljg.glac.core.util.ScreenDetails
-import de.oljg.glac.core.util.screenDetails
+import de.oljg.glac.core.utils.ScreenDetails
+import de.oljg.glac.core.utils.screenDetails
 import de.oljg.glac.feature_alarm.domain.model.Alarm
 import de.oljg.glac.feature_alarm.domain.model.AlarmSettings
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.minutesSaver

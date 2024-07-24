@@ -1,7 +1,7 @@
 package de.oljg.glac.feature_clock.domain.model.utils
 
-import de.oljg.glac.core.util.FontStyle
-import de.oljg.glac.core.util.FontWeight
+import de.oljg.glac.core.utils.FontStyle
+import de.oljg.glac.core.utils.FontWeight
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockCharType
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockDefaults
 import de.oljg.glac.feature_clock.ui.clock.utils.DividerDefaults

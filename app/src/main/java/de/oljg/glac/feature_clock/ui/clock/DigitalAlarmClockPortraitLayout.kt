@@ -25,9 +25,9 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
-import de.oljg.glac.core.util.ClockPartsTestTags
-import de.oljg.glac.core.util.TestTags
-import de.oljg.glac.core.util.defaultColor
+import de.oljg.glac.core.utils.ClockPartsTestTags
+import de.oljg.glac.core.utils.TestTags
+import de.oljg.glac.core.utils.defaultColor
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
 import de.oljg.glac.feature_clock.ui.clock.components.ClockCharColumn

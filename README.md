@@ -199,6 +199,11 @@ Outline size is adjustable, examples below have 2 pixels applied.
 - GLAC supports adaptive design
 - Dark/Light Mode setting of the Android system is taken into account
 
+## Licence
+© 2024. This work is openly licensed via [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)
+- Except for the files in 'app/src/main/assets', which all have their own license!
+  - See [ExternalResources.kt](app/src/main/java/de/oljg/glac/feature_about/data/ExternalResources.kt) or app's about screen for details 
+
 ## External Libraries
 Many thanks to all the authors for their outstanding, freely available libraries, without which I would have had to invest much more time in completing GLAC!
 - [ColorPicker Compose](https://github.com/skydoves/colorpicker-compose) by [Jaewoong Eum (skydoves)](https://github.com/skydoves)

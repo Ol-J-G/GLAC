@@ -2,7 +2,7 @@ package de.oljg.glac.feature_clock.ui.settings.components.character
 
 import androidx.compose.runtime.Composable
 import de.oljg.glac.core.ui.components.DropDownSelector
-import de.oljg.glac.core.util.FontStyle
+import de.oljg.glac.core.utils.FontStyle
 import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.FONT_STYLES
 import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.SELECTOR_PADDING
 

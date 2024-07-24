@@ -28,8 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.GlacAlertDialog
-import de.oljg.glac.core.util.ScreenDetails
-import de.oljg.glac.core.util.screenDetails
+import de.oljg.glac.core.utils.ScreenDetails
+import de.oljg.glac.core.utils.screenDetails
 import de.oljg.glac.feature_alarm.domain.model.Alarm
 import de.oljg.glac.feature_alarm.domain.model.AlarmSettings
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsEvent

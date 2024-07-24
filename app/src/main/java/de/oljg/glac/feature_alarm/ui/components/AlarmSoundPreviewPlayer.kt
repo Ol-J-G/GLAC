@@ -26,7 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
 import de.oljg.glac.core.media.AlarmSoundPlayer
-import de.oljg.glac.core.util.defaultIconButtonColors
+import de.oljg.glac.core.utils.defaultIconButtonColors
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.PREVIEW_PLAYER_CORNER_SIZE_PERCENT
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.PREVIEW_PLAYER_ELEVATION
 import de.oljg.glac.feature_alarm.ui.utils.AlarmDefaults.PREVIEW_PLAYER_ICON_SIZE

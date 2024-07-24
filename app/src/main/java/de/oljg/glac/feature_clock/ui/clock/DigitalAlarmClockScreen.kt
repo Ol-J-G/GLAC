@@ -21,10 +21,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toFile
 import de.oljg.glac.core.media.AlarmSoundPlayer
-import de.oljg.glac.core.util.defaultBackgroundColor
-import de.oljg.glac.core.util.defaultColor
-import de.oljg.glac.core.util.isFileUri
-import de.oljg.glac.core.util.lockScreenOrientation
+import de.oljg.glac.core.utils.defaultBackgroundColor
+import de.oljg.glac.core.utils.defaultColor
+import de.oljg.glac.core.utils.isFileUri
+import de.oljg.glac.core.utils.lockScreenOrientation
 import de.oljg.glac.feature_alarm.domain.model.Alarm
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme

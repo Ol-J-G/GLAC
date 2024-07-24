@@ -1,4 +1,4 @@
-package de.oljg.glac.core.util
+package de.oljg.glac.core.utils
 
 import android.app.Activity
 import android.content.Context
@@ -12,10 +12,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_HEIGHT_COMPACT
-import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_HEIGHT_MEDIUM
-import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_WIDTH_COMPACT
-import de.oljg.glac.core.util.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_WIDTH_MEDIUM
+import de.oljg.glac.core.utils.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_HEIGHT_COMPACT
+import de.oljg.glac.core.utils.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_HEIGHT_MEDIUM
+import de.oljg.glac.core.utils.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_WIDTH_COMPACT
+import de.oljg.glac.core.utils.ScreenSizeDefaults.DEFAULT_MAX_SCREEN_WIDTH_MEDIUM
 
 
 fun Context.findActivity(): Activity? {

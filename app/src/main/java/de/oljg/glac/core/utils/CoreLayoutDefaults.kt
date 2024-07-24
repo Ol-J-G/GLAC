@@ -1,4 +1,4 @@
-package de.oljg.glac.core.util
+package de.oljg.glac.core.utils
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp

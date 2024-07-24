@@ -1,8 +1,8 @@
 package de.oljg.glac.feature_clock.domain.model
 
 import androidx.compose.ui.graphics.Color
-import de.oljg.glac.core.util.FontStyle
-import de.oljg.glac.core.util.FontWeight
+import de.oljg.glac.core.utils.FontStyle
+import de.oljg.glac.core.utils.FontWeight
 import de.oljg.glac.feature_clock.domain.model.serializer.CharColorsSerializer
 import de.oljg.glac.feature_clock.domain.model.serializer.ColorSerializer
 import de.oljg.glac.feature_clock.domain.model.serializer.SegmentColorsSerializer
@@ -25,14 +25,14 @@ import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_F
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_FONT_WEIGHT
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_HOURS_MINUTES_DIVIDER_CHAR
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_MINUTES_SECONDS_DIVIDER_CHAR
-import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_USE_COLORS_PER_CHAR
-import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_USE_COLORS_PER_CLOCK_PART
-import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_USE_SEGMENT_COLORS
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_SEVEN_SEGMENT_OUTLINE_SIZE
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_SEVEN_SEGMENT_STYLE
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_SEVEN_SEGMENT_WEIGHT
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_SHOW_DAYTIME_MARKER
 import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_SHOW_SECONDS
+import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_USE_COLORS_PER_CHAR
+import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_USE_COLORS_PER_CLOCK_PART
+import de.oljg.glac.feature_clock.domain.model.utils.ClockThemeDefauls.DEFAULT_USE_SEGMENT_COLORS
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockCharType
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockPartsColors
 import de.oljg.glac.feature_clock.ui.clock.utils.DividerLineEnd

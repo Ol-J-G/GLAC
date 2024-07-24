@@ -1,4 +1,4 @@
-package de.oljg.glac.core.util
+package de.oljg.glac.core.utils
 
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme

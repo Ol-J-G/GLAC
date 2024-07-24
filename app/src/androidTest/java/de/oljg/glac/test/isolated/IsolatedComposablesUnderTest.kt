@@ -10,8 +10,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import de.oljg.glac.core.util.defaultColor
-import de.oljg.glac.core.util.screenDetails
+import de.oljg.glac.core.utils.defaultColor
+import de.oljg.glac.core.utils.screenDetails
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.ui.clock.DigitalAlarmClockLandscapeLayout
 import de.oljg.glac.feature_clock.ui.clock.DigitalAlarmClockPortraitLayout

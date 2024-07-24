@@ -27,9 +27,9 @@ import androidx.compose.ui.graphics.Shader
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
-import de.oljg.glac.core.util.findActivity
-import de.oljg.glac.core.util.getScreenBrightness
-import de.oljg.glac.core.util.setScreenBrightness
+import de.oljg.glac.core.utils.findActivity
+import de.oljg.glac.core.utils.getScreenBrightness
+import de.oljg.glac.core.utils.setScreenBrightness
 import de.oljg.glac.feature_alarm.domain.model.Alarm
 
 /**

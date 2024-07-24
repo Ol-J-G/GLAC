@@ -22,9 +22,9 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.withStyle
 import de.oljg.glac.R
-import de.oljg.glac.core.util.CommonUtils.SPACE
-import de.oljg.glac.core.util.ScreenDetails
-import de.oljg.glac.core.util.screenDetails
+import de.oljg.glac.core.utils.CommonUtils.SPACE
+import de.oljg.glac.core.utils.ScreenDetails
+import de.oljg.glac.core.utils.screenDetails
 import de.oljg.glac.feature_about.data.externalFonts
 import de.oljg.glac.feature_about.data.externalSounds
 import de.oljg.glac.feature_about.ui.components.ExternalResourceInfoItem

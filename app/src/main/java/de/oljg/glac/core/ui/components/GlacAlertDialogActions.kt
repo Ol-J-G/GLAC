@@ -14,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
-import de.oljg.glac.core.util.CoreLayoutDefaults.GLAC_ALERT_DIALOG_EDGE_PADDING
-import de.oljg.glac.core.util.CoreLayoutDefaults.GLAC_ALERT_DIALOG_PADDING
+import de.oljg.glac.core.utils.CoreLayoutDefaults.GLAC_ALERT_DIALOG_EDGE_PADDING
+import de.oljg.glac.core.utils.CoreLayoutDefaults.GLAC_ALERT_DIALOG_PADDING
 
 @Composable
 fun ColumnScope.GlacAlertDialogActions(

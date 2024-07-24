@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
-import de.oljg.glac.core.util.CoreLayoutDefaults.GLAC_SWITCH_DEFAULT_EDGE_PADDING
+import de.oljg.glac.core.utils.CoreLayoutDefaults.GLAC_SWITCH_DEFAULT_EDGE_PADDING
 
 @Composable
 fun GlacSwitch(

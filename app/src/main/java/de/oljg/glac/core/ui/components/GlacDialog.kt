@@ -10,8 +10,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import de.oljg.glac.core.util.CoreLayoutDefaults.GLAC_DIALOG_SHAPE
-import de.oljg.glac.core.util.CoreLayoutDefaults.GLAC_DIALOG_TONAL_ELEVATION
+import de.oljg.glac.core.utils.CoreLayoutDefaults.GLAC_DIALOG_SHAPE
+import de.oljg.glac.core.utils.CoreLayoutDefaults.GLAC_DIALOG_TONAL_ELEVATION
 
 @Composable
 fun GlacDialog(

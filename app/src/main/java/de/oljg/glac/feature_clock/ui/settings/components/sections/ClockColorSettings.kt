@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.ExpandableSection
-import de.oljg.glac.core.util.defaultBackgroundColor
-import de.oljg.glac.core.util.defaultColor
+import de.oljg.glac.core.utils.defaultBackgroundColor
+import de.oljg.glac.core.utils.defaultColor
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
 import de.oljg.glac.feature_clock.ui.ClockSettingsEvent

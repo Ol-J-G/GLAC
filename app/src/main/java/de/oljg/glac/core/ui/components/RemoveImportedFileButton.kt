@@ -13,10 +13,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
-import de.oljg.glac.core.util.CommonUtils.SPACE
-import de.oljg.glac.core.util.CoreLayoutDefaults.ICON_SIZE
-import de.oljg.glac.core.util.cutOffPathFromUri
-import de.oljg.glac.core.util.defaultIconButtonColors
+import de.oljg.glac.core.utils.CommonUtils.SPACE
+import de.oljg.glac.core.utils.CoreLayoutDefaults.ICON_SIZE
+import de.oljg.glac.core.utils.cutOffPathFromUri
+import de.oljg.glac.core.utils.defaultIconButtonColors
 
 
 @Composable

@@ -9,9 +9,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.oljg.glac.R
-import de.oljg.glac.core.util.CommonUtils.SPACE
-import de.oljg.glac.core.util.FontStyle
-import de.oljg.glac.core.util.FontWeight
+import de.oljg.glac.core.utils.CommonUtils.SPACE
+import de.oljg.glac.core.utils.FontStyle
+import de.oljg.glac.core.utils.FontWeight
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockCharType
 import de.oljg.glac.feature_clock.ui.clock.utils.DividerLineEnd
 import de.oljg.glac.feature_clock.ui.clock.utils.DividerStyle

@@ -8,8 +8,8 @@ import androidx.compose.ui.res.stringResource
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.ExpandableSection
 import de.oljg.glac.core.ui.components.GlacSwitch
-import de.oljg.glac.core.util.TestTags.CLOCK_SETTINGS_DISPLAY_EXPANDABLE_SECTION
-import de.oljg.glac.core.util.TestTags.SHOW_SECONDS_SWITCH
+import de.oljg.glac.core.utils.TestTags.CLOCK_SETTINGS_DISPLAY_EXPANDABLE_SECTION
+import de.oljg.glac.core.utils.TestTags.SHOW_SECONDS_SWITCH
 import de.oljg.glac.feature_clock.domain.model.ClockSettings
 import de.oljg.glac.feature_clock.domain.model.ClockTheme
 import de.oljg.glac.feature_clock.ui.ClockSettingsEvent

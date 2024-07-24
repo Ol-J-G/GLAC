@@ -37,7 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.oljg.glac.R
-import de.oljg.glac.core.util.defaultBackgroundColor
+import de.oljg.glac.core.utils.defaultBackgroundColor
 import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults
 import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.COLOR_SELECTOR_COLOR_SWATCH_SIZE
 import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.COLOR_SELECTOR_HEIGHT

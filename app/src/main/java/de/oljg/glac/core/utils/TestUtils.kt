@@ -1,13 +1,13 @@
-package de.oljg.glac.core.util
+package de.oljg.glac.core.utils
 
-import de.oljg.glac.core.util.TestTags.DAYTIME_MARKER_ANTE_OR_POST
-import de.oljg.glac.core.util.TestTags.DAYTIME_MARKER_MERIDIEM
-import de.oljg.glac.core.util.TestTags.HOURS_ONES
-import de.oljg.glac.core.util.TestTags.HOURS_TENS
-import de.oljg.glac.core.util.TestTags.MINUTES_ONES
-import de.oljg.glac.core.util.TestTags.MINUTES_TENS
-import de.oljg.glac.core.util.TestTags.SECONDS_ONES
-import de.oljg.glac.core.util.TestTags.SECONDS_TENS
+import de.oljg.glac.core.utils.TestTags.DAYTIME_MARKER_ANTE_OR_POST
+import de.oljg.glac.core.utils.TestTags.DAYTIME_MARKER_MERIDIEM
+import de.oljg.glac.core.utils.TestTags.HOURS_ONES
+import de.oljg.glac.core.utils.TestTags.HOURS_TENS
+import de.oljg.glac.core.utils.TestTags.MINUTES_ONES
+import de.oljg.glac.core.utils.TestTags.MINUTES_TENS
+import de.oljg.glac.core.utils.TestTags.SECONDS_ONES
+import de.oljg.glac.core.utils.TestTags.SECONDS_TENS
 import de.oljg.glac.feature_clock.ui.clock.utils.ClockParts
 import de.oljg.glac.feature_clock.ui.clock.utils.DaytimeMarker
 import de.oljg.glac.feature_clock.ui.clock.utils.DigitPair

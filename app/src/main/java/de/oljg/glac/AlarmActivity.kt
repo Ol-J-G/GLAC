@@ -19,9 +19,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import de.oljg.glac.core.media.AlarmSoundPlayer
-import de.oljg.glac.core.util.findActivity
-import de.oljg.glac.core.util.resetScreenBrightness
-import de.oljg.glac.core.util.unlockScreenOrientation
+import de.oljg.glac.core.utils.findActivity
+import de.oljg.glac.core.utils.resetScreenBrightness
+import de.oljg.glac.core.utils.unlockScreenOrientation
 import de.oljg.glac.feature_alarm.domain.model.Alarm
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsEvent
 import de.oljg.glac.feature_alarm.ui.AlarmSettingsViewModel

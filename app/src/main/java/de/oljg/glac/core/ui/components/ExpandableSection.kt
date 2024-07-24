@@ -33,12 +33,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import de.oljg.glac.core.util.CoreLayoutDefaults.EXPANDABLE_SECTION_BORDER_WIDTH
-import de.oljg.glac.core.util.CoreLayoutDefaults.EXPANDABLE_SECTION_HEIGHT
-import de.oljg.glac.core.util.CoreLayoutDefaults.EXPANDABLE_SECTION_HORIZONTAL_PADDING
-import de.oljg.glac.core.util.CoreLayoutDefaults.EXPANDABLE_SECTION_SURFACE_CORNER_SIZE
-import de.oljg.glac.core.util.CoreLayoutDefaults.EXPANDABLE_SECTION_VERTICAL_PADDING
-import de.oljg.glac.core.util.CoreLayoutDefaults.TRAILING_ICON_END_PADDING
+import de.oljg.glac.core.utils.CoreLayoutDefaults.EXPANDABLE_SECTION_BORDER_WIDTH
+import de.oljg.glac.core.utils.CoreLayoutDefaults.EXPANDABLE_SECTION_HEIGHT
+import de.oljg.glac.core.utils.CoreLayoutDefaults.EXPANDABLE_SECTION_HORIZONTAL_PADDING
+import de.oljg.glac.core.utils.CoreLayoutDefaults.EXPANDABLE_SECTION_SURFACE_CORNER_SIZE
+import de.oljg.glac.core.utils.CoreLayoutDefaults.EXPANDABLE_SECTION_VERTICAL_PADDING
+import de.oljg.glac.core.utils.CoreLayoutDefaults.TRAILING_ICON_END_PADDING
 
 
 @Composable

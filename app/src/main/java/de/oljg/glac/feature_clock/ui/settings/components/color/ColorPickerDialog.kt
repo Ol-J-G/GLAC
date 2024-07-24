@@ -42,9 +42,9 @@ import com.github.skydoves.colorpicker.compose.drawColorIndicator
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import de.oljg.glac.R
 import de.oljg.glac.core.ui.components.GlacDialog
-import de.oljg.glac.core.util.ScreenDetails
-import de.oljg.glac.core.util.defaultColor
-import de.oljg.glac.core.util.screenDetails
+import de.oljg.glac.core.utils.ScreenDetails
+import de.oljg.glac.core.utils.defaultColor
+import de.oljg.glac.core.utils.screenDetails
 import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.COLOR_DIALOG_WIDTH
 import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.COLOR_PICKER_BUTTON_SPACE
 import de.oljg.glac.feature_clock.ui.settings.utils.ClockSettingsDefaults.COLOR_PICKER_FLASHING_COLOR_ANIM_DURATION
