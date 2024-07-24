@@ -193,12 +193,6 @@ Outline size is adjustable, examples below have 2 pixels applied.
 |-----------------------------------------------------------|-------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
 | ![Outline](doc/screenshots/7-segment_Regular_Outline.png) | ![Outline Italic](doc/screenshots/7-segment_Regular_Outline_Italic.png) | ![Outline Reverse Italic](doc/screenshots/7-segment_Regular_Outline_Reverse_Italic.png) |
 
-## Miscellaneous
-- GLAC is “Free Open Source Software” (FOSS)
-- GLAC works completely offline
-- GLAC supports adaptive design
-- Dark/Light Mode setting of the Android system is taken into account
-
 ## Licence
 © 2024. This work is openly licensed via [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)
 - Except for the files in 'app/src/main/assets', which all have their own license!
