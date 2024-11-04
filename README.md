@@ -1,4 +1,4 @@
-Gentle Light Alarm Glock (GLAC)
+Gentle Light Alarm Clock (GLAC)
 ===============================
 
 ## Preview
